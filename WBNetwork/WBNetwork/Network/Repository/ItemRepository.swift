@@ -9,6 +9,9 @@ import Foundation
 
 public protocol ItemRepositoryInterface {
     func getWishItems() async throws -> [WishListResponse]
+    func deleteItem(id: Int) async throws -> EmptyResponse
+    func getItemDetail(id: Int) async throws -> WishListResponse
+    func modifyItemFolder(itemId: Int, folderId: Int) async throws -> EmptyResponse
 }
 
 public final class ItemRepository: ItemRepositoryInterface {
@@ -16,5 +19,18 @@ public final class ItemRepository: ItemRepositoryInterface {
     
     public func getWishItems() async throws -> [WishListResponse] {
         return try await ItemManager.shared.getWishItems()
+    }
+    
+    public func deleteItem(id: Int) async throws -> EmptyResponse {
+        return try await ItemManager.shared.deleteItem(id: id)
+    }
+    
+    public func getItemDetail(id: Int) async throws -> WishListResponse {
+        let data = try await ItemManager.shared.getItemDetail(id: id)
+        return data[0]
+    }
+    
+    public func modifyItemFolder(itemId: Int, folderId: Int) async throws -> EmptyResponse {
+        return try await ItemManager.shared.modifyItemFolder(itemId: itemId, folderId: folderId)
     }
 }

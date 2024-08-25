@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController, ItemDetailDelegate {
     
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
@@ -34,13 +34,17 @@ final class HomeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
     }
+    
+    func refreshItems() {
+        viewModel.fetchItems()
+    }
 }
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = viewModel.items[indexPath.row]
         let detailViewModel = ItemDetailViewModel(item: item)
-        let detailViewController = ItemDetailViewController(viewModel: detailViewModel)
+        let detailViewController = ItemDetailViewController(viewModel: detailViewModel, delegate: self)
         navigationController?.pushViewController(detailViewController, animated: true)
     }
 }

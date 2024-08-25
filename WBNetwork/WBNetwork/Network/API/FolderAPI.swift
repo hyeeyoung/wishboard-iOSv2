@@ -12,6 +12,16 @@ import Core
 public enum FolderAPI {
     /// 폴더리스트 조회
     case getFolders
+    /// 새 폴더 추가
+    case addFolder(folderName: String)
+    /// 폴더명 수정
+    case modifyFolderName(folderId: String, folderName: String)
+    /// 폴더 삭제
+    case deleteFolder(folderId: String)
+    /// 폴더 내 아이템 리스트 조회
+    case getFolderItemList(folderId: String)
+    /// 폴더리스트 조회 - 아이템 디테일
+    case getFolderList
 }
 
 extension FolderAPI: TargetType {
@@ -23,12 +33,33 @@ extension FolderAPI: TargetType {
         switch self {
         case .getFolders:
             return ""
+        case .addFolder:
+            return ""
+        case .modifyFolderName(let folderId, _):
+            return "/\(folderId)"
+        case .deleteFolder(let folderId):
+            return "/\(folderId)"
+        case .getFolderItemList(let folderId):
+            return "/item/\(folderId)"
+        case .getFolderList:
+            return "/list"
+            
         }
     }
 
     public var method: Moya.Method {
         switch self {
         case .getFolders:
+            return .get
+        case .addFolder:
+            return .post
+        case .modifyFolderName:
+            return .put
+        case .deleteFolder:
+            return .delete
+        case .getFolderItemList:
+            return .get
+        case .getFolderList:
             return .get
         }
     }
@@ -37,13 +68,15 @@ extension FolderAPI: TargetType {
         var parameters: [String: Any] = [:]
         
         switch self {
-        case .getFolders:
-            parameters = [:]
+        case .addFolder(let folderName):
+            parameters = ["folder_name": folderName]
+        case .modifyFolderName(_, let folderName):
+            parameters = ["folder_name": folderName]
         default:
             parameters = [:]
         }
         
-        let encoding: ParameterEncoding = self.method == .post ? JSONEncoding.default : URLEncoding.default
+        let encoding: ParameterEncoding = self.method == .post || self.method == .put ? JSONEncoding.default : URLEncoding.default
         return .requestParameters(parameters: parameters, encoding: encoding)
     }
 

@@ -45,7 +45,7 @@ final class FolderBottomSheet: UIView {
         $0.textColor = .pink_700
         $0.isHidden = true
     }
-    private let actionButton = UIButton(type: .system).then {
+    private let actionButton = AnimatedButton().then {
         $0.setTitle("추가", for: .normal)
         $0.backgroundColor = .gray_100
         $0.setTitleColor(.gray_300, for: .normal)
@@ -157,13 +157,6 @@ final class FolderBottomSheet: UIView {
     
     private func updateActionButtonState(isEnabled: Bool) {
         actionButton.isEnabled = isEnabled
-        if isEnabled {
-            actionButton.backgroundColor = .green_500
-            actionButton.setTitleColor(.gray_700, for: .normal)
-        } else {
-            actionButton.backgroundColor = .gray_100
-            actionButton.setTitleColor(.gray_300, for: .normal)
-        }
     }
     
     // MARK: - Public Methods

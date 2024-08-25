@@ -12,6 +12,12 @@ import Core
 public enum ItemAPI {
     /// 위시리스트 조회
     case getWishItems
+    /// 위시아이템 삭제
+    case deleteItem(id: Int)
+    /// 아이템 디테일 조회
+    case getItemDetail(id: Int)
+    /// 아이템의 폴더 지정
+    case modifyItemFolder(itemId: Int, folderId: Int)
 }
 
 extension ItemAPI: TargetType {
@@ -23,13 +29,23 @@ extension ItemAPI: TargetType {
         switch self {
         case .getWishItems:
             return ""
+        case .deleteItem(let id):
+            return "/\(id)"
+        case .getItemDetail(let id):
+            return "/\(id)"
+        case .modifyItemFolder(let itemId, let folderId):
+            return "/\(itemId)/folder/\(folderId)"
         }
     }
 
     public var method: Moya.Method {
         switch self {
-        case .getWishItems:
+        case .getWishItems, .getItemDetail:
             return .get
+        case .modifyItemFolder:
+            return .put
+        case .deleteItem:
+            return .delete
         }
     }
 

@@ -23,7 +23,7 @@ final class FolderViewModel {
     func fetchFolders() {
         Task {
             do {
-                let usecase = GetFoldersUseCase(repository: FolderRepository())
+                let usecase = GetFoldersUseCase()
                 let data = try await usecase.execute()
                 
                 DispatchQueue.main.async {
@@ -37,19 +37,56 @@ final class FolderViewModel {
     
     // 폴더 이름 변경
     func renameFolder(id: Int, newName: String) {
-        if let index = folders.firstIndex(where: { $0.folder_id == id }) {
-            folders[index].folder_name = newName
+        
+        Task {
+            do {
+                let usecase = ModifyFolderNameUseCase()
+                let _ = try await usecase.execute(folderId: String(id), folderName: newName)
+                
+                DispatchQueue.main.async {
+                    if let index = self.folders.firstIndex(where: { $0.folder_id == id }) {
+                        self.folders[index].folder_name = newName
+                        SnackBar.shared.show(type: .modifyFolder)
+                    }
+                }
+            } catch {
+                throw error
+            }
+        }
+        
+    }
+    
+    // 폴더 추가
+    func addFolder(name: String) {
+        Task {
+            do {
+                let usecase = AddFolderNameUseCase()
+                let _ = try await usecase.execute(folderName: name)
+                
+                self.fetchFolders()
+                DispatchQueue.main.async {
+                    SnackBar.shared.show(type: .addFolder)
+                }
+            } catch {
+                throw error
+            }
         }
     }
     
     // 폴더 삭제
     func deleteFolder(id: Int) {
-        folders.removeAll { $0.folder_id == id }
+        Task {
+            do {
+                let usecase = DeleteFolderUseCase()
+                let _ = try await usecase.execute(folderId: String(id))
+                
+                DispatchQueue.main.async {
+                    self.folders.removeAll { $0.folder_id == id }
+                    SnackBar.shared.show(type: .deleteFolder)
+                }
+            } catch {
+                throw error
+            }
+        }
     }
-    
-//    // 폴더 추가
-//    func addFolder(name: String) {
-//        let newFolder = Folder(id: folders.count + 1, name: name)
-//        folders.append(newFolder)
-//    }
 }

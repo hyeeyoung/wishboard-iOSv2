@@ -19,6 +19,11 @@
 		2337C8662C70FD4F00E2A67B /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C8652C70FD4F00E2A67B /* ItemDetailView.swift */; };
 		2337C8682C70FDB400E2A67B /* ItemDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C8672C70FDB400E2A67B /* ItemDetailViewModel.swift */; };
 		2337C86D2C710A5F00E2A67B /* DetailToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C86C2C710A5F00E2A67B /* DetailToolBar.swift */; };
+		2347A9022C7ABB95009F9480 /* FolderDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */; };
+		2347A9042C7ABBA9009F9480 /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */; };
+		2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */; };
+		2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */; };
+		2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */; };
 		236ED4D02C6E37BB000EA85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */; };
 		2385950C2C71BC7E00B85CBC /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */; };
 		238595112C71BF2B00B85CBC /* FolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595102C71BF2B00B85CBC /* FolderViewController.swift */; };
@@ -194,6 +199,11 @@
 		2337C8652C70FD4F00E2A67B /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
 		2337C8672C70FDB400E2A67B /* ItemDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailViewModel.swift; sourceTree = "<group>"; };
 		2337C86C2C710A5F00E2A67B /* DetailToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailToolBar.swift; sourceTree = "<group>"; };
+		2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewController.swift; sourceTree = "<group>"; };
+		2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
+		2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewModel.swift; sourceTree = "<group>"; };
+		2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectBottomSheet.swift; sourceTree = "<group>"; };
+		2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectTableViewCell.swift; sourceTree = "<group>"; };
 		236ED4CE2C6E3515000EA85B /* WishboardV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WishboardV2.entitlements; sourceTree = "<group>"; };
 		236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
@@ -305,6 +315,7 @@
 				231F51BD2C708EB400524968 /* HomeView.swift */,
 				231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */,
 				2337C8652C70FD4F00E2A67B /* ItemDetailView.swift */,
+				2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */,
 			);
 			path = Item;
 			sourceTree = "<group>";
@@ -331,6 +342,7 @@
 			children = (
 				232466772C6F92B800979940 /* HomeViewController.swift */,
 				2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */,
+				2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */,
 			);
 			path = Item;
 			sourceTree = "<group>";
@@ -351,6 +363,7 @@
 			children = (
 				238595122C71BF3900B85CBC /* FolderView.swift */,
 				238595192C71C13F00B85CBC /* FolderCollectionViewCell.swift */,
+				2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */,
 			);
 			path = Folder;
 			sourceTree = "<group>";
@@ -360,6 +373,7 @@
 			children = (
 				238595102C71BF2B00B85CBC /* FolderViewController.swift */,
 				2328C4EA2C720CFF0081A97C /* FolderBottomSheet.swift */,
+				2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */,
 			);
 			path = Folder;
 			sourceTree = "<group>";
@@ -368,6 +382,7 @@
 			isa = PBXGroup;
 			children = (
 				238595152C71BF4F00B85CBC /* FolderViewModel.swift */,
+				2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */,
 			);
 			path = Folder;
 			sourceTree = "<group>";
@@ -916,11 +931,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				23CBF49E2C5514510061D22F /* ViewController.swift in Sources */,
+				2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */,
 				231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */,
 				238595132C71BF3900B85CBC /* FolderView.swift in Sources */,
 				23D5B6632C7A309F00B73174 /* AlertViewController.swift in Sources */,
+				2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */,
 				23CBF4D52C55162A0061D22F /* OnboardingViewModel.swift in Sources */,
 				238595252C71C7E700B85CBC /* BaseToolBar.swift in Sources */,
+				2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */,
 				2337C86D2C710A5F00E2A67B /* DetailToolBar.swift in Sources */,
 				239540F12C6A179B003AB3D5 /* LoginView.swift in Sources */,
 				239AD1DF2C6A2410002052BD /* ToolBar.swift in Sources */,
@@ -935,6 +953,7 @@
 				23CB0DD82C79E43F0053EB40 /* SettingTableViewCell.swift in Sources */,
 				2385950C2C71BC7E00B85CBC /* PaddingLabel.swift in Sources */,
 				232466782C6F92B800979940 /* HomeViewController.swift in Sources */,
+				2347A9022C7ABB95009F9480 /* FolderDetailViewController.swift in Sources */,
 				23D5B65D2C7A297E00B73174 /* WebViewController.swift in Sources */,
 				238F45A82C70A83600A6119B /* HomeToolBar.swift in Sources */,
 				23CB0DCE2C79E2600053EB40 /* MyPageViewController.swift in Sources */,
@@ -951,6 +970,7 @@
 				2328C4EB2C720CFF0081A97C /* FolderBottomSheet.swift in Sources */,
 				238595112C71BF2B00B85CBC /* FolderViewController.swift in Sources */,
 				23ACCEC22C6A1E0A00E93953 /* LoginViewController.swift in Sources */,
+				2347A9042C7ABBA9009F9480 /* FolderDetailView.swift in Sources */,
 				23CBF49C2C5514510061D22F /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

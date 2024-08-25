@@ -91,12 +91,17 @@ final class ItemDetailView: UIView {
         $0.axis = .vertical
         $0.spacing = 10
     }
+    
+    private var item: WishListResponse?
+    public var folderListButtonAction: (() -> Void)?
+    public var linkButtonAction: ((String) -> Void)?
 
     // MARK: - Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
         setupConstraints()
+        addTargets()
     }
     
     required init?(coder: NSCoder) {
@@ -194,9 +199,25 @@ final class ItemDetailView: UIView {
         }
     }
     
+    private func addTargets() {
+        self.actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(folderListButtonTapped))
+        self.folderLabelButton.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func actionButtonTapped() {
+        guard let item = self.item, let url = item.item_url else { return }
+        self.linkButtonAction?(url)
+    }
+    
+    @objc private func folderListButtonTapped() {
+        self.folderListButtonAction?()
+    }
+    
     // MARK: - Public Methods
     func configure(with viewModel: ItemDetailViewModel) {
         guard let item = viewModel.item else { return }
+        self.item = item
 
         // item info
         configureItemImg(item.item_img_url)
@@ -266,16 +287,19 @@ final class ItemDetailView: UIView {
         var attributedText: NSMutableAttributedString
         
         if let _ = item.folder_id, let folderName = item.folder_name {
-            attributedText = NSMutableAttributedString(string: folderName + ">")
+            attributedText = NSMutableAttributedString(string: folderName + " >")
         } else {
-            attributedText = NSMutableAttributedString(string: "폴더를 지정해주세요!>")
+            attributedText = NSMutableAttributedString(string: "폴더를 지정해주세요! >")
         }
         
         attributedText.addAttributes([
             .font: TypoStyle.SuitD3.font,
             .foregroundColor: UIColor.gray_300,
-            .underlineStyle: NSUnderlineStyle.single.rawValue
         ], range: NSRange(location: 0, length: attributedText.length))
+        
+        attributedText.addAttributes([
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ], range: NSRange(location: 0, length: attributedText.length - 2))
         
         folderLabelButton.attributedText = attributedText
         folderLabelButton.textAlignment = .left

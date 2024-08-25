@@ -75,6 +75,8 @@ public class WBProvider<Target: TargetType> {
             if let result = data.data {
                 print(result)
                 return result
+            } else if T.self == EmptyResponse.self {
+                return EmptyResponse() as! T
             } else {
                 let decodingError = DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "디코딩 에러"))
                 let error = AFError.responseSerializationFailed(reason: .decodingFailed(error: decodingError))

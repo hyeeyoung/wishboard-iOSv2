@@ -19,6 +19,7 @@ public class ErrorPlugin: PluginType {
             if let code = error.response?.statusCode {
                 switch code {
                 case 500:
+                    NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.errorMessage])
                     break
                 case 400:
                     break

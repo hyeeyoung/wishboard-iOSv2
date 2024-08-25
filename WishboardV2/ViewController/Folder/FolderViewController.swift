@@ -10,8 +10,7 @@ import UIKit
 import Combine
 import WBNetwork
 
-final class FolderViewController: UIViewController {
-    
+final class FolderViewController: UIViewController, ItemDetailDelegate {
     private let folderView = FolderView()
     private let viewModel = FolderViewModel()
     private let bottomSheetView = FolderBottomSheet()
@@ -102,7 +101,8 @@ final class FolderViewController: UIViewController {
                     print("폴더 삭제 취소")
                 }, { _ in
                     print("폴더 삭제")
-                    // TODO: Folder Delete API
+                    guard let folderId = folder.folder_id else {return}
+                    self?.viewModel.deleteFolder(id: folderId)
                 }
             ]
             alert.modalTransitionStyle = .crossDissolve
@@ -133,13 +133,12 @@ final class FolderViewController: UIViewController {
         
         bottomSheetView.onActionButtonTap = { [weak self] folderName, folder in
             self?.dismissKeyboard()
-            // TODO: API 통신 로직
             if let folder = folder, let id = folder.folder_id {
                 // 폴더 이름 수정
                 self?.viewModel.renameFolder(id: id, newName: folderName)
             } else {
                 // 새 폴더 추가
-//                self?.viewModel.addFolder(name: folderName)
+                self?.viewModel.addFolder(name: folderName)
             }
             self?.hideBottomSheet()
         }
@@ -176,6 +175,10 @@ final class FolderViewController: UIViewController {
         }
     }
     
+    func refreshItems() {
+        viewModel.fetchFolders()
+    }
+    
     // MARK: - Actions
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)
@@ -201,6 +204,16 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
         }
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = viewModel.folders[indexPath.item]
+        guard let folderId = item.folder_id else {return}
+        
+        let folderTitle = item.folder_name ?? ""
+        let folderDetailVC = FolderDetailViewController(folderId: String(folderId), folderTitle: folderTitle)
+        folderDetailVC.delegate = self
+        self.navigationController?.pushViewController(folderDetailVC, animated: true)
     }
 }
 
