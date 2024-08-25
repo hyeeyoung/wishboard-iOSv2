@@ -8,9 +8,9 @@
 import Foundation
 
 public final class ItemManager {
-    static let shared = ItemManager()
+    public static let shared = ItemManager()
     
-    func getWishItems() async throws -> [WishListResponse] {
+    public func getWishItems() async throws -> [WishListResponse] {
         return try await API.Item.requestRaw(.getWishItems)
     }
 }

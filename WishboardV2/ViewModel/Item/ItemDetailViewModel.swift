@@ -6,3 +6,15 @@
 //
 
 import Foundation
+import Combine
+import WBNetwork
+
+final class ItemDetailViewModel {
+    // Published properties to bind with the view
+    @Published var item: WishListResponse?
+
+    init(item: WishListResponse) {
+        self.item = item
+    }
+    
+}

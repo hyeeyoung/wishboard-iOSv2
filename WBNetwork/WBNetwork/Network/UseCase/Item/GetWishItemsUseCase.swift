@@ -7,18 +7,18 @@
 
 import Foundation
 
-protocol GetWishItemsUseCaseInterface {
+public protocol GetWishItemsUseCaseInterface {
     func execute() async throws -> [WishListResponse]
 }
 
-class GetWishItemsUseCase: GetWishItemsUseCaseInterface {
+public class GetWishItemsUseCase: GetWishItemsUseCaseInterface {
     private let repository: ItemRepositoryInterface
     
-    init(repository: ItemRepositoryInterface = ItemRepository()) {
+    public init(repository: ItemRepositoryInterface = ItemRepository()) {
         self.repository = repository
     }
     
-    func execute() async throws -> [WishListResponse] {
+    public func execute() async throws -> [WishListResponse] {
         return try await self.repository.getWishItems()
     }
 }

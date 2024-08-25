@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+public struct UserInfoResponse: Decodable {
+    public let email: String
+    public let profile_img_url: String?
+    public let nickname: String?
+    public let push_state: Int
+  }

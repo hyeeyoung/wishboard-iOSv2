@@ -61,7 +61,7 @@ public final class TokenInterceptor: RequestInterceptor {
                     completion(.doNotRetryWithError(error))
                     
                     // 토큰 재발급 실패 시 Notification 이벤트 전송
-                    NotificationCenter.default.post(name: .didReceiveUnauthorizedError, object: nil)
+                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
                     
                     throw error
                 }
@@ -71,7 +71,7 @@ public final class TokenInterceptor: RequestInterceptor {
                     completion(.doNotRetryWithError(error))
                     
                     // 토큰 재발급 실패 시 Notification 이벤트 전송
-                    NotificationCenter.default.post(name: .didReceiveUnauthorizedError, object: nil)
+                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
                     
                     throw error
                 }
@@ -90,7 +90,7 @@ public final class TokenInterceptor: RequestInterceptor {
                 completion(.doNotRetryWithError(error))
                 sema.signal()
                 // 토큰 재발급 실패 시 Notification 이벤트 전송
-                NotificationCenter.default.post(name: .didReceiveUnauthorizedError, object: nil)
+                NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
                 
                 throw error
             }

@@ -46,7 +46,7 @@ final class LoginView: UIView {
         $0.isSecureTextEntry = true
     }
     
-    public lazy var loginButton = UIButton().then {
+    public lazy var loginButton = AnimatedButton().then {
         $0.setTitle("로그인하기", for: .normal)
         $0.layer.cornerRadius = 24
         $0.setTitleColor(.gray_300, for: .normal)
@@ -139,33 +139,6 @@ final class LoginView: UIView {
     
     public func updateLoginButtonState(isEnabled: Bool) {
         loginButton.isEnabled = isEnabled
-        if isEnabled {
-            self.activateBtn()
-        } else {
-            self.inActivateBtn()
-        }
-    }
-    
-    private func inActivateBtn() {
-        _ = loginButton.then {
-            $0.setTitle("로그인하기", for: .normal)
-            $0.layer.cornerRadius = 24
-            $0.setTitleColor(.gray_300, for: .normal)
-            $0.titleLabel?.font = TypoStyle.SuitH3.font
-            $0.backgroundColor = .gray_100
-            $0.isEnabled = false
-        }
-    }
-    
-    private func activateBtn() {
-        _ = loginButton.then {
-            $0.setTitle("로그인하기", for: .normal)
-            $0.layer.cornerRadius = 24
-            $0.setTitleColor(.gray_700, for: .normal)
-            $0.titleLabel?.font = TypoStyle.SuitH3.font
-            $0.backgroundColor = .green_500
-            $0.isEnabled = true
-        }
     }
     
     // MARK: - Keyboard

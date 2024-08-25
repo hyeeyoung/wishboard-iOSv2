@@ -1,5 +1,5 @@
 //
-//  FolderToolBar.swift
+//  BaseToolBar.swift
 //  WishboardV2
 //
 //  Created by gomin on 8/18/24.
@@ -17,10 +17,19 @@ public protocol FolderToolBarDelegate: AnyObject {
 
 final public class BaseToolBar: UIView {
     
-    weak public var delegate: FolderToolBarDelegate?
+    weak public var delegate: FolderToolBarDelegate? {
+        didSet {
+            if let _ = self.delegate {
+                plusButton.isHidden = false
+                setupActions()
+            } else {
+                plusButton.isHidden = true
+            }
+        }
+    }
     
     // MARK: - Views
-    private let title = UILabel().then {
+    private let titleLabel = UILabel().then {
         $0.text = "폴더"
         $0.font = TypoStyle.SuitH1.font
         $0.textColor = .gray_700
@@ -28,6 +37,7 @@ final public class BaseToolBar: UIView {
     
     private let plusButton = UIButton().then {
         $0.setImage(Image.newFolder, for: .normal)
+        $0.isHidden = true
     }
     
     // MARK: - Initializer
@@ -37,7 +47,6 @@ final public class BaseToolBar: UIView {
         
         setupViews()
         setupConstraints()
-        setupActions()
     }
     
     required init?(coder: NSCoder) {
@@ -46,12 +55,12 @@ final public class BaseToolBar: UIView {
     
     // MARK: - Setup
     private func setupViews() {
-        addSubview(title)
+        addSubview(titleLabel)
         addSubview(plusButton)
     }
     
     private func setupConstraints() {
-        title.snp.makeConstraints { make in
+        titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
         }
@@ -73,7 +82,8 @@ final public class BaseToolBar: UIView {
         delegate?.rightNaviItemTap()
     }
     
-    public func configure() {
+    public func configure(title: String) {
+        titleLabel.text = title
         self.snp.makeConstraints { make in
             make.height.equalTo(50)
             make.top.leading.trailing.equalToSuperview()

@@ -7,12 +7,14 @@
 
 import Foundation
 
-protocol ItemRepositoryInterface {
+public protocol ItemRepositoryInterface {
     func getWishItems() async throws -> [WishListResponse]
 }
 
-final class ItemRepository: ItemRepositoryInterface {
-    func getWishItems() async throws -> [WishListResponse] {
+public final class ItemRepository: ItemRepositoryInterface {
+    public init() { }
+    
+    public func getWishItems() async throws -> [WishListResponse] {
         return try await ItemManager.shared.getWishItems()
     }
 }

@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct WishListResponse: Decodable {
-    var folder_id: Int?
-    var folder_name: String?
-    var item_id: Int?
-    var item_img_url: String?
-    var item_name: String?
-    var item_price: String?
-    var item_url: String?
-    var item_memo: String?
-    var create_at: String?
-    var item_notification_type: String?
-    var item_notification_date: String?
-    var cart_state: Int?
+public struct WishListResponse: Decodable {
+    public var folder_id: Int?
+    public var folder_name: String?
+    public var item_id: Int?
+    public var item_img_url: String?
+    public var item_name: String?
+    public var item_price: String?
+    public var item_url: String?
+    public var item_memo: String?
+    public var create_at: String?
+    public var item_notification_type: String?
+    public var item_notification_date: String?
+    public var cart_state: Int?
 }

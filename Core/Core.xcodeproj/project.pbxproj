@@ -10,6 +10,7 @@
 		231F51C72C70940E00524968 /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C62C70940E00524968 /* UIImageView.swift */; };
 		231F51D32C709A3400524968 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51D22C709A3400524968 /* NotificationName.swift */; };
 		232466722C6F910600979940 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232466712C6F910600979940 /* UserManager.swift */; };
+		2337C86B2C71078700E2A67B /* FormatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C86A2C71078700E2A67B /* FormatManager.swift */; };
 		23974D762C5E5A1B006BBC97 /* NetworkMacro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23974D752C5E5A1B006BBC97 /* NetworkMacro.swift */; };
 		23ACCEC72C6A1F0600E93953 /* UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ACCEC62C6A1F0600E93953 /* UITextField.swift */; };
 		23D2881F2C5523AD0044DF16 /* Core.docc in Sources */ = {isa = PBXBuildFile; fileRef = 23D2881E2C5523AD0044DF16 /* Core.docc */; };
@@ -26,6 +27,9 @@
 		23D2885F2C5529340044DF16 /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D2885C2C5529330044DF16 /* UIFont.swift */; };
 		23D288622C55293D0044DF16 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D288612C55293D0044DF16 /* UIColor.swift */; };
 		23D288632C55293D0044DF16 /* StringEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D288602C55293D0044DF16 /* StringEnum.swift */; };
+		23D5B65B2C7A26AF00B73174 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D5B65A2C7A26AF00B73174 /* UIDevice.swift */; };
+		23D5B65F2C7A306F00B73174 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D5B65E2C7A306F00B73174 /* AlertType.swift */; };
+		23F3FFC02C78FBA0003C7DA9 /* SnackBarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBF2C78FBA0003C7DA9 /* SnackBarType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +46,7 @@
 		231F51C62C70940E00524968 /* UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
 		231F51D22C709A3400524968 /* NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationName.swift; sourceTree = "<group>"; };
 		232466712C6F910600979940 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		2337C86A2C71078700E2A67B /* FormatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatManager.swift; sourceTree = "<group>"; };
 		23974D752C5E5A1B006BBC97 /* NetworkMacro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMacro.swift; sourceTree = "<group>"; };
 		23ACCEC62C6A1F0600E93953 /* UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextField.swift; sourceTree = "<group>"; };
 		23D2881A2C5523AD0044DF16 /* Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +64,9 @@
 		23D2885C2C5529330044DF16 /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
 		23D288602C55293D0044DF16 /* StringEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringEnum.swift; sourceTree = "<group>"; };
 		23D288612C55293D0044DF16 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		23D5B65A2C7A26AF00B73174 /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
+		23D5B65E2C7A306F00B73174 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
+		23F3FFBF2C78FBA0003C7DA9 /* SnackBarType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnackBarType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,12 +88,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2337C8692C71077900E2A67B /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				2337C86A2C71078700E2A67B /* FormatManager.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
 		23ACCEC82C6A1F1E00E93953 /* UI */ = {
 			isa = PBXGroup;
 			children = (
 				23D2884D2C55292D0044DF16 /* UIImage.swift */,
 				23ACCEC62C6A1F0600E93953 /* UITextField.swift */,
 				231F51C62C70940E00524968 /* UIImageView.swift */,
+				23D5B65A2C7A26AF00B73174 /* UIDevice.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -123,6 +140,7 @@
 			children = (
 				23DEFA852C5633BD007E958A /* Enums */,
 				23DEFA842C56338C007E958A /* Namespace */,
+				2337C8692C71077900E2A67B /* Manager */,
 				23DEFA832C563363007E958A /* Extensions */,
 				23D2881D2C5523AD0044DF16 /* Core.h */,
 				23D2881E2C5523AD0044DF16 /* Core.docc */,
@@ -165,6 +183,8 @@
 				23D288492C55264F0044DF16 /* Storage.swift */,
 				23D288602C55293D0044DF16 /* StringEnum.swift */,
 				23974D752C5E5A1B006BBC97 /* NetworkMacro.swift */,
+				23F3FFBF2C78FBA0003C7DA9 /* SnackBarType.swift */,
+				23D5B65E2C7A306F00B73174 /* AlertType.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -288,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23D288532C55292D0044DF16 /* String.swift in Sources */,
+				23D5B65B2C7A26AF00B73174 /* UIDevice.swift in Sources */,
 				231F51C72C70940E00524968 /* UIImageView.swift in Sources */,
 				23D2881F2C5523AD0044DF16 /* Core.docc in Sources */,
 				232466722C6F910600979940 /* UserManager.swift in Sources */,
@@ -295,11 +316,14 @@
 				23D288542C55292D0044DF16 /* Optional.swift in Sources */,
 				23D2884C2C55291D0044DF16 /* Image.swift in Sources */,
 				23974D762C5E5A1B006BBC97 /* NetworkMacro.swift in Sources */,
+				23F3FFC02C78FBA0003C7DA9 /* SnackBarType.swift in Sources */,
 				23D288522C55292D0044DF16 /* Bundle.swift in Sources */,
 				231F51D32C709A3400524968 /* NotificationName.swift in Sources */,
 				23D2884A2C55264F0044DF16 /* Storage.swift in Sources */,
 				23D288632C55293D0044DF16 /* StringEnum.swift in Sources */,
+				2337C86B2C71078700E2A67B /* FormatManager.swift in Sources */,
 				23ACCEC72C6A1F0600E93953 /* UITextField.swift in Sources */,
+				23D5B65F2C7A306F00B73174 /* AlertType.swift in Sources */,
 				23D2885E2C5529340044DF16 /* TypoStyle.swift in Sources */,
 				23D2885F2C5529340044DF16 /* UIFont.swift in Sources */,
 				23D288622C55293D0044DF16 /* UIColor.swift in Sources */,

@@ -20,7 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let _ = (scene as? UIWindowScene) else { return }
         
         // Notification 수신 등록
-        NotificationCenter.default.addObserver(self, selector: #selector(handleUnauthorizedError), name: .didReceiveUnauthorizedError, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(moveToOnboarding), name: .ReceivedNetworkError, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(showSnackBar), name: .ShowSnackBar, object: nil)
         
         // MARK: Navigation controller
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -55,13 +56,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    @objc private func handleUnauthorizedError() {
+    @objc private func moveToOnboarding() {
         DispatchQueue.main.async {
+            // 기존 유저 데이터 삭제
+            UserManager.removeUserData()
             // 온보딩 화면으로 이동하는 로직
             let onboardingViewController = OnboardingViewController()
             let navigationController = UINavigationController(rootViewController: onboardingViewController)
             self.window?.rootViewController = navigationController
             self.window?.makeKeyAndVisible()
+        }
+    }
+    
+    @objc private func showSnackBar(_ notification: Foundation.Notification) {
+        if let snackBarType = notification.userInfo?["SnackBarType"] as? SnackBarType {
+            SnackBar.shared.show(type: snackBarType)
         }
     }
 

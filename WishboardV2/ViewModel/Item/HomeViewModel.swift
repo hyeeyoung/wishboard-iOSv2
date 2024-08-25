@@ -21,7 +21,7 @@ final class HomeViewModel {
                 let usecase = GetWishItemsUseCase(repository: ItemRepository())
                 let data = try await usecase.execute()
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                DispatchQueue.main.async {
                     self.items = data
                 }
             } catch {

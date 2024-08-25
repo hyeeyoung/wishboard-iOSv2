@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+public protocol UserRepositoryInterface {
+    func getUserInfo() async throws -> [UserInfoResponse]
+}
+
+public final class UserRepository: UserRepositoryInterface {
+    public init() { }
+    
+    public func getUserInfo() async throws -> [UserInfoResponse] {
+        return try await UserAPIManager.shared.getUserInfo()
+    }
+}

@@ -14,7 +14,7 @@ final class HomeView: UIView {
     
     // MARK: - Views
     private let toolbar = HomeToolBar()
-    private let collectionView: UICollectionView
+    public let collectionView: UICollectionView
     private var viewModel: HomeViewModel?
     
     // MARK: - Initializers
@@ -69,7 +69,6 @@ final class HomeView: UIView {
             .store(in: &cancellables)
         
         collectionView.dataSource = self
-        collectionView.delegate = self
     }
     
     private var cancellables = Set<AnyCancellable>()

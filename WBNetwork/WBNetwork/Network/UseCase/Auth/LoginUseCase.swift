@@ -7,18 +7,18 @@
 
 import Foundation
 
-protocol LoginUseCaseInterface {
+public protocol LoginUseCaseInterface {
     func execute(email: String, password: String, fcmToken: String) async throws -> LoginResponse
 }
 
-class LoginUseCase: LoginUseCaseInterface {
+public class LoginUseCase: LoginUseCaseInterface {
     private let repository: AuthRepositoryInterface
     
-    init(repository: AuthRepositoryInterface = AuthRepository()) {
+    public init(repository: AuthRepositoryInterface = AuthRepository()) {
         self.repository = repository
     }
     
-    func execute(email: String, password: String, fcmToken: String) async throws -> LoginResponse {
+    public func execute(email: String, password: String, fcmToken: String) async throws -> LoginResponse {
         return try await self.repository.login(email: email, password: password, fcmToken: fcmToken)
     }
 }

@@ -26,22 +26,22 @@ class TabBarViewController: UITabBarController {
         
        // 인스턴스화
         let wishListVC = HomeViewController()
-        let folderVC = HomeViewController()
+        let folderVC = FolderViewController()
         let addVC = HomeViewController()
         let noticeVC = HomeViewController()
-        let profileVC = HomeViewController()
+        let myPageVC = MypageViewController()
         
         wishListVC.tabBarItem.image = Image.wishlistTab
         folderVC.tabBarItem.image = Image.folderTab
         addVC.tabBarItem.image = Image.addTab
         noticeVC.tabBarItem.image = Image.noticeTab
-        profileVC.tabBarItem.image = Image.profileTab
+        myPageVC.tabBarItem.image = Image.profileTab
         
         wishListVC.tabBarItem.title = "WISHLIST"
         folderVC.tabBarItem.title = "FOLDER"
         addVC.tabBarItem.title = "ADD"
         noticeVC.tabBarItem.title = "NOTICE"
-        profileVC.tabBarItem.title = "MY"
+        myPageVC.tabBarItem.title = "MY"
         
         self.tabBar.tintColor = .gray_700
         self.tabBar.unselectedItemTintColor = .gray_150
@@ -53,7 +53,7 @@ class TabBarViewController: UITabBarController {
         let nav2 = UINavigationController(rootViewController: folderVC)
         let nav3 = UINavigationController(rootViewController: addVC)
         let nav4 = UINavigationController(rootViewController: noticeVC)
-        let nav5 = UINavigationController(rootViewController: profileVC)
+        let nav5 = UINavigationController(rootViewController: myPageVC)
     
         setViewControllers([nav1, nav2, nav3, nav4, nav5], animated: false)
     }

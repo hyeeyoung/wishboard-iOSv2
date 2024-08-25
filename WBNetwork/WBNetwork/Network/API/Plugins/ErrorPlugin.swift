@@ -8,7 +8,7 @@
 import Foundation
 import Moya
 import Alamofire
-
+import Core
 
 public class ErrorPlugin: PluginType {
     var lastNetworkError: AFError? // 이전에 발생한 네트워크 에러를 저장할 변수
@@ -19,17 +19,13 @@ public class ErrorPlugin: PluginType {
             if let code = error.response?.statusCode {
                 switch code {
                 case 500:
-//                    ErrorAlertManager.shared.showAlert(.serverError)
                     break
                 case 400:
-//                    ErrorAlertManager.shared.showAlert(.on400Error)
                     break
                 default:
-//                    ErrorAlertManager.shared.showAlert(.moyaError(error))
                     break
                 }
             } else {
-//                ErrorAlertManager.shared.showAlert(.moyaError(error))
                 self.onFail(error, target: target)
             }
         case .success(_):
@@ -44,13 +40,14 @@ public class ErrorPlugin: PluginType {
             if let afError = afError as? AFError {
                 switch afError {
                 case .sessionTaskFailed(_):
-//                    ErrorAlertManager.shared.showAlert(.networkError)
+                    NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.errorMessage])
+//                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
                     return
                 case .requestRetryFailed(_, _):
-//                    ErrorAlertManager.shared.showAlert(.networkError)
+                    NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.errorMessage])
+//                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
                     break
                 default:
-//                    ErrorAlertManager.shared.showAlert(.defaultError(afError))
                     break
                 }
             }

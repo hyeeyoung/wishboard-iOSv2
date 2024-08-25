@@ -7,18 +7,18 @@
 
 import Foundation
 
-protocol RefreshTokenUseCaseInterface {
+public protocol RefreshTokenUseCaseInterface {
     func execute() async throws -> LoginResponse
 }
 
-class RefreshTokenUseCase: RefreshTokenUseCaseInterface {
+public class RefreshTokenUseCase: RefreshTokenUseCaseInterface {
     private let repository: AuthRepositoryInterface
     
-    init(repository: AuthRepositoryInterface = AuthRepository()) {
+    public init(repository: AuthRepositoryInterface = AuthRepository()) {
         self.repository = repository
     }
     
-    func execute() async throws -> LoginResponse {
+    public func execute() async throws -> LoginResponse {
         return try await self.repository.requestRefreshToken()
     }
 }

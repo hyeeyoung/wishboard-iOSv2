@@ -27,6 +27,20 @@ final class HomeViewController: UIViewController {
         }
         
         homeView.configure(with: viewModel)
+        homeView.collectionView.delegate = self
         viewModel.fetchItems()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = false
+    }
+}
+
+extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = viewModel.items[indexPath.row]
+        let detailViewModel = ItemDetailViewModel(item: item)
+        let detailViewController = ItemDetailViewController(viewModel: detailViewModel)
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 }

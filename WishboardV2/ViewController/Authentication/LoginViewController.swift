@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Combine
 import Core
+import WBNetwork
 
 final class LoginViewController: UIViewController, ToolBarDelegate {
     
@@ -33,6 +34,10 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.view.endEditing(true)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Setup
@@ -74,8 +79,10 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
     
     /// '로그인하기' 버튼 탭 이벤트
     @objc func loginButtonTapped() {
+        print("Login button tapped")
         Task {
             do {
+                loginView.loginButton.startAnimation()
                 // Login API call
                 let email = viewModel.email
                 let password = viewModel.password
@@ -91,9 +98,11 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
                 
                 // save tokens
                 self.saveToken(tokenData)
-                
+                loginView.loginButton.stopAnimation()
             } catch {
-                print("error")
+                print("login error")
+                loginView.loginButton.stopAnimation()
+                self.loginView.updateLoginButtonState(isEnabled: false)
             }
         }
     }

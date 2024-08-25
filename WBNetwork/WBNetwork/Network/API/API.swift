@@ -9,7 +9,7 @@ import Foundation
 import Moya
 import Alamofire
 
-public var configNetworktimeout = Double(10)
+public var configNetworktimeout = Double(20)
 
 public final class API {
     
@@ -36,6 +36,11 @@ public final class API {
         plugins: [errorPlugin, networkLoggerPlugin]
     )
     
+    public static let User = WBProvider<UserAPI>(
+        session: Session(configuration: configuration, interceptor: interceptor),
+        plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
+    )
+    
     public static let Item = WBProvider<ItemAPI>(
         session: Session(configuration: configuration, interceptor: interceptor),
         plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
@@ -46,6 +51,10 @@ public final class API {
         plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
     )
     
+    public static let Folder = WBProvider<FolderAPI>(
+        session: Session(configuration: configuration, interceptor: interceptor),
+        plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
+    )
 }
 
 public class WBProvider<Target: TargetType> {
@@ -55,7 +64,7 @@ public class WBProvider<Target: TargetType> {
         self.provider = MoyaProvider<Target>(session: session, plugins: plugins)
     }
     
-    /// Gateway Server API 호출 시 사용하는 request 메서드
+    /// Server API 호출 시 사용하는 request 메서드
     public func request<T: Decodable>(_ target: Target) async throws -> T {
         print(target.task)
         
@@ -76,6 +85,7 @@ public class WBProvider<Target: TargetType> {
         }
     }
     
+    /// request 메서드 - CommonResponse에 감싸져 있지 않는 응답값일 때
     public func requestRaw<T: Decodable>(_ target: Target) async throws -> T {
         print(target.task)
         

@@ -7,18 +7,18 @@
 
 import Foundation
 
-protocol AddCartUseCaseInterface {
+public protocol AddCartUseCaseInterface {
     func execute(itemId: Int) async throws -> EmptyResponse
 }
 
-class AddCartUseCase: AddCartUseCaseInterface {
+public class AddCartUseCase: AddCartUseCaseInterface {
     private let repository: CartRepositoryInterface
     
-    init(repository: CartRepositoryInterface = CartRepository()) {
+    public init(repository: CartRepositoryInterface = CartRepository()) {
         self.repository = repository
     }
     
-    func execute(itemId: Int) async throws -> EmptyResponse {
+    public func execute(itemId: Int) async throws -> EmptyResponse {
         return try await self.repository.addCart(itemId: itemId)
     }
 }

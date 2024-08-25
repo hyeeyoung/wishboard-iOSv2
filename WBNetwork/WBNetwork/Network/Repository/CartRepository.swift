@@ -7,18 +7,19 @@
 
 import Foundation
 
-protocol CartRepositoryInterface {
+public protocol CartRepositoryInterface {
     func addCart(itemId: Int) async throws -> EmptyResponse
     func deleteCart(itemId: Int) async throws -> EmptyResponse
 }
 
-final class CartRepository: CartRepositoryInterface {
+public final class CartRepository: CartRepositoryInterface {
+    public init() { }
     
-    func addCart(itemId: Int) async throws -> EmptyResponse {
+    public func addCart(itemId: Int) async throws -> EmptyResponse {
         return try await CartManager.shared.addCart(itemId: itemId)
     }
     
-    func deleteCart(itemId: Int) async throws -> EmptyResponse {
+    public func deleteCart(itemId: Int) async throws -> EmptyResponse {
         return try await CartManager.shared.deleteCart(itemId: itemId)
     }
 }

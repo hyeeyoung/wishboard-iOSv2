@@ -24,6 +24,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFill
         $0.backgroundColor = .gray_50
     }
+    let dimmedView = UIView().then {
+        $0.backgroundColor = .black_5
+    }
     let itemName = UILabel().then{
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
         $0.numberOfLines = 1
@@ -76,6 +79,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     // MARK: - Setup
     private func setupViews() {
         contentView.addSubview(imageView)
+        imageView.addSubview(dimmedView)
         contentView.addSubview(cartButton)
         contentView.addSubview(itemName)
         contentView.addSubview(itemPrice)
@@ -85,6 +89,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         imageView.snp.makeConstraints { make in
             make.height.equalTo(imageView.snp.width)
             make.leading.top.trailing.equalToSuperview()
+        }
+        dimmedView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         cartButton.snp.makeConstraints { make in
             make.width.height.equalTo(38)
@@ -140,11 +147,12 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     }
     
     private func configurePriceLabel(with price: String) {
-        let priceText = "\(price)원"
+        guard let priceStr = FormatManager.shared.strToPrice(numStr: price) else {return}
+        let priceText = "\(priceStr)원"
         let attributedString = NSMutableAttributedString(string: priceText)
         
         // 숫자 부분을 굵게 설정
-        let priceRange = NSRange(location: 0, length: "\(price)".count)
+        let priceRange = NSRange(location: 0, length: "\(priceStr)".count)
         attributedString.addAttribute(.font, value: TypoStyle.MontserratH3.font, range: priceRange)
         
         // '원' 부분을 작게 설정

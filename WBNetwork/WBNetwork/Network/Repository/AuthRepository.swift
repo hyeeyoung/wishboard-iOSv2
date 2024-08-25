@@ -7,18 +7,20 @@
 
 import Foundation
 
-protocol AuthRepositoryInterface {
+public protocol AuthRepositoryInterface {
     func login(email: String, password: String, fcmToken: String) async throws -> LoginResponse
     func requestRefreshToken() async throws -> LoginResponse
 }
 
 
-final class AuthRepository: AuthRepositoryInterface {
-    func login(email: String, password: String, fcmToken: String) async throws -> LoginResponse {
+public final class AuthRepository: AuthRepositoryInterface {
+    public init() { }
+    
+    public func login(email: String, password: String, fcmToken: String) async throws -> LoginResponse {
         return try await AuthManager.shared.login(email: email, password: password, fcmToken: fcmToken)
     }
     
-    func requestRefreshToken() async throws -> LoginResponse {
+    public func requestRefreshToken() async throws -> LoginResponse {
         return try await AuthManager.shared.requestRefreshToken()
     }
 }

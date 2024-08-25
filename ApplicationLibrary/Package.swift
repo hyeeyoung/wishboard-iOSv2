@@ -19,14 +19,15 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.0.0"),
         .package(url: "https://github.com/devxoul/Then.git", from: "2.7.0"),
-        .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.0.0")
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.0.0"),
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0")
     ],
     targets: [
         .target(
             name: "ApplicationLibrary",
-            dependencies: ["SnapKit", "Then", "Moya",
-                           .product(name: "FirebaseMessaging", package: "firebase-ios-sdk")
+            dependencies: ["SnapKit", "Then",
+                           .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
+                           .product(name: "Lottie", package: "lottie-spm")
                           ]),
         .testTarget(
             name: "ApplicationLibraryTests",

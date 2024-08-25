@@ -47,7 +47,7 @@ class OnboardingViewController: UIViewController {
     }
     
     @objc private func loginButtonTapped() {
-        print("Login button tapped")
+        print("Go Login View tapped")
         // Handle login action
         self.navigationController?.pushViewController(LoginViewController(), animated: true)
     }
