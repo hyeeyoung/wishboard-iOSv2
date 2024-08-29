@@ -31,9 +31,9 @@ class CartViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        // TODO: 모든 API 추가 - 장바구니 리스트 조회, 장바구니 수량 변경, 장바구니 삭제
     }
     
+    // 장바구니 리스트 조회
     func fetchCartItems() {
         Task {
             do {
@@ -61,6 +61,7 @@ class CartViewModel: ObservableObject {
         }
     }
     
+    // 장바구니 수량 증가
     func increaseQuantity(of item: CartItem) {
         if let index = cartItems.firstIndex(where: { $0.id == item.id }) {
             cartItems[index].quantity += 1
@@ -69,6 +70,7 @@ class CartViewModel: ObservableObject {
         }
     }
     
+    // 장바구니 수량 감소
     func decreaseQuantity(of item: CartItem) {
         if let index = cartItems.firstIndex(where: { $0.id == item.id }) {
             if cartItems[index].quantity > 1 {
@@ -79,17 +81,20 @@ class CartViewModel: ObservableObject {
         }
     }
     
+    // 장바구니 아이템 삭제
     func removeItem(_ item: CartItem) {
         cartItems.removeAll { $0.id == item.id }
         updateTotalValues()
         removeItemFromServer(item: item)
     }
     
+    // 장바구니 데이터 UI 업데이트 - 개수, 가격
     private func updateTotalValues() {
         totalQuantity = cartItems.reduce(0) { $0 + $1.quantity }
         totalPrice = cartItems.reduce(0) { $0 + $1.itemTotalPrice }
     }
     
+    // 장바구니 아이템 수량 변경 API call
     private func updateQuantityInServer(item: CartItem) {
         Task {
             do {
@@ -101,6 +106,7 @@ class CartViewModel: ObservableObject {
         }
     }
     
+    // 장바구니 아이템 삭제 API call
     private func removeItemFromServer(item: CartItem) {
         Task {
             do {

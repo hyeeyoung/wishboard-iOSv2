@@ -1,0 +1,109 @@
+//
+//  NoticeTableViewCell.swift
+//  WishboardV2
+//
+//  Created by gomin on 8/29/24.
+//
+
+import Foundation
+import UIKit
+import SnapKit
+import Then
+import Core
+
+
+final class NoticeTableViewCell: UITableViewCell {
+    static let reuseIdentifier = "NoticeTableViewCell"
+    
+    // MARK: - Views
+    
+    let itemImageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFill
+        $0.layer.cornerRadius = 40
+        $0.clipsToBounds = true
+    }
+    let dimmedView = UIView().then {
+        $0.backgroundColor = .black_5
+        $0.layer.cornerRadius = 40
+        $0.clipsToBounds = true
+    }
+    let notiTypeLabel = UILabel().then {
+        $0.text = "재입고 알림"
+        $0.setTypoStyleWithSingleLine(typoStyle: .SuitH5)
+        $0.textColor = .gray_700
+    }
+    let readStateView = UIView().then {
+        $0.backgroundColor = .green_500
+        $0.layer.cornerRadius = 4
+        $0.clipsToBounds = true
+    }
+    let itemNameLabel = UILabel().then {
+        $0.text = "itemName"
+        $0.setTypoStyleWithMultiLine(typoStyle: .SuitD3)
+        $0.numberOfLines = 0
+        $0.textColor = .gray_700
+    }
+    let notiDateLabel = UILabel().then {
+        $0.text = "방금 전"
+        $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
+        $0.textColor = .gray_200
+    }
+    
+    // MARK: - Properties
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupViews()
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupViews() {
+        contentView.addSubview(itemImageView)
+        itemImageView.addSubview(dimmedView)
+        contentView.addSubview(notiTypeLabel)
+        contentView.addSubview(readStateView)
+        contentView.addSubview(itemNameLabel)
+        contentView.addSubview(notiDateLabel)
+    }
+    
+    private func setupConstraints() {
+        itemImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(16)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(80)
+        }
+        dimmedView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        notiTypeLabel.snp.makeConstraints { make in
+            make.leading.equalTo(itemImageView.snp.trailing).offset(10)
+            make.top.equalTo(itemImageView)
+        }
+        readStateView.snp.makeConstraints { make in
+            make.leading.equalTo(notiTypeLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(8)
+            make.centerY.equalTo(notiTypeLabel)
+        }
+        itemNameLabel.snp.makeConstraints { make in
+            make.leading.equalTo(notiTypeLabel)
+            make.top.equalTo(notiTypeLabel.snp.bottom).offset(6)
+            make.trailing.equalToSuperview().offset(-20)
+        }
+        notiDateLabel.snp.makeConstraints { make in
+            make.leading.equalTo(notiTypeLabel)
+            make.bottom.equalTo(itemImageView)
+        }
+    }
+    
+    public func configure(with item: NoticeItem) {
+        itemNameLabel.text = item.name
+        notiTypeLabel.text = "\(item.notiType) 알림"
+        self.itemImageView.loadImage(from: item.imageUrl)
+        self.notiDateLabel.text = FormatManager.shared.createdDateToKoreanStr(item.notiDate)
+        self.readStateView.isHidden = item.readState
+    }
+}

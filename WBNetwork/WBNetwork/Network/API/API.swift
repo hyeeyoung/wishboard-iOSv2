@@ -56,6 +56,11 @@ public final class API {
         session: Session(configuration: configuration, interceptor: interceptor),
         plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
     )
+    
+    public static let Notice = WBProvider<NotiAPI>(
+        session: Session(configuration: configuration, interceptor: interceptor),
+        plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
+    )
 }
 
 public class WBProvider<Target: TargetType> {

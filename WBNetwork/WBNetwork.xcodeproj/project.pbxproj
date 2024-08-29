@@ -51,6 +51,12 @@
 		23AD9D602C8097A0007AB8D1 /* CartResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */; };
 		23AD9D622C80985C007AB8D1 /* GetCartsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D612C80985C007AB8D1 /* GetCartsUseCase.swift */; };
 		23AD9D642C809892007AB8D1 /* ModifyCartQuantityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D632C809892007AB8D1 /* ModifyCartQuantityUseCase.swift */; };
+		23AD9D732C80A82C007AB8D1 /* NotiAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D722C80A82C007AB8D1 /* NotiAPI.swift */; };
+		23AD9D752C80A8DA007AB8D1 /* NoticeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D742C80A8DA007AB8D1 /* NoticeRepository.swift */; };
+		23AD9D772C80A8FF007AB8D1 /* NoticeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D762C80A8FF007AB8D1 /* NoticeResponse.swift */; };
+		23AD9D792C80A94F007AB8D1 /* NoticeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D782C80A94F007AB8D1 /* NoticeManager.swift */; };
+		23AD9D7C2C80A9E2007AB8D1 /* GetNoticesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D7B2C80A9E2007AB8D1 /* GetNoticesUseCase.swift */; };
+		23AD9D7E2C80AA0A007AB8D1 /* UpdateStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D7D2C80AA0A007AB8D1 /* UpdateStateUseCase.swift */; };
 		23CB0DDA2C79FAD70053EB40 /* UserInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */; };
 		23CB0DDC2C79FB070053EB40 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDB2C79FB070053EB40 /* UserAPI.swift */; };
 		23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */; };
@@ -113,6 +119,12 @@
 		23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartResponse.swift; sourceTree = "<group>"; };
 		23AD9D612C80985C007AB8D1 /* GetCartsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCartsUseCase.swift; sourceTree = "<group>"; };
 		23AD9D632C809892007AB8D1 /* ModifyCartQuantityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyCartQuantityUseCase.swift; sourceTree = "<group>"; };
+		23AD9D722C80A82C007AB8D1 /* NotiAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotiAPI.swift; sourceTree = "<group>"; };
+		23AD9D742C80A8DA007AB8D1 /* NoticeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeRepository.swift; sourceTree = "<group>"; };
+		23AD9D762C80A8FF007AB8D1 /* NoticeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeResponse.swift; sourceTree = "<group>"; };
+		23AD9D782C80A94F007AB8D1 /* NoticeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeManager.swift; sourceTree = "<group>"; };
+		23AD9D7B2C80A9E2007AB8D1 /* GetNoticesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetNoticesUseCase.swift; sourceTree = "<group>"; };
+		23AD9D7D2C80AA0A007AB8D1 /* UpdateStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateStateUseCase.swift; sourceTree = "<group>"; };
 		23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoResponse.swift; sourceTree = "<group>"; };
 		23CB0DDB2C79FB070053EB40 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIManager.swift; sourceTree = "<group>"; };
@@ -186,6 +198,7 @@
 				232185CB2C70B447008BD81B /* CartManager.swift */,
 				2385951F2C71C6E400B85CBC /* FolderManager.swift */,
 				23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */,
+				23AD9D782C80A94F007AB8D1 /* NoticeManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -199,6 +212,7 @@
 				238595172C71BFC000B85CBC /* FolderListResponse.swift */,
 				23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */,
 				23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */,
+				23AD9D762C80A8FF007AB8D1 /* NoticeResponse.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -246,6 +260,7 @@
 		232185DA2C70B447008BD81B /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
+				23AD9D7A2C80A9D8007AB8D1 /* Notice */,
 				23CB0DE12C79FBE60053EB40 /* User */,
 				238595212C71C70A00B85CBC /* Folder */,
 				232185D42C70B447008BD81B /* Cart */,
@@ -263,6 +278,7 @@
 				232185DD2C70B447008BD81B /* CartRepository.swift */,
 				2385951D2C71C6BD00B85CBC /* FolderRepository.swift */,
 				23CB0DDF2C79FBBB0053EB40 /* UserRepository.swift */,
+				23AD9D742C80A8DA007AB8D1 /* NoticeRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -287,6 +303,7 @@
 				232185E62C70B447008BD81B /* CartAPI.swift */,
 				2385951B2C71C67A00B85CBC /* FolderAPI.swift */,
 				23CB0DDB2C79FB070053EB40 /* UserAPI.swift */,
+				23AD9D722C80A82C007AB8D1 /* NotiAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -321,6 +338,15 @@
 				2347A90D2C7AC985009F9480 /* GetFolderListUseCase.swift */,
 			);
 			path = Folder;
+			sourceTree = "<group>";
+		};
+		23AD9D7A2C80A9D8007AB8D1 /* Notice */ = {
+			isa = PBXGroup;
+			children = (
+				23AD9D7B2C80A9E2007AB8D1 /* GetNoticesUseCase.swift */,
+				23AD9D7D2C80AA0A007AB8D1 /* UpdateStateUseCase.swift */,
+			);
+			path = Notice;
 			sourceTree = "<group>";
 		};
 		23CB0DE12C79FBE60053EB40 /* User */ = {
@@ -471,15 +497,20 @@
 				232185F72C70B570008BD81B /* GetWishItemsUseCase.swift in Sources */,
 				2347A9082C7ABFF7009F9480 /* ModifyFolderNameUseCase.swift in Sources */,
 				232185FF2C70B584008BD81B /* AuthAPI.swift in Sources */,
+				23AD9D732C80A82C007AB8D1 /* NotiAPI.swift in Sources */,
 				232185FA2C70B578008BD81B /* AuthRepository.swift in Sources */,
 				2385951E2C71C6BD00B85CBC /* FolderRepository.swift in Sources */,
 				23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */,
+				23AD9D7C2C80A9E2007AB8D1 /* GetNoticesUseCase.swift in Sources */,
+				23AD9D772C80A8FF007AB8D1 /* NoticeResponse.swift in Sources */,
 				2357E55F2C7B09E600CC9509 /* ParseItemUrlUseCase.swift in Sources */,
 				2347A90C2C7AC1E8009F9480 /* DeleteFolderUseCase.swift in Sources */,
 				23CB0DE32C79FBEF0053EB40 /* GetUserInfoUseCase.swift in Sources */,
 				2347A91A2C7ADCD7009F9480 /* DeleteItemUseCase.swift in Sources */,
 				2347A90E2C7AC985009F9480 /* GetFolderListUseCase.swift in Sources */,
 				23CB0DDC2C79FB070053EB40 /* UserAPI.swift in Sources */,
+				23AD9D752C80A8DA007AB8D1 /* NoticeRepository.swift in Sources */,
+				23AD9D792C80A94F007AB8D1 /* NoticeManager.swift in Sources */,
 				232185F42C70B568008BD81B /* WishListResponse.swift in Sources */,
 				232185FD2C70B57F008BD81B /* API.swift in Sources */,
 				23AD9D622C80985C007AB8D1 /* GetCartsUseCase.swift in Sources */,
@@ -487,6 +518,7 @@
 				232186022C70B58C008BD81B /* ErrorPlugin.swift in Sources */,
 				232185F82C70B572008BD81B /* LoginUseCase.swift in Sources */,
 				2385951C2C71C67A00B85CBC /* FolderAPI.swift in Sources */,
+				23AD9D7E2C80AA0A007AB8D1 /* UpdateStateUseCase.swift in Sources */,
 				232186012C70B589008BD81B /* CartAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
