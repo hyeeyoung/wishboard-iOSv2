@@ -17,4 +17,12 @@ public final class CartManager {
     public func deleteCart(itemId: Int) async throws -> EmptyResponse {
         return try await API.Cart.requestRaw(.deleteCart(itemId: itemId))
     }
+    
+    public func getCarts() async throws -> [CartResponse] {
+        return try await API.Cart.requestRaw(.getCarts)
+    }
+    
+    public func modifyCartQuantity(itemId: Int, itemCount: Int) async throws -> EmptyResponse {
+        return try await API.Cart.request(.modifyCartQuantity(itemId: itemId, itemCount: itemCount))
+    }
 }

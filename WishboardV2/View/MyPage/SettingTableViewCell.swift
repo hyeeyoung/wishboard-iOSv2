@@ -21,10 +21,10 @@ class SettingTableViewCell: UITableViewCell {
     }
     
     private let subTitleLabel = UILabel().then {
-        var appVersionStr: String = UserManager.appVersion ?? ""
+        var appVersionStr: String = Bundle.appVersion ?? ""
         // 디버그 모드일 때에만 빌드버전 노출
         #if DEBUG
-        appVersionStr += "(\(UserManager.appBuildVersion ?? ""))"
+        appVersionStr += "(\(Bundle.appBuildVersion ?? ""))"
         #endif
         $0.text = appVersionStr
         $0.setTypoStyleWithSingleLine(typoStyle: .MontserratB1)

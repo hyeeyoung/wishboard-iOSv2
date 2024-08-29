@@ -14,7 +14,7 @@ public enum UserAPI {
     case getUserInfo
 }
 
-extension UserAPI: TargetType {
+extension UserAPI: TargetType, AccessTokenAuthorizable {
     public var baseURL: URL {
         return URL(string: "\(NetworkMacro.BaseURL)/user")!
     }
@@ -49,6 +49,10 @@ extension UserAPI: TargetType {
 
     public var headers: [String : String]? {
         return NetworkMacro.AgentHeader
+    }
+    
+    public var authorizationType: Moya.AuthorizationType? {
+        return .bearer
     }
     
     public var validationType: ValidationType {

@@ -12,6 +12,7 @@ public struct WishListResponse: Decodable {
     public var folder_name: String?
     public var item_id: Int?
     public var item_img_url: String?
+    public var item_img: String?
     public var item_name: String?
     public var item_price: String?
     public var item_url: String?

@@ -139,18 +139,5 @@ extension FolderSelectBottomSheet: UITableViewDelegate, UITableViewDataSource {
         
         guard let folderId = folders[indexPath.item].folder_id else {return}
         self.selectedFolderId = folderId
-        
-//        // 선택된 셀의 체크 버튼을 선택 상태로 변경
-//        if let selectedCell = tableView.cellForRow(at: indexPath) as? FolderSelectTableViewCell {
-//            selectedCell.configureCheckButton(isSelected: true)
-//        }
-//
-//        // 나머지 셀들의 체크 버튼을 선택 해제
-//        for (index, folder) in folders.enumerated() where index != indexPath.row {
-//            let otherIndexPath = IndexPath(row: index, section: indexPath.section)
-//            if let cell = tableView.cellForRow(at: otherIndexPath) as? FolderSelectTableViewCell {
-//                cell.configureCheckButton(isSelected: false)
-//            }
-//        }
     }
 }

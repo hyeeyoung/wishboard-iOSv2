@@ -46,6 +46,12 @@ public final class TokenInterceptor: RequestInterceptor {
             
             return
         }
+        
+        // 로그인 상태가 아닐 때
+        if UserManager.accessToken == nil || UserManager.refreshToken == nil {
+            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+            return
+        }
 
         // 토큰 갱신시 동시 실행 제한
         sema.wait()
@@ -87,6 +93,7 @@ public final class TokenInterceptor: RequestInterceptor {
                 
             } catch {
                 print("refresh token failed.")
+                UserManager.removeUserData()
                 completion(.doNotRetryWithError(error))
                 sema.signal()
                 // 토큰 재발급 실패 시 Notification 이벤트 전송

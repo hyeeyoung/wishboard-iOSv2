@@ -8,13 +8,14 @@
 import Foundation
 import Moya
 import Alamofire
+import Core
 
 public var configNetworktimeout = Double(20)
 
 public final class API {
     
     public static let tokenClosure: (TargetType) -> String = { _ in
-        let accessToken: String = TokenManager.shared.accessToken ?? ""
+        let accessToken: String = UserManager.accessToken ?? ""
         return accessToken
     }
     

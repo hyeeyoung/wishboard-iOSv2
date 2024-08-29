@@ -13,7 +13,7 @@ import Combine
 final class HomeView: UIView {
     
     // MARK: - Views
-    private let toolbar = HomeToolBar()
+    public let toolbar = HomeToolBar()
     public let collectionView: UICollectionView
     private var viewModel: HomeViewModel?
     

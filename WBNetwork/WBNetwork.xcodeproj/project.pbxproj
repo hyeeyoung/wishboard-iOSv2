@@ -42,11 +42,15 @@
 		2347A9162C7AD368009F9480 /* ModifyItemFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9152C7AD368009F9480 /* ModifyItemFolderUseCase.swift */; };
 		2347A9182C7AD4D0009F9480 /* GetItemDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */; };
 		2347A91A2C7ADCD7009F9480 /* DeleteItemUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */; };
+		2357E55F2C7B09E600CC9509 /* ParseItemUrlUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */; };
 		238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595172C71BFC000B85CBC /* FolderListResponse.swift */; };
 		2385951C2C71C67A00B85CBC /* FolderAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385951B2C71C67A00B85CBC /* FolderAPI.swift */; };
 		2385951E2C71C6BD00B85CBC /* FolderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385951D2C71C6BD00B85CBC /* FolderRepository.swift */; };
 		238595202C71C6E400B85CBC /* FolderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385951F2C71C6E400B85CBC /* FolderManager.swift */; };
 		238595232C71C71300B85CBC /* GetFoldersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595222C71C71300B85CBC /* GetFoldersUseCase.swift */; };
+		23AD9D602C8097A0007AB8D1 /* CartResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */; };
+		23AD9D622C80985C007AB8D1 /* GetCartsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D612C80985C007AB8D1 /* GetCartsUseCase.swift */; };
+		23AD9D642C809892007AB8D1 /* ModifyCartQuantityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D632C809892007AB8D1 /* ModifyCartQuantityUseCase.swift */; };
 		23CB0DDA2C79FAD70053EB40 /* UserInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */; };
 		23CB0DDC2C79FB070053EB40 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDB2C79FB070053EB40 /* UserAPI.swift */; };
 		23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */; };
@@ -100,11 +104,15 @@
 		2347A9152C7AD368009F9480 /* ModifyItemFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyItemFolderUseCase.swift; sourceTree = "<group>"; };
 		2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetItemDetailUseCase.swift; sourceTree = "<group>"; };
 		2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteItemUseCase.swift; sourceTree = "<group>"; };
+		2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseItemUrlUseCase.swift; sourceTree = "<group>"; };
 		238595172C71BFC000B85CBC /* FolderListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderListResponse.swift; sourceTree = "<group>"; };
 		2385951B2C71C67A00B85CBC /* FolderAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderAPI.swift; sourceTree = "<group>"; };
 		2385951D2C71C6BD00B85CBC /* FolderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderRepository.swift; sourceTree = "<group>"; };
 		2385951F2C71C6E400B85CBC /* FolderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderManager.swift; sourceTree = "<group>"; };
 		238595222C71C71300B85CBC /* GetFoldersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFoldersUseCase.swift; sourceTree = "<group>"; };
+		23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartResponse.swift; sourceTree = "<group>"; };
+		23AD9D612C80985C007AB8D1 /* GetCartsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCartsUseCase.swift; sourceTree = "<group>"; };
+		23AD9D632C809892007AB8D1 /* ModifyCartQuantityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyCartQuantityUseCase.swift; sourceTree = "<group>"; };
 		23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoResponse.swift; sourceTree = "<group>"; };
 		23CB0DDB2C79FB070053EB40 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIManager.swift; sourceTree = "<group>"; };
@@ -190,6 +198,7 @@
 				232185CF2C70B447008BD81B /* WishListResponse.swift */,
 				238595172C71BFC000B85CBC /* FolderListResponse.swift */,
 				23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */,
+				23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -207,6 +216,8 @@
 			children = (
 				232185D22C70B447008BD81B /* AddCartUseCase.swift */,
 				232185D32C70B447008BD81B /* DeleteCartUseCase.swift */,
+				23AD9D612C80985C007AB8D1 /* GetCartsUseCase.swift */,
+				23AD9D632C809892007AB8D1 /* ModifyCartQuantityUseCase.swift */,
 			);
 			path = Cart;
 			sourceTree = "<group>";
@@ -218,6 +229,7 @@
 				2347A9152C7AD368009F9480 /* ModifyItemFolderUseCase.swift */,
 				2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */,
 				2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */,
+				2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */,
 			);
 			path = Item;
 			sourceTree = "<group>";
@@ -453,6 +465,7 @@
 				238595232C71C71300B85CBC /* GetFoldersUseCase.swift in Sources */,
 				232185FC2C70B57D008BD81B /* CartRepository.swift in Sources */,
 				23CB0DDA2C79FAD70053EB40 /* UserInfoResponse.swift in Sources */,
+				23AD9D642C809892007AB8D1 /* ModifyCartQuantityUseCase.swift in Sources */,
 				232185FB2C70B57A008BD81B /* ItemRepository.swift in Sources */,
 				232185F32C70B565008BD81B /* LoginResponse.swift in Sources */,
 				232185F72C70B570008BD81B /* GetWishItemsUseCase.swift in Sources */,
@@ -461,6 +474,7 @@
 				232185FA2C70B578008BD81B /* AuthRepository.swift in Sources */,
 				2385951E2C71C6BD00B85CBC /* FolderRepository.swift in Sources */,
 				23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */,
+				2357E55F2C7B09E600CC9509 /* ParseItemUrlUseCase.swift in Sources */,
 				2347A90C2C7AC1E8009F9480 /* DeleteFolderUseCase.swift in Sources */,
 				23CB0DE32C79FBEF0053EB40 /* GetUserInfoUseCase.swift in Sources */,
 				2347A91A2C7ADCD7009F9480 /* DeleteItemUseCase.swift in Sources */,
@@ -468,6 +482,8 @@
 				23CB0DDC2C79FB070053EB40 /* UserAPI.swift in Sources */,
 				232185F42C70B568008BD81B /* WishListResponse.swift in Sources */,
 				232185FD2C70B57F008BD81B /* API.swift in Sources */,
+				23AD9D622C80985C007AB8D1 /* GetCartsUseCase.swift in Sources */,
+				23AD9D602C8097A0007AB8D1 /* CartResponse.swift in Sources */,
 				232186022C70B58C008BD81B /* ErrorPlugin.swift in Sources */,
 				232185F82C70B572008BD81B /* LoginUseCase.swift in Sources */,
 				2385951C2C71C67A00B85CBC /* FolderAPI.swift in Sources */,

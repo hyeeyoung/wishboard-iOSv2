@@ -18,9 +18,12 @@ public enum ItemAPI {
     case getItemDetail(id: Int)
     /// 아이템의 폴더 지정
     case modifyItemFolder(itemId: Int, folderId: Int)
+    /// 아이템 파싱
+    case parseItemUrl(link: String)
 }
 
-extension ItemAPI: TargetType {
+extension ItemAPI: TargetType, AccessTokenAuthorizable {
+    
     public var baseURL: URL {
         return URL(string: "\(NetworkMacro.BaseURL)/item")!
     }
@@ -35,12 +38,14 @@ extension ItemAPI: TargetType {
             return "/\(id)"
         case .modifyItemFolder(let itemId, let folderId):
             return "/\(itemId)/folder/\(folderId)"
+        case .parseItemUrl:
+            return "/parse"
         }
     }
 
     public var method: Moya.Method {
         switch self {
-        case .getWishItems, .getItemDetail:
+        case .getWishItems, .getItemDetail, .parseItemUrl:
             return .get
         case .modifyItemFolder:
             return .put
@@ -55,6 +60,8 @@ extension ItemAPI: TargetType {
         switch self {
         case .getWishItems:
             parameters = [:]
+        case .parseItemUrl(let link):
+            parameters = ["site": link]
         default:
             parameters = [:]
         }
@@ -65,6 +72,10 @@ extension ItemAPI: TargetType {
 
     public var headers: [String : String]? {
         return NetworkMacro.AgentHeader
+    }
+    
+    public var authorizationType: Moya.AuthorizationType? {
+        return .bearer
     }
     
     public var validationType: ValidationType {

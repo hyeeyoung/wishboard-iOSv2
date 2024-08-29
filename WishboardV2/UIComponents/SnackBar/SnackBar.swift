@@ -21,8 +21,13 @@ final class SnackBar {
     var window: UIViewController?
     var type: SnackBarType?
     
-    private init() {
+    // TODO: Share-Extension일 때 ERROR
+    private init(in viewController: UIViewController? = nil) {
+        #if WISHBOARD_APP
         self.window = UIApplication.shared.keyWindow?.rootViewController
+        #else
+        self.window = viewController
+        #endif
         
         let translationY = SNACKBAR_HEIGHT + SNACKBAR_INTERVAL
         TRANSLATION_Y = CGFloat(-translationY)

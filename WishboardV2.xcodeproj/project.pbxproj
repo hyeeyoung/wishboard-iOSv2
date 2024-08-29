@@ -24,6 +24,9 @@
 		2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */; };
 		2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */; };
 		2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */; };
+		2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E5612C7B0A1A00CC9509 /* ShareViewModel.swift */; };
+		2357E5632C7B0AE600CC9509 /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
+		2357E5652C7B0D3A00CC9509 /* FolderCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E5642C7B0D3900CC9509 /* FolderCollectionViewCell.swift */; };
 		236ED4D02C6E37BB000EA85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */; };
 		2385950C2C71BC7E00B85CBC /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */; };
 		238595112C71BF2B00B85CBC /* FolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595102C71BF2B00B85CBC /* FolderViewController.swift */; };
@@ -45,6 +48,10 @@
 		239AD1DF2C6A2410002052BD /* ToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239AD1DE2C6A2410002052BD /* ToolBar.swift */; };
 		23ACCEC22C6A1E0A00E93953 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ACCEC12C6A1E0A00E93953 /* LoginViewController.swift */; };
 		23ACCEC52C6A1EDC00E93953 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ACCEC42C6A1EDC00E93953 /* LoginViewModel.swift */; };
+		23B3A0CD2C7F521F006D0561 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B3A0CC2C7F521F006D0561 /* CartViewController.swift */; };
+		23B3A0D02C7F5237006D0561 /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B3A0CF2C7F5237006D0561 /* CartViewModel.swift */; };
+		23B3A0D32C7F5257006D0561 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B3A0D22C7F5257006D0561 /* CartView.swift */; };
+		23B3A0D52C7F526A006D0561 /* CartItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B3A0D42C7F526A006D0561 /* CartItemTableViewCell.swift */; };
 		23C4D21A2C7A4D6D00BB0B08 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C4D2192C7A4D6D00BB0B08 /* ShareViewController.swift */; };
 		23C4D21D2C7A4D6D00BB0B08 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23C4D21B2C7A4D6D00BB0B08 /* MainInterface.storyboard */; };
 		23C4D2212C7A4D6D00BB0B08 /* Share Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 23C4D2172C7A4D6D00BB0B08 /* Share Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -204,6 +211,8 @@
 		2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewModel.swift; sourceTree = "<group>"; };
 		2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectBottomSheet.swift; sourceTree = "<group>"; };
 		2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectTableViewCell.swift; sourceTree = "<group>"; };
+		2357E5612C7B0A1A00CC9509 /* ShareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModel.swift; sourceTree = "<group>"; };
+		2357E5642C7B0D3900CC9509 /* FolderCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCollectionViewCell.swift; sourceTree = "<group>"; };
 		236ED4CE2C6E3515000EA85B /* WishboardV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WishboardV2.entitlements; sourceTree = "<group>"; };
 		236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
@@ -226,6 +235,10 @@
 		239AD1DE2C6A2410002052BD /* ToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBar.swift; sourceTree = "<group>"; };
 		23ACCEC12C6A1E0A00E93953 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		23ACCEC42C6A1EDC00E93953 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		23B3A0CC2C7F521F006D0561 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
+		23B3A0CF2C7F5237006D0561 /* CartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
+		23B3A0D22C7F5257006D0561 /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
+		23B3A0D42C7F526A006D0561 /* CartItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemTableViewCell.swift; sourceTree = "<group>"; };
 		23C4D2172C7A4D6D00BB0B08 /* Share Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Share Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23C4D2192C7A4D6D00BB0B08 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		23C4D21C2C7A4D6D00BB0B08 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -256,6 +269,7 @@
 		23D5B65C2C7A297E00B73174 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		23D5B6622C7A309F00B73174 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		23DEFA882C563BED007E958A /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		23F03C4F2C7B5F4200B7003E /* Share Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Share Extension.entitlements"; sourceTree = "<group>"; };
 		23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnackBar.swift; sourceTree = "<group>"; };
 		23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationButton.swift; sourceTree = "<group>"; };
 		23F3FFC42C790296003C7DA9 /* loading_spin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_spin.json; sourceTree = "<group>"; };
@@ -345,6 +359,14 @@
 				2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */,
 			);
 			path = Item;
+			sourceTree = "<group>";
+		};
+		2357E5602C7B0A1200CC9509 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				2357E5612C7B0A1A00CC9509 /* ShareViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		2385950D2C71BC8400B85CBC /* ToolBars */ = {
@@ -455,9 +477,36 @@
 			path = Authentication;
 			sourceTree = "<group>";
 		};
+		23B3A0CB2C7F5212006D0561 /* Cart */ = {
+			isa = PBXGroup;
+			children = (
+				23B3A0CC2C7F521F006D0561 /* CartViewController.swift */,
+			);
+			path = Cart;
+			sourceTree = "<group>";
+		};
+		23B3A0CE2C7F522F006D0561 /* Cart */ = {
+			isa = PBXGroup;
+			children = (
+				23B3A0CF2C7F5237006D0561 /* CartViewModel.swift */,
+			);
+			path = Cart;
+			sourceTree = "<group>";
+		};
+		23B3A0D12C7F5251006D0561 /* Cart */ = {
+			isa = PBXGroup;
+			children = (
+				23B3A0D22C7F5257006D0561 /* CartView.swift */,
+				23B3A0D42C7F526A006D0561 /* CartItemTableViewCell.swift */,
+			);
+			path = Cart;
+			sourceTree = "<group>";
+		};
 		23C4D2182C7A4D6D00BB0B08 /* Share Extension */ = {
 			isa = PBXGroup;
 			children = (
+				23F03C4F2C7B5F4200B7003E /* Share Extension.entitlements */,
+				2357E5602C7B0A1200CC9509 /* ViewModel */,
 				23C4D22D2C7A4EF500BB0B08 /* View */,
 				23C4D2192C7A4D6D00BB0B08 /* ShareViewController.swift */,
 				23C4D21B2C7A4D6D00BB0B08 /* MainInterface.storyboard */,
@@ -470,6 +519,7 @@
 			isa = PBXGroup;
 			children = (
 				23C4D22E2C7A4EFE00BB0B08 /* ShareView.swift */,
+				2357E5642C7B0D3900CC9509 /* FolderCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -568,6 +618,7 @@
 		23CBF4CA2C5515CA0061D22F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				23B3A0D12C7F5251006D0561 /* Cart */,
 				23CB0DCF2C79E2650053EB40 /* MyPage */,
 				2385950E2C71BF1600B85CBC /* Folder */,
 				231F51BF2C708ED500524968 /* Item */,
@@ -580,6 +631,7 @@
 		23CBF4CB2C5515CD0061D22F /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				23B3A0CB2C7F5212006D0561 /* Cart */,
 				23CB0DCC2C79E2530053EB40 /* MyPage */,
 				2385950F2C71BF1C00B85CBC /* Folder */,
 				232466762C6F92AF00979940 /* Item */,
@@ -594,6 +646,7 @@
 		23CBF4CC2C5515D80061D22F /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				23B3A0CE2C7F522F006D0561 /* Cart */,
 				23CB0DD22C79E2800053EB40 /* MyPage */,
 				238595142C71BF4700B85CBC /* Folder */,
 				231F51BC2C708EAC00524968 /* Item */,
@@ -922,6 +975,9 @@
 				23C4D23D2C7A52B300BB0B08 /* FolderBottomSheet.swift in Sources */,
 				23C4D2302C7A4F6F00BB0B08 /* AnimationButton.swift in Sources */,
 				23C4D22F2C7A4EFE00BB0B08 /* ShareView.swift in Sources */,
+				2357E5652C7B0D3A00CC9509 /* FolderCollectionViewCell.swift in Sources */,
+				2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */,
+				2357E5632C7B0AE600CC9509 /* SnackBar.swift in Sources */,
 				23C4D21A2C7A4D6D00BB0B08 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -930,6 +986,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23B3A0D32C7F5257006D0561 /* CartView.swift in Sources */,
 				23CBF49E2C5514510061D22F /* ViewController.swift in Sources */,
 				2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */,
 				231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */,
@@ -945,6 +1002,7 @@
 				23CBF4CF2C5515E80061D22F /* OnboardingViewController.swift in Sources */,
 				23CB0DD12C79E26F0053EB40 /* MyPageView.swift in Sources */,
 				2385951A2C71C13F00B85CBC /* FolderCollectionViewCell.swift in Sources */,
+				23B3A0CD2C7F521F006D0561 /* CartViewController.swift in Sources */,
 				2337C8682C70FDB400E2A67B /* ItemDetailViewModel.swift in Sources */,
 				23CBF49A2C5514510061D22F /* AppDelegate.swift in Sources */,
 				23CB0DD42C79E2910053EB40 /* ProfileHeaderView.swift in Sources */,
@@ -960,7 +1018,9 @@
 				2337C8662C70FD4F00E2A67B /* ItemDetailView.swift in Sources */,
 				231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */,
 				23D288462C55259E0044DF16 /* SplashViewController.swift in Sources */,
+				23B3A0D52C7F526A006D0561 /* CartItemTableViewCell.swift in Sources */,
 				23CB0DD62C79E2A20053EB40 /* MyPageViewModel.swift in Sources */,
+				23B3A0D02C7F5237006D0561 /* CartViewModel.swift in Sources */,
 				231F51BE2C708EB400524968 /* HomeView.swift in Sources */,
 				23ACCEC52C6A1EDC00E93953 /* LoginViewModel.swift in Sources */,
 				2337C8642C70FD2B00E2A67B /* ItemDetailViewController.swift in Sources */,
@@ -1027,6 +1087,7 @@
 		23C4D2232C7A4D6D00BB0B08 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B974XY47GZ;
@@ -1043,6 +1104,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "gomin.Wishboard.Share-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) SHARE_EXTENSION";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1052,6 +1114,7 @@
 		23C4D2242C7A4D6D00BB0B08 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B974XY47GZ;
@@ -1068,6 +1131,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "gomin.Wishboard.Share-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SHARE_EXTENSION;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1217,6 +1281,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gomin.Wishboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) WISHBOARD_APP";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1247,6 +1312,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gomin.Wishboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = WISHBOARD_APP;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

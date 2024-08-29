@@ -24,7 +24,7 @@ public enum FolderAPI {
     case getFolderList
 }
 
-extension FolderAPI: TargetType {
+extension FolderAPI: TargetType, AccessTokenAuthorizable {
     public var baseURL: URL {
         return URL(string: "\(NetworkMacro.BaseURL)/folder")!
     }
@@ -82,6 +82,10 @@ extension FolderAPI: TargetType {
 
     public var headers: [String : String]? {
         return NetworkMacro.AgentHeader
+    }
+    
+    public var authorizationType: Moya.AuthorizationType? {
+        return .bearer
     }
     
     public var validationType: ValidationType {

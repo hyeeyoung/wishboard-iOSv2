@@ -28,6 +28,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         
         homeView.configure(with: viewModel)
         homeView.collectionView.delegate = self
+        homeView.toolbar.delegate = self
         viewModel.fetchItems()
     }
     
@@ -47,4 +48,17 @@ extension HomeViewController: UICollectionViewDelegate {
         let detailViewController = ItemDetailViewController(viewModel: detailViewModel, delegate: self)
         navigationController?.pushViewController(detailViewController, animated: true)
     }
+}
+
+extension HomeViewController: HomeToolBarDelegate {
+    func cartNaviItemTap() {
+        let nextVC = CartViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    func calendarNaviItemTap() {
+        print("Move to Calendar")
+    }
+    
+    
 }

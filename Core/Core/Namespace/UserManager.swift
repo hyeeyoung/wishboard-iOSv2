@@ -26,52 +26,53 @@ public struct UserDefault<T> {
 }
 
 public class UserManager {
-    @UserDefault(key: UserDefaultKey.accessToken, defaultValue: nil)
+    // 앱 그룹을 사용하는 UserDefaults 인스턴스 생성
+    private static let sharedDefaults = UserDefaults(suiteName: "group.gomin.Wishboard.Share")!
+
+    @UserDefault(key: UserDefaultKey.accessToken, defaultValue: nil, storage: sharedDefaults)
     public static var accessToken: String?
     
-    @UserDefault(key: UserDefaultKey.refreshToken, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.refreshToken, defaultValue: nil, storage: sharedDefaults)
     public static var refreshToken: String?
     
-    @UserDefault(key: UserDefaultKey.url, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.url, defaultValue: nil, storage: sharedDefaults)
     public static var url: String?
     
-    @UserDefault(key: UserDefaultKey.deviceModel, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.deviceModel, defaultValue: nil, storage: sharedDefaults)
     public static var deviceModel: String?
     
-    @UserDefault(key: UserDefaultKey.OSVersion, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.OSVersion, defaultValue: nil, storage: sharedDefaults)
     public static var OSVersion: String?
     
-    @UserDefault(key: UserDefaultKey.appVersion, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.appVersion, defaultValue: nil, storage: sharedDefaults)
     public static var appVersion: String?
     
-    @UserDefault(key: UserDefaultKey.appBuildVersion, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.appBuildVersion, defaultValue: nil, storage: sharedDefaults)
     public static var appBuildVersion: String?
     
-    @UserDefault(key: UserDefaultKey.deviceToken, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.deviceToken, defaultValue: nil, storage: sharedDefaults)
     public static var deviceToken: String?
     
-    @UserDefault(key: UserDefaultKey.email, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.email, defaultValue: nil, storage: sharedDefaults)
     public static var email: String?
     
-    @UserDefault(key: UserDefaultKey.password, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.password, defaultValue: nil, storage: sharedDefaults)
     public static var password: String?
     
-    @UserDefault(key: UserDefaultKey.isFirstLogin, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.isFirstLogin, defaultValue: nil, storage: sharedDefaults)
     public static var isFirstLogin: Bool?
     
-    @UserDefault(key: UserDefaultKey.tempNickname, defaultValue: nil)
+    @UserDefault(key: UserDefaultKey.tempNickname, defaultValue: nil, storage: sharedDefaults)
     public static var tempNickname: String?
-    
     
     /// 사용자 데이터 삭제 (로그아웃, 탈퇴)
     public static func removeUserData() {
-        UserDefaults.standard.removeObject(forKey: "accessToken")
-        UserDefaults.standard.removeObject(forKey: "refreshToken")
-        UserDefaults.standard.removeObject(forKey: "email")
-        UserDefaults.standard.removeObject(forKey: "password")
-        UserDefaults.standard.set(false, forKey: "isFirstLogin")
-        UserDefaults(suiteName: "group.gomin.Wishboard.Share")?.removeObject(forKey: "accessToken")
-        UserDefaults(suiteName: "group.gomin.Wishboard.Share")?.removeObject(forKey: "refreshToken")
+        let defaults = UserDefaults(suiteName: "group.gomin.Wishboard.Share")!
+        defaults.removeObject(forKey: UserDefaultKey.accessToken)
+        defaults.removeObject(forKey: UserDefaultKey.refreshToken)
+        defaults.removeObject(forKey: UserDefaultKey.email)
+        defaults.removeObject(forKey: UserDefaultKey.password)
+        defaults.set(false, forKey: UserDefaultKey.isFirstLogin)
     }
 }
 

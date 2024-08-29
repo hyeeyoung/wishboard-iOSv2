@@ -18,10 +18,15 @@ public class ErrorPlugin: PluginType {
         case .failure(let error):
             if let code = error.response?.statusCode {
                 switch code {
+                // Internal Server Error
                 case 500:
                     NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.errorMessage])
                     break
+                // No Data
                 case 400:
+                    break
+                // 업데이트 관련
+                case 426:
                     break
                 default:
                     break
@@ -42,11 +47,9 @@ public class ErrorPlugin: PluginType {
                 switch afError {
                 case .sessionTaskFailed(_):
                     NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.errorMessage])
-//                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
                     return
                 case .requestRetryFailed(_, _):
                     NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.errorMessage])
-//                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
                     break
                 default:
                     break
