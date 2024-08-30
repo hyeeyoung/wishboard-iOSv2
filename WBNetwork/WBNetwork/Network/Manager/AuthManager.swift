@@ -17,4 +17,8 @@ public final class AuthManager {
     public func requestRefreshToken() async throws -> LoginResponse {
         try await API.Auth.request(.requestRefreshToken)
     }
+    
+    public func logout() async throws -> EmptyResponse {
+        try await API.Auth.request(.logout)
+    }
 }

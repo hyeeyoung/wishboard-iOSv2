@@ -20,7 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let _ = (scene as? UIWindowScene) else { return }
         
         // Notification 수신 등록
-        NotificationCenter.default.addObserver(self, selector: #selector(moveToOnboarding), name: .ReceivedNetworkError, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(signOutEvent), name: .SignOut, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(NetworkErrorEvent), name: .ReceivedNetworkError, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showSnackBar), name: .ShowSnackBar, object: nil)
         
         // MARK: Navigation controller
@@ -44,34 +45,55 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             // 만약 디바이스에 로그인 내력이 있다면 메인으로 이동
             if let _ = UserManager.accessToken, let _ = UserManager.refreshToken {
-                let tabBarController = TabBarViewController()
-                tabBarController.modalPresentationStyle = .fullScreen
-                self.window?.rootViewController = tabBarController
+                self.setRootTabBar()
                 return
             }
             
             // 토큰이 만료되었거나 첫 로그인일 때 온보딩 화면
-            let onboardingViewController = UINavigationController(rootViewController: OnboardingViewController())
-            self.window?.rootViewController = onboardingViewController
+            self.setRootOnboarding()
         }
     }
     
-    @objc private func moveToOnboarding() {
+    /// 네트워크 에러 발생 시 온보딩으로 이동
+    @objc private func NetworkErrorEvent() {
         DispatchQueue.main.async {
             // 기존 유저 데이터 삭제
             UserManager.removeUserData()
             // 온보딩 화면으로 이동하는 로직
-            let onboardingViewController = OnboardingViewController()
-            let navigationController = UINavigationController(rootViewController: onboardingViewController)
-            self.window?.rootViewController = navigationController
-            self.window?.makeKeyAndVisible()
+            self.setRootOnboarding()
         }
     }
     
+    /// 로그아웃 시 온보딩으로 이동
+    @objc private func signOutEvent() {
+        DispatchQueue.main.async {
+            // 기존 유저 데이터 삭제
+            UserManager.removeUserData()
+            // 온보딩 화면으로 이동하는 로직
+            self.setRootOnboarding()
+        }
+    }
+    
+    /// 스낵바 출력
     @objc private func showSnackBar(_ notification: Foundation.Notification) {
         if let snackBarType = notification.userInfo?["SnackBarType"] as? SnackBarType {
             SnackBar.shared.show(type: snackBarType)
         }
+    }
+    
+    /// 메인 화면 이동
+    private func setRootTabBar() {
+        let tabBarController = TabBarViewController()
+        tabBarController.modalPresentationStyle = .fullScreen
+        self.window?.rootViewController = tabBarController
+    }
+    
+    /// 온보딩 화면 설정
+    private func setRootOnboarding() {
+        let onboardingViewController = OnboardingViewController()
+        let navigationController = UINavigationController(rootViewController: onboardingViewController)
+        self.window?.rootViewController = navigationController
+        self.window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

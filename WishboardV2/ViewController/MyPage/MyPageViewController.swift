@@ -125,7 +125,12 @@ extension MypageViewController: MypageViewDelegate {
                 { _ in
                     print("로그아웃 취소")
                 }, { _ in
-                    print("로그아웃")
+                    // 로그아웃 및 화면 전환, 유저데이터 삭제
+                    Task {
+                        try await self.viewModel.logout()
+                        self.dismiss(animated: true)
+                        NotificationCenter.default.post(name: .SignOut, object: nil)
+                    }
                 }
             ]
             alert.modalTransitionStyle = .crossDissolve

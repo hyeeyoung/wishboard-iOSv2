@@ -17,9 +17,12 @@ public enum AuthAPI {
     case signUp
     /// 토큰 재발급
     case requestRefreshToken
+    /// 로그아웃
+    case logout
 }
 
-extension AuthAPI: TargetType {
+extension AuthAPI: TargetType, AccessTokenAuthorizable {
+    
     public var baseURL: URL {
         return URL(string: "\(NetworkMacro.BaseURL)/auth")!
     }
@@ -32,6 +35,8 @@ extension AuthAPI: TargetType {
             return "/signup"
         case .requestRefreshToken:
             return "/refresh"
+        case .logout:
+            return "/logout"
         }
     }
 
@@ -42,6 +47,8 @@ extension AuthAPI: TargetType {
         case .signUp:
             return .post
         case .requestRefreshToken:
+            return .post
+        case .logout:
             return .post
         }
     }
@@ -67,6 +74,15 @@ extension AuthAPI: TargetType {
 
     public var headers: [String : String]? {
         return NetworkMacro.AgentHeader
+    }
+    
+    public var authorizationType: Moya.AuthorizationType? {
+        switch self {
+        case .logout:
+            return .bearer
+        default:
+            return .none
+        }
     }
     
     public var validationType: ValidationType {

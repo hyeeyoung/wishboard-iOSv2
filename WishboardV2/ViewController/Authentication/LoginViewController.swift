@@ -127,6 +127,8 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
     
     /// 로그인 성공 후 메인 화면으로 전환
     private func moveToMain() {
+        self.navigationController?.popViewController(animated: true)
+        
         let tabBarController = TabBarViewController()
         tabBarController.modalPresentationStyle = .fullScreen
         self.present(tabBarController, animated: true, completion: nil)

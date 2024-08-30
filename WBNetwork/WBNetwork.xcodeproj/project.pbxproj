@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		230EDC392C82135900FC35F2 /* UpdatePushStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */; };
+		230EDC3B2C8215DF00FC35F2 /* LogoutUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC3A2C8215DF00FC35F2 /* LogoutUseCase.swift */; };
 		232185A92C70B3BB008BD81B /* WBNetwork.docc in Sources */ = {isa = PBXBuildFile; fileRef = 232185A82C70B3BB008BD81B /* WBNetwork.docc */; };
 		232185AF2C70B3BB008BD81B /* WBNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 232185A42C70B3BB008BD81B /* WBNetwork.framework */; };
 		232185B42C70B3BB008BD81B /* WBNetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232185B32C70B3BB008BD81B /* WBNetworkTests.swift */; };
@@ -77,6 +78,7 @@
 
 /* Begin PBXFileReference section */
 		230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePushStateUseCase.swift; sourceTree = "<group>"; };
+		230EDC3A2C8215DF00FC35F2 /* LogoutUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutUseCase.swift; sourceTree = "<group>"; };
 		232185A42C70B3BB008BD81B /* WBNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WBNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		232185A72C70B3BB008BD81B /* WBNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WBNetwork.h; sourceTree = "<group>"; };
 		232185A82C70B3BB008BD81B /* WBNetwork.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = WBNetwork.docc; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 			children = (
 				232185D72C70B447008BD81B /* LoginUseCase.swift */,
 				232185D82C70B447008BD81B /* RefreshTokenUseCase.swift */,
+				230EDC3A2C8215DF00FC35F2 /* LogoutUseCase.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -499,6 +502,7 @@
 				232185F32C70B565008BD81B /* LoginResponse.swift in Sources */,
 				232185F72C70B570008BD81B /* GetWishItemsUseCase.swift in Sources */,
 				2347A9082C7ABFF7009F9480 /* ModifyFolderNameUseCase.swift in Sources */,
+				230EDC3B2C8215DF00FC35F2 /* LogoutUseCase.swift in Sources */,
 				232185FF2C70B584008BD81B /* AuthAPI.swift in Sources */,
 				23AD9D732C80A82C007AB8D1 /* NotiAPI.swift in Sources */,
 				232185FA2C70B578008BD81B /* AuthRepository.swift in Sources */,

@@ -35,6 +35,7 @@ class MypageViewModel {
         ]
     }
     
+    /// 유저 데이터 조회
     func fetchUserData() {
         Task {
             do {
@@ -57,13 +58,15 @@ class MypageViewModel {
         }
     }
     
+    /// 프로필 편집 후 유저 프로필 업데이트
     func updateProfile(nickname: String, email: String, profileImageUrl: String) {
-        // 프로필 편집 후 데이터 업데이트
+        // TODO: 프로필 편집 API
         user.nickname = nickname
         user.email = email
         user.profileImageUrl = profileImageUrl
     }
     
+    /// 알림 토글 수정
     func updatePushStatus(isOn: Bool) {
         Task {
             do {
@@ -74,6 +77,16 @@ class MypageViewModel {
             } catch {
                 throw error
             }
+        }
+    }
+    
+    /// 로그아웃
+    func logout() async throws {
+        do {
+            let usecase = LogoutUseCase()
+            _ = try await usecase.execute()
+        } catch {
+            throw error
         }
     }
     
