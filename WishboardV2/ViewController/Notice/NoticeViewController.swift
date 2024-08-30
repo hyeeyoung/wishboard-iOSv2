@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 import Combine
+import SafariServices
+import Core
 
 final class NoticeViewController: UIViewController, ItemDetailDelegate {
     func refreshItems() {
@@ -82,18 +84,14 @@ extension NoticeViewController: UITableViewDataSource {
         // 알림 읽음 처리
         viewModel.updateReadState(item)
         
-        // 아이템 디테일 화면으로 이동
-        Task {
-            do {
-                let wishItem = try await viewModel.fetchItemDetail(id: item.id)
-                
-                let detailViewModel = ItemDetailViewModel(item: wishItem)
-                let detailViewController = ItemDetailViewController(viewModel: detailViewModel, delegate: self)
-                navigationController?.pushViewController(detailViewController, animated: true)
-            } catch {
-                throw error
-            }
+        // Safari 화면 이동
+        if let link = item.link, let url = NSURL(string: link) {
+            let linkView: SFSafariViewController = SFSafariViewController(url: url as URL)
+            self.present(linkView, animated: true, completion: nil)
+        } else {
+            SnackBar.shared.show(type: .ShoppingLink)
         }
+        
     }
 }
 

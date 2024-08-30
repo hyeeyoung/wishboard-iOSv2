@@ -17,6 +17,7 @@ struct NoticeItem {
     let name: String
     var readState: Bool
     let notiDate: String
+    let link: String?
 }
 
 @MainActor
@@ -44,7 +45,8 @@ class NoticeViewModel: ObservableObject {
                                           notiType: data.item_notification_type ?? "",
                                           name: data.item_name ?? "",
                                           readState: ((data.read_state ?? 0) != 0),
-                                          notiDate: data.item_notification_date ?? "")
+                                          notiDate: data.item_notification_date ?? "",
+                                          link: data.item_url)
                     
                     items.append(item)
                 }
@@ -52,18 +54,6 @@ class NoticeViewModel: ObservableObject {
             } catch {
                 throw error
             }
-        }
-    }
-    
-    // 알림 셀 탭 > 아이템 디테일 화면 이동 : 아이템 상세 데이터 가져오기
-    func fetchItemDetail(id: Int) async throws -> WishListResponse {
-        do {
-            let usecase = GetItemDetailUseCase()
-            let data = try await usecase.execute(id: id)
-            
-            return data
-        } catch {
-            throw error
         }
     }
     
