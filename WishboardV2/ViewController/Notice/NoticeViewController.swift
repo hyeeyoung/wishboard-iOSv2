@@ -30,6 +30,7 @@ final class NoticeViewController: UIViewController, ItemDetailDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = true
         self.tabBarController?.tabBar.isHidden = false
         super.viewWillAppear(animated)
     }

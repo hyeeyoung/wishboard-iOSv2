@@ -125,12 +125,7 @@ extension MypageViewController: MypageViewDelegate {
                 { _ in
                     print("로그아웃 취소")
                 }, { _ in
-                    // 로그아웃 및 화면 전환, 유저데이터 삭제
-                    Task {
-                        try await self.viewModel.logout()
-                        self.dismiss(animated: true)
-                        NotificationCenter.default.post(name: .SignOut, object: nil)
-                    }
+                    self.requestLogout()
                 }
             ]
             alert.modalTransitionStyle = .crossDissolve
@@ -142,10 +137,23 @@ extension MypageViewController: MypageViewDelegate {
             let alert = AlertViewController(alertType: .accountDeletion)
             alert.buttonHandlers = [
                 { _ in
+                    alert.dismissAlert()
                     print("회원탈퇴 취소 버튼 클릭됨")
                 }, { _ in
                     if let email = alert.emailTextField.text {
-                        print("탈퇴하기 버튼 클릭됨, 입력된 이메일: \(email)")
+                        guard let userEmail = UserManager.email else {
+                            alert.dismissAlert()
+                            return
+                        }
+                        // 입력된 이메일이 같을 때에만 회원 탈퇴 가능
+                        if email == userEmail {
+                            alert.dismissAlert()
+                            self.requestDeleteUser()
+                        } else {
+                            alert.errorMessageLabel.isHidden = false
+                        }
+                    } else {
+                        alert.errorMessageLabel.isHidden = false
                     }
                 }
             ]
@@ -155,6 +163,26 @@ extension MypageViewController: MypageViewDelegate {
             break
         default:
             break
+        }
+    }
+    
+    /// 로그아웃 및 화면 전환, 유저데이터 삭제
+    private func requestLogout() {
+        Task {
+            try await self.viewModel.logout()
+            self.dismiss(animated: true)
+            NotificationCenter.default.post(name: .SignOut, object: nil)
+        }
+    }
+    
+    /// 회원탈퇴 및 화면 전환, 유저데이터 삭제
+    private func requestDeleteUser() {
+        Task {
+            try await self.viewModel.deleteUser()
+            self.dismiss(animated: true)
+            NotificationCenter.default.post(name: .SignOut, object: nil)
+            // 스낵바 출력
+            SnackBar.shared.show(type: .deleteUser)
         }
     }
     

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		230EDC392C82135900FC35F2 /* UpdatePushStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */; };
 		230EDC3B2C8215DF00FC35F2 /* LogoutUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC3A2C8215DF00FC35F2 /* LogoutUseCase.swift */; };
+		230EDC3D2C821CDF00FC35F2 /* DeleteUserUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC3C2C821CDF00FC35F2 /* DeleteUserUseCase.swift */; };
 		232185A92C70B3BB008BD81B /* WBNetwork.docc in Sources */ = {isa = PBXBuildFile; fileRef = 232185A82C70B3BB008BD81B /* WBNetwork.docc */; };
 		232185AF2C70B3BB008BD81B /* WBNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 232185A42C70B3BB008BD81B /* WBNetwork.framework */; };
 		232185B42C70B3BB008BD81B /* WBNetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232185B32C70B3BB008BD81B /* WBNetworkTests.swift */; };
@@ -79,6 +80,7 @@
 /* Begin PBXFileReference section */
 		230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePushStateUseCase.swift; sourceTree = "<group>"; };
 		230EDC3A2C8215DF00FC35F2 /* LogoutUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutUseCase.swift; sourceTree = "<group>"; };
+		230EDC3C2C821CDF00FC35F2 /* DeleteUserUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteUserUseCase.swift; sourceTree = "<group>"; };
 		232185A42C70B3BB008BD81B /* WBNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WBNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		232185A72C70B3BB008BD81B /* WBNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WBNetwork.h; sourceTree = "<group>"; };
 		232185A82C70B3BB008BD81B /* WBNetwork.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = WBNetwork.docc; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 			children = (
 				23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */,
 				230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */,
+				230EDC3C2C821CDF00FC35F2 /* DeleteUserUseCase.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -478,6 +481,7 @@
 				2347A9182C7AD4D0009F9480 /* GetItemDetailUseCase.swift in Sources */,
 				232185F12C70B55F008BD81B /* CartManager.swift in Sources */,
 				232186002C70B586008BD81B /* ItemAPI.swift in Sources */,
+				230EDC3D2C821CDF00FC35F2 /* DeleteUserUseCase.swift in Sources */,
 				238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */,
 				2347A90A2C7AC0AD009F9480 /* AddFolderUseCase.swift in Sources */,
 				238595202C71C6E400B85CBC /* FolderManager.swift in Sources */,

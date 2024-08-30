@@ -14,6 +14,8 @@ public enum UserAPI {
     case getUserInfo
     /// 알림 토글 수정
     case updatePushState(state: Bool)
+    /// 유저 탈퇴
+    case deleteUser
 }
 
 extension UserAPI: TargetType, AccessTokenAuthorizable {
@@ -28,6 +30,8 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
         case .updatePushState(let state):
             let path = state ? "true" : "false"
             return "push-state/\(path)"
+        case .deleteUser:
+            return ""
         }
     }
 
@@ -37,6 +41,8 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
             return .get
         case.updatePushState:
             return .put
+        case .deleteUser:
+            return .delete
         }
     }
 

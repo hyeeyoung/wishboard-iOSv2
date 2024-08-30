@@ -17,4 +17,8 @@ public final class UserAPIManager {
     public func updatePushState(state: Bool) async throws -> EmptyResponse {
         return try await API.User.request(.updatePushState(state: state))
     }
+    
+    public func deleteUser() async throws -> EmptyResponse {
+        return try await API.User.request(.deleteUser)
+    }
 }

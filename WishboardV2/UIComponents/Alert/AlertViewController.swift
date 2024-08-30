@@ -43,7 +43,16 @@ final class AlertViewController: UIViewController {
         $0.placeholder = "이메일을 입력하세요"
         $0.isHidden = true // 기본적으로 숨김, 필요 시 표시
         $0.setLeftPaddingPoints(12)
+        $0.autocapitalizationType = .none
+        $0.autocorrectionType = .no
         $0.clipsToBounds = true
+    }
+    public let errorMessageLabel = UILabel().then {
+        $0.text = "이메일을 다시 확인해 주세요."
+        $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
+        $0.textAlignment = .left
+        $0.textColor = .pink_700
+        $0.isHidden = true
     }
     private let verticalSeparatorLine = UIView().then {
         $0.backgroundColor = .gray_100
@@ -83,7 +92,6 @@ final class AlertViewController: UIViewController {
         alertView.addSubview(titleLabel)
         alertView.addSubview(messageLabel)
         alertView.addSubview(separatorLine)
-
         
         titleLabel.text = customTitle ?? alertType.title
         messageLabel.text = customMessage ?? alertType.message
@@ -92,6 +100,7 @@ final class AlertViewController: UIViewController {
         if alertType == .accountDeletion {
             emailTextField.isHidden = false
             alertView.addSubview(emailTextField)
+            alertView.addSubview(errorMessageLabel)
         }
 
         let titles = customButtonTitles.isEmpty ? alertType.buttonTitles : customButtonTitles
@@ -102,7 +111,11 @@ final class AlertViewController: UIViewController {
                 $0.setTitle(title, for: .normal)
                 $0.setTitleColor(colors[index], for: .normal)
                 $0.tag = index
-                $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+                if alertType == .accountDeletion {
+                    $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+                } else {
+                    $0.addTarget(self, action: #selector(buttonTappedWithDismiss(_:)), for: .touchUpInside)
+                }
             }
             buttons.append(button)
             alertView.addSubview(button)
@@ -138,6 +151,11 @@ final class AlertViewController: UIViewController {
                 make.top.equalTo(messageLabel.snp.bottom).offset(20)
                 make.leading.trailing.equalToSuperview().inset(16)
                 make.height.equalTo(42)
+            }
+            
+            errorMessageLabel.snp.makeConstraints { make in
+                make.top.equalTo(emailTextField.snp.bottom).offset(6)
+                make.leading.equalTo(emailTextField)
             }
 
             separatorLine.snp.makeConstraints { make in
@@ -187,10 +205,14 @@ final class AlertViewController: UIViewController {
         }
     }
 
-    @objc private func buttonTapped(_ sender: UIButton) {
+    @objc private func buttonTappedWithDismiss(_ sender: UIButton) {
         self.dismissAlert {
             self.buttonHandlers[sender.tag](sender)
         }
+    }
+    
+    @objc private func buttonTapped(_ sender: UIButton) {
+        self.buttonHandlers[sender.tag](sender)
     }
 
     private func animateAlertPresentation() {

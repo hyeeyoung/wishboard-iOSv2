@@ -51,6 +51,9 @@ class MypageViewModel {
                     
                     // pushState 업데이트
                     self.updatePushStateSetting(isOn: userinfoResponse.push_state != 0)
+                    
+                    // email 저장
+                    UserManager.email = userinfoResponse.email
                 }
             } catch {
                 throw error
@@ -90,6 +93,17 @@ class MypageViewModel {
         }
     }
     
+    /// 로그아웃
+    func deleteUser() async throws {
+        do {
+            let usecase = DeleteUserUseCase()
+            _ = try await usecase.execute()
+        } catch {
+            throw error
+        }
+    }
+    
+    /// PushState 업데이트 (UI)
     private func updatePushStateSetting(isOn: Bool) {
         DispatchQueue.main.async {
             self.settings[0] = Setting(title: "알림 설정", type: .switch(isOn: isOn, showDivider: false))
