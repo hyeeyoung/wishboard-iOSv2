@@ -15,6 +15,8 @@ class SettingTableViewCell: UITableViewCell {
     
     static let identifier = "SettingTableViewCell"
     
+    // MARK: - Views
+    
     private let titleLabel = UILabel().then {
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD1)
         $0.textColor = .gray_600
@@ -40,6 +42,11 @@ class SettingTableViewCell: UITableViewCell {
         $0.backgroundColor = .gray_50
     }
     
+    // MARK: - Properties
+    var switchChangedAction: ((Bool) -> Void)?
+    
+    // MARK: - Life Cycles
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
@@ -49,6 +56,8 @@ class SettingTableViewCell: UITableViewCell {
         super.init(coder: coder)
         setupView()
     }
+    
+    // MARK: - Methods
     
     private func setupView() {
         // 기본 셀 설정
@@ -108,7 +117,7 @@ class SettingTableViewCell: UITableViewCell {
     }
     
     @objc private func switchValueChanged(_ sender: UISwitch) {
-        // 스위치 값이 변경되었을 때 처리할 로직 추가
-        print("Switch value changed: \(sender.isOn)")
+        // 스위치 값이 변경되었을 때 처리
+        self.switchChangedAction?(sender.isOn)
     }
 }

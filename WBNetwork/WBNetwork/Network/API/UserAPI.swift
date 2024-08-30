@@ -12,6 +12,8 @@ import Core
 public enum UserAPI {
     /// 유저 정보 조회
     case getUserInfo
+    /// 알림 토글 수정
+    case updatePushState(state: Bool)
 }
 
 extension UserAPI: TargetType, AccessTokenAuthorizable {
@@ -23,6 +25,9 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
         switch self {
         case .getUserInfo:
             return ""
+        case .updatePushState(let state):
+            let path = state ? "true" : "false"
+            return "push-state/\(path)"
         }
     }
 
@@ -30,6 +35,8 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
         switch self {
         case .getUserInfo:
             return .get
+        case.updatePushState:
+            return .put
         }
     }
 

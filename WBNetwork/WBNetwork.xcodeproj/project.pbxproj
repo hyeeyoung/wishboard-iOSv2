@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		230EDC392C82135900FC35F2 /* UpdatePushStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */; };
 		232185A92C70B3BB008BD81B /* WBNetwork.docc in Sources */ = {isa = PBXBuildFile; fileRef = 232185A82C70B3BB008BD81B /* WBNetwork.docc */; };
 		232185AF2C70B3BB008BD81B /* WBNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 232185A42C70B3BB008BD81B /* WBNetwork.framework */; };
 		232185B42C70B3BB008BD81B /* WBNetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232185B32C70B3BB008BD81B /* WBNetworkTests.swift */; };
@@ -75,6 +76,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePushStateUseCase.swift; sourceTree = "<group>"; };
 		232185A42C70B3BB008BD81B /* WBNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WBNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		232185A72C70B3BB008BD81B /* WBNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WBNetwork.h; sourceTree = "<group>"; };
 		232185A82C70B3BB008BD81B /* WBNetwork.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = WBNetwork.docc; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 			isa = PBXGroup;
 			children = (
 				23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */,
+				230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -501,6 +504,7 @@
 				232185FA2C70B578008BD81B /* AuthRepository.swift in Sources */,
 				2385951E2C71C6BD00B85CBC /* FolderRepository.swift in Sources */,
 				23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */,
+				230EDC392C82135900FC35F2 /* UpdatePushStateUseCase.swift in Sources */,
 				23AD9D7C2C80A9E2007AB8D1 /* GetNoticesUseCase.swift in Sources */,
 				23AD9D772C80A8FF007AB8D1 /* NoticeResponse.swift in Sources */,
 				2357E55F2C7B09E600CC9509 /* ParseItemUrlUseCase.swift in Sources */,

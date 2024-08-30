@@ -9,6 +9,7 @@ import Foundation
 
 public protocol UserRepositoryInterface {
     func getUserInfo() async throws -> [UserInfoResponse]
+    func updatePushState(state: Bool) async throws -> EmptyResponse
 }
 
 public final class UserRepository: UserRepositoryInterface {
@@ -16,5 +17,9 @@ public final class UserRepository: UserRepositoryInterface {
     
     public func getUserInfo() async throws -> [UserInfoResponse] {
         return try await UserAPIManager.shared.getUserInfo()
+    }
+    
+    public func updatePushState(state: Bool) async throws -> EmptyResponse {
+        return try await UserAPIManager.shared.updatePushState(state: state)
     }
 }

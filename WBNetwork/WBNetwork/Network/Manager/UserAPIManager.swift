@@ -13,4 +13,8 @@ public final class UserAPIManager {
     public func getUserInfo() async throws -> [UserInfoResponse] {
         return try await API.User.requestRaw(.getUserInfo)
     }
+    
+    public func updatePushState(state: Bool) async throws -> EmptyResponse {
+        return try await API.User.request(.updatePushState(state: state))
+    }
 }

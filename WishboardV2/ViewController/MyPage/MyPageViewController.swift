@@ -15,6 +15,7 @@ struct User {
     var profileImageUrl: String?
     var nickname: String
     var email: String
+    var pushState: Bool
 }
 
 struct Setting {
@@ -88,6 +89,7 @@ class MypageViewController: UIViewController {
 }
 
 extension MypageViewController: MypageViewDelegate {
+    /// 설정 탭 이벤트
     func didSelectSetting(at indexPath: IndexPath) {
         let tag = indexPath.row
         switch tag {
@@ -150,8 +152,14 @@ extension MypageViewController: MypageViewDelegate {
             break
         }
     }
+    
+    /// 알림 허용 상태값 변경
+    func pushStateStatusChanged(isOn: Bool) {
+        viewModel.updatePushStatus(isOn: isOn)
+    }
 }
 
+// MARK: - Mail Delegate
 extension MypageViewController: MFMailComposeViewControllerDelegate {
     /// '문의하기' 메뉴 탭 이벤트 - 이메일 전송
     private func showSendEmail() {

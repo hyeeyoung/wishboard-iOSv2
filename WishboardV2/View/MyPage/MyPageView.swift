@@ -11,6 +11,7 @@ import Core
 
 protocol MypageViewDelegate: AnyObject {
     func didSelectSetting(at indexPath: IndexPath)
+    func pushStateStatusChanged(isOn: Bool)
 }
 
 final class MypageView: UIView {
@@ -74,6 +75,11 @@ extension MypageView: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingTableViewCell.identifier, for: indexPath) as! SettingTableViewCell
         let setting = settings[indexPath.row]
         cell.configure(with: setting)
+        
+        cell.switchChangedAction = { [weak self] isOn in
+            self?.delegate?.pushStateStatusChanged(isOn: isOn)
+        }
+        
         return cell
     }
     

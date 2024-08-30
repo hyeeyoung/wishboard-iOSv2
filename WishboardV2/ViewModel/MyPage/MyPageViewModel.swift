@@ -20,9 +20,9 @@ class MypageViewModel {
     
     init() {
         // 초기 데이터 설정
-        self.user = User(profileImageUrl: "", nickname: "닉네임", email: "email@example.com")
+        self.user = User(profileImageUrl: "", nickname: "닉네임", email: "email@example.com", pushState: false)
         self.settings = [
-            Setting(title: "알림 설정", type: .switch(isOn: true, showDivider: false)),
+            Setting(title: "알림 설정", type: .switch(isOn: false, showDivider: false)),
             Setting(title: "비밀번호 변경", type: .normal(showDivider: true)),
             Setting(title: "문의하기", type: .normal(showDivider: false)),
             Setting(title: "위시보드 이용방법", type: .normal(showDivider: false)),
@@ -38,14 +38,18 @@ class MypageViewModel {
     func fetchUserData() {
         Task {
             do {
-                let usecase = GetUserInfoUseCase(repository: UserRepository())
+                let usecase = GetUserInfoUseCase()
                 let data = try await usecase.execute()
                 
                 DispatchQueue.main.async {
                     let userinfoResponse = data[0]
                     self.user = User(profileImageUrl: userinfoResponse.profile_img_url,
                                      nickname: userinfoResponse.nickname ?? "",
-                                     email: userinfoResponse.email)
+                                     email: userinfoResponse.email,
+                                     pushState: userinfoResponse.push_state != 0)
+                    
+                    // pushState 업데이트
+                    self.updatePushStateSetting(isOn: userinfoResponse.push_state != 0)
                 }
             } catch {
                 throw error
@@ -58,5 +62,24 @@ class MypageViewModel {
         user.nickname = nickname
         user.email = email
         user.profileImageUrl = profileImageUrl
+    }
+    
+    func updatePushStatus(isOn: Bool) {
+        Task {
+            do {
+                let usecase = UpdatePushStateUseCase()
+                _ = try await usecase.execute(state: isOn)
+                
+                self.updatePushStateSetting(isOn: isOn)
+            } catch {
+                throw error
+            }
+        }
+    }
+    
+    private func updatePushStateSetting(isOn: Bool) {
+        DispatchQueue.main.async {
+            self.settings[0] = Setting(title: "알림 설정", type: .switch(isOn: isOn, showDivider: false))
+        }
     }
 }
