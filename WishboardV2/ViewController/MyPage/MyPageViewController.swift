@@ -120,50 +120,30 @@ extension MypageViewController: MypageViewDelegate {
             break
         case 8:
             // 로그아웃
-            let alert = AlertViewController(alertType: .logout)
-            alert.buttonHandlers = [
-                { _ in
-                    print("로그아웃 취소")
-                }, { _ in
-                    self.requestLogout()
-                }
-            ]
-            alert.modalTransitionStyle = .crossDissolve
-            alert.modalPresentationStyle = .overFullScreen
-            present(alert, animated: true, completion: nil)
+            self.presentLogoutAlert()
             break
         case 9:
             // 회원탈퇴
-            let alert = AlertViewController(alertType: .accountDeletion)
-            alert.buttonHandlers = [
-                { _ in
-                    alert.dismissAlert()
-                    print("회원탈퇴 취소 버튼 클릭됨")
-                }, { _ in
-                    if let email = alert.emailTextField.text {
-                        guard let userEmail = UserManager.email else {
-                            alert.dismissAlert()
-                            return
-                        }
-                        // 입력된 이메일이 같을 때에만 회원 탈퇴 가능
-                        if email == userEmail {
-                            alert.dismissAlert()
-                            self.requestDeleteUser()
-                        } else {
-                            alert.errorMessageLabel.isHidden = false
-                        }
-                    } else {
-                        alert.errorMessageLabel.isHidden = false
-                    }
-                }
-            ]
-            alert.modalTransitionStyle = .crossDissolve
-            alert.modalPresentationStyle = .overFullScreen
-            present(alert, animated: true, completion: nil)
+            self.presentDeleteUserAlert()
             break
         default:
             break
         }
+    }
+    
+    /// 로그아웃 팝업창 노출
+    private func presentLogoutAlert() {
+        let alert = AlertViewController(alertType: .logout)
+        alert.buttonHandlers = [
+            { _ in
+                print("로그아웃 취소")
+            }, { _ in
+                self.requestLogout()
+            }
+        ]
+        alert.modalTransitionStyle = .crossDissolve
+        alert.modalPresentationStyle = .overFullScreen
+        present(alert, animated: true, completion: nil)
     }
     
     /// 로그아웃 및 화면 전환, 유저데이터 삭제
@@ -173,6 +153,36 @@ extension MypageViewController: MypageViewDelegate {
             self.dismiss(animated: true)
             NotificationCenter.default.post(name: .SignOut, object: nil)
         }
+    }
+    
+    /// 회원 탈퇴 알럿창 노출
+    private func presentDeleteUserAlert() {
+        let alert = AlertViewController(alertType: .accountDeletion)
+        alert.buttonHandlers = [
+            { _ in
+                alert.dismissAlert()
+                print("회원탈퇴 취소 버튼 클릭됨")
+            }, { _ in
+                if let email = alert.emailTextField.text {
+                    guard let userEmail = UserManager.email else {
+                        alert.dismissAlert()
+                        return
+                    }
+                    // 입력된 이메일이 같을 때에만 회원 탈퇴 가능
+                    if email == userEmail {
+                        alert.dismissAlert()
+                        self.requestDeleteUser()
+                    } else {
+                        alert.errorMessageLabel.isHidden = false
+                    }
+                } else {
+                    alert.errorMessageLabel.isHidden = false
+                }
+            }
+        ]
+        alert.modalTransitionStyle = .crossDissolve
+        alert.modalPresentationStyle = .overFullScreen
+        present(alert, animated: true, completion: nil)
     }
     
     /// 회원탈퇴 및 화면 전환, 유저데이터 삭제

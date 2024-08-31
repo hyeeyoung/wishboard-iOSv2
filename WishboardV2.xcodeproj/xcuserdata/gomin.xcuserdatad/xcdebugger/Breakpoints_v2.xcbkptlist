@@ -14,8 +14,8 @@
             filePath = "WishboardV2/ViewController/MyPage/MyPageViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "181"
-            endingLineNumber = "181"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
             landmarkName = "requestDeleteUser()"
             landmarkType = "7">
             <Locations>
@@ -95,70 +95,6 @@
                   offsetFromSymbolStart = "32">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "683FA7EA-EE9F-4CAC-AFD6-FCB5DBD4204B"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WishboardV2/ViewController/MyPage/MyPageViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "153"
-            endingLineNumber = "153"
-            landmarkName = "didSelectSetting(at:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "683FA7EA-EE9F-4CAC-AFD6-FCB5DBD4204B - 8647228aeabb8531"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #4 (__C.UIButton) -&gt; () in WishboardV2.MypageViewController.didSelectSetting(at: Foundation.IndexPath) -&gt; ()"
-                  moduleName = "WishboardV2"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/gomin/Desktop/XcodeProjects/WishboardV2/WishboardV2/ViewController/MyPage/MyPageViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "152"
-                  endingLineNumber = "152"
-                  offsetFromSymbolStart = "664">
-               </Location>
-               <Location
-                  uuid = "683FA7EA-EE9F-4CAC-AFD6-FCB5DBD4204B - 8647228aeabb8550"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #4 (__C.UIButton) -&gt; () in WishboardV2.MypageViewController.didSelectSetting(at: Foundation.IndexPath) -&gt; ()"
-                  moduleName = "WishboardV2"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/gomin/Desktop/XcodeProjects/WishboardV2/WishboardV2/ViewController/MyPage/MyPageViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "153"
-                  endingLineNumber = "153"
-                  offsetFromSymbolStart = "624">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "5A55FAF3-4450-465D-B7F7-4D6091FD875E"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WishboardV2/ViewController/MyPage/MyPageViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "144"
-            endingLineNumber = "144"
-            landmarkName = "didSelectSetting(at:)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
