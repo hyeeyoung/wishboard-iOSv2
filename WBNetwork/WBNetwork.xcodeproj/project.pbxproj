@@ -37,6 +37,7 @@
 		232186012C70B589008BD81B /* CartAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232185E62C70B447008BD81B /* CartAPI.swift */; };
 		232186022C70B58C008BD81B /* ErrorPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232185DF2C70B447008BD81B /* ErrorPlugin.swift */; };
 		232186032C70B58F008BD81B /* LoadingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232185E02C70B447008BD81B /* LoadingPlugin.swift */; };
+		2325525F2C838C28001FC96D /* AddItemUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2325525E2C838C28001FC96D /* AddItemUseCase.swift */; };
 		2347A9002C7ABADF009F9480 /* GetFolderItemListUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A8FF2C7ABADF009F9480 /* GetFolderItemListUseCase.swift */; };
 		2347A9082C7ABFF7009F9480 /* ModifyFolderNameUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9072C7ABFF6009F9480 /* ModifyFolderNameUseCase.swift */; };
 		2347A90A2C7AC0AD009F9480 /* AddFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9092C7AC0AD009F9480 /* AddFolderUseCase.swift */; };
@@ -108,6 +109,7 @@
 		232185E42C70B447008BD81B /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
 		232185E52C70B447008BD81B /* ItemAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemAPI.swift; sourceTree = "<group>"; };
 		232185E62C70B447008BD81B /* CartAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartAPI.swift; sourceTree = "<group>"; };
+		2325525E2C838C28001FC96D /* AddItemUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemUseCase.swift; sourceTree = "<group>"; };
 		2347A8FF2C7ABADF009F9480 /* GetFolderItemListUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFolderItemListUseCase.swift; sourceTree = "<group>"; };
 		2347A9072C7ABFF6009F9480 /* ModifyFolderNameUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyFolderNameUseCase.swift; sourceTree = "<group>"; };
 		2347A9092C7AC0AD009F9480 /* AddFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFolderUseCase.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 				2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */,
 				2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */,
 				2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */,
+				2325525E2C838C28001FC96D /* AddItemUseCase.swift */,
 			);
 			path = Item;
 			sourceTree = "<group>";
@@ -524,6 +527,7 @@
 				23AD9D752C80A8DA007AB8D1 /* NoticeRepository.swift in Sources */,
 				23AD9D792C80A94F007AB8D1 /* NoticeManager.swift in Sources */,
 				232185F42C70B568008BD81B /* WishListResponse.swift in Sources */,
+				2325525F2C838C28001FC96D /* AddItemUseCase.swift in Sources */,
 				232185FD2C70B57F008BD81B /* API.swift in Sources */,
 				23AD9D622C80985C007AB8D1 /* GetCartsUseCase.swift in Sources */,
 				23AD9D602C8097A0007AB8D1 /* CartResponse.swift in Sources */,

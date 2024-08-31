@@ -120,7 +120,7 @@ public final class FormatManager {
         if let num = Int(numStr) {return self.numToPrice(num: num)}
         else {return nil}
     }
-    /// 문자열을 숫자로     // 1,000 -> 1000
+    /// 문자열을 숫자문자열로     // 1,000 -> 1000
     public func priceToStr(price: String) -> String {
         let priceStr = price.components(separatedBy: [","]).joined()
         return priceStr

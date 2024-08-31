@@ -17,6 +17,8 @@ class ShareViewController: UIViewController {
     
     private let bottomSheetView = FolderBottomSheet()
     private let backgroundDimView = UIView()
+    
+    private var link: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,9 +43,8 @@ class ShareViewController: UIViewController {
         shareView.configure(with: viewModel)
         
         shareView.addFolderButton.addTarget(self, action: #selector(addFolderButtonTapped), for: .touchUpInside)
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-//        self.shareView.addGestureRecognizer(tapGesture)
         shareView.quitButton.addTarget(self, action: #selector(quitShareView), for: .touchUpInside)
+        shareView.completeButton.addTarget(self, action: #selector(addItem), for: .touchUpInside)
     }
     
     private func setUpObservers() {
@@ -60,7 +61,8 @@ class ShareViewController: UIViewController {
                         if let url = urlItem as? URL {
                             DispatchQueue.main.async {
                                 print("Shared URL: \(url)")
-                                completion(url.absoluteString)
+                                self.link = url.absoluteString
+                                completion(self.link ?? "")
                             }
                         }
                     }
@@ -136,16 +138,59 @@ class ShareViewController: UIViewController {
     
     // MARK: - Actions
     
+    /// 키보드 내림
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)
     }
     
+    /// 새 폴더 추가
     @objc private func addFolderButtonTapped() {
         self.showBottomSheet()
     }
     
+    /// 링크 공유 종료
     @objc private func quitShareView() {
         self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+    }
+    
+    /// 아이템 추가
+    @objc private func addItem() {
+        self.dismissKeyboard()
+        shareView.completeButton.startAnimation()
+        
+        let itemName = shareView.itemNameTextField.text
+        let itemPrice = FormatManager.shared.priceToStr(price: shareView.itemPriceTextField.text ?? "")
+        let selectedFolderId = shareView.selectedFolderId
+        let itemImage = shareView.itemImage.image?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
+        
+        let itemDTO = RequestItemDTO(folderId: selectedFolderId, 
+                                     photo: itemImage,
+                                     itemName: itemName,
+                                     itemPrice: itemPrice,
+                                     itemURL: self.link,
+                                     itemMemo: nil,
+                                     itemNotificationType: nil, itemNotificationDate: nil)
+        
+        Task {
+            do {
+                try await viewModel.addItem(item: itemDTO)
+                shareView.completeButton.stopAnimation()
+                shareView.completeButton.isEnabled = false
+                
+                // complete snackbar
+                SnackBar(in: self).show(type: .addItem)
+                // 1초 후 quit
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) { [weak self] in
+                    self?.quitShareView()
+                }
+            } catch {
+                shareView.completeButton.stopAnimation()
+                shareView.completeButton.isEnabled = false
+                SnackBar(in: self).show(type: .errorMessage)
+                throw error
+            }
+        }
+        
     }
 
 }

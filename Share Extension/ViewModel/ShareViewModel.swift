@@ -20,7 +20,7 @@ final class ShareViewModel {
         
     }
     
-    // 웹url로 아이템 파싱하기
+    /// 웹url로 아이템 파싱하기
     func fetchItem(link: String) {
         Task {
             do {
@@ -39,7 +39,7 @@ final class ShareViewModel {
         }
     }
     
-    // 폴더 데이터 가져오기
+    /// 폴더 데이터 가져오기
     func fetchFolders() {
         Task {
             do {
@@ -60,7 +60,7 @@ final class ShareViewModel {
         }
     }
     
-    // 폴더 추가
+    /// 폴더 추가
     func addFolder(name: String) {
         Task {
             do {
@@ -74,8 +74,14 @@ final class ShareViewModel {
         }
     }
     
-    func addItem() {
-        // TODO: Add item
+    /// 아이템 추가
+    func addItem(item: RequestItemDTO) async throws {
+        do {
+            let usecase = AddItemUseCase()
+            _ = try await usecase.execute(item: item)
+        } catch {
+            throw error
+        }
     }
     
 }

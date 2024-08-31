@@ -99,7 +99,7 @@ class CartViewModel: ObservableObject {
         Task {
             do {
                 let usecase = ModifyCartQuantityUseCase()
-                let data = try await usecase.execute(itemId: item.id, itemCount: item.quantity)
+                _ = try await usecase.execute(itemId: item.id, itemCount: item.quantity)
             } catch {
                 throw error
             }
@@ -111,7 +111,11 @@ class CartViewModel: ObservableObject {
         Task {
             do {
                 let usecase = DeleteCartUseCase()
-                let data = try await usecase.execute(itemId: item.id)
+                _ = try await usecase.execute(itemId: item.id)
+                
+                DispatchQueue.main.async {
+                    SnackBar.shared.show(type: .deleteCartItem)
+                }
             } catch {
                 throw error
             }

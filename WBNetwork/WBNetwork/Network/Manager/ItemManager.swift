@@ -29,4 +29,8 @@ public final class ItemManager {
     public func parseItemUrl(link: String) async throws -> WishListResponse {
         return try await API.Item.request(.parseItemUrl(link: link))
     }
+    
+    public func addItem(item: RequestItemDTO) async throws -> EmptyResponse {
+        return try await API.Item.request(.addItem(item: item))
+    }
 }

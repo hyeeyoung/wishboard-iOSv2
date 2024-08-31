@@ -101,7 +101,10 @@ final class SnackBar {
         }
         backgroundView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(SNACKBAR_HEIGHT)
-            make.width.equalTo(title.snp.width).offset(32 * 2)
+            // 스낵바 길이 정적 고정
+            make.leading.trailing.lessThanOrEqualToSuperview().inset(35)
+            // 스낵바 길이 동적 (아랫줄 코드)
+//            make.width.equalTo(title.snp.width).offset(32 * 2)
             make.height.equalTo(SNACKBAR_HEIGHT)
             make.centerX.equalToSuperview()
         }

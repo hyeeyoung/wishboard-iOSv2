@@ -10,7 +10,7 @@ import UIKit
 
 extension UIImage {
     /// 가로와 세로의 비율을 유지한 채로 긴 쪽의 길이를 720으로 유지
-    func resizeImageIfNeeded() -> UIImage {
+    public func resizeImageIfNeeded() -> UIImage {
         let targetSize = CGSize(width: 720, height: 720)
         
         guard var cgImage = self.cgImage else {
@@ -74,7 +74,7 @@ extension UIImage {
     }
     
     /// 이미지 가로 세로 로그 출력
-    func printImageDimensions(_ image: UIImage) {
+    public func printImageDimensions(_ image: UIImage) {
         let width = image.size.width
         let height = image.size.height
         
@@ -83,7 +83,7 @@ extension UIImage {
     }
     
     /// cgImage를 180도 회전시키는 메서드
-    func rotateCGImage180(cgImage: CGImage) -> CGImage? {
+    public func rotateCGImage180(cgImage: CGImage) -> CGImage? {
         let rotatedSize = CGSize(width: cgImage.width, height: cgImage.height)
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let context = CGContext(data: nil, width: Int(rotatedSize.width), height: Int(rotatedSize.height), bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
@@ -95,7 +95,7 @@ extension UIImage {
         return context?.makeImage()
     }
     /// cgImage를 오른쪽으로 90도 회전시키는 메서드
-    func rotateCGImageRight90(cgImage: CGImage) -> CGImage? {
+    public func rotateCGImageRight90(cgImage: CGImage) -> CGImage? {
         let rotatedSize = CGSize(width: cgImage.height, height: cgImage.width)
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let context = CGContext(data: nil, width: Int(rotatedSize.width), height: Int(rotatedSize.height), bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)

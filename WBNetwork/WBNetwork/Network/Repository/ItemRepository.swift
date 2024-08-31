@@ -13,6 +13,7 @@ public protocol ItemRepositoryInterface {
     func getItemDetail(id: Int) async throws -> WishListResponse
     func modifyItemFolder(itemId: Int, folderId: Int) async throws -> EmptyResponse
     func parseItemUrl(link: String) async throws -> WishListResponse
+    func addItem(item: RequestItemDTO) async throws -> EmptyResponse
 }
 
 public final class ItemRepository: ItemRepositoryInterface {
@@ -37,5 +38,9 @@ public final class ItemRepository: ItemRepositoryInterface {
     
     public func parseItemUrl(link: String) async throws -> WishListResponse {
         return try await ItemManager.shared.parseItemUrl(link: link)
+    }
+    
+    public func addItem(item: RequestItemDTO) async throws -> EmptyResponse {
+        return try await ItemManager.shared.addItem(item: item)
     }
 }
