@@ -68,13 +68,14 @@ final class ShareViewModel {
                 let _ = try await usecase.execute(folderName: name)
                 
                 self.fetchFolders()
-                DispatchQueue.main.async {
-                    SnackBar.shared.show(type: .addFolder)
-                }
             } catch {
                 throw error
             }
         }
+    }
+    
+    func addItem() {
+        // TODO: Add item
     }
     
 }

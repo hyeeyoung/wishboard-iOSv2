@@ -33,6 +33,7 @@ final class FolderBottomSheet: UIView {
         $0.layer.cornerRadius = 6
         $0.setLeftPaddingPoints(12)
         $0.clipsToBounds = true
+        $0.autocorrectionType = .no
     }
     private let textCountLabel = UILabel().then {
         $0.text = "(0/10)자"
@@ -155,6 +156,10 @@ final class FolderBottomSheet: UIView {
         onActionButtonTap?(text, folder)
     }
     
+    @objc func dismissKeyboard() {
+        self.endEditing(true)
+    }
+    
     private func updateActionButtonState(isEnabled: Bool) {
         actionButton.isEnabled = isEnabled
     }
@@ -165,10 +170,21 @@ final class FolderBottomSheet: UIView {
         errorMessageLabel.isHidden = false
     }
     
+    func initView() {
+        self.setUpObservers()
+        self.isHidden = false
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        self.addGestureRecognizer(tapGesture)
+    }
+    
     func resetView() {
         textField.text = ""
         textCountLabel.text = "0/\(maxTextLength) 자"
         errorMessageLabel.isHidden = true
+        self.updateActionButtonState(isEnabled: false)
+        self.removeObservers()
+        self.isHidden = true
     }
     
     func configure(with folder: FolderListResponse?) {
@@ -192,10 +208,43 @@ final class FolderBottomSheet: UIView {
 
 // MARK: - TextField Delegate
 extension FolderBottomSheet: UITextFieldDelegate {
-    // UITextFieldDelegate 메서드
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let currentText = textField.text ?? ""
         let newText = (currentText as NSString).replacingCharacters(in: range, with: string)
         return newText.count <= maxTextLength // 글자 수 제한
+    }
+}
+// MARK: - Keyboard Event
+extension FolderBottomSheet {
+    
+    // Keyboard Observers
+    private func setUpObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func removeObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            let keyboardHeight = keyboardFrame.height
+            UIView.animate(withDuration: 0.3) {
+                self.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview().offset(-keyboardHeight)
+                }
+                self.layoutIfNeeded()
+            }
+        }
+    }
+
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        UIView.animate(withDuration: 0.3) {
+            self.snp.updateConstraints { make in
+                make.bottom.equalToSuperview()
+            }
+            self.layoutIfNeeded()
+        }
     }
 }

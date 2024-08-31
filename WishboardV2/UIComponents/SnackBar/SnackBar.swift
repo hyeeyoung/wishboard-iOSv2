@@ -22,7 +22,7 @@ final class SnackBar {
     var type: SnackBarType?
     
     // TODO: Share-Extension일 때 ERROR
-    private init(in viewController: UIViewController? = nil) {
+    public init(in viewController: UIViewController? = nil) {
         #if WISHBOARD_APP
         self.window = UIApplication.shared.keyWindow?.rootViewController
         #else
@@ -127,8 +127,6 @@ final class SnackBar {
             self.hide()
             
             #else
-            guard let window = self.window else {return}
-            window.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
             self.hide()
             
             #endif

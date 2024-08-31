@@ -104,7 +104,7 @@ public final class FormatManager {
         } else {return nil}
     }
     // MARK: - Number (price)
-    // 숫자를 ,넣은 문자열로     // 1000 -> 1,000
+    /// 숫자를 ,넣은 문자열로     // 1000 -> 1,000
     public func numToPrice(num: Int) -> String? {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
@@ -115,12 +115,12 @@ public final class FormatManager {
             return nil
         }
     }
-    // 숫자문자열을 ,넣은 문자열로
+    /// 숫자문자열을 ,넣은 문자열로
     public func strToPrice(numStr: String) -> String? {
         if let num = Int(numStr) {return self.numToPrice(num: num)}
         else {return nil}
     }
-    // 문자열을 숫자로     // 1,000 -> 1000
+    /// 문자열을 숫자로     // 1,000 -> 1000
     public func priceToStr(price: String) -> String {
         let priceStr = price.components(separatedBy: [","]).joined()
         return priceStr

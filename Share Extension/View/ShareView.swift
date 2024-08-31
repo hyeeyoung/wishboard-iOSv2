@@ -34,6 +34,7 @@ final class ShareView: UIView {
         $0.font = TypoStyle.SuitD2.font
         $0.textAlignment = .center
         $0.placeholder = Placeholder.shareItemName
+        $0.autocorrectionType = .no
     }
     let itemPriceTextField = UITextField().then{
         $0.borderStyle = .none
@@ -41,6 +42,7 @@ final class ShareView: UIView {
         $0.keyboardType = .numberPad
         $0.textAlignment = .center
         $0.placeholder = Placeholder.shareItemPrice
+        $0.autocorrectionType = .no
     }
     var setNotificationButton = UIButton().then {
         var config = UIButton.Configuration.plain()
@@ -177,7 +179,7 @@ final class ShareView: UIView {
     private func setupTextFieldDelegates() {
         itemNameTextField.delegate = self
         itemPriceTextField.delegate = self
-       
+        
         // 초기 상태 확인
         updateCompleteButtonState()
     }
@@ -217,9 +219,9 @@ final class ShareView: UIView {
         viewModel.$item
             .receive(on: RunLoop.main)
             .sink { [weak self] item in
-                self?.itemImage.loadImage(from: item?.item_img ?? "")
-                self?.itemNameTextField.text = item?.item_name ?? ""
-                self?.itemPriceTextField.text = item?.item_price ?? "0"
+                self?.configureItemImg(item?.item_img)
+                self?.configureItemName(item?.item_name)
+                self?.configureItemPrice(item?.item_price)
                 
                 self?.updateCompleteButtonState()
             }
@@ -227,6 +229,26 @@ final class ShareView: UIView {
     }
     
     private var cancellables = Set<AnyCancellable>()
+    
+    // UI Methods
+    private func configureItemImg(_ url: String?) {
+        if let url = url {
+            self.itemImage.loadImage(from: url, placeholder: Image.blackLogo)
+        }
+    }
+    
+    private func configureItemName(_ name: String?) {
+        self.itemNameTextField.text = name
+    }
+    
+    private func configureItemPrice(_ price: String?) {
+        if let price = price {
+            let formatPrice = FormatManager.shared.strToPrice(numStr: price)
+            self.itemPriceTextField.text = formatPrice
+        } else {
+            self.itemPriceTextField.text = "0"
+        }
+    }
 }
 
 // MARK: - CollecionView Delegate
@@ -253,6 +275,8 @@ extension ShareView: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         UIDevice.vibrate()
+        self.endEditing(true)
+        
         guard let folderId = viewModel?.folders[indexPath.item].folder_id else {return}
         
         // 폴더 선택/선택해제
@@ -268,15 +292,25 @@ extension ShareView: UICollectionViewDataSource, UICollectionViewDelegate {
 // MARK: - UITextField Delegate
 extension ShareView: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // 입력이 발생할 때마다 호출되며, 입력이 완료된 후 상태를 업데이트
+        
+        // 가격 텍스트필드 입력 시 숫자 포맷팅
+        if textField == itemPriceTextField {
+            guard let currentText = textField.text as NSString? else { return true }
+            let newText = currentText.replacingCharacters(in: range, with: string)
+            let filteredText = newText.filter { $0.isNumber }
+            let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
+            textField.text = formattedText
+        }
+        
+        // 입력이 발생할 때마다 호출되며, 입력이 완료된 후 button 상태를 업데이트
         DispatchQueue.main.async { [weak self] in
             self?.updateCompleteButtonState()
         }
-        return true
+        return false
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        // 편집이 종료될 때도 상태를 업데이트
+        // 편집이 종료될 때도 button 상태를 업데이트
         updateCompleteButtonState()
     }
 }
