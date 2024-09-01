@@ -25,7 +25,6 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         setUpFolderView()
         setupBackgroundDimView()
         setupBottomSheet()
-//        setUpObservers()
         addActions()
     }
     
@@ -57,16 +56,12 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         
         viewModel.$folders
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] folders in
+                self?.folderView.emptyLabel.isHidden = !(folders.isEmpty)
                 self?.folderView.collectionView.reloadData()
             }
             .store(in: &cancellables)
     }
-    
-//    private func setUpObservers() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-//    }
     
     private func addActions() {
         // 키보드 닫기 처리: 바텀 시트의 어디든 탭하면 키보드를 내림

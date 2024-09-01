@@ -14,6 +14,14 @@ import Core
 final class CartView: UIView {
     let toolBar = ToolBar()
     let tableView = UITableView()
+    public let emptyLabel = UILabel().then {
+        $0.text = "앗, 장바구니가 비어있어요!\n구매할 아이템을 장바구니에 담아보세요!"
+        $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
+        $0.textColor = .gray_200
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
     let bottomButtonBar = UIView().then {
         $0.backgroundColor = .green_500
     }
@@ -42,6 +50,7 @@ final class CartView: UIView {
         addSubview(tableView)
         addSubview(bottomButtonBar)
         addSubview(bottomView)
+        addSubview(emptyLabel)
         
         bottomButtonBar.addSubview(totalQuantityLabel)
         bottomButtonBar.addSubview(totalPriceLabel)
@@ -75,6 +84,10 @@ final class CartView: UIView {
         totalPriceLabel.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-16)
             make.centerY.equalToSuperview()
+        }
+        
+        emptyLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     

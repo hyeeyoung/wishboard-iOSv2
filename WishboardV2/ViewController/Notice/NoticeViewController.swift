@@ -16,7 +16,6 @@ final class NoticeViewController: UIViewController, ItemDetailDelegate {
         print("")
     }
     
-    
     private var viewModel = NoticeViewModel()
     private var noticeView = NoticeView()
     private var cancellables = Set<AnyCancellable>()
@@ -55,7 +54,8 @@ final class NoticeViewController: UIViewController, ItemDetailDelegate {
     private func setupBindings() {
         viewModel.$noticeItems
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] items in
+                self?.noticeView.emptyLabel.isHidden = !(items.isEmpty)
                 self?.noticeView.tableView.reloadData()
             }
             .store(in: &cancellables)

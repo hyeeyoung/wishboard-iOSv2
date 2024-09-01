@@ -50,7 +50,8 @@ final class CartViewController: UIViewController {
     private func setupBindings() {
         viewModel.$cartItems
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] items in
+                self?.cartView.emptyLabel.isHidden = !(items.isEmpty)
                 self?.cartView.tableView.reloadData()
             }
             .store(in: &cancellables)
@@ -105,6 +106,8 @@ extension CartViewController: UITableViewDataSource {
             alert.modalPresentationStyle = .overFullScreen
             self?.present(alert, animated: true, completion: nil)
         }
+        
+        cell.selectionStyle = .none
         return cell
     }
 }

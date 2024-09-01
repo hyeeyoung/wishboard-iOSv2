@@ -14,6 +14,14 @@ import Core
 final class NoticeView: UIView {
     let toolBar = BaseToolBar()
     let tableView = UITableView()
+    public let emptyLabel = UILabel().then {
+        $0.text = "앗, 일정이 없어요!\n상품 일정을 지정하고 알림을 받아보세요!"
+        $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
+        $0.textColor = .gray_200
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,6 +36,7 @@ final class NoticeView: UIView {
     private func setupViews() {
         addSubview(toolBar)
         addSubview(tableView)
+        addSubview(emptyLabel)
     }
     
     private func setupConstraints() {
@@ -36,6 +45,9 @@ final class NoticeView: UIView {
         tableView.snp.makeConstraints { make in
             make.top.equalTo(toolBar.snp.bottom)
             make.leading.trailing.bottom.equalToSuperview()
+        }
+        emptyLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
 }

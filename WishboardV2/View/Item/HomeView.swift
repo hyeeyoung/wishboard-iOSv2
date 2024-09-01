@@ -8,13 +8,24 @@
 import Foundation
 import UIKit
 import SnapKit
+import Then
 import Combine
+import Core
 
 final class HomeView: UIView {
     
     // MARK: - Views
     public let toolbar = HomeToolBar()
     public let collectionView: UICollectionView
+    private let emptyLabel = UILabel().then {
+        $0.text = "앗, 아이템이 없어요!\n갖고 싶은 아이템을 등록해 보세요!"
+        $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
+        $0.textColor = .gray_200
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
+    
     private var viewModel: HomeViewModel?
     
     // MARK: - Initializers
@@ -42,8 +53,8 @@ final class HomeView: UIView {
     private func setupViews() {
         addSubview(toolbar)
         addSubview(collectionView)
+        addSubview(emptyLabel)
         
-//        toolbar.delegate -
         collectionView.register(WishItemCollectionViewCell.self, forCellWithReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier)
     }
     
@@ -55,6 +66,9 @@ final class HomeView: UIView {
             make.top.equalTo(toolbar.snp.bottom)
             make.bottom.equalToSuperview()
         }
+        emptyLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
     
     // MARK: - Public Methods
@@ -63,7 +77,8 @@ final class HomeView: UIView {
         
         viewModel.$items
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] items in
+                self?.emptyLabel.isHidden = !(items.isEmpty)
                 self?.collectionView.reloadData()
             }
             .store(in: &cancellables)
