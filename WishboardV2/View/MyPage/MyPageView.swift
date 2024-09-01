@@ -23,6 +23,8 @@ final class MypageView: UIView {
     private var settings: [Setting] = []
     private var user: User?
     
+    public var moveModifyProfile: (() -> Void)?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -96,6 +98,11 @@ extension MypageView: UITableViewDataSource, UITableViewDelegate {
         guard let user = user else { return nil }
         let headerView = ProfileHeaderView()
         headerView.configure(with: user)
+        
+        headerView.moveModifyProfile = { [weak self] in
+            self?.moveModifyProfile?()
+        }
+        
         return headerView
     }
     

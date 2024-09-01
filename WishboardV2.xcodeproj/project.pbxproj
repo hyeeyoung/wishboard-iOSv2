@@ -101,6 +101,9 @@
 		23D5B65D2C7A297E00B73174 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D5B65C2C7A297E00B73174 /* WebViewController.swift */; };
 		23D5B6632C7A309F00B73174 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D5B6622C7A309F00B73174 /* AlertViewController.swift */; };
 		23DEFA892C563BED007E958A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23DEFA882C563BED007E958A /* Main.storyboard */; };
+		23F0F5392C83FC24001ABAA9 /* ModiftyProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0F5382C83FC24001ABAA9 /* ModiftyProfileViewController.swift */; };
+		23F0F53B2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0F53A2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift */; };
+		23F0F53D2C83FC65001ABAA9 /* ModifyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0F53C2C83FC65001ABAA9 /* ModifyProfileView.swift */; };
 		23F3FFBE2C78FAAF003C7DA9 /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
 		23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */; };
 		23F3FFC62C790297003C7DA9 /* loading_spin.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC42C790296003C7DA9 /* loading_spin.json */; };
@@ -278,6 +281,9 @@
 		23D5B6622C7A309F00B73174 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		23DEFA882C563BED007E958A /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		23F03C4F2C7B5F4200B7003E /* Share Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Share Extension.entitlements"; sourceTree = "<group>"; };
+		23F0F5382C83FC24001ABAA9 /* ModiftyProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModiftyProfileViewController.swift; sourceTree = "<group>"; };
+		23F0F53A2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyProfileViewModel.swift; sourceTree = "<group>"; };
+		23F0F53C2C83FC65001ABAA9 /* ModifyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyProfileView.swift; sourceTree = "<group>"; };
 		23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnackBar.swift; sourceTree = "<group>"; };
 		23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationButton.swift; sourceTree = "<group>"; };
 		23F3FFC42C790296003C7DA9 /* loading_spin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_spin.json; sourceTree = "<group>"; };
@@ -562,6 +568,7 @@
 			children = (
 				23CB0DCD2C79E2600053EB40 /* MyPageViewController.swift */,
 				23D5B65C2C7A297E00B73174 /* WebViewController.swift */,
+				23F0F5382C83FC24001ABAA9 /* ModiftyProfileViewController.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -572,6 +579,7 @@
 				23CB0DD02C79E26F0053EB40 /* MyPageView.swift */,
 				23CB0DD32C79E2910053EB40 /* ProfileHeaderView.swift */,
 				23CB0DD72C79E43F0053EB40 /* SettingTableViewCell.swift */,
+				23F0F53C2C83FC65001ABAA9 /* ModifyProfileView.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -580,6 +588,7 @@
 			isa = PBXGroup;
 			children = (
 				23CB0DD52C79E2A20053EB40 /* MyPageViewModel.swift */,
+				23F0F53A2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -1062,8 +1071,10 @@
 				23AD9D692C80A245007AB8D1 /* NoticeViewController.swift in Sources */,
 				23ACCEC52C6A1EDC00E93953 /* LoginViewModel.swift in Sources */,
 				2337C8642C70FD2B00E2A67B /* ItemDetailViewController.swift in Sources */,
+				23F0F53B2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift in Sources */,
 				232466752C6F92A400979940 /* TabBarViewController.swift in Sources */,
 				23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */,
+				23F0F53D2C83FC65001ABAA9 /* ModifyProfileView.swift in Sources */,
 				238595162C71BF4F00B85CBC /* FolderViewModel.swift in Sources */,
 				23AD9D712C80A4A4007AB8D1 /* NoticeTableViewCell.swift in Sources */,
 				2328C4EB2C720CFF0081A97C /* FolderBottomSheet.swift in Sources */,
@@ -1071,6 +1082,7 @@
 				23ACCEC22C6A1E0A00E93953 /* LoginViewController.swift in Sources */,
 				2347A9042C7ABBA9009F9480 /* FolderDetailView.swift in Sources */,
 				23AD9D6C2C80A264007AB8D1 /* NoticeViewModel.swift in Sources */,
+				23F0F5392C83FC24001ABAA9 /* ModiftyProfileViewController.swift in Sources */,
 				23CBF49C2C5514510061D22F /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

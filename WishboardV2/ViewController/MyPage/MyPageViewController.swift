@@ -56,6 +56,9 @@ class MypageViewController: UIViewController {
             make.horizontalEdges.bottom.equalToSuperview()
         }
         mypageView.delegate = self
+        mypageView.moveModifyProfile = { [weak self] in
+            self?.didTapEditProfile()
+        }
     }
     
     private func setupBindings() {
@@ -74,8 +77,16 @@ class MypageViewController: UIViewController {
     }
     
     func didTapEditProfile() {
-        // 프로필 편집 화면으로 이동 후, 편집 완료 시 ViewModel의 updateProfile 호출
-        viewModel.updateProfile(nickname: "새 닉네임", email: "새 이메일", profileImageUrl: "")
+        // 프로필 편집 화면으로 이동
+        let profileImgUrl = self.viewModel.user.profileImageUrl
+        let nickname = self.viewModel.user.nickname
+        let nextVC = ModifyProfileViewController(profileImgUrl, nickname)
+        
+        nextVC.modifyProfileAction = { [weak self] in
+            self?.viewModel.fetchUserData()
+        }
+        
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     /// 웹뷰로 화면 이동

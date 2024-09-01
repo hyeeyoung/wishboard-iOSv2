@@ -11,6 +11,7 @@ public protocol UserRepositoryInterface {
     func getUserInfo() async throws -> [UserInfoResponse]
     func updatePushState(state: Bool) async throws -> EmptyResponse
     func deleteUser() async throws -> EmptyResponse
+    func modifyProfile(profileImg: Data?, nickname: String?) async throws -> EmptyResponse
 }
 
 public final class UserRepository: UserRepositoryInterface {
@@ -26,5 +27,9 @@ public final class UserRepository: UserRepositoryInterface {
     
     public func deleteUser() async throws -> EmptyResponse {
         return try await UserAPIManager.shared.deleteUser()
+    }
+    
+    public func modifyProfile(profileImg: Data?, nickname: String?) async throws -> EmptyResponse {
+        return try await UserAPIManager.shared.modifyProfile(profileImg: profileImg, nickname: nickname)
     }
 }

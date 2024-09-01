@@ -16,6 +16,8 @@ public enum UserAPI {
     case updatePushState(state: Bool)
     /// 유저 탈퇴
     case deleteUser
+    /// 유저 정보 수정
+    case modifyProfile(profileImg: Data?, nickname: String?)
 }
 
 extension UserAPI: TargetType, AccessTokenAuthorizable {
@@ -32,6 +34,8 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
             return "push-state/\(path)"
         case .deleteUser:
             return ""
+        case .modifyProfile:
+            return ""
         }
     }
 
@@ -43,6 +47,8 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
             return .put
         case .deleteUser:
             return .delete
+        case .modifyProfile:
+            return .put
         }
     }
 
@@ -52,6 +58,9 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
         switch self {
         case .getUserInfo:
             parameters = [:]
+        case .modifyProfile(let profilImg, let nickname):
+            let formData = makeMultipartFormData(profileImg: profilImg, nickname: nickname)
+            return .uploadMultipart(formData)
         default:
             parameters = [:]
         }
@@ -71,4 +80,22 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
     public var validationType: ValidationType {
         return .successCodes
     }
+    
+    func makeMultipartFormData(profileImg: Data?, nickname: String?) -> [Moya.MultipartFormData] {
+        
+        var nameData: MultipartFormData?
+        if let nickname = nickname {
+            nameData = MultipartFormData(provider: .data(nickname.data(using: String.Encoding.utf8) ?? Data()), name: "nickname")
+        }
+
+        let imageData = profileImg ?? Data()
+        let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "profile_img", fileName: "profile.jpeg", mimeType: "image/jpeg")
+       
+       var formData: [Moya.MultipartFormData] = [imageMultipartFormData]
+       if let nameData = nameData {
+           formData.append(nameData)
+       }
+       
+       return formData
+   }
 }

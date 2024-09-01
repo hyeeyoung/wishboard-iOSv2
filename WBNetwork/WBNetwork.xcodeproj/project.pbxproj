@@ -66,6 +66,7 @@
 		23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */; };
 		23CB0DE02C79FBBB0053EB40 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDF2C79FBBB0053EB40 /* UserRepository.swift */; };
 		23CB0DE32C79FBEF0053EB40 /* GetUserInfoUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */; };
+		23F0F53F2C840586001ABAA9 /* ModifyProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0F53E2C840586001ABAA9 /* ModifyProfileUseCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +139,7 @@
 		23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIManager.swift; sourceTree = "<group>"; };
 		23CB0DDF2C79FBBB0053EB40 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserInfoUseCase.swift; sourceTree = "<group>"; };
+		23F0F53E2C840586001ABAA9 /* ModifyProfileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyProfileUseCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,6 +367,7 @@
 				23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */,
 				230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */,
 				230EDC3C2C821CDF00FC35F2 /* DeleteUserUseCase.swift */,
+				23F0F53E2C840586001ABAA9 /* ModifyProfileUseCase.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -488,6 +491,7 @@
 				238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */,
 				2347A90A2C7AC0AD009F9480 /* AddFolderUseCase.swift in Sources */,
 				238595202C71C6E400B85CBC /* FolderManager.swift in Sources */,
+				23F0F53F2C840586001ABAA9 /* ModifyProfileUseCase.swift in Sources */,
 				232186032C70B58F008BD81B /* LoadingPlugin.swift in Sources */,
 				2347A9162C7AD368009F9480 /* ModifyItemFolderUseCase.swift in Sources */,
 				232185FE2C70B582008BD81B /* TokenInterceptor.swift in Sources */,

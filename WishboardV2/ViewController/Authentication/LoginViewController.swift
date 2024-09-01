@@ -79,50 +79,22 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
     
     /// '로그인하기' 버튼 탭 이벤트
     @objc func loginButtonTapped() {
-        print("Login button tapped")
         Task {
             do {
                 loginView.loginButton.startAnimation()
-                // Login API call
-                let email = viewModel.email
-                let password = viewModel.password
-                let fcmToken = UserDefaults.standard.string(forKey: "fcmToken") ?? ""
                 
-                let usecase = LoginUseCase(repository: AuthRepository())
-                let data = try await usecase.execute(email: email, password: password, fcmToken: fcmToken)
+                try await viewModel.login()
                 
-                guard let tokenData = data.token else {
-                    print("no token data in login response")
-                    return
-                }
-                
-                // save tokens
-                self.saveToken(tokenData)
                 loginView.loginButton.stopAnimation()
+                self.moveToMain()
             } catch {
                 print("login error")
                 loginView.loginButton.stopAnimation()
                 self.loginView.updateLoginButtonState(isEnabled: false)
+                SnackBar.shared.show(type: .errorMessage)
+                throw error
             }
         }
-    }
-    
-    /// 로그인 응답으로부터 accessToken/refreshToken 저장
-    private func saveToken(_ data: LoginRepsonseTokenData) {
-        guard let accessToken = data.accessToken else {
-            print("no accessToken in loginResponse")
-            return
-        }
-        guard let refreshToken = data.refreshToken else {
-            print("no refreshToken in loginResponse")
-            return
-        }
-        
-        UserManager.accessToken = accessToken
-        UserManager.refreshToken = refreshToken
-        print("login success! tokens saved!")
-        
-        self.moveToMain()
     }
     
     /// 로그인 성공 후 메인 화면으로 전환

@@ -42,10 +42,15 @@ class ProfileHeaderView: UIView {
     }
     
     // MARK: - Life Cycle
+    
+    public var moveModifyProfile: (() -> Void)?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
         setupView()
+        
+        modifyButton.addTarget(self, action: #selector(modifyProfileTapped), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -92,5 +97,9 @@ class ProfileHeaderView: UIView {
         profileImage.loadImage(from: user.profileImageUrl ?? "", placeholder: Image.defaultProfile)
         userNameLabel.text = user.nickname
         emailLabel.text = user.email
+    }
+    
+    @objc private func modifyProfileTapped() {
+        self.moveModifyProfile?()
     }
 }

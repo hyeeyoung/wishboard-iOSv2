@@ -333,7 +333,7 @@ final class ItemDetailView: UIView {
             actionButton.titleLabel?.font = TypoStyle.SuitH3.font
             actionButton.setTitleColor(.gray_300, for: .normal)
             actionButton.backgroundColor = .gray_100
-            actionButton.isEnabled = true
+            actionButton.isEnabled = false
             bottomView.backgroundColor = .gray_100
         }
     }

@@ -61,14 +61,6 @@ class MypageViewModel {
         }
     }
     
-    /// 프로필 편집 후 유저 프로필 업데이트
-    func updateProfile(nickname: String, email: String, profileImageUrl: String) {
-        // TODO: 프로필 편집 API
-        user.nickname = nickname
-        user.email = email
-        user.profileImageUrl = profileImageUrl
-    }
-    
     /// 알림 토글 수정
     func updatePushStatus(isOn: Bool) {
         Task {

@@ -21,4 +21,8 @@ public final class UserAPIManager {
     public func deleteUser() async throws -> EmptyResponse {
         return try await API.User.request(.deleteUser)
     }
+    
+    public func modifyProfile(profileImg: Data?, nickname: String?) async throws -> EmptyResponse {
+        return try await API.User.request(.modifyProfile(profileImg: profileImg, nickname: nickname))
+    }
 }
