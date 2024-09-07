@@ -81,6 +81,8 @@ final class ModifyProfileViewController: UIViewController {
     }
     
     @objc private func showAlbum() {
+        self.view.endEditing(true)
+        
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
         imagePickerController.sourceType = .photoLibrary

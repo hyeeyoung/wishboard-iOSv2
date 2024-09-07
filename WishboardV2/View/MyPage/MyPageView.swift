@@ -39,6 +39,7 @@ final class MypageView: UIView {
         addSubview(toolBar)
         
         tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.identifier)
+        tableView.backgroundColor = .white
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .none

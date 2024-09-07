@@ -43,6 +43,7 @@ final class ModifyProfileView: UIView {
         $0.layer.cornerRadius = 6
         $0.setLeftPaddingPoints(12)
         $0.autocapitalizationType = .none
+        $0.autocorrectionType = .no
         $0.clearButtonMode = .whileEditing
         $0.becomeFirstResponder()
     }

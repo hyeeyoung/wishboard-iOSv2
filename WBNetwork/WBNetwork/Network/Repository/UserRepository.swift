@@ -12,6 +12,7 @@ public protocol UserRepositoryInterface {
     func updatePushState(state: Bool) async throws -> EmptyResponse
     func deleteUser() async throws -> EmptyResponse
     func modifyProfile(profileImg: Data?, nickname: String?) async throws -> EmptyResponse
+    func modifyPassword(password: String) async throws -> EmptyResponse
 }
 
 public final class UserRepository: UserRepositoryInterface {
@@ -31,5 +32,9 @@ public final class UserRepository: UserRepositoryInterface {
     
     public func modifyProfile(profileImg: Data?, nickname: String?) async throws -> EmptyResponse {
         return try await UserAPIManager.shared.modifyProfile(profileImg: profileImg, nickname: nickname)
+    }
+    
+    public func modifyPassword(password: String) async throws -> EmptyResponse {
+        return try await UserAPIManager.shared.modifyPassword(password: password)
     }
 }

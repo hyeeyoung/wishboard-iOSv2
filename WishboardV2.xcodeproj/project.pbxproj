@@ -28,6 +28,9 @@
 		2357E5632C7B0AE600CC9509 /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
 		2357E5652C7B0D3A00CC9509 /* FolderCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E5642C7B0D3900CC9509 /* FolderCollectionViewCell.swift */; };
 		236ED4D02C6E37BB000EA85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */; };
+		23798B6F2C8C24E300F6DA90 /* ModifyPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */; };
+		23798B712C8C253700F6DA90 /* ModifyPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */; };
+		23798B732C8C256B00F6DA90 /* ModifyPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B722C8C256B00F6DA90 /* ModifyPasswordViewModel.swift */; };
 		2385950C2C71BC7E00B85CBC /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */; };
 		238595112C71BF2B00B85CBC /* FolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595102C71BF2B00B85CBC /* FolderViewController.swift */; };
 		238595132C71BF3900B85CBC /* FolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595122C71BF3900B85CBC /* FolderView.swift */; };
@@ -222,6 +225,9 @@
 		2357E5642C7B0D3900CC9509 /* FolderCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCollectionViewCell.swift; sourceTree = "<group>"; };
 		236ED4CE2C6E3515000EA85B /* WishboardV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WishboardV2.entitlements; sourceTree = "<group>"; };
 		236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordViewController.swift; sourceTree = "<group>"; };
+		23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordView.swift; sourceTree = "<group>"; };
+		23798B722C8C256B00F6DA90 /* ModifyPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordViewModel.swift; sourceTree = "<group>"; };
 		2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		238595102C71BF2B00B85CBC /* FolderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderViewController.swift; sourceTree = "<group>"; };
 		238595122C71BF3900B85CBC /* FolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderView.swift; sourceTree = "<group>"; };
@@ -569,6 +575,7 @@
 				23CB0DCD2C79E2600053EB40 /* MyPageViewController.swift */,
 				23D5B65C2C7A297E00B73174 /* WebViewController.swift */,
 				23F0F5382C83FC24001ABAA9 /* ModiftyProfileViewController.swift */,
+				23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -580,6 +587,7 @@
 				23CB0DD32C79E2910053EB40 /* ProfileHeaderView.swift */,
 				23CB0DD72C79E43F0053EB40 /* SettingTableViewCell.swift */,
 				23F0F53C2C83FC65001ABAA9 /* ModifyProfileView.swift */,
+				23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -589,6 +597,7 @@
 			children = (
 				23CB0DD52C79E2A20053EB40 /* MyPageViewModel.swift */,
 				23F0F53A2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift */,
+				23798B722C8C256B00F6DA90 /* ModifyPasswordViewModel.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -1036,6 +1045,7 @@
 				2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */,
 				231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */,
 				238595132C71BF3900B85CBC /* FolderView.swift in Sources */,
+				23798B6F2C8C24E300F6DA90 /* ModifyPasswordViewController.swift in Sources */,
 				23D5B6632C7A309F00B73174 /* AlertViewController.swift in Sources */,
 				2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */,
 				23CBF4D52C55162A0061D22F /* OnboardingViewModel.swift in Sources */,
@@ -1050,6 +1060,7 @@
 				23B3A0CD2C7F521F006D0561 /* CartViewController.swift in Sources */,
 				2337C8682C70FDB400E2A67B /* ItemDetailViewModel.swift in Sources */,
 				23CBF49A2C5514510061D22F /* AppDelegate.swift in Sources */,
+				23798B712C8C253700F6DA90 /* ModifyPasswordView.swift in Sources */,
 				23CB0DD42C79E2910053EB40 /* ProfileHeaderView.swift in Sources */,
 				23CBF4D12C55160C0061D22F /* OnboardingView.swift in Sources */,
 				23F3FFBE2C78FAAF003C7DA9 /* SnackBar.swift in Sources */,
@@ -1084,6 +1095,7 @@
 				23AD9D6C2C80A264007AB8D1 /* NoticeViewModel.swift in Sources */,
 				23F0F5392C83FC24001ABAA9 /* ModiftyProfileViewController.swift in Sources */,
 				23CBF49C2C5514510061D22F /* SceneDelegate.swift in Sources */,
+				23798B732C8C256B00F6DA90 /* ModifyPasswordViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

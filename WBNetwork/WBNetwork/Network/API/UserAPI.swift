@@ -18,6 +18,8 @@ public enum UserAPI {
     case deleteUser
     /// 유저 정보 수정
     case modifyProfile(profileImg: Data?, nickname: String?)
+    /// 비밀번호 변경
+    case modifyPassword(password: String)
 }
 
 extension UserAPI: TargetType, AccessTokenAuthorizable {
@@ -36,6 +38,8 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
             return ""
         case .modifyProfile:
             return ""
+        case .modifyPassword:
+            return "/re-passwd"
         }
     }
 
@@ -49,6 +53,8 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
             return .delete
         case .modifyProfile:
             return .put
+        case .modifyPassword:
+            return .put
         }
     }
 
@@ -61,11 +67,13 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
         case .modifyProfile(let profilImg, let nickname):
             let formData = makeMultipartFormData(profileImg: profilImg, nickname: nickname)
             return .uploadMultipart(formData)
+        case .modifyPassword(let password):
+            parameters = ["newPassword": password]
         default:
             parameters = [:]
         }
         
-        let encoding: ParameterEncoding = self.method == .post ? JSONEncoding.default : URLEncoding.default
+        let encoding: ParameterEncoding = self.method == .post || self.method == .put ? JSONEncoding.default : URLEncoding.default
         return .requestParameters(parameters: parameters, encoding: encoding)
     }
 

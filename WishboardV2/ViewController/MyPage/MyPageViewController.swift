@@ -106,8 +106,8 @@ extension MypageViewController: MypageViewDelegate {
         switch tag {
         case 1:
             // 비밀번호 변경
-//            let vc = ModifyPasswordViewController()
-//            self.navigationController?.pushViewController(vc, animated: true)
+            let vc = ModifyPasswordViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
             break
         case 2:
             // 문의하기
