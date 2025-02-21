@@ -21,7 +21,7 @@ struct NoticeItem {
 }
 
 @MainActor
-class NoticeViewModel: ObservableObject {
+class AlarmListViewModel: ObservableObject {
     @Published var noticeItems: [NoticeItem] = []
     @Published var readState: Bool = false
     

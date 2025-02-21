@@ -12,8 +12,7 @@ import Then
 import Core
 
 public protocol HomeToolBarDelegate: AnyObject {
-    func cartNaviItemTap()
-    func calendarNaviItemTap()
+    func alarmNaviItemTap()
 }
 
 final public class HomeToolBar: UIView {
@@ -25,12 +24,9 @@ final public class HomeToolBar: UIView {
         $0.image = Image.homeAppLogo
     }
     
-    private let cartButton = UIButton().then {
-        $0.setImage(Image.cartIcon, for: .normal)
-    }
-    
-    private let calendarButton = UIButton().then {
-        $0.setImage(Image.calender, for: .normal)
+    private let alarmButton = UIButton().then {
+        $0.tintColor = .gray_700
+        $0.setImage(Image.notice, for: .normal)
     }
     
     // MARK: - Initializer
@@ -50,8 +46,7 @@ final public class HomeToolBar: UIView {
     // MARK: - Setup
     private func setupViews() {
         addSubview(logo)
-        addSubview(cartButton)
-        addSubview(calendarButton)
+        addSubview(alarmButton)
     }
     
     private func setupConstraints() {
@@ -62,32 +57,21 @@ final public class HomeToolBar: UIView {
             make.height.equalTo(18)
         }
         
-        calendarButton.snp.makeConstraints { make in
+        alarmButton.snp.makeConstraints { make in
             make.width.height.equalTo(24)
             make.trailing.equalToSuperview().offset(-16)
-            make.centerY.equalToSuperview()
-        }
-        
-        cartButton.snp.makeConstraints { make in
-            make.width.height.equalTo(24)
-            make.trailing.equalTo(calendarButton.snp.leading).offset(-16)
             make.centerY.equalToSuperview()
         }
     }
     
     // MARK: - Setup Actions
     private func setupActions() {
-        cartButton.addTarget(self, action: #selector(cartButtonTapped), for: .touchUpInside)
-        calendarButton.addTarget(self, action: #selector(calendarButtonTapped), for: .touchUpInside)
+        alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - Button Actions
-    @objc private func cartButtonTapped() {
-        delegate?.cartNaviItemTap()
-    }
-    
-    @objc private func calendarButtonTapped() {
-        delegate?.calendarNaviItemTap()
+    @objc private func alarmButtonTapped() {
+        delegate?.alarmNaviItemTap()
     }
     
     public func configure() {

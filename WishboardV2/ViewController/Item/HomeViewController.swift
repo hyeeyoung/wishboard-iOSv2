@@ -51,14 +51,8 @@ extension HomeViewController: UICollectionViewDelegate {
 }
 
 extension HomeViewController: HomeToolBarDelegate {
-    func cartNaviItemTap() {
-        let nextVC = CartViewController()
+    func alarmNaviItemTap() {
+        let nextVC = AlarmListViewController()
         navigationController?.pushViewController(nextVC, animated: true)
     }
-    
-    func calendarNaviItemTap() {
-        print("Move to Calendar")
-    }
-    
-    
 }

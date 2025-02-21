@@ -11,19 +11,20 @@ import Combine
 import SafariServices
 import Core
 
-final class NoticeViewController: UIViewController, ItemDetailDelegate {
+final class AlarmListViewController: UIViewController, ItemDetailDelegate {
     func refreshItems() {
         print("")
     }
     
-    private var viewModel = NoticeViewModel()
-    private var noticeView = NoticeView()
+    private var viewModel = AlarmListViewModel()
+    private var noticeView = AlarmListView()
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupDelegates()
         setupBindings()
         viewModel.fetchItems()
     }
@@ -51,6 +52,10 @@ final class NoticeViewController: UIViewController, ItemDetailDelegate {
         noticeView.tableView.register(NoticeTableViewCell.self, forCellReuseIdentifier: NoticeTableViewCell.reuseIdentifier)
     }
     
+    private func setupDelegates() {
+        noticeView.toolBar.delegate = self
+    }
+    
     private func setupBindings() {
         viewModel.$noticeItems
             .receive(on: RunLoop.main)
@@ -63,7 +68,7 @@ final class NoticeViewController: UIViewController, ItemDetailDelegate {
 }
 
 // MARK: - UITableViewDataSource
-extension NoticeViewController: UITableViewDataSource {
+extension AlarmListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.noticeItems.count
     }
@@ -97,8 +102,20 @@ extension NoticeViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-extension NoticeViewController: UITableViewDelegate {
+extension AlarmListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 112
     }
+}
+
+extension AlarmListViewController: AlarmToolBarDelegate {
+    func leftNaviItemTap() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func calendarNaviItemTap() {
+        let nextVC = CalendarViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
 }

@@ -28,19 +28,16 @@ class TabBarViewController: UITabBarController {
         let wishListVC = HomeViewController()
         let folderVC = FolderViewController()
         let addVC = HomeViewController()
-        let noticeVC = NoticeViewController()
         let myPageVC = MypageViewController()
         
         wishListVC.tabBarItem.image = Image.wishlistTab
         folderVC.tabBarItem.image = Image.folderTab
         addVC.tabBarItem.image = Image.addTab
-        noticeVC.tabBarItem.image = Image.noticeTab
         myPageVC.tabBarItem.image = Image.profileTab
         
         wishListVC.tabBarItem.title = "WISHLIST"
         folderVC.tabBarItem.title = "FOLDER"
         addVC.tabBarItem.title = "ADD"
-        noticeVC.tabBarItem.title = "NOTICE"
         myPageVC.tabBarItem.title = "MY"
         
         self.tabBar.tintColor = .gray_700
@@ -52,9 +49,8 @@ class TabBarViewController: UITabBarController {
         let nav1 = UINavigationController(rootViewController: wishListVC)
         let nav2 = UINavigationController(rootViewController: folderVC)
         let nav3 = UINavigationController(rootViewController: addVC)
-        let nav4 = UINavigationController(rootViewController: noticeVC)
-        let nav5 = UINavigationController(rootViewController: myPageVC)
+        let nav4 = UINavigationController(rootViewController: myPageVC)
     
-        setViewControllers([nav1, nav2, nav3, nav4, nav5], animated: false)
+        setViewControllers([nav1, nav2, nav3, nav4], animated: false)
     }
 }

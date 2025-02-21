@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 import SnapKit
 import Combine
+import Core
+
 
 final class FolderDetailView: UIView {
     
@@ -16,9 +18,19 @@ final class FolderDetailView: UIView {
     public let toolbar = ToolBar()
     private var folderTitle: String?
     public let collectionView: UICollectionView
-    private var viewModel: FolderDetailViewModel?
+    private let emptyLabel = UILabel().then {
+        $0.text = "앗, 아이템이 없어요!\n갖고 싶은 아이템을 등록해 보세요!"
+        $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
+        $0.textColor = .gray_200
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
     
     // MARK: - Initializers
+    
+    private var viewModel: FolderDetailViewModel?
+    
     override init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
         let cellWidth = UIScreen.main.bounds.width / 2
@@ -48,6 +60,7 @@ final class FolderDetailView: UIView {
     private func setupViews() {
         addSubview(toolbar)
         addSubview(collectionView)
+        addSubview(emptyLabel)
         
         collectionView.register(WishItemCollectionViewCell.self, forCellWithReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier)
     }
@@ -60,6 +73,10 @@ final class FolderDetailView: UIView {
             make.top.equalTo(toolbar.snp.bottom)
             make.bottom.equalToSuperview()
         }
+        
+        emptyLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
     
     // MARK: - Public Methods
@@ -68,7 +85,8 @@ final class FolderDetailView: UIView {
         
         viewModel.$items
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] items in
+                self?.emptyLabel.isHidden = !(items.isEmpty)
                 self?.collectionView.reloadData()
             }
             .store(in: &cancellables)

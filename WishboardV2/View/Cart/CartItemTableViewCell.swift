@@ -97,6 +97,7 @@ final class CartItemTableViewCell: UITableViewCell {
             make.leading.equalTo(itemImageView.snp.trailing).offset(10)
             make.top.equalTo(itemImageView)
             make.trailing.equalTo(removeButton.snp.leading).offset(6)
+            make.bottom.lessThanOrEqualTo(minusButton.snp.top).offset(-4)
         }
         
         minusButton.snp.makeConstraints { make in

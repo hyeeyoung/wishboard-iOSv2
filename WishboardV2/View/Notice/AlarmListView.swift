@@ -11,8 +11,8 @@ import SnapKit
 import Then
 import Core
 
-final class NoticeView: UIView {
-    let toolBar = BaseToolBar()
+final class AlarmListView: UIView {
+    let toolBar = AlarmToolBar()
     let tableView = UITableView()
     public let emptyLabel = UILabel().then {
         $0.text = "앗, 일정이 없어요!\n상품 일정을 지정하고 알림을 받아보세요!"

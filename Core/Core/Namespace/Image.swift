@@ -26,6 +26,9 @@ public enum Image{
     public static let checkWhite = UIImage(named: "check_white")!
     public static let checkGreen = UIImage(named: "check")!
     
+    // Alarm
+    public static let notice = UIImage(named: "notice")!
+    
     // cart
     public static let cartIcon = UIImage(named: "cart")!
     public static let cartPlus = UIImage(named: "ic_cart_plus")!
@@ -71,7 +74,6 @@ public enum Image{
     // MARK: - Tab Bar Icons
     public static let addTab = UIImage(named: "add")!
     public static let folderTab = UIImage(named: "folder")!
-    public static let noticeTab = UIImage(named: "notice")!
     public static let profileTab = UIImage(named: "profile")!
     public static let wishlistTab = UIImage(named: "wishlist")!
 }
