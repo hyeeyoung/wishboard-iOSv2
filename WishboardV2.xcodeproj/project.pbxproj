@@ -86,6 +86,11 @@
 		23C4D23C2C7A526D00BB0B08 /* SUIT-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23974D4F2C5E5304006BBC97 /* SUIT-SemiBold.ttf */; };
 		23C4D23D2C7A52B300BB0B08 /* FolderBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2328C4EA2C720CFF0081A97C /* FolderBottomSheet.swift */; };
 		23C610752D68CB2A003E71F4 /* AlarmToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C610742D68CB2A003E71F4 /* AlarmToolBar.swift */; };
+		23C610782D68D699003E71F4 /* AddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C610772D68D699003E71F4 /* AddViewController.swift */; };
+		23C6107B2D68D6B1003E71F4 /* AddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C6107A2D68D6B1003E71F4 /* AddView.swift */; };
+		23C6107E2D68D6C3003E71F4 /* AddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C6107D2D68D6C3003E71F4 /* AddViewModel.swift */; };
+		23C610802D68D791003E71F4 /* OptionSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C6107F2D68D791003E71F4 /* OptionSelectorView.swift */; };
+		23C610822D68DF63003E71F4 /* AddToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C610812D68DF63003E71F4 /* AddToolBar.swift */; };
 		23CB0DCE2C79E2600053EB40 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DCD2C79E2600053EB40 /* MyPageViewController.swift */; };
 		23CB0DD12C79E26F0053EB40 /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD02C79E26F0053EB40 /* MyPageView.swift */; };
 		23CB0DD42C79E2910053EB40 /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD32C79E2910053EB40 /* ProfileHeaderView.swift */; };
@@ -269,6 +274,11 @@
 		23C4D21E2C7A4D6D00BB0B08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23C4D22E2C7A4EFE00BB0B08 /* ShareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareView.swift; sourceTree = "<group>"; };
 		23C610742D68CB2A003E71F4 /* AlarmToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmToolBar.swift; sourceTree = "<group>"; };
+		23C610772D68D699003E71F4 /* AddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddViewController.swift; sourceTree = "<group>"; };
+		23C6107A2D68D6B1003E71F4 /* AddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddView.swift; sourceTree = "<group>"; };
+		23C6107D2D68D6C3003E71F4 /* AddViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddViewModel.swift; sourceTree = "<group>"; };
+		23C6107F2D68D791003E71F4 /* OptionSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorView.swift; sourceTree = "<group>"; };
+		23C610812D68DF63003E71F4 /* AddToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToolBar.swift; sourceTree = "<group>"; };
 		23CB0DCD2C79E2600053EB40 /* MyPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		23CB0DD02C79E26F0053EB40 /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		23CB0DD32C79E2910053EB40 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
@@ -429,6 +439,7 @@
 				2337C86C2C710A5F00E2A67B /* DetailToolBar.swift */,
 				238595242C71C7E700B85CBC /* BaseToolBar.swift */,
 				23C610742D68CB2A003E71F4 /* AlarmToolBar.swift */,
+				23C610812D68DF63003E71F4 /* AddToolBar.swift */,
 			);
 			path = ToolBars;
 			sourceTree = "<group>";
@@ -602,6 +613,31 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		23C610762D68D397003E71F4 /* Add */ = {
+			isa = PBXGroup;
+			children = (
+				23C610772D68D699003E71F4 /* AddViewController.swift */,
+			);
+			path = Add;
+			sourceTree = "<group>";
+		};
+		23C610792D68D6AB003E71F4 /* Add */ = {
+			isa = PBXGroup;
+			children = (
+				23C6107A2D68D6B1003E71F4 /* AddView.swift */,
+				23C6107F2D68D791003E71F4 /* OptionSelectorView.swift */,
+			);
+			path = Add;
+			sourceTree = "<group>";
+		};
+		23C6107C2D68D6BD003E71F4 /* Add */ = {
+			isa = PBXGroup;
+			children = (
+				23C6107D2D68D6C3003E71F4 /* AddViewModel.swift */,
+			);
+			path = Add;
+			sourceTree = "<group>";
+		};
 		23CB0DCC2C79E2530053EB40 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
@@ -702,6 +738,7 @@
 		23CBF4CA2C5515CA0061D22F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				23C610792D68D6AB003E71F4 /* Add */,
 				235ABA0E2C8C711D00763900 /* Calendar */,
 				23AD9D6D2C80A277007AB8D1 /* Notice */,
 				23B3A0D12C7F5251006D0561 /* Cart */,
@@ -717,6 +754,7 @@
 		23CBF4CB2C5515CD0061D22F /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				23C610762D68D397003E71F4 /* Add */,
 				235ABA0B2C8C70CC00763900 /* Calendar */,
 				23AD9D652C80A216007AB8D1 /* Notice */,
 				23B3A0CB2C7F5212006D0561 /* Cart */,
@@ -734,6 +772,7 @@
 		23CBF4CC2C5515D80061D22F /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				23C6107C2D68D6BD003E71F4 /* Add */,
 				235ABA112C8C715B00763900 /* Calendar */,
 				23AD9D6A2C80A25D007AB8D1 /* Notice */,
 				23B3A0CE2C7F522F006D0561 /* Cart */,
@@ -1084,6 +1123,8 @@
 				23798B6F2C8C24E300F6DA90 /* ModifyPasswordViewController.swift in Sources */,
 				23D5B6632C7A309F00B73174 /* AlertViewController.swift in Sources */,
 				2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */,
+				23C6107B2D68D6B1003E71F4 /* AddView.swift in Sources */,
+				23C610802D68D791003E71F4 /* OptionSelectorView.swift in Sources */,
 				23CBF4D52C55162A0061D22F /* OnboardingViewModel.swift in Sources */,
 				238595252C71C7E700B85CBC /* BaseToolBar.swift in Sources */,
 				2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */,
@@ -1111,6 +1152,7 @@
 				23CB0DCE2C79E2600053EB40 /* MyPageViewController.swift in Sources */,
 				2337C8662C70FD4F00E2A67B /* ItemDetailView.swift in Sources */,
 				231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */,
+				23C610782D68D699003E71F4 /* AddViewController.swift in Sources */,
 				23D288462C55259E0044DF16 /* SplashViewController.swift in Sources */,
 				23B3A0D52C7F526A006D0561 /* CartItemTableViewCell.swift in Sources */,
 				235ABA102C8C712900763900 /* CalendarView.swift in Sources */,
@@ -1125,8 +1167,10 @@
 				232466752C6F92A400979940 /* TabBarViewController.swift in Sources */,
 				23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */,
 				23F0F53D2C83FC65001ABAA9 /* ModifyProfileView.swift in Sources */,
+				23C6107E2D68D6C3003E71F4 /* AddViewModel.swift in Sources */,
 				238595162C71BF4F00B85CBC /* FolderViewModel.swift in Sources */,
 				23AD9D712C80A4A4007AB8D1 /* NoticeTableViewCell.swift in Sources */,
+				23C610822D68DF63003E71F4 /* AddToolBar.swift in Sources */,
 				235ABA0D2C8C70D900763900 /* CalendarViewController.swift in Sources */,
 				2328C4EB2C720CFF0081A97C /* FolderBottomSheet.swift in Sources */,
 				238595112C71BF2B00B85CBC /* FolderViewController.swift in Sources */,

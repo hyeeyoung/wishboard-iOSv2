@@ -39,6 +39,12 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     func refreshItems() {
         viewModel.fetchItems()
     }
+    
+    func scrollToTop() {
+        if homeView.collectionView.numberOfSections > 0, homeView.collectionView.numberOfItems(inSection: 0) > 0 {
+            homeView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+        }
+    }
 }
 
 extension HomeViewController: UICollectionViewDelegate {

@@ -175,6 +175,12 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         viewModel.fetchFolders()
     }
     
+    func scrollToTop() {
+        if folderView.collectionView.numberOfSections > 0, folderView.collectionView.numberOfItems(inSection: 0) > 0 {
+            folderView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+        }
+    }
+    
     // MARK: - Actions
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)

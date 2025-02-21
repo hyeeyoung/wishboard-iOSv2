@@ -17,6 +17,7 @@ class TabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tabBar.backgroundColor = .white
+        self.delegate = self
         
         self.tabBar.addSubview(seperator)
         seperator.snp.makeConstraints { make in
@@ -27,7 +28,7 @@ class TabBarViewController: UITabBarController {
        // 인스턴스화
         let wishListVC = HomeViewController()
         let folderVC = FolderViewController()
-        let addVC = HomeViewController()
+        let addVC = UIViewController()
         let myPageVC = MypageViewController()
         
         wishListVC.tabBarItem.image = Image.wishlistTab
@@ -48,9 +49,35 @@ class TabBarViewController: UITabBarController {
        // navigationController의 root view 설정
         let nav1 = UINavigationController(rootViewController: wishListVC)
         let nav2 = UINavigationController(rootViewController: folderVC)
-        let nav3 = UINavigationController(rootViewController: addVC)
-        let nav4 = UINavigationController(rootViewController: myPageVC)
+        let nav3 = UINavigationController(rootViewController: myPageVC)
     
-        setViewControllers([nav1, nav2, nav3, nav4], animated: false)
+        setViewControllers([nav1, nav2, addVC, nav3], animated: false)
+    }
+}
+
+extension TabBarViewController: UITabBarControllerDelegate {
+    // 탭바 아이템 선택 감지
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        guard let viewControllers = self.viewControllers else { return true }
+        
+        // 현재 선택된 탭을 다시 선택하면 최상단으로 이동
+        if let navController = viewController as? UINavigationController {
+            if let topVC = navController.topViewController as? HomeViewController {
+                topVC.scrollToTop()
+            } else if let topVC = navController.topViewController as? FolderViewController {
+                topVC.scrollToTop()
+            }
+            return true
+        }
+        
+        // ADD 버튼을 누르면 새로운 화면 Present
+        if viewController == viewControllers[2] { // 3번째 탭 (index 2)
+            let addViewController = AddViewController() // ADD 메뉴의 화면
+            addViewController.modalPresentationStyle = .fullScreen
+            present(addViewController, animated: true)
+            return false // 탭바의 기본 동작을 막음
+        }
+        
+        return true
     }
 }
