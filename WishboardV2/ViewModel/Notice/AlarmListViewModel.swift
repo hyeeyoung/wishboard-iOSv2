@@ -12,7 +12,7 @@ import WBNetwork
 
 struct NoticeItem {
     let id: Int
-    let imageUrl: String
+    let imageUrl: String?
     let notiType: String
     let name: String
     var readState: Bool
@@ -41,7 +41,7 @@ class AlarmListViewModel: ObservableObject {
                 var items: [NoticeItem] = []
                 for data in datas {
                     let item = NoticeItem(id: data.item_id ?? 0,
-                                          imageUrl: data.item_img_url ?? "",
+                                          imageUrl: data.item_img_url,
                                           notiType: data.item_notification_type ?? "",
                                           name: data.item_name ?? "",
                                           readState: ((data.read_state ?? 0) != 0),

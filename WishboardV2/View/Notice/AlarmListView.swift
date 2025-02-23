@@ -43,7 +43,7 @@ final class AlarmListView: UIView {
         toolBar.configure(title: "알림")
         
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(toolBar.snp.bottom)
+            make.top.equalTo(toolBar.snp.bottom).offset(7)
             make.leading.trailing.bottom.equalToSuperview()
         }
         emptyLabel.snp.makeConstraints { make in

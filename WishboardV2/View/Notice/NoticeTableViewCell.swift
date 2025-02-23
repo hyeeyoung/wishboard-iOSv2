@@ -19,10 +19,6 @@ final class NoticeTableViewCell: UITableViewCell {
     
     let itemImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFill
-        $0.layer.cornerRadius = 40
-        $0.clipsToBounds = true
-    }
-    let dimmedView = UIView().then {
         $0.backgroundColor = .black_5
         $0.layer.cornerRadius = 40
         $0.clipsToBounds = true
@@ -63,7 +59,6 @@ final class NoticeTableViewCell: UITableViewCell {
     
     private func setupViews() {
         contentView.addSubview(itemImageView)
-        itemImageView.addSubview(dimmedView)
         contentView.addSubview(notiTypeLabel)
         contentView.addSubview(readStateView)
         contentView.addSubview(itemNameLabel)
@@ -75,9 +70,6 @@ final class NoticeTableViewCell: UITableViewCell {
             make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(80)
-        }
-        dimmedView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
         }
         notiTypeLabel.snp.makeConstraints { make in
             make.leading.equalTo(itemImageView.snp.trailing).offset(10)
@@ -102,7 +94,11 @@ final class NoticeTableViewCell: UITableViewCell {
     public func configure(with item: NoticeItem) {
         itemNameLabel.text = item.name
         notiTypeLabel.text = "\(item.notiType) 알림"
-        self.itemImageView.loadImage(from: item.imageUrl)
+        if let imageUrl = item.imageUrl {
+            self.itemImageView.loadImage(from: imageUrl, placeholder: Image.emptyView)
+        } else {
+            self.itemImageView.image = Image.emptyView
+        }
         self.notiDateLabel.text = FormatManager.shared.createdDateToKoreanStr(item.notiDate)
         self.readStateView.isHidden = item.readState
     }

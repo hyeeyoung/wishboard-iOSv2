@@ -1,5 +1,5 @@
 //
-//  NoticeViewController.swift
+//  AlarmListViewController.swift
 //  WishboardV2
 //
 //  Created by gomin on 8/29/24.

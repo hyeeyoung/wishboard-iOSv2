@@ -22,10 +22,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         $0.backgroundColor = .black_5
         $0.clipsToBounds = true
         $0.contentMode = .scaleAspectFill
-        $0.backgroundColor = .gray_50
-    }
-    let dimmedView = UIView().then {
-        $0.backgroundColor = .black_5
     }
     let itemName = UILabel().then{
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
@@ -55,7 +51,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         
         DispatchQueue.main.async {
-            self.imageView.image = nil
             self.itemName.text = nil
             self.itemPrice.text = nil
         }
@@ -64,7 +59,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     // MARK: - Setup
     private func setupViews() {
         contentView.addSubview(imageView)
-        imageView.addSubview(dimmedView)
         contentView.addSubview(itemName)
         contentView.addSubview(itemPrice)
     }
@@ -73,9 +67,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         imageView.snp.makeConstraints { make in
             make.height.equalTo(imageView.snp.width)
             make.leading.top.trailing.equalToSuperview()
-        }
-        dimmedView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
         }
         itemName.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10)
@@ -96,7 +87,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     func configure(with item: WishListResponse) {
         // item image
         if let imgUrl = item.item_img_url {
-            self.imageView.loadImage(from: imgUrl)
+            self.imageView.loadImage(from: imgUrl, placeholder: Image.emptyView)
+        } else {
+            self.imageView.image = Image.emptyView
         }
         DispatchQueue.main.async {
             // item name

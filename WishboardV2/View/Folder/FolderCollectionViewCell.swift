@@ -23,11 +23,6 @@ final class FolderCollectionViewCell: UICollectionViewCell {
         $0.clipsToBounds = true
         $0.backgroundColor = .black_5
     }
-    private let dimmedView = UIView().then {
-        $0.layer.cornerRadius = 10
-        $0.clipsToBounds = true
-        $0.backgroundColor = .black_5
-    }
     private let folderNameLabel = UILabel().then {
         $0.text = "폴더이름"
         $0.font = TypoStyle.SuitB2.font
@@ -63,15 +58,12 @@ final class FolderCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        folderThumbnailImg.image = nil
         folderNameLabel.text = nil
         itemCountLabel.text = nil
     }
     
     private func setupViews() {
         contentView.addSubview(folderThumbnailImg)
-        folderThumbnailImg.addSubview(dimmedView)
         contentView.addSubview(folderNameLabel)
         contentView.addSubview(itemCountLabel)
         contentView.addSubview(etcBtn)
@@ -81,9 +73,6 @@ final class FolderCollectionViewCell: UICollectionViewCell {
         folderThumbnailImg.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(folderThumbnailImg.snp.width)
-        }
-        dimmedView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
         }
         folderNameLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -113,7 +102,9 @@ final class FolderCollectionViewCell: UICollectionViewCell {
     
     private func configureFolderThumbnail(_ url: String?) {
         if let url = url {
-            folderThumbnailImg.loadImage(from: url)
+            folderThumbnailImg.loadImage(from: url, placeholder: Image.emptyView)
+        } else {
+            folderThumbnailImg.image = Image.emptyView
         }
     }
     

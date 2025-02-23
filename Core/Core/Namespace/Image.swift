@@ -60,6 +60,7 @@ public enum Image{
     
     // profile
     public static let defaultProfile = UIImage(named: "defaultProfile")!
+    
     // MARK: - How to Images
     public static let how1 = UIImage(named: "how_1")!
     public static let how2 = UIImage(named: "how_2")!
@@ -76,4 +77,7 @@ public enum Image{
     public static let folderTab = UIImage(named: "folder")!
     public static let profileTab = UIImage(named: "profile")!
     public static let wishlistTab = UIImage(named: "wishlist")!
+    
+    // MARK: - Empty View
+    public static let emptyView = UIImage(named: "emptyView")!
 }

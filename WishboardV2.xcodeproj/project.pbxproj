@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
+		230DE29E2D6B08BB00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
 		231F51BE2C708EB400524968 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51BD2C708EB400524968 /* HomeView.swift */; };
 		231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */; };
 		231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C42C708F4A00524968 /* HomeViewModel.swift */; };
@@ -213,6 +215,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		231F51BD2C708EB400524968 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishItemCollectionViewCell.swift; sourceTree = "<group>"; };
 		231F51C42C708F4A00524968 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -516,6 +519,7 @@
 		239AD1DD2C6A2407002052BD /* UIComponents */ = {
 			isa = PBXGroup;
 			children = (
+				230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */,
 				23D5B6612C7A309300B73174 /* Alert */,
 				23F3FFC12C7901D3003C7DA9 /* AnimationButton */,
 				23F3FFBC2C78FAA5003C7DA9 /* SnackBar */,
@@ -1107,6 +1111,7 @@
 				2357E5652C7B0D3A00CC9509 /* FolderCollectionViewCell.swift in Sources */,
 				2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */,
 				2357E5632C7B0AE600CC9509 /* SnackBar.swift in Sources */,
+				230DE29E2D6B08BB00B7BCE7 /* UIImageViewExtension.swift in Sources */,
 				23C4D21A2C7A4D6D00BB0B08 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1165,6 +1170,7 @@
 				2337C8642C70FD2B00E2A67B /* ItemDetailViewController.swift in Sources */,
 				23F0F53B2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift in Sources */,
 				232466752C6F92A400979940 /* TabBarViewController.swift in Sources */,
+				230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */,
 				23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */,
 				23F0F53D2C83FC65001ABAA9 /* ModifyProfileView.swift in Sources */,
 				23C6107E2D68D6C3003E71F4 /* AddViewModel.swift in Sources */,
@@ -1238,6 +1244,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = B974XY47GZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Share Extension/Info.plist";
@@ -1265,6 +1272,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = B974XY47GZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Share Extension/Info.plist";
