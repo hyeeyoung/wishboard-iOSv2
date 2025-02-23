@@ -24,20 +24,14 @@ final class FolderSelectTableViewCell: UITableViewCell {
         $0.clipsToBounds = true
     }
     
-    private let dimmedView = UIView().then {
-        $0.backgroundColor = .black_5
-        $0.layer.cornerRadius = 20
-        $0.clipsToBounds = true
-    }
-    
     private let titleLabel = UILabel().then {
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD2)
         $0.textColor = .gray_700
     }
     
-    private let checkBtn = UIButton().then {
-        $0.setImage(Image.checkGreen, for: .selected)
-        $0.setImage(nil, for: .normal)
+    private let checkBtn = UIImageView().then {
+        $0.image = Image.checkGreen
+        $0.contentMode = .scaleAspectFit
     }
     
     // MARK: - Life Cycle
@@ -63,17 +57,12 @@ final class FolderSelectTableViewCell: UITableViewCell {
         contentView.addSubview(folderImg)
         contentView.addSubview(titleLabel)
         contentView.addSubview(checkBtn)
-        folderImg.addSubview(dimmedView)
         
         // Thumbnail 설정
         folderImg.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.width.height.equalTo(40)
             make.leading.equalToSuperview().offset(16)
-        }
-        
-        dimmedView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
         }
         
         // titleLabel 설정
@@ -96,6 +85,6 @@ final class FolderSelectTableViewCell: UITableViewCell {
     }
     
     func configureCheckButton(isSelected: Bool) {
-        checkBtn.isSelected = isSelected
+        checkBtn.isHidden = !isSelected
     }
 }

@@ -26,7 +26,7 @@ final class FolderSelectBottomSheet: UIView {
         $0.setImage(Image.quit, for: .normal)
         $0.tintColor = .gray_700
     }
-    public var folderTableView = UITableView(frame: .zero, style: .grouped)
+    public var folderTableView = UITableView(frame: .zero)
     
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
