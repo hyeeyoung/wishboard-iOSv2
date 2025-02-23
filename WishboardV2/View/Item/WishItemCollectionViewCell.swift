@@ -35,23 +35,8 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     let itemPrice = UILabel().then{
         $0.setTypoStyleWithSingleLine(typoStyle: .MontserratH3)
     }
-    let cartButton = UIButton().then{
-        var config = UIButton.Configuration.tinted()
-        var attText = AttributedString.init("Cart")
-        
-        attText.font = TypoStyle.SuitD3.font
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-        attText.foregroundColor = UIColor.gray_700
-        config.attributedTitle = attText
-        config.background.backgroundColor = .white
-        config.baseForegroundColor = .gray_700
-        config.cornerStyle = .capsule
-        
-        $0.configuration = config
-    }
     
     // MARK: - Properties
-    var cartButtonAction: (() -> Void)?
     
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -80,7 +65,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     private func setupViews() {
         contentView.addSubview(imageView)
         imageView.addSubview(dimmedView)
-        contentView.addSubview(cartButton)
         contentView.addSubview(itemName)
         contentView.addSubview(itemPrice)
     }
@@ -92,10 +76,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         }
         dimmedView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-        cartButton.snp.makeConstraints { make in
-            make.width.height.equalTo(38)
-            make.bottom.trailing.equalTo(imageView).inset(10)
         }
         itemName.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10)
@@ -109,7 +89,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupActions() {
-        cartButton.addTarget(self, action: #selector(cartButtonTapped), for: .touchUpInside)
+        
     }
     
     // MARK: - Public Methods
@@ -119,9 +99,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
             self.imageView.loadImage(from: imgUrl)
         }
         DispatchQueue.main.async {
-            // item cart state
-            self.updateCartButtonState(isInCart: item.cart_state == 1)
-            
             // item name
             if let item_name = item.item_name {
                 self.configureItemName(with: item_name)
@@ -134,13 +111,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - Private Methods
-    private func updateCartButtonState(isInCart: Bool) {
-        if isInCart {
-            cartButton.configuration?.background.backgroundColor = .green_500
-        } else {
-            cartButton.configuration?.background.backgroundColor = .white
-        }
-    }
     
     private func configureItemName(with name: String) {
         itemName.text = name
@@ -160,9 +130,5 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         attributedString.addAttribute(.font, value: TypoStyle.SuitD3.font, range: currencyRange)
         
         itemPrice.attributedText = attributedString
-    }
-    
-    @objc private func cartButtonTapped() {
-        cartButtonAction?()
     }
 }

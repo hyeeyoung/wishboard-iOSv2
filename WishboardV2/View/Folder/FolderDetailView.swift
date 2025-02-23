@@ -109,9 +109,6 @@ extension FolderDetailView: UICollectionViewDataSource, UICollectionViewDelegate
         
         if let item = viewModel?.items[indexPath.row] {
             cell.configure(with: item)
-            cell.cartButtonAction = { [weak self] in
-                self?.viewModel?.toggleCartState(for: item)
-            }
         }
         return cell
     }

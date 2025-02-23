@@ -20,6 +20,7 @@ final class AddView: UIView {
     
     let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
+        $0.keyboardDismissMode = .onDrag
     }
     
     let contentView = UIView()
@@ -29,6 +30,11 @@ final class AddView: UIView {
         $0.layer.cornerRadius = 32
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
+    }
+    
+    let cameraIcon = UIImageView().then {
+        $0.tintColor = .gray_200
+        $0.image = Image.cameraGray
     }
     
     let stackView = UIStackView().then {
@@ -46,7 +52,7 @@ final class AddView: UIView {
     }
     
     let itemPriceTextField = UITextField().then {
-        $0.placeholder = "@ 가격(필수)"
+        $0.placeholder = "₩ 가격(필수)"
         $0.font = TypoStyle.SuitB3.font
         $0.keyboardType = .numberPad
         $0.borderStyle = .none
@@ -65,11 +71,13 @@ final class AddView: UIView {
     
     let memoTextView = UITextView().then {
         $0.font = TypoStyle.SuitB3.font
+        $0.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        $0.textContainer.lineFragmentPadding = 0
     }
     
     let memoPlaceholder = UILabel().then {
         $0.text = "브랜드, 사이즈, 컬러 등 아이템 정보를 적어보세요! 😉"
-        $0.textColor = .gray_100
+        $0.textColor = .gray_200
         $0.font = TypoStyle.SuitB3.font
     }
     
@@ -93,6 +101,7 @@ final class AddView: UIView {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(imagePickerView)
+        imagePickerView.addSubview(cameraIcon)
         contentView.addSubview(stackView)
         memoTextView.addSubview(memoPlaceholder)
         
@@ -111,7 +120,13 @@ final class AddView: UIView {
         
         imagePickerView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(251)
+            make.height.equalTo(imagePickerView.snp.width).multipliedBy(0.67)
+        }
+        
+        cameraIcon.snp.makeConstraints { make in
+            make.width.equalTo(32.81)
+            make.height.equalTo(29.17)
+            make.center.equalTo(imagePickerView)
         }
         
         stackView.snp.makeConstraints { make in
@@ -121,7 +136,7 @@ final class AddView: UIView {
         }
         
         memoPlaceholder.snp.makeConstraints { make in
-            make.leading.equalTo(memoTextView)
+            make.leading.trailing.equalTo(memoTextView).inset(16)
             make.top.equalTo(memoTextView).offset(16)
         }
 
@@ -134,13 +149,13 @@ final class AddView: UIView {
             
             stackView.addArrangedSubview(field)
             
-            if field != memoTextView {
+            if field == memoTextView {
                 field.snp.makeConstraints { make in
-                    make.height.equalTo(55)
+                    make.height.equalTo(300)
                 }
             } else {
                 field.snp.makeConstraints { make in
-                    make.height.equalTo(300)
+                    make.height.equalTo(55)
                 }
             }
             

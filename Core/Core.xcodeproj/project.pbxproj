@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		230DE2972D6AFF7700B7BCE7 /* UIResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2962D6AFF7700B7BCE7 /* UIResponder.swift */; };
 		231F51C72C70940E00524968 /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C62C70940E00524968 /* UIImageView.swift */; };
 		231F51D32C709A3400524968 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51D22C709A3400524968 /* NotificationName.swift */; };
 		232466722C6F910600979940 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232466712C6F910600979940 /* UserManager.swift */; };
@@ -43,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		230DE2962D6AFF7700B7BCE7 /* UIResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIResponder.swift; sourceTree = "<group>"; };
 		231F51C62C70940E00524968 /* UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
 		231F51D22C709A3400524968 /* NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationName.swift; sourceTree = "<group>"; };
 		232466712C6F910600979940 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				23ACCEC62C6A1F0600E93953 /* UITextField.swift */,
 				231F51C62C70940E00524968 /* UIImageView.swift */,
 				23D5B65A2C7A26AF00B73174 /* UIDevice.swift */,
+				230DE2962D6AFF7700B7BCE7 /* UIResponder.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -311,6 +314,7 @@
 				23D5B65B2C7A26AF00B73174 /* UIDevice.swift in Sources */,
 				231F51C72C70940E00524968 /* UIImageView.swift in Sources */,
 				23D2881F2C5523AD0044DF16 /* Core.docc in Sources */,
+				230DE2972D6AFF7700B7BCE7 /* UIResponder.swift in Sources */,
 				232466722C6F910600979940 /* UserManager.swift in Sources */,
 				23D288512C55292D0044DF16 /* UIImage.swift in Sources */,
 				23D288542C55292D0044DF16 /* Optional.swift in Sources */,
