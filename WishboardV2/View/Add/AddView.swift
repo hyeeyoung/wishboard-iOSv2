@@ -75,6 +75,8 @@ final class AddView: UIView {
         $0.font = TypoStyle.SuitB3.font
         $0.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         $0.textContainer.lineFragmentPadding = 0
+        $0.autocorrectionType = .no
+        $0.autocapitalizationType = .none
     }
     
     let memoPlaceholder = UILabel().then {

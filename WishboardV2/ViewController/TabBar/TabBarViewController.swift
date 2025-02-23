@@ -13,6 +13,11 @@ class TabBarViewController: UITabBarController {
     let seperator = UIView().then{
         $0.backgroundColor = .gray_100
     }
+    
+    let wishListVC = HomeViewController()
+    let folderVC = FolderViewController()
+    let addVC = UIViewController()
+    let myPageVC = MypageViewController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,12 +30,7 @@ class TabBarViewController: UITabBarController {
             make.height.equalTo(0.5)
         }
         
-       // 인스턴스화
-        let wishListVC = HomeViewController()
-        let folderVC = FolderViewController()
-        let addVC = UIViewController()
-        let myPageVC = MypageViewController()
-        
+        // 인스턴스화
         wishListVC.tabBarItem.image = Image.wishlistTab
         folderVC.tabBarItem.image = Image.folderTab
         addVC.tabBarItem.image = Image.addTab
@@ -74,6 +74,11 @@ extension TabBarViewController: UITabBarControllerDelegate {
         if viewController == viewControllers[2] { // 3번째 탭 (index 2)
             let addViewController = AddViewController() // ADD 메뉴의 화면
             addViewController.modalPresentationStyle = .fullScreen
+            
+            addViewController.confirmAction = { [weak self] in
+                self?.wishListVC.refreshItems()
+            }
+            
             present(addViewController, animated: true)
             return false // 탭바의 기본 동작을 막음
         }

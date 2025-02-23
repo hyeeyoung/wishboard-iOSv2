@@ -27,8 +27,8 @@ final class AddViewModel {
     
     // 저장 버튼 활성화 여부
     var isSaveEnabled: AnyPublisher<Bool, Never> {
-        return Publishers.CombineLatest(itemNamePublisher, itemPricePublisher)
-            .map { !$0.isEmpty && !$1.isEmpty }
+        return Publishers.CombineLatest3(itemNamePublisher, itemPricePublisher, selectedImagePublisher)
+            .map { !$0.isEmpty && !$1.isEmpty && $2 != nil }
             .eraseToAnyPublisher()
     }
     
@@ -41,6 +41,10 @@ final class AddViewModel {
         $itemPrice.eraseToAnyPublisher()
     }
     
+    private var selectedImagePublisher: AnyPublisher<UIImage?, Never> {
+        $selectedImage.eraseToAnyPublisher()
+    }
+    
     // 가격 포맷 (콤마 추가)
     func formatPrice(_ text: String) -> String {
         let filtered = text.filter { "0123456789".contains($0) }
@@ -50,10 +54,32 @@ final class AddViewModel {
         return formatter.string(from: NSNumber(value: number)) ?? ""
     }
     
-    // API 호출 (더미)
-    func saveItem(completion: @escaping (Bool) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            completion(true) // 성공 시 true 반환
+    // API 호출
+    func addItem() async throws {
+        do {
+            
+            let itemName = self.itemName
+            let itemPrice = self.itemPrice
+            let selectedFolderId = self.selectedFolderId
+            let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
+            let itemURL = self.selectedLink
+            let itemMemo = self.memo
+            let notiType = self.selectedAlarmType
+            let notiDate = self.selectedAlarmDate
+            
+            let item = RequestItemDTO(folderId: selectedFolderId,
+                                         photo: itemImage,
+                                         itemName: itemName,
+                                         itemPrice: itemPrice,
+                                         itemURL: itemURL,
+                                         itemMemo: itemMemo,
+                                         itemNotificationType: notiType, itemNotificationDate: notiDate)
+            
+            let usecase = AddItemUseCase()
+            _ = try await usecase.execute(type: .manual, item: item)
+        } catch {
+            SnackBar.shared.show(type: .errorMessage)
+            throw error
         }
     }
     

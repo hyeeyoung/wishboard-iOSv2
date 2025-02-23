@@ -30,7 +30,7 @@ public final class ItemManager {
         return try await API.Item.request(.parseItemUrl(link: link))
     }
     
-    public func addItem(item: RequestItemDTO) async throws -> EmptyResponse {
-        return try await API.Item.request(.addItem(item: item))
+    public func addItem(type: AddItemType, item: RequestItemDTO) async throws -> EmptyResponse {
+        return try await API.Item.request(.addItem(type: type, item: item))
     }
 }

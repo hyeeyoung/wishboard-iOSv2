@@ -20,6 +20,7 @@ final class AddViewController: UIViewController {
     private let addView = AddView()
     private let viewModel = AddViewModel()
     private var cancellables = Set<AnyCancellable>()
+    public var confirmAction: (() -> Void)?
     
     // Bottom Sheets
     private let backgroundDimView = UIView()
@@ -348,9 +349,14 @@ extension AddViewController: AddToolBarDelegate {
     }
     
     func rightItemTap() {
-        self.viewModel.saveItem { success in
-            print("아이템 저장 성공")
-            self.dismiss(animated: true)
+        Task {
+            do {
+                try await self.viewModel.addItem()
+                self.dismiss(animated: true)
+                self.confirmAction?()
+            } catch {
+                throw error
+            }
         }
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol AddItemUseCaseInterface {
-    func execute(item: RequestItemDTO) async throws -> EmptyResponse
+    func execute(type: AddItemType, item: RequestItemDTO) async throws -> EmptyResponse
 }
 
 public class AddItemUseCase: AddItemUseCaseInterface {
@@ -18,7 +18,7 @@ public class AddItemUseCase: AddItemUseCaseInterface {
         self.repository = repository
     }
     
-    public func execute(item: RequestItemDTO) async throws -> EmptyResponse {
-        return try await self.repository.addItem(item: item)
+    public func execute(type: AddItemType, item: RequestItemDTO) async throws -> EmptyResponse {
+        return try await self.repository.addItem(type: type, item: item)
     }
 }

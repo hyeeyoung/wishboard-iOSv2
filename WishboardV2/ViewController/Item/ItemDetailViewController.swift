@@ -67,9 +67,13 @@ final class ItemDetailViewController: UIViewController {
         detailView.toolbar.delegate = self
         
         detailView.linkButtonAction = { [weak self] urlStr in
-            guard let url = NSURL(string: urlStr) else {return}
-            let linkView: SFSafariViewController = SFSafariViewController(url: url as URL)
-            self?.present(linkView, animated: true, completion: nil)
+            guard let url = URL(string: urlStr), ["http", "https"].contains(url.scheme?.lowercased()) else {
+//                SnackBar.shared.show(type: .errorMessage)
+                return
+            }
+
+            let linkView = SFSafariViewController(url: url)
+            self?.present(linkView, animated: true)
         }
         
         detailView.folderListButtonAction = { [weak self] in

@@ -9,6 +9,11 @@ import Foundation
 import Moya
 import Core
 
+public enum AddItemType: String {
+    case parsing = "PARSING"        // 파싱 PARSING
+    case manual = "MANUAL"          // 수동 MANUAL
+}
+
 public struct RequestItemDTO {
     public let folderId: Int?
     public let photo: Data?
@@ -49,7 +54,7 @@ public enum ItemAPI {
     /// 아이템 파싱
     case parseItemUrl(link: String)
     /// 아이템 추가
-    case addItem(item: RequestItemDTO)
+    case addItem(type: AddItemType, item: RequestItemDTO)
 }
 
 extension ItemAPI: TargetType, AccessTokenAuthorizable {
@@ -96,9 +101,9 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             parameters = [:]
         case .parseItemUrl(let link):
             parameters = ["site": link]
-        case .addItem(let item):
+        case .addItem(let type, let item):
             let data = makeMultipartFormData(param: item)
-            return .uploadMultipart(data)
+            return .uploadCompositeMultipart(data, urlParameters: ["type": type.rawValue])
         default:
             parameters = [:]
         }

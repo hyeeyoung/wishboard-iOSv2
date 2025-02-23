@@ -78,7 +78,7 @@ final class ShareViewModel {
     func addItem(item: RequestItemDTO) async throws {
         do {
             let usecase = AddItemUseCase()
-            _ = try await usecase.execute(item: item)
+            _ = try await usecase.execute(type: .parsing, item: item)
         } catch {
             throw error
         }
