@@ -46,10 +46,12 @@ final class OptionSelectorView: UIView {
         label.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
+            make.trailing.lessThanOrEqualTo(arrowButton.snp.leading)
         }
         
         arrowButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(16)
+            make.width.height.equalTo(24)
             make.centerY.equalToSuperview()
         }
     }

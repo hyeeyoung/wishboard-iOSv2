@@ -31,7 +31,7 @@ final class FolderSelectBottomSheet: UIView {
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
     
-    var onClose: ((Int?) -> Void)?
+    var onClose: ((Int?, String?) -> Void)?
     public var selectedFolderId: Int? {
         didSet {
             DispatchQueue.main.async {
@@ -39,6 +39,7 @@ final class FolderSelectBottomSheet: UIView {
             }
         }
     }
+    private var selectedFolder: String?
     private var folders: [FolderListResponse] = []
     
     // MARK: - Initializer
@@ -92,7 +93,7 @@ final class FolderSelectBottomSheet: UIView {
     }
     
     @objc private func closeButtonTapped() {
-        onClose?(self.selectedFolderId)
+        onClose?(self.selectedFolderId, self.selectedFolder)
     }
     
     
@@ -137,7 +138,9 @@ extension FolderSelectBottomSheet: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         UIDevice.vibrate()
         
-        guard let folderId = folders[indexPath.item].folder_id else {return}
+        let folderItem = folders[indexPath.item]
+        guard let folderId = folderItem.folder_id, let folderName = folderItem.folder_name else {return}
         self.selectedFolderId = folderId
+        self.selectedFolder = folderName
     }
 }

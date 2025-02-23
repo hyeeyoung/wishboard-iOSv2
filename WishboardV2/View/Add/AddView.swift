@@ -49,6 +49,8 @@ final class AddView: UIView {
         $0.font = TypoStyle.SuitB3.font
         $0.borderStyle = .none
         $0.setLeftPaddingPoints(16)
+        $0.autocapitalizationType = .none
+        $0.autocorrectionType = .no
     }
     
     let itemPriceTextField = UITextField().then {

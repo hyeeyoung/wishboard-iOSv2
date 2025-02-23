@@ -96,7 +96,7 @@ final class ItemDetailViewController: UIViewController {
             make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
         }
         
-        bottomSheetView.onClose = { [weak self] folderId in
+        bottomSheetView.onClose = { [weak self] folderId, folderName in
             self?.dismissKeyboard()
             self?.hideBottomSheet()
             

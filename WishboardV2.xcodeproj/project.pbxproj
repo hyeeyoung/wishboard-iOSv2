@@ -12,6 +12,9 @@
 		231F51BE2C708EB400524968 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51BD2C708EB400524968 /* HomeView.swift */; };
 		231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */; };
 		231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C42C708F4A00524968 /* HomeViewModel.swift */; };
+		231F85C92D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85C82D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift */; };
+		231F85CB2D6B38D30060F827 /* SelectDateBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */; };
+		231F85CE2D6B3A010060F827 /* SetNotificationDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */; };
 		232185EC2C70B519008BD81B /* WBNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 232185C42C70B3BB008BD81B /* WBNetwork.framework */; };
 		232185ED2C70B519008BD81B /* WBNetwork.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 232185C42C70B3BB008BD81B /* WBNetwork.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		232466752C6F92A400979940 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232466742C6F92A400979940 /* TabBarViewController.swift */; };
@@ -219,6 +222,9 @@
 		231F51BD2C708EB400524968 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishItemCollectionViewCell.swift; sourceTree = "<group>"; };
 		231F51C42C708F4A00524968 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		231F85C82D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingLinkBottomSheet.swift; sourceTree = "<group>"; };
+		231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDateBottomSheet.swift; sourceTree = "<group>"; };
+		231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNotificationDate.swift; sourceTree = "<group>"; };
 		232185BE2C70B3BB008BD81B /* WBNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WBNetwork.xcodeproj; path = WBNetwork/WBNetwork.xcodeproj; sourceTree = "<group>"; };
 		232185C72C70B3D4008BD81B /* NetworkLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkLibrary; sourceTree = "<group>"; };
 		232466742C6F92A400979940 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
@@ -375,6 +381,15 @@
 			path = Item;
 			sourceTree = "<group>";
 		};
+		231F85CC2D6B39EF0060F827 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */,
+				231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		232185BF2C70B3BB008BD81B /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -519,7 +534,6 @@
 		239AD1DD2C6A2407002052BD /* UIComponents */ = {
 			isa = PBXGroup;
 			children = (
-				230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */,
 				23D5B6612C7A309300B73174 /* Alert */,
 				23F3FFC12C7901D3003C7DA9 /* AnimationButton */,
 				23F3FFBC2C78FAA5003C7DA9 /* SnackBar */,
@@ -621,6 +635,8 @@
 			isa = PBXGroup;
 			children = (
 				23C610772D68D699003E71F4 /* AddViewController.swift */,
+				231F85C82D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift */,
+				231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */,
 			);
 			path = Add;
 			sourceTree = "<group>";
@@ -707,6 +723,7 @@
 			children = (
 				236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */,
 				236ED4CE2C6E3515000EA85B /* WishboardV2.entitlements */,
+				231F85CC2D6B39EF0060F827 /* Utils */,
 				239AD1DD2C6A2407002052BD /* UIComponents */,
 				23974D342C5E4F8F006BBC97 /* Resources */,
 				23DEFA882C563BED007E958A /* Main.storyboard */,
@@ -1135,6 +1152,7 @@
 				2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */,
 				2337C86D2C710A5F00E2A67B /* DetailToolBar.swift in Sources */,
 				239540F12C6A179B003AB3D5 /* LoginView.swift in Sources */,
+				231F85CB2D6B38D30060F827 /* SelectDateBottomSheet.swift in Sources */,
 				239AD1DF2C6A2410002052BD /* ToolBar.swift in Sources */,
 				23CBF4CF2C5515E80061D22F /* OnboardingViewController.swift in Sources */,
 				23CB0DD12C79E26F0053EB40 /* MyPageView.swift in Sources */,
@@ -1159,6 +1177,7 @@
 				231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */,
 				23C610782D68D699003E71F4 /* AddViewController.swift in Sources */,
 				23D288462C55259E0044DF16 /* SplashViewController.swift in Sources */,
+				231F85CE2D6B3A010060F827 /* SetNotificationDate.swift in Sources */,
 				23B3A0D52C7F526A006D0561 /* CartItemTableViewCell.swift in Sources */,
 				235ABA102C8C712900763900 /* CalendarView.swift in Sources */,
 				23CB0DD62C79E2A20053EB40 /* MyPageViewModel.swift in Sources */,
@@ -1166,6 +1185,7 @@
 				231F51BE2C708EB400524968 /* HomeView.swift in Sources */,
 				23C610752D68CB2A003E71F4 /* AlarmToolBar.swift in Sources */,
 				23AD9D692C80A245007AB8D1 /* AlarmListViewController.swift in Sources */,
+				231F85C92D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift in Sources */,
 				23ACCEC52C6A1EDC00E93953 /* LoginViewModel.swift in Sources */,
 				2337C8642C70FD2B00E2A67B /* ItemDetailViewController.swift in Sources */,
 				23F0F53B2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift in Sources */,

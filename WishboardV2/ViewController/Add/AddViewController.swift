@@ -11,12 +11,23 @@ import Combine
 import Lottie
 import Then
 import Core
+import WBNetwork
 
 final class AddViewController: UIViewController {
+    
+    // MARK: - Properties
     
     private let addView = AddView()
     private let viewModel = AddViewModel()
     private var cancellables = Set<AnyCancellable>()
+    
+    // Bottom Sheets
+    private let backgroundDimView = UIView()
+    private let folderSelectBottomSheet = FolderSelectBottomSheet()
+    private let shoppingLinkBottomSheet = ShoppingLinkBottomSheet()
+    private let selectDateBottomSheet = SelectDateBottomSheet()
+    
+    // MARK: - Initializers
     
     override func viewDidLoad() {
         self.view.backgroundColor = .white
@@ -32,6 +43,9 @@ final class AddViewController: UIViewController {
         setupActions()
         setupDelegates()
         setupKeyboardObservers()
+        
+        setupBackgroundDimView()
+        setupBottomSheet()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -90,15 +104,16 @@ final class AddViewController: UIViewController {
     // MARK: - Actions
     private func setupActions() {
         addView.folderView.onTap = { [weak self] in
-            print("폴더 선택 탭")
+            guard let folders = self?.viewModel.folders else {return}
+            self?.showFolderBottomSheet(for: folders)
         }
         
         addView.alarmView.onTap = { [weak self] in
-            print("알림 설정 탭")
+            self?.showDateBottomSheet()
         }
         
         addView.linkView.onTap = { [weak self] in
-            print("쇼핑몰 링크 입력 탭")
+            self?.showLinkBottomSheet(with: self?.viewModel.selectedLink)
         }
         
         let imageTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectImage))
@@ -111,11 +126,157 @@ final class AddViewController: UIViewController {
         addView.memoTextView.delegate = self
     }
     
-    // MARK: - Alert Helper
+    // MARK: Alert Helper
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .default))
         present(alert, animated: true)
+    }
+    
+    // MARK: Bottom Sheets
+    /// 뒷배경뷰 설정
+    private func setupBackgroundDimView() {
+        backgroundDimView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        backgroundDimView.alpha = 0.0 // 초기에는 투명하게 설정
+        view.addSubview(backgroundDimView)
+        
+        backgroundDimView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    /// 시트 설정
+    private func setupBottomSheet() {
+        view.addSubview(folderSelectBottomSheet)
+        view.addSubview(shoppingLinkBottomSheet)
+        view.addSubview(selectDateBottomSheet)
+        
+        folderSelectBottomSheet.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+        }
+        shoppingLinkBottomSheet.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+        }
+        selectDateBottomSheet.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+        }
+        // Folder Binding
+        folderSelectBottomSheet.onClose = { [weak self] folderId, folderName in
+            self?.hideFolderBottomSheet()
+            self?.viewModel.selectedFolderId = folderId
+            self?.viewModel.selectedFolder = folderName
+        }
+        // Shopping Link Binding
+        shoppingLinkBottomSheet.onClose = { [weak self] in
+            self?.hideLinkBottomSheet()
+        }
+        shoppingLinkBottomSheet.onActionButtonTap = { [weak self] link in
+            self?.hideLinkBottomSheet()
+            self?.viewModel.selectedLink = link
+        }
+        // Select Date Binding
+        selectDateBottomSheet.onClose = { [weak self] in
+            self?.hideDateBottomSheet()
+        }
+        selectDateBottomSheet.onActionButtonTap = { [weak self] data in
+            
+            let (type, date, hour, minute) = data
+            
+            self?.hideDateBottomSheet()
+            guard let type = data.0, let date = data.1, let hour = data.2, let minute = data.3 else {return}
+            self?.viewModel.selectedAlarmType = type
+            self?.viewModel.selectedAlarmDate = "\(date) \(hour):\(minute)"
+            self?.viewModel.selectedAlarm = "[\(type)] \(self?.viewModel.selectedAlarmDate ?? "")"
+        }
+        
+        // data - fetch FolderList
+        self.viewModel.fetchFolders()
+    }
+    
+    /// 폴더 선택 시트 노출
+    private func showFolderBottomSheet(for folders: [FolderListResponse]) {
+        DispatchQueue.main.async {
+            self.folderSelectBottomSheet.configure(with: folders)
+            
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 1.0
+                self.folderSelectBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview()
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 폴더 선택 시트 미노출
+    private func hideFolderBottomSheet() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 0.0
+                self.folderSelectBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 쇼핑몰 링크 입력 시트 노출
+    private func showLinkBottomSheet(with prevLink: String? = nil) {
+        DispatchQueue.main.async {
+            self.shoppingLinkBottomSheet.configure(with: prevLink)
+            
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 1.0
+                self.shoppingLinkBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview()
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 쇼핑몰 링크 입력 시트 미노출
+    private func hideLinkBottomSheet() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 0.0
+                self.shoppingLinkBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 날짜 선택 시트 노출
+    private func showDateBottomSheet() {
+        DispatchQueue.main.async {
+            self.selectDateBottomSheet.configure()
+            
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 1.0
+                self.selectDateBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview()
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 날짜 선택 시트 미노출
+    private func hideDateBottomSheet() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 0.0
+                self.selectDateBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
     }
 }
 

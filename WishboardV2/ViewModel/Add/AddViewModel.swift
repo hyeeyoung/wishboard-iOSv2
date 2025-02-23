@@ -8,16 +8,22 @@
 import Foundation
 import UIKit
 import Combine
+import WBNetwork
 
 final class AddViewModel {
     // 입력 데이터
+    @Published var selectedImage: UIImage? = nil
     @Published var itemName: String = ""
     @Published var itemPrice: String = ""
-    @Published var selectedFolder: String? = nil
-    @Published var selectedAlarm: String? = nil
+    @Published var selectedFolderId: Int? = nil
+    @Published var selectedAlarmType: String? = nil
+    @Published var selectedAlarmDate: String? = nil
     @Published var selectedLink: String? = nil
     @Published var memo: String = ""
-    @Published var selectedImage: UIImage? = nil
+    
+    @Published var selectedAlarm: String? = nil
+    @Published var selectedFolder: String? = nil
+    @Published var folders: [FolderListResponse] = []
     
     // 저장 버튼 활성화 여부
     var isSaveEnabled: AnyPublisher<Bool, Never> {
@@ -48,6 +54,22 @@ final class AddViewModel {
     func saveItem(completion: @escaping (Bool) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             completion(true) // 성공 시 true 반환
+        }
+    }
+    
+    // 폴더 데이터 가져오기
+    func fetchFolders() {
+        Task {
+            do {
+                let usecase = GetFolderListUseCase()
+                let data = try await usecase.execute()
+                
+                DispatchQueue.main.async {
+                    self.folders = data
+                }
+            } catch {
+                throw error
+            }
         }
     }
 }
