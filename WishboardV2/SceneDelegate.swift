@@ -25,10 +25,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(showSnackBar), name: .ShowSnackBar, object: nil)
         
         // MARK: Navigation controller
+        let splashVC = SplashViewController()
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = SplashViewController()
+        window?.rootViewController = splashVC
         window?.makeKeyAndVisible()
         
         // MARK: Light mode
@@ -43,14 +44,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // 일정 시간 후에 온보딩 화면으로 전환
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             
-            // 만약 디바이스에 로그인 내력이 있다면 메인으로 이동
-            if let _ = UserManager.accessToken, let _ = UserManager.refreshToken {
-                self.setRootTabBar()
-                return
-            }
+            splashVC.checkAppVersion()
             
-            // 토큰이 만료되었거나 첫 로그인일 때 온보딩 화면
-            self.setRootOnboarding()
+//
+//            // 만약 디바이스에 로그인 내력이 있다면 메인으로 이동
+//            if let _ = UserManager.accessToken, let _ = UserManager.refreshToken {
+//                self.setRootTabBar()
+//                return
+//            }
+//            
+//            // 토큰이 만료되었거나 첫 로그인일 때 온보딩 화면
+//            self.setRootOnboarding()
         }
     }
     
@@ -128,6 +132,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func changeRootVC(_ vc:UIViewController, animated: Bool) {
         guard let window = self.window else { return }
         window.rootViewController = vc // 전환
+        window.makeKeyAndVisible()
         
         UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: nil, completion: nil)
     }

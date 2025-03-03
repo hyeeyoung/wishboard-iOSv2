@@ -46,6 +46,11 @@
 		2347A9162C7AD368009F9480 /* ModifyItemFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9152C7AD368009F9480 /* ModifyItemFolderUseCase.swift */; };
 		2347A9182C7AD4D0009F9480 /* GetItemDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */; };
 		2347A91A2C7ADCD7009F9480 /* DeleteItemUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */; };
+		2354AE0D2D75F631008A62FA /* VersionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2354AE0C2D75F631008A62FA /* VersionAPI.swift */; };
+		2354AE0F2D75F76E008A62FA /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2354AE0E2D75F76E008A62FA /* VersionManager.swift */; };
+		2354AE112D75F792008A62FA /* VersionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2354AE102D75F792008A62FA /* VersionResponse.swift */; };
+		2354AE132D75F805008A62FA /* VersionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2354AE122D75F805008A62FA /* VersionRepository.swift */; };
+		2354AE162D75F861008A62FA /* GetVersionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2354AE152D75F861008A62FA /* GetVersionUseCase.swift */; };
 		2357E55F2C7B09E600CC9509 /* ParseItemUrlUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */; };
 		23798B752C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B742C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift */; };
 		238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595172C71BFC000B85CBC /* FolderListResponse.swift */; };
@@ -120,6 +125,11 @@
 		2347A9152C7AD368009F9480 /* ModifyItemFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyItemFolderUseCase.swift; sourceTree = "<group>"; };
 		2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetItemDetailUseCase.swift; sourceTree = "<group>"; };
 		2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteItemUseCase.swift; sourceTree = "<group>"; };
+		2354AE0C2D75F631008A62FA /* VersionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionAPI.swift; sourceTree = "<group>"; };
+		2354AE0E2D75F76E008A62FA /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
+		2354AE102D75F792008A62FA /* VersionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionResponse.swift; sourceTree = "<group>"; };
+		2354AE122D75F805008A62FA /* VersionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionRepository.swift; sourceTree = "<group>"; };
+		2354AE152D75F861008A62FA /* GetVersionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetVersionUseCase.swift; sourceTree = "<group>"; };
 		2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseItemUrlUseCase.swift; sourceTree = "<group>"; };
 		23798B742C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordUseCase.swift; sourceTree = "<group>"; };
 		238595172C71BFC000B85CBC /* FolderListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderListResponse.swift; sourceTree = "<group>"; };
@@ -211,6 +221,7 @@
 				2385951F2C71C6E400B85CBC /* FolderManager.swift */,
 				23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */,
 				23AD9D782C80A94F007AB8D1 /* NoticeManager.swift */,
+				2354AE0E2D75F76E008A62FA /* VersionManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -225,6 +236,7 @@
 				23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */,
 				23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */,
 				23AD9D762C80A8FF007AB8D1 /* NoticeResponse.swift */,
+				2354AE102D75F792008A62FA /* VersionResponse.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -274,6 +286,7 @@
 		232185DA2C70B447008BD81B /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
+				2354AE142D75F855008A62FA /* Version */,
 				23AD9D7A2C80A9D8007AB8D1 /* Notice */,
 				23CB0DE12C79FBE60053EB40 /* User */,
 				238595212C71C70A00B85CBC /* Folder */,
@@ -293,6 +306,7 @@
 				2385951D2C71C6BD00B85CBC /* FolderRepository.swift */,
 				23CB0DDF2C79FBBB0053EB40 /* UserRepository.swift */,
 				23AD9D742C80A8DA007AB8D1 /* NoticeRepository.swift */,
+				2354AE122D75F805008A62FA /* VersionRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -318,6 +332,7 @@
 				2385951B2C71C67A00B85CBC /* FolderAPI.swift */,
 				23CB0DDB2C79FB070053EB40 /* UserAPI.swift */,
 				23AD9D722C80A82C007AB8D1 /* NotiAPI.swift */,
+				2354AE0C2D75F631008A62FA /* VersionAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -339,6 +354,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2354AE142D75F855008A62FA /* Version */ = {
+			isa = PBXGroup;
+			children = (
+				2354AE152D75F861008A62FA /* GetVersionUseCase.swift */,
+			);
+			path = Version;
 			sourceTree = "<group>";
 		};
 		238595212C71C70A00B85CBC /* Folder */ = {
@@ -494,6 +517,7 @@
 				238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */,
 				2347A90A2C7AC0AD009F9480 /* AddFolderUseCase.swift in Sources */,
 				238595202C71C6E400B85CBC /* FolderManager.swift in Sources */,
+				2354AE162D75F861008A62FA /* GetVersionUseCase.swift in Sources */,
 				23F0F53F2C840586001ABAA9 /* ModifyProfileUseCase.swift in Sources */,
 				232186032C70B58F008BD81B /* LoadingPlugin.swift in Sources */,
 				2347A9162C7AD368009F9480 /* ModifyItemFolderUseCase.swift in Sources */,
@@ -508,12 +532,16 @@
 				232185F22C70B563008BD81B /* CommonResponse.swift in Sources */,
 				232185F92C70B576008BD81B /* RefreshTokenUseCase.swift in Sources */,
 				23CB0DE02C79FBBB0053EB40 /* UserRepository.swift in Sources */,
+				2354AE112D75F792008A62FA /* VersionResponse.swift in Sources */,
 				238595232C71C71300B85CBC /* GetFoldersUseCase.swift in Sources */,
 				232185FC2C70B57D008BD81B /* CartRepository.swift in Sources */,
 				23CB0DDA2C79FAD70053EB40 /* UserInfoResponse.swift in Sources */,
 				23AD9D642C809892007AB8D1 /* ModifyCartQuantityUseCase.swift in Sources */,
+				2354AE0F2D75F76E008A62FA /* VersionManager.swift in Sources */,
+				2354AE132D75F805008A62FA /* VersionRepository.swift in Sources */,
 				232185FB2C70B57A008BD81B /* ItemRepository.swift in Sources */,
 				232185F32C70B565008BD81B /* LoginResponse.swift in Sources */,
+				2354AE0D2D75F631008A62FA /* VersionAPI.swift in Sources */,
 				232185F72C70B570008BD81B /* GetWishItemsUseCase.swift in Sources */,
 				2347A9082C7ABFF7009F9480 /* ModifyFolderNameUseCase.swift in Sources */,
 				230EDC3B2C8215DF00FC35F2 /* LogoutUseCase.swift in Sources */,
