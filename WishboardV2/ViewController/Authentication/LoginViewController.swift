@@ -48,6 +48,9 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
             make.verticalEdges.equalTo(self.view.safeAreaLayoutGuide)
         }
         loginView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(moveToEmailLogin))
+        loginView.forgotPasswordLabel.addGestureRecognizer(tapGesture)
     }
     
     private func bindViewModel() {
@@ -104,5 +107,10 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
         let tabBarController = TabBarViewController()
         tabBarController.modalPresentationStyle = .fullScreen
         self.present(tabBarController, animated: true, completion: nil)
+    }
+    
+    @objc private func moveToEmailLogin() {
+        let nextVC = EmailInputViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }
