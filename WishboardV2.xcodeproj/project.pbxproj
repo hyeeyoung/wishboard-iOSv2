@@ -39,6 +39,7 @@
 		237468B32D77181D00959E09 /* EmailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B22D77181D00959E09 /* EmailInputViewModel.swift */; };
 		237468B62D77183D00959E09 /* EmailInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B52D77183D00959E09 /* EmailInputViewController.swift */; };
 		237468B82D77187300959E09 /* EmailInputToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B72D77187300959E09 /* EmailInputToolBar.swift */; };
+		237468BB2D771E5500959E09 /* EmailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468BA2D771E5500959E09 /* EmailInputView.swift */; };
 		23798B6F2C8C24E300F6DA90 /* ModifyPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */; };
 		23798B712C8C253700F6DA90 /* ModifyPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */; };
 		23798B732C8C256B00F6DA90 /* ModifyPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B722C8C256B00F6DA90 /* ModifyPasswordViewModel.swift */; };
@@ -252,6 +253,7 @@
 		237468B22D77181D00959E09 /* EmailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputViewModel.swift; sourceTree = "<group>"; };
 		237468B52D77183D00959E09 /* EmailInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputViewController.swift; sourceTree = "<group>"; };
 		237468B72D77187300959E09 /* EmailInputToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputToolBar.swift; sourceTree = "<group>"; };
+		237468BA2D771E5500959E09 /* EmailInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputView.swift; sourceTree = "<group>"; };
 		23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordViewController.swift; sourceTree = "<group>"; };
 		23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordView.swift; sourceTree = "<group>"; };
 		23798B722C8C256B00F6DA90 /* ModifyPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordViewModel.swift; sourceTree = "<group>"; };
@@ -455,22 +457,30 @@
 			path = Calendar;
 			sourceTree = "<group>";
 		};
-		237468B12D77180D00959E09 /* 비밀번호를 잊으셨나요? */ = {
+		237468B12D77180D00959E09 /* EmailInput */ = {
 			isa = PBXGroup;
 			children = (
 				237468B22D77181D00959E09 /* EmailInputViewModel.swift */,
 			);
-			name = "비밀번호를 잊으셨나요?";
+			name = EmailInput;
 			path = "비밀번호를 잊으셨나요?";
 			sourceTree = "<group>";
 		};
-		237468B42D77182900959E09 /* 비밀번호를 잊으셨나요? */ = {
+		237468B42D77182900959E09 /* EmailInput */ = {
 			isa = PBXGroup;
 			children = (
 				237468B52D77183D00959E09 /* EmailInputViewController.swift */,
 			);
-			name = "비밀번호를 잊으셨나요?";
+			name = EmailInput;
 			path = "비밀번호를 잊으셨나요?";
+			sourceTree = "<group>";
+		};
+		237468B92D771E3900959E09 /* EmailInput */ = {
+			isa = PBXGroup;
+			children = (
+				237468BA2D771E5500959E09 /* EmailInputView.swift */,
+			);
+			path = EmailInput;
 			sourceTree = "<group>";
 		};
 		2385950D2C71BC8400B85CBC /* ToolBars */ = {
@@ -784,6 +794,7 @@
 		23CBF4CA2C5515CA0061D22F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				237468B92D771E3900959E09 /* EmailInput */,
 				23C610792D68D6AB003E71F4 /* Add */,
 				235ABA0E2C8C711D00763900 /* Calendar */,
 				23AD9D6D2C80A277007AB8D1 /* Notice */,
@@ -800,7 +811,7 @@
 		23CBF4CB2C5515CD0061D22F /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				237468B42D77182900959E09 /* 비밀번호를 잊으셨나요? */,
+				237468B42D77182900959E09 /* EmailInput */,
 				23C610762D68D397003E71F4 /* Add */,
 				235ABA0B2C8C70CC00763900 /* Calendar */,
 				23AD9D652C80A216007AB8D1 /* Notice */,
@@ -819,7 +830,7 @@
 		23CBF4CC2C5515D80061D22F /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				237468B12D77180D00959E09 /* 비밀번호를 잊으셨나요? */,
+				237468B12D77180D00959E09 /* EmailInput */,
 				23C6107C2D68D6BD003E71F4 /* Add */,
 				235ABA112C8C715B00763900 /* Calendar */,
 				23AD9D6A2C80A25D007AB8D1 /* Notice */,
@@ -1175,6 +1186,7 @@
 				2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */,
 				23C6107B2D68D6B1003E71F4 /* AddView.swift in Sources */,
 				23C610802D68D791003E71F4 /* OptionSelectorView.swift in Sources */,
+				237468BB2D771E5500959E09 /* EmailInputView.swift in Sources */,
 				23CBF4D52C55162A0061D22F /* OnboardingViewModel.swift in Sources */,
 				238595252C71C7E700B85CBC /* BaseToolBar.swift in Sources */,
 				2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */,

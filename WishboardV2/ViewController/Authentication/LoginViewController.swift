@@ -110,7 +110,7 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
     }
     
     @objc private func moveToEmailLogin() {
-        let nextVC = EmailInputViewController()
+        let nextVC = EmailInputViewController(type: .emailLogin)
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }

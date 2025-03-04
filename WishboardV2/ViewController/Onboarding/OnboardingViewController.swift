@@ -43,7 +43,8 @@ class OnboardingViewController: UIViewController {
     
     @objc private func signUpButtonTapped() {
         print("Sign Up button tapped")
-        // Handle sign up action
+        let nextVC = EmailInputViewController(type: .register)
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     @objc private func loginButtonTapped() {
