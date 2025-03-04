@@ -16,7 +16,7 @@ public enum AuthAPI {
     /// 회원가입
     case signUp
     /// 토큰 재발급
-    case requestRefreshToken
+    case requestRefreshToken(token: String)
     /// 로그아웃
     case logout
 }
@@ -61,9 +61,8 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
             parameters = ["email": email,
                           "password": password,
                           "fcmToken": fcmToken]
-        case .requestRefreshToken:
-            guard let refreshToken = UserManager.refreshToken else {break}
-            parameters = ["refreshToken": refreshToken]
+        case .requestRefreshToken(let token):
+            parameters = ["refreshToken": token]
         default:
             parameters = [:]
         }

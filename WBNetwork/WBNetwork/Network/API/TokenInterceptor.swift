@@ -58,9 +58,15 @@ public final class TokenInterceptor: RequestInterceptor {
         
         Task {
             do {
+                
+                guard let refreshToken = UserManager.refreshToken else {
+                    print("기기에 저장된 refreshToken 정보 없음")
+                    return
+                }
+                
                 // call Refresh token API
                 let usecase = RefreshTokenUseCase(repository: AuthRepository())
-                let data = try await usecase.execute()
+                let data = try await usecase.execute(token: refreshToken)
                 
                 guard let accessToken = data.token?.accessToken else {
                     sema.signal()
