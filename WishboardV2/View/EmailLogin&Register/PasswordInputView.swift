@@ -34,7 +34,6 @@ final class PasswordInputView: UIView {
     public let textField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .none
-        textField.placeholder = "이메일을 입력해 주세요."
         textField.isSecureTextEntry = true
         textField.setLeftPaddingPoints(16)
         textField.layer.cornerRadius = 6
@@ -42,6 +41,14 @@ final class PasswordInputView: UIView {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         return textField
+    }()
+    
+    public let timerLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .pink_700
+        label.font = TypoStyle.SuitD2.font
+        label.textAlignment = .center
+        return label
     }()
     
     public let errorLabel: UILabel = {
@@ -69,6 +76,8 @@ final class PasswordInputView: UIView {
     private var type: InputType?
     public var emailLoginAction: ((String?) -> Void)?
     public var registerAction: ((String?) -> Void)?
+    private var timer: Timer?
+    private var remainingSeconds: Int = 300 // 5분 (300초)
     
     // MARK: - Initializers
     
@@ -89,6 +98,7 @@ final class PasswordInputView: UIView {
         self.addSubview(imageView)
         self.addSubview(descriptionLabel)
         self.addSubview(textField)
+        textField.addSubview(timerLabel)
         self.addSubview(errorLabel)
         self.addSubview(actionButton)
         self.addSubview(termsLabel)
@@ -114,6 +124,11 @@ final class PasswordInputView: UIView {
             make.top.equalTo(descriptionLabel.snp.bottom).offset(32)
             make.left.right.equalToSuperview().inset(16)
             make.height.equalTo(42)
+        }
+        
+        timerLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(textField)
+            make.trailing.equalToSuperview().inset(16)
         }
         
         errorLabel.snp.makeConstraints { make in
@@ -147,6 +162,8 @@ final class PasswordInputView: UIView {
             textField.placeholder = "인증코드를 입력해 주세요."
             errorLabel.text = "인증코드를 다시 확인해 주세요."
             termsLabel.isHidden = true
+            timerLabel.isHidden = false
+            startTimer() // ✅ 타이머 시작
             break
         case .register:
             toolBar.configure(title: "가입하기", rightButtonTitle: "2/2단계")
@@ -155,6 +172,7 @@ final class PasswordInputView: UIView {
             textField.placeholder = "비밀번호를 입력해 주세요."
             errorLabel.text = "8자리 이상의 영문자, 숫자, 특수 문자 조합으로 입력해주세요."
             termsLabel.isHidden = false
+            timerLabel.isHidden = true
             break
         }
     }
@@ -172,4 +190,38 @@ final class PasswordInputView: UIView {
         }
     }
     
+}
+
+// MARK: - Timer Functions
+extension PasswordInputView {
+    private func startTimer() {
+        timer?.invalidate()
+        remainingSeconds = 300 // 5분
+        updateTimerLabel()
+
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            if self.remainingSeconds > 0 {
+                self.remainingSeconds -= 1
+                self.updateTimerLabel()
+            } else {
+                self.timer?.invalidate()
+                self.actionButton.isEnabled = false
+                self.actionButton.backgroundColor = .gray_100
+            }
+        }
+    }
+
+    private func resetTimer() {
+        timer?.invalidate()
+        remainingSeconds = 300
+        updateTimerLabel()
+        startTimer()
+    }
+
+    private func updateTimerLabel() {
+        let minutes = remainingSeconds / 60
+        let seconds = remainingSeconds % 60
+        timerLabel.text = String(format: "%d:%02d", minutes, seconds)
+    }
 }
