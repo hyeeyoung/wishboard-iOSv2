@@ -11,13 +11,13 @@ import SnapKit
 import Then
 import Core
 
-public protocol EmailInputToolBarDelegate: AnyObject {
+public protocol InputToolBarDelegate: AnyObject {
     func leftNaviItemTap()
 }
 
-final public class EmailInputToolBar: UIView {
+final public class InputToolBar: UIView {
     
-    weak public var delegate: EmailInputToolBarDelegate?
+    weak public var delegate: InputToolBarDelegate?
     
     // MARK: - Views
     private let backButton = UIButton().then {
@@ -31,7 +31,6 @@ final public class EmailInputToolBar: UIView {
     }
     
     private let rightButton = UIButton().then {
-        $0.setTitle("1/2단계", for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitD2.font
         $0.setTitleColor(.gray_700, for: .normal)
     }
@@ -85,13 +84,8 @@ final public class EmailInputToolBar: UIView {
         delegate?.leftNaviItemTap()
     }
     
-    public func configure(title: String) {
+    public func configure(title: String, rightButtonTitle: String) {
         self.titleLabel.text = title
-        
-//        self.snp.makeConstraints { make in
-//            make.height.equalTo(42)
-//            make.leading.trailing.equalToSuperview()
-//            make.top.equalTo(super.safeAreaLayoutGuide.snp.top).offset(16)
-//        }
+        self.rightButton.setTitle(rightButtonTitle, for: .normal)
     }
 }

@@ -1,8 +1,8 @@
 //
-//  EmailInputViewController.swift
+//  PasswordInputViewController.swift
 //  WishboardV2
 //
-//  Created by gomin on 3/4/25.
+//  Created by gomin on 3/5/25.
 //
 
 import Foundation
@@ -11,15 +11,11 @@ import Combine
 import SnapKit
 import Core
 
-enum InputType {
-    case emailLogin
-    case register
-}
 
-final class EmailInputViewController: UIViewController {
+final class PasswordInputViewController: UIViewController {
     
-    private let emailInputView = EmailInputView()
-    private let viewModel = EmailInputViewModel()
+    private let passwordInputView = PasswordInputView()
+    private let viewModel: PasswordInputViewModel
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - UI Components
@@ -31,6 +27,8 @@ final class EmailInputViewController: UIViewController {
     
     init(type: InputType) {
         self.type = type
+        self.viewModel = PasswordInputViewModel(type: type)
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -50,7 +48,7 @@ final class EmailInputViewController: UIViewController {
         
         // 화면 진입 시 키보드 자동 띄우기
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.emailInputView.emailTextField.becomeFirstResponder()
+            self.passwordInputView.textField.becomeFirstResponder()
         }
     }
     
@@ -58,16 +56,16 @@ final class EmailInputViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .white
         
-        self.view.addSubview(emailInputView)
-        emailInputView.snp.makeConstraints { make in
+        self.view.addSubview(passwordInputView)
+        passwordInputView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
             make.top.equalTo(self.view.safeAreaLayoutGuide)
             make.bottom.equalToSuperview()
         }
         
-        emailInputView.configure(type: self.type)
+        passwordInputView.configure(type: self.type)
         
-        emailInputView.actionButton.snp.makeConstraints { make in
+        passwordInputView.actionButton.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(16)
             make.height.equalTo(50)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(16) // 초기 상태
@@ -75,37 +73,52 @@ final class EmailInputViewController: UIViewController {
     }
     
     private func setupDelegates() {
-        emailInputView.toolBar.delegate = self
+        passwordInputView.toolBar.delegate = self
         
-        emailInputView.emailLoginNextAction = { [weak self] email in
-            print("이메일 로그인 > 다음 이동: \(email)")
-            let nextVC = PasswordInputViewController(type: self!.type)
-            self?.navigationController?.pushViewController(nextVC, animated: true)
+        passwordInputView.emailLoginAction = { [weak self] code in
+            print("이메일 로그인 code: \(code)")
         }
         
-        emailInputView.registerNextAction = { [weak self] email in
-            print("회원가입 > 다음 이동: \(email)")
-            let nextVC = PasswordInputViewController(type: self!.type)
-            self?.navigationController?.pushViewController(nextVC, animated: true)
+        passwordInputView.registerAction = { [weak self] pw in
+            print("회원가입 pw: \(pw)")
+        }
+        
+        passwordInputView.termsLabel.onTapTerms = {
+            print("이용약관 화면으로 이동")
+            
+        }
+
+        passwordInputView.termsLabel.onTapPrivacy = {
+            print("개인정보 처리방침 화면으로 이동")
+            
         }
     }
     
     // MARK: - ViewModel Binding
     private func bindViewModel() {
-        emailInputView.emailTextField.textPublisher
-            .assign(to: \.email, on: viewModel)
+        passwordInputView.textField.textPublisher
+            .assign(to: \.input, on: viewModel)
             .store(in: &cancellables)
         
-        viewModel.$isValidEmail.dropFirst()
-            .sink { [weak self] isValid in
-                self?.emailInputView.errorLabel.isHidden = isValid
-            }
-            .store(in: &cancellables)
+        switch type {
+        case .emailLogin:
+            viewModel.$isValidCode.dropFirst()
+                .sink { [weak self] isValid in
+                    self?.passwordInputView.errorLabel.isHidden = isValid
+                }
+                .store(in: &cancellables)
+        case .register:
+            viewModel.$isValidPW.dropFirst()
+                .sink { [weak self] isValid in
+                    self?.passwordInputView.errorLabel.isHidden = isValid
+                }
+                .store(in: &cancellables)
+        }
         
         viewModel.$isButtonEnabled
             .sink { [weak self] isEnabled in
-                self?.emailInputView.actionButton.isEnabled = isEnabled
-                self?.emailInputView.actionButton.backgroundColor = isEnabled ? .green_500 : .gray_100
+                self?.passwordInputView.actionButton.isEnabled = isEnabled
+                self?.passwordInputView.actionButton.backgroundColor = isEnabled ? .green_500 : .gray_100
             }
             .store(in: &cancellables)
     }
@@ -115,7 +128,7 @@ final class EmailInputViewController: UIViewController {
         NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
             .sink { [weak self] notification in
                 guard let self = self, let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-                self.emailInputView.actionButton.snp.updateConstraints { make in
+                self.passwordInputView.actionButton.snp.updateConstraints { make in
                     make.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(keyboardFrame.height - 16)
                 }
                 self.view.layoutIfNeeded()
@@ -124,7 +137,7 @@ final class EmailInputViewController: UIViewController {
         
         NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
             .sink { [weak self] _ in
-                self?.emailInputView.actionButton.snp.updateConstraints { make in
+                self?.passwordInputView.actionButton.snp.updateConstraints { make in
                     make.bottom.equalTo(self!.view.safeAreaLayoutGuide).inset(16)
                 }
                 self?.view.layoutIfNeeded()
@@ -133,7 +146,7 @@ final class EmailInputViewController: UIViewController {
     }
 }
 
-extension EmailInputViewController: InputToolBarDelegate {
+extension PasswordInputViewController: InputToolBarDelegate {
     func leftNaviItemTap() {
         DispatchQueue.main.async { [weak self] in
             self?.navigationController?.popViewController(animated: true)

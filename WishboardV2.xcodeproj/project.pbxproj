@@ -38,7 +38,7 @@
 		236ED4D02C6E37BB000EA85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */; };
 		237468B32D77181D00959E09 /* EmailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B22D77181D00959E09 /* EmailInputViewModel.swift */; };
 		237468B62D77183D00959E09 /* EmailInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B52D77183D00959E09 /* EmailInputViewController.swift */; };
-		237468B82D77187300959E09 /* EmailInputToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B72D77187300959E09 /* EmailInputToolBar.swift */; };
+		237468B82D77187300959E09 /* InputToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B72D77187300959E09 /* InputToolBar.swift */; };
 		237468BB2D771E5500959E09 /* EmailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468BA2D771E5500959E09 /* EmailInputView.swift */; };
 		23798B6F2C8C24E300F6DA90 /* ModifyPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */; };
 		23798B712C8C253700F6DA90 /* ModifyPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */; };
@@ -71,6 +71,10 @@
 		23B3A0D02C7F5237006D0561 /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B3A0CF2C7F5237006D0561 /* CartViewModel.swift */; };
 		23B3A0D32C7F5257006D0561 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B3A0D22C7F5257006D0561 /* CartView.swift */; };
 		23B3A0D52C7F526A006D0561 /* CartItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B3A0D42C7F526A006D0561 /* CartItemTableViewCell.swift */; };
+		23B82A9D2D786B1700EF2194 /* PasswordInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B82A9C2D786B1700EF2194 /* PasswordInputViewController.swift */; };
+		23B82A9F2D786B7400EF2194 /* PasswordInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B82A9E2D786B7400EF2194 /* PasswordInputView.swift */; };
+		23B82AA12D786C0600EF2194 /* PasswordInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B82AA02D786C0600EF2194 /* PasswordInputViewModel.swift */; };
+		23B82AA32D7870AC00EF2194 /* TermsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B82AA22D7870AC00EF2194 /* TermsLabel.swift */; };
 		23C4D21A2C7A4D6D00BB0B08 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C4D2192C7A4D6D00BB0B08 /* ShareViewController.swift */; };
 		23C4D21D2C7A4D6D00BB0B08 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23C4D21B2C7A4D6D00BB0B08 /* MainInterface.storyboard */; };
 		23C4D2212C7A4D6D00BB0B08 /* Share Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 23C4D2172C7A4D6D00BB0B08 /* Share Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -252,7 +256,7 @@
 		236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		237468B22D77181D00959E09 /* EmailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputViewModel.swift; sourceTree = "<group>"; };
 		237468B52D77183D00959E09 /* EmailInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputViewController.swift; sourceTree = "<group>"; };
-		237468B72D77187300959E09 /* EmailInputToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputToolBar.swift; sourceTree = "<group>"; };
+		237468B72D77187300959E09 /* InputToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputToolBar.swift; sourceTree = "<group>"; };
 		237468BA2D771E5500959E09 /* EmailInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputView.swift; sourceTree = "<group>"; };
 		23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordViewController.swift; sourceTree = "<group>"; };
 		23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordView.swift; sourceTree = "<group>"; };
@@ -285,6 +289,10 @@
 		23B3A0CF2C7F5237006D0561 /* CartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
 		23B3A0D22C7F5257006D0561 /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
 		23B3A0D42C7F526A006D0561 /* CartItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemTableViewCell.swift; sourceTree = "<group>"; };
+		23B82A9C2D786B1700EF2194 /* PasswordInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordInputViewController.swift; sourceTree = "<group>"; };
+		23B82A9E2D786B7400EF2194 /* PasswordInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordInputView.swift; sourceTree = "<group>"; };
+		23B82AA02D786C0600EF2194 /* PasswordInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordInputViewModel.swift; sourceTree = "<group>"; };
+		23B82AA22D7870AC00EF2194 /* TermsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsLabel.swift; sourceTree = "<group>"; };
 		23C4D2172C7A4D6D00BB0B08 /* Share Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Share Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23C4D2192C7A4D6D00BB0B08 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		23C4D21C2C7A4D6D00BB0B08 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -457,30 +465,34 @@
 			path = Calendar;
 			sourceTree = "<group>";
 		};
-		237468B12D77180D00959E09 /* EmailInput */ = {
+		237468B12D77180D00959E09 /* EmailLogin&Register */ = {
 			isa = PBXGroup;
 			children = (
 				237468B22D77181D00959E09 /* EmailInputViewModel.swift */,
+				23B82AA02D786C0600EF2194 /* PasswordInputViewModel.swift */,
 			);
-			name = EmailInput;
+			name = "EmailLogin&Register";
 			path = "비밀번호를 잊으셨나요?";
 			sourceTree = "<group>";
 		};
-		237468B42D77182900959E09 /* EmailInput */ = {
+		237468B42D77182900959E09 /* EmailLogin&Register */ = {
 			isa = PBXGroup;
 			children = (
 				237468B52D77183D00959E09 /* EmailInputViewController.swift */,
+				23B82A9C2D786B1700EF2194 /* PasswordInputViewController.swift */,
 			);
-			name = EmailInput;
+			name = "EmailLogin&Register";
 			path = "비밀번호를 잊으셨나요?";
 			sourceTree = "<group>";
 		};
-		237468B92D771E3900959E09 /* EmailInput */ = {
+		237468B92D771E3900959E09 /* EmailLogin&Register */ = {
 			isa = PBXGroup;
 			children = (
 				237468BA2D771E5500959E09 /* EmailInputView.swift */,
+				23B82A9E2D786B7400EF2194 /* PasswordInputView.swift */,
+				23B82AA22D7870AC00EF2194 /* TermsLabel.swift */,
 			);
-			path = EmailInput;
+			path = "EmailLogin&Register";
 			sourceTree = "<group>";
 		};
 		2385950D2C71BC8400B85CBC /* ToolBars */ = {
@@ -492,7 +504,7 @@
 				238595242C71C7E700B85CBC /* BaseToolBar.swift */,
 				23C610742D68CB2A003E71F4 /* AlarmToolBar.swift */,
 				23C610812D68DF63003E71F4 /* AddToolBar.swift */,
-				237468B72D77187300959E09 /* EmailInputToolBar.swift */,
+				237468B72D77187300959E09 /* InputToolBar.swift */,
 			);
 			path = ToolBars;
 			sourceTree = "<group>";
@@ -794,7 +806,7 @@
 		23CBF4CA2C5515CA0061D22F /* View */ = {
 			isa = PBXGroup;
 			children = (
-				237468B92D771E3900959E09 /* EmailInput */,
+				237468B92D771E3900959E09 /* EmailLogin&Register */,
 				23C610792D68D6AB003E71F4 /* Add */,
 				235ABA0E2C8C711D00763900 /* Calendar */,
 				23AD9D6D2C80A277007AB8D1 /* Notice */,
@@ -811,7 +823,7 @@
 		23CBF4CB2C5515CD0061D22F /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				237468B42D77182900959E09 /* EmailInput */,
+				237468B42D77182900959E09 /* EmailLogin&Register */,
 				23C610762D68D397003E71F4 /* Add */,
 				235ABA0B2C8C70CC00763900 /* Calendar */,
 				23AD9D652C80A216007AB8D1 /* Notice */,
@@ -830,7 +842,7 @@
 		23CBF4CC2C5515D80061D22F /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				237468B12D77180D00959E09 /* EmailInput */,
+				237468B12D77180D00959E09 /* EmailLogin&Register */,
 				23C6107C2D68D6BD003E71F4 /* Add */,
 				235ABA112C8C715B00763900 /* Calendar */,
 				23AD9D6A2C80A25D007AB8D1 /* Notice */,
@@ -1176,6 +1188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23B3A0D32C7F5257006D0561 /* CartView.swift in Sources */,
+				23B82A9F2D786B7400EF2194 /* PasswordInputView.swift in Sources */,
 				23CBF49E2C5514510061D22F /* ViewController.swift in Sources */,
 				2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */,
 				231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */,
@@ -1200,12 +1213,15 @@
 				23B3A0CD2C7F521F006D0561 /* CartViewController.swift in Sources */,
 				2337C8682C70FDB400E2A67B /* ItemDetailViewModel.swift in Sources */,
 				23CBF49A2C5514510061D22F /* AppDelegate.swift in Sources */,
+				23B82AA12D786C0600EF2194 /* PasswordInputViewModel.swift in Sources */,
+				23B82AA32D7870AC00EF2194 /* TermsLabel.swift in Sources */,
 				23798B712C8C253700F6DA90 /* ModifyPasswordView.swift in Sources */,
 				23CB0DD42C79E2910053EB40 /* ProfileHeaderView.swift in Sources */,
 				23CBF4D12C55160C0061D22F /* OnboardingView.swift in Sources */,
+				23B82A9D2D786B1700EF2194 /* PasswordInputViewController.swift in Sources */,
 				23F3FFBE2C78FAAF003C7DA9 /* SnackBar.swift in Sources */,
 				23CB0DD82C79E43F0053EB40 /* SettingTableViewCell.swift in Sources */,
-				237468B82D77187300959E09 /* EmailInputToolBar.swift in Sources */,
+				237468B82D77187300959E09 /* InputToolBar.swift in Sources */,
 				2385950C2C71BC7E00B85CBC /* PaddingLabel.swift in Sources */,
 				23AD9D6F2C80A280007AB8D1 /* AlarmListView.swift in Sources */,
 				235ABA132C8C716500763900 /* CalendarViewModel.swift in Sources */,

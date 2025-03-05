@@ -13,7 +13,7 @@ import Core
 
 final class EmailInputView: UIView {
     // MARK: - Views
-    public let toolBar = EmailInputToolBar()
+    public let toolBar = InputToolBar()
     
     public let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -65,7 +65,7 @@ final class EmailInputView: UIView {
     }()
     
     // MARK: - Properties
-    private var type: EmailInputType?
+    private var type: InputType?
     public var emailLoginNextAction: ((String?) -> Void)?
     public var registerNextAction: ((String?) -> Void)?
     
@@ -130,16 +130,16 @@ final class EmailInputView: UIView {
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
     }
     
-    public func configure(type: EmailInputType) {
+    public func configure(type: InputType) {
         self.type = type
         switch type {
         case .emailLogin:
-            toolBar.configure(title: "이메일로 로그인하기")
+            toolBar.configure(title: "이메일로 로그인하기", rightButtonTitle: "1/2단계")
             actionButton.setTitle("인증메일 받기", for: .normal)
             descriptionLabel.text = "가입하신 이메일을 입력해주세요!\n로그인을 위해 인증코드가 포함된 이메일을 보내드려요."
             break
         case .register:
-            toolBar.configure(title: "가입하기")
+            toolBar.configure(title: "가입하기", rightButtonTitle: "1/2단계")
             actionButton.setTitle("다음", for: .normal)
             descriptionLabel.text = "이메일 인증으로 비밀번호를 찾을 수 있어요.\n실제 사용될 이메일로 입력해주세요! "
             break
