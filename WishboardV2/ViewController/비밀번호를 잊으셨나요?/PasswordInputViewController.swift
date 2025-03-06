@@ -22,11 +22,12 @@ final class PasswordInputViewController: UIViewController {
     
     private var keyboardHeight: CGFloat = 0.0
     private var type: InputType
-    
+    private let validationCode: String?
     // MARK: - Initializers
     
-    init(type: InputType) {
+    init(type: InputType, code: String? = nil) {
         self.type = type
+        self.validationCode = code
         self.viewModel = PasswordInputViewModel(type: type)
         
         super.init(nibName: nil, bundle: nil)
@@ -77,6 +78,14 @@ final class PasswordInputViewController: UIViewController {
         
         passwordInputView.emailLoginAction = { [weak self] code in
             print("이메일 로그인 code: \(code)")
+            
+            if code == self?.validationCode {
+                print("코드 일치")
+            } else {
+                self?.viewModel.isValidCode = false
+                self?.passwordInputView.errorLabel.isHidden = false
+            }
+            
         }
         
         passwordInputView.registerAction = { [weak self] pw in

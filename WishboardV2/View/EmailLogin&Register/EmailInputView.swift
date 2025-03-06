@@ -159,4 +159,16 @@ final class EmailInputView: UIView {
         }
     }
     
+    /// 존재하지 않는 유저
+    public func showInvalidUser() {
+        self.errorLabel.text = "앗, 가입되지 않은 계정이에요! 가입하기부터 진행해 주세요."
+        self.errorLabel.isHidden = false
+    }
+    
+    /// 올바른 이메일 형식이 아님
+    public func showInvalidEmail() {
+        self.errorLabel.text = "올바른 이메일 형식이 아닙니다."
+        self.errorLabel.isHidden = false
+    }
+    
 }

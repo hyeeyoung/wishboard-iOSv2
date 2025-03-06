@@ -78,15 +78,34 @@ final class EmailInputViewController: UIViewController {
         emailInputView.toolBar.delegate = self
         
         emailInputView.emailLoginNextAction = { [weak self] email in
-            print("이메일 로그인 > 다음 이동: \(email)")
-            let nextVC = PasswordInputViewController(type: self!.type)
-            self?.navigationController?.pushViewController(nextVC, animated: true)
+            self?.callEmailLoginAPI()
         }
         
         emailInputView.registerNextAction = { [weak self] email in
             print("회원가입 > 다음 이동: \(email)")
             let nextVC = PasswordInputViewController(type: self!.type)
             self?.navigationController?.pushViewController(nextVC, animated: true)
+        }
+    }
+    
+    /// 이메일로 로그인하기 위한 인증번호 받아오기
+    private func callEmailLoginAPI() {
+        Task {
+            do {
+                let codeData = try await self.viewModel.getVerificationCode()
+                if !codeData.0 { 
+                    self.viewModel.isButtonEnabled = false
+                    self.emailInputView.showInvalidUser()
+                }
+                guard let code = codeData.1 else {
+                    print("서버로부터 인증번호를 못 받아옴")
+                    return
+                }
+                let nextVC = PasswordInputViewController(type: self.type, code: code)
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            } catch {
+                throw error
+            }
         }
     }
     
@@ -98,7 +117,11 @@ final class EmailInputViewController: UIViewController {
         
         viewModel.$isValidEmail.dropFirst()
             .sink { [weak self] isValid in
-                self?.emailInputView.errorLabel.isHidden = isValid
+                if !isValid {
+                    self?.emailInputView.showInvalidEmail()
+                } else {
+                    self?.emailInputView.errorLabel.isHidden = isValid
+                }
             }
             .store(in: &cancellables)
         

@@ -11,6 +11,7 @@ public protocol AuthRepositoryInterface {
     func login(email: String, password: String, fcmToken: String) async throws -> LoginResponse
     func requestRefreshToken(token: String) async throws -> LoginResponse
     func logout() async throws -> EmptyResponse
+    func emailLogin(email: String) async throws -> CommonResponse<EmailLoginResponse>
 }
 
 
@@ -27,5 +28,9 @@ public final class AuthRepository: AuthRepositoryInterface {
     
     public func logout() async throws -> EmptyResponse {
         return try await AuthManager.shared.logout()
+    }
+    
+    public func emailLogin(email: String) async throws -> CommonResponse<EmailLoginResponse> {
+        return try await AuthManager.shared.emailLogin(email: email)
     }
 }

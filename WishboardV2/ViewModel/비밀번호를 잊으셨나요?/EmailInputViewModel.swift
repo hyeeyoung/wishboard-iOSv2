@@ -7,6 +7,8 @@
 
 import Foundation
 import Combine
+import WBNetwork
+import Moya
 
 class EmailInputViewModel {
     // 입력된 이메일
@@ -35,5 +37,26 @@ class EmailInputViewModel {
     private func validateEmail(_ email: String) -> Bool {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
+    }
+    
+    /// 이메일 로그인
+    /// 인증번호 받기
+    public func getVerificationCode() async throws -> (Bool, String?) {
+        do {
+            let usecase = EmailLoginUseCase(repository: AuthRepository())
+            let response = try await usecase.execute(email: email)
+            let data = response.data
+            
+            let code = data?.verificationCode
+            return (true, code)
+        } catch {
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                if response.statusCode == 404 {
+                    print("존재하지 않는 유저")
+                    return (false, nil)
+                }
+            }
+            throw error
+        }
     }
 }

@@ -21,4 +21,8 @@ public final class AuthManager {
     public func logout() async throws -> EmptyResponse {
         try await API.Auth.request(.logout)
     }
+    
+    public func emailLogin(email: String) async throws -> CommonResponse<EmailLoginResponse> {
+        try await API.Auth.requestRaw(.emailLogin(email: email))
+    }
 }
