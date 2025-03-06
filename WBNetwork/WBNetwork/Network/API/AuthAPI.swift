@@ -21,6 +21,8 @@ public enum AuthAPI {
     case logout
     /// 이메일로 로그인
     case emailLogin(email: String)
+    /// 회원가입 > 이메일 검증
+    case registerEmail(email: String)
 }
 
 extension AuthAPI: TargetType, AccessTokenAuthorizable {
@@ -41,6 +43,8 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
             return "/logout"
         case .emailLogin:
             return "/password-mail"
+        case .registerEmail:
+            return "/check-email"
         }
     }
 
@@ -56,6 +60,8 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
             return .post
         case .emailLogin:
             return .post
+        case .registerEmail:
+            return .post
         }
     }
 
@@ -69,7 +75,7 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
                           "fcmToken": fcmToken]
         case .requestRefreshToken(let token):
             parameters = ["refreshToken": token]
-        case .emailLogin(let email):
+        case .emailLogin(let email), .registerEmail(let email):
             parameters = ["email": email]
         default:
             parameters = [:]

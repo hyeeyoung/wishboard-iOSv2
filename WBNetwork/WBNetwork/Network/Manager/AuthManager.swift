@@ -25,4 +25,8 @@ public final class AuthManager {
     public func emailLogin(email: String) async throws -> CommonResponse<EmailLoginResponse> {
         try await API.Auth.requestRaw(.emailLogin(email: email))
     }
+    
+    public func registerEmail(email: String) async throws -> EmptyResponse {
+        try await API.Auth.request(.registerEmail(email: email))
+    }
 }

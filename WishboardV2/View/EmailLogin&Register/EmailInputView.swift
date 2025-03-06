@@ -171,4 +171,10 @@ final class EmailInputView: UIView {
         self.errorLabel.isHidden = false
     }
     
+    /// 이미 가입된 유저
+    public func showDuplicateUser() {
+        self.errorLabel.text = "앗, 이미 가입된 계정이에요! 로그인으로 진행해 주세요."
+        self.errorLabel.isHidden = false
+    }
+    
 }

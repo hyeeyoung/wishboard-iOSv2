@@ -59,4 +59,22 @@ class EmailInputViewModel {
             throw error
         }
     }
+    
+    /// 회원가입
+    /// 이메일 검증
+    public func checkEmailValidation() async throws -> Bool {
+        do {
+            let usecase = RegisterEmailUseCase(repository: AuthRepository())
+            let response = try await usecase.execute(email: email)
+            return true
+        } catch {
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                if response.statusCode == 409 {
+                    print("이미 가입된 유저")
+                    return false
+                }
+            }
+            throw error
+        }
+    }
 }

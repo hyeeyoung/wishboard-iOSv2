@@ -69,6 +69,7 @@
 		23AD9D7E2C80AA0A007AB8D1 /* UpdateStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D7D2C80AA0A007AB8D1 /* UpdateStateUseCase.swift */; };
 		23BD37732D79B68E00D39D0F /* EmailLoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BD37722D79B68E00D39D0F /* EmailLoginResponse.swift */; };
 		23BD37752D79B6E700D39D0F /* EmailLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BD37742D79B6E700D39D0F /* EmailLoginUseCase.swift */; };
+		23BD37772D79BEED00D39D0F /* RegisterEmailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BD37762D79BEED00D39D0F /* RegisterEmailUseCase.swift */; };
 		23CB0DDA2C79FAD70053EB40 /* UserInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */; };
 		23CB0DDC2C79FB070053EB40 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDB2C79FB070053EB40 /* UserAPI.swift */; };
 		23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */; };
@@ -150,6 +151,7 @@
 		23AD9D7D2C80AA0A007AB8D1 /* UpdateStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateStateUseCase.swift; sourceTree = "<group>"; };
 		23BD37722D79B68E00D39D0F /* EmailLoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailLoginResponse.swift; sourceTree = "<group>"; };
 		23BD37742D79B6E700D39D0F /* EmailLoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailLoginUseCase.swift; sourceTree = "<group>"; };
+		23BD37762D79BEED00D39D0F /* RegisterEmailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterEmailUseCase.swift; sourceTree = "<group>"; };
 		23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoResponse.swift; sourceTree = "<group>"; };
 		23CB0DDB2C79FB070053EB40 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIManager.swift; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 				232185D82C70B447008BD81B /* RefreshTokenUseCase.swift */,
 				230EDC3A2C8215DF00FC35F2 /* LogoutUseCase.swift */,
 				23BD37742D79B6E700D39D0F /* EmailLoginUseCase.swift */,
+				23BD37762D79BEED00D39D0F /* RegisterEmailUseCase.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -528,6 +531,7 @@
 				232186032C70B58F008BD81B /* LoadingPlugin.swift in Sources */,
 				2347A9162C7AD368009F9480 /* ModifyItemFolderUseCase.swift in Sources */,
 				232185FE2C70B582008BD81B /* TokenInterceptor.swift in Sources */,
+				23BD37772D79BEED00D39D0F /* RegisterEmailUseCase.swift in Sources */,
 				232185A92C70B3BB008BD81B /* WBNetwork.docc in Sources */,
 				232185EF2C70B55B008BD81B /* TokenManager.swift in Sources */,
 				232185F02C70B55D008BD81B /* ItemManager.swift in Sources */,

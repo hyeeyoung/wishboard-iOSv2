@@ -77,14 +77,14 @@ final class EmailInputViewController: UIViewController {
     private func setupDelegates() {
         emailInputView.toolBar.delegate = self
         
+        // 이메일 로그인
         emailInputView.emailLoginNextAction = { [weak self] email in
             self?.callEmailLoginAPI()
         }
         
+        // 회원가입
         emailInputView.registerNextAction = { [weak self] email in
-            print("회원가입 > 다음 이동: \(email)")
-            let nextVC = PasswordInputViewController(type: self!.type)
-            self?.navigationController?.pushViewController(nextVC, animated: true)
+            self?.callCheckEmailValidationAPI()
         }
     }
     
@@ -96,12 +96,31 @@ final class EmailInputViewController: UIViewController {
                 if !codeData.0 { 
                     self.viewModel.isButtonEnabled = false
                     self.emailInputView.showInvalidUser()
+                    return
                 }
                 guard let code = codeData.1 else {
                     print("서버로부터 인증번호를 못 받아옴")
                     return
                 }
                 let nextVC = PasswordInputViewController(type: self.type, code: code)
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            } catch {
+                throw error
+            }
+        }
+    }
+    
+    /// 회원가입을 하기 위한 이메일 검증하기
+    private func callCheckEmailValidationAPI() {
+        Task {
+            do {
+                let success = try await self.viewModel.checkEmailValidation()
+                if !success {
+                    self.viewModel.isButtonEnabled = false
+                    self.emailInputView.showDuplicateUser()
+                    return
+                }
+                let nextVC = PasswordInputViewController(type: self.type)
                 self.navigationController?.pushViewController(nextVC, animated: true)
             } catch {
                 throw error
