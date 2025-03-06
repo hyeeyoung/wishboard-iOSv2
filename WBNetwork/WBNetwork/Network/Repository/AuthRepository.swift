@@ -13,6 +13,7 @@ public protocol AuthRepositoryInterface {
     func logout() async throws -> EmptyResponse
     func emailLogin(email: String) async throws -> CommonResponse<EmailLoginResponse>
     func registerEmail(email: String) async throws -> EmptyResponse
+    func loginWithoutPassword(verify: Bool, email: String, fcmToken: String) async throws -> LoginResponse
 }
 
 
@@ -37,5 +38,9 @@ public final class AuthRepository: AuthRepositoryInterface {
     
     public func registerEmail(email: String) async throws -> EmptyResponse {
         return try await AuthManager.shared.registerEmail(email: email)
+    }
+    
+    public func loginWithoutPassword(verify: Bool, email: String, fcmToken: String) async throws -> LoginResponse {
+        return try await AuthManager.shared.loginWithoutPassword(verify: verify, email: email, fcmToken: fcmToken)
     }
 }

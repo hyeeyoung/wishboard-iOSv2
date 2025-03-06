@@ -65,7 +65,7 @@ class EmailInputViewModel {
     public func checkEmailValidation() async throws -> Bool {
         do {
             let usecase = RegisterEmailUseCase(repository: AuthRepository())
-            let response = try await usecase.execute(email: email)
+            let _ = try await usecase.execute(email: email)
             return true
         } catch {
             if let moyaError = error as? MoyaError, let response = moyaError.response {

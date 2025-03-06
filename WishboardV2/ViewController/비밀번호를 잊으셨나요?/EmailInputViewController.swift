@@ -102,7 +102,7 @@ final class EmailInputViewController: UIViewController {
                     print("서버로부터 인증번호를 못 받아옴")
                     return
                 }
-                let nextVC = PasswordInputViewController(type: self.type, code: code)
+                let nextVC = PasswordInputViewController(type: self.type, email: self.viewModel.email, code: code)
                 self.navigationController?.pushViewController(nextVC, animated: true)
             } catch {
                 throw error
@@ -120,7 +120,7 @@ final class EmailInputViewController: UIViewController {
                     self.emailInputView.showDuplicateUser()
                     return
                 }
-                let nextVC = PasswordInputViewController(type: self.type)
+                let nextVC = PasswordInputViewController(type: self.type, email: self.viewModel.email)
                 self.navigationController?.pushViewController(nextVC, animated: true)
             } catch {
                 throw error

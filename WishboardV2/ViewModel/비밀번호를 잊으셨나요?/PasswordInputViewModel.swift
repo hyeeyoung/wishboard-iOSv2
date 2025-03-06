@@ -7,6 +7,9 @@
 
 import Foundation
 import Combine
+import WBNetwork
+import Core
+import Moya
 
 class PasswordInputViewModel {
     // 입력된 값
@@ -55,5 +58,38 @@ class PasswordInputViewModel {
     /// 코드 형식 검증 함수
     private func validateCode(_ code: String) -> Bool {
         return !code.isEmpty
+    }
+    
+    /// 이메일로 로그인하기
+    /// 인증코드 검증
+    public func loginWithoutPassword(verify: Bool, email: String) async throws {
+        do {
+            guard let fcmToken = UserDefaults.standard.string(forKey: "fcmToken") else {
+                print("기기에 파이어베이스 토큰 부재")
+                return
+            }
+            
+            let usecase = LoginWithoutPasswordUseCase(repository: AuthRepository())
+            let response = try await usecase.execute(verify: verify, email: email, fcmToken: fcmToken)
+            
+            let tokenData = response.token
+            let accessToken = tokenData?.accessToken
+            let refreshToken = tokenData?.refreshToken
+            let pushState = response.pushState
+            let tempNickname = response.tempNickname
+            
+            // 기기에 토큰 정보 저장
+            UserManager.accessToken = accessToken
+            UserManager.refreshToken = refreshToken
+            
+        } catch {
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                if response.statusCode == 404 {
+                    print("존재하지 않는 유저")
+                    return
+                }
+            }
+            throw error
+        }
     }
 }

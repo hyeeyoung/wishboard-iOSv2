@@ -23,10 +23,12 @@ final class PasswordInputViewController: UIViewController {
     private var keyboardHeight: CGFloat = 0.0
     private var type: InputType
     private let validationCode: String?
+    private let email: String
     // MARK: - Initializers
     
-    init(type: InputType, code: String? = nil) {
+    init(type: InputType, email: String, code: String? = nil) {
         self.type = type
+        self.email = email
         self.validationCode = code
         self.viewModel = PasswordInputViewModel(type: type)
         
@@ -77,10 +79,8 @@ final class PasswordInputViewController: UIViewController {
         passwordInputView.toolBar.delegate = self
         
         passwordInputView.emailLoginAction = { [weak self] code in
-            print("이메일 로그인 code: \(code)")
-            
             if code == self?.validationCode {
-                print("코드 일치")
+                self?.callLoginWithoutPassword()
             } else {
                 self?.viewModel.isValidCode = false
                 self?.passwordInputView.errorLabel.isHidden = false
@@ -100,6 +100,25 @@ final class PasswordInputViewController: UIViewController {
         passwordInputView.termsLabel.onTapPrivacy = {
             print("개인정보 처리방침 화면으로 이동")
             
+        }
+    }
+    
+    /// 이메일로 로그인하기
+    private func callLoginWithoutPassword() {
+        Task {
+            do {
+                let _ = try await self.viewModel.loginWithoutPassword(verify: true, email: self.email)
+                print("이메일과 인증번호로 로그인 성공")
+                
+                // 화면 이동
+                self.navigationController?.popToRootViewController(animated: false)
+                let tabBarController = TabBarViewController()
+                tabBarController.modalPresentationStyle = .fullScreen
+                self.present(tabBarController, animated: true, completion: nil)
+                
+            } catch {
+                throw error
+            }
         }
     }
     

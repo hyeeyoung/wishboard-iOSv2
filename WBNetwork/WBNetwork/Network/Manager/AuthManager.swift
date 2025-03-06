@@ -29,4 +29,8 @@ public final class AuthManager {
     public func registerEmail(email: String) async throws -> EmptyResponse {
         try await API.Auth.request(.registerEmail(email: email))
     }
+    
+    public func loginWithoutPassword(verify: Bool, email: String, fcmToken: String) async throws -> LoginResponse {
+        try await API.Auth.request(.loginWithoutPassword(verify: verify, email: email, fcmToken: fcmToken))
+    }
 }
