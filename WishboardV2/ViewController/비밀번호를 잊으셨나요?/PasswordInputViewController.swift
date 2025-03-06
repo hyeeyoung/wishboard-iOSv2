@@ -78,6 +78,7 @@ final class PasswordInputViewController: UIViewController {
     private func setupDelegates() {
         passwordInputView.toolBar.delegate = self
         
+        /// 이메일로 로그인
         passwordInputView.emailLoginAction = { [weak self] code in
             if code == self?.validationCode {
                 self?.callLoginWithoutPassword()
@@ -88,8 +89,9 @@ final class PasswordInputViewController: UIViewController {
             
         }
         
+        /// 회원가입
         passwordInputView.registerAction = { [weak self] pw in
-            print("회원가입 pw: \(pw)")
+            self?.callRegisterAPI()
         }
         
         passwordInputView.termsLabel.onTapTerms = {
@@ -109,6 +111,25 @@ final class PasswordInputViewController: UIViewController {
             do {
                 let _ = try await self.viewModel.loginWithoutPassword(verify: true, email: self.email)
                 print("이메일과 인증번호로 로그인 성공")
+                
+                // 화면 이동
+                self.navigationController?.popToRootViewController(animated: false)
+                let tabBarController = TabBarViewController()
+                tabBarController.modalPresentationStyle = .fullScreen
+                self.present(tabBarController, animated: true, completion: nil)
+                
+            } catch {
+                throw error
+            }
+        }
+    }
+    
+    /// 회원가입하기
+    private func callRegisterAPI() {
+        Task {
+            do {
+                let _ = try await self.viewModel.register(email: self.email)
+                print("회원가입 성공")
                 
                 // 화면 이동
                 self.navigationController?.popToRootViewController(animated: false)

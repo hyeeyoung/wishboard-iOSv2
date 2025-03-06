@@ -95,7 +95,11 @@ class ProfileHeaderView: UIView {
     
     func configure(with user: User) {
         profileImage.loadImage(from: user.profileImageUrl ?? "", placeholder: Image.defaultProfile)
-        userNameLabel.text = user.nickname
+        if let tempNickName = UserManager.tempNickname {
+            userNameLabel.text = tempNickName
+        } else {
+            userNameLabel.text = user.nickname
+        }
         emailLabel.text = user.email
     }
     

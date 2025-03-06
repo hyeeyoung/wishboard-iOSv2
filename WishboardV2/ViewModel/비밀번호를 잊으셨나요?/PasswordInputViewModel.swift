@@ -81,11 +81,45 @@ class PasswordInputViewModel {
             // 기기에 토큰 정보 저장
             UserManager.accessToken = accessToken
             UserManager.refreshToken = refreshToken
+            UserManager.tempNickname = tempNickname
             
         } catch {
             if let moyaError = error as? MoyaError, let response = moyaError.response {
                 if response.statusCode == 404 {
                     print("존재하지 않는 유저")
+                    return
+                }
+            }
+            throw error
+        }
+    }
+    
+    /// 회원가입
+    public func register(email: String) async throws {
+        do {
+            guard let fcmToken = UserDefaults.standard.string(forKey: "fcmToken") else {
+                print("기기에 파이어베이스 토큰 부재")
+                return
+            }
+            
+            let usecase = RegisterUseCase(repository: AuthRepository())
+            let response = try await usecase.execute(email: email, password: input, fcmToken: fcmToken)
+            
+            let tokenData = response.token
+            let accessToken = tokenData?.accessToken
+            let refreshToken = tokenData?.refreshToken
+            let pushState = response.pushState
+            let tempNickname = response.tempNickname
+            
+            // 기기에 토큰 정보 저장
+            UserManager.accessToken = accessToken
+            UserManager.refreshToken = refreshToken
+            UserManager.tempNickname = tempNickname
+            
+        } catch {
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                if response.statusCode == 404 {
+                    print("이미 존재하는 fcmToken")
                     return
                 }
             }

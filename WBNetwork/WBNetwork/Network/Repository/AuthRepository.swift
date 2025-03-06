@@ -9,6 +9,7 @@ import Foundation
 
 public protocol AuthRepositoryInterface {
     func login(email: String, password: String, fcmToken: String) async throws -> LoginResponse
+    func signUp(email: String, password: String, fcmToken: String) async throws -> LoginResponse
     func requestRefreshToken(token: String) async throws -> LoginResponse
     func logout() async throws -> EmptyResponse
     func emailLogin(email: String) async throws -> CommonResponse<EmailLoginResponse>
@@ -22,6 +23,10 @@ public final class AuthRepository: AuthRepositoryInterface {
     
     public func login(email: String, password: String, fcmToken: String) async throws -> LoginResponse {
         return try await AuthManager.shared.login(email: email, password: password, fcmToken: fcmToken)
+    }
+    
+    public func signUp(email: String, password: String, fcmToken: String) async throws -> LoginResponse {
+        return try await AuthManager.shared.signUp(email: email, password: password, fcmToken: fcmToken)
     }
     
     public func requestRefreshToken(token: String) async throws -> LoginResponse {

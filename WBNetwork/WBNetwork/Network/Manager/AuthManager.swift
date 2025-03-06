@@ -14,6 +14,10 @@ public final class AuthManager {
         try await API.Auth.request(.login(email: email, password: password, fcmToken: fcmToken))
     }
     
+    public func signUp(email: String, password: String, fcmToken: String) async throws -> LoginResponse {
+        try await API.Auth.request(.signUp(email: email, password: password, fcmToken: fcmToken))
+    }
+    
     public func requestRefreshToken(token: String) async throws -> LoginResponse {
         try await API.Auth.request(.requestRefreshToken(token: token))
     }

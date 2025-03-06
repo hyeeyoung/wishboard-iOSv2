@@ -20,7 +20,7 @@ class MypageViewModel {
     
     init() {
         // 초기 데이터 설정
-        self.user = User(profileImageUrl: "", nickname: "닉네임", email: "email@example.com", pushState: false)
+        self.user = User(profileImageUrl: "", nickname: UserManager.tempNickname ?? "닉네임", email: "email@example.com", pushState: false)
         self.settings = [
             Setting(title: "알림 설정", type: .switch(isOn: false, showDivider: false)),
             Setting(title: "비밀번호 변경", type: .normal(showDivider: true)),
@@ -44,8 +44,15 @@ class MypageViewModel {
                 
                 DispatchQueue.main.async {
                     let userinfoResponse = data[0]
+                    
+                    let nickname = userinfoResponse.nickname
+                    // 닉네임이 있다면 기기에 저장된 임시닉네임 삭제
+                    if nickname != nil {
+                        UserManager.tempNickname = nil
+                    }
+                    
                     self.user = User(profileImageUrl: userinfoResponse.profile_img_url,
-                                     nickname: userinfoResponse.nickname ?? "",
+                                     nickname: nickname ?? "",
                                      email: userinfoResponse.email,
                                      pushState: userinfoResponse.push_state != 0)
                     

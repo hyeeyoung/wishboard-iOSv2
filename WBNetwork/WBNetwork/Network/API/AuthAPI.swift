@@ -14,7 +14,7 @@ public enum AuthAPI {
     /// 로그인
     case login(email: String, password: String, fcmToken: String)
     /// 회원가입
-    case signUp
+    case signUp(email: String, password: String, fcmToken: String)
     /// 토큰 재발급
     case requestRefreshToken(token: String)
     /// 로그아웃
@@ -75,7 +75,8 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
         var parameters: [String: Any] = [:]
         
         switch self {
-        case .login(let email, let password, let fcmToken):
+        case .login(let email, let password, let fcmToken),
+                .signUp(let email, let password, let fcmToken):
             parameters = ["email": email,
                           "password": password,
                           "fcmToken": fcmToken]
