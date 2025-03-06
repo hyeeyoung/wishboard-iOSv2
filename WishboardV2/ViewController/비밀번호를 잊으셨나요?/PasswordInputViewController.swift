@@ -94,14 +94,14 @@ final class PasswordInputViewController: UIViewController {
             self?.callRegisterAPI()
         }
         
+        /// 이용약관 화면으로 이동
         passwordInputView.termsLabel.onTapTerms = {
-            print("이용약관 화면으로 이동")
-            
+            self.moveToWebVC(Storage.useTermURL.rawValue, "이용약관")
         }
 
+        /// 개인정보 처리방침 화면으로 이동
         passwordInputView.termsLabel.onTapPrivacy = {
-            print("개인정보 처리방침 화면으로 이동")
-            
+            self.moveToWebVC(Storage.privacyTermURL.rawValue, "개인정보 처리방침")
         }
     }
     
@@ -141,6 +141,15 @@ final class PasswordInputViewController: UIViewController {
                 throw error
             }
         }
+    }
+    
+    /// 웹뷰로 화면 이동
+    private func moveToWebVC(_ link: String, _ title: String) {
+        let vc = WebViewController()
+        vc.webURL = link
+        vc.setUpTitle(title)
+        
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     // MARK: - ViewModel Binding
