@@ -116,6 +116,9 @@ class PasswordInputViewModel {
             UserManager.refreshToken = refreshToken
             UserManager.tempNickname = tempNickname
             
+            // 첫 로그인 유무 저장
+            UserManager.isFirstLogin = true
+            
         } catch {
             if let moyaError = error as? MoyaError, let response = moyaError.response {
                 if response.statusCode == 404 {
