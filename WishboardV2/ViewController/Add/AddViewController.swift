@@ -352,7 +352,9 @@ extension AddViewController: AddToolBarDelegate {
         Task {
             do {
                 try await self.viewModel.addItem()
-                self.dismiss(animated: true)
+                self.dismiss(animated: true) {
+                    SnackBar.shared.show(type: .addItem)
+                }
                 self.confirmAction?()
             } catch {
                 throw error

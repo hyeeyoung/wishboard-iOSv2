@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Combine
 import WBNetwork
+import Moya
 
 final class AddViewModel {
     // 입력 데이터
@@ -65,7 +66,7 @@ final class AddViewModel {
             let itemURL = self.selectedLink
             let itemMemo = self.memo
             let notiType = self.selectedAlarmType
-            let notiDate = self.selectedAlarmDate
+            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
             
             let item = RequestItemDTO(folderId: selectedFolderId,
                                          photo: itemImage,
@@ -79,13 +80,19 @@ final class AddViewModel {
             _ = try await usecase.execute(type: .manual, item: item)
         } catch {
             SnackBar.shared.show(type: .errorMessage)
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                if response.statusCode == 400 {
+                    print("400 error")
+//                    SnackBar.shared.show(type: .errorMessage)
+                }
+            }
             throw error
         }
     }
     
     // 폴더 데이터 가져오기
     func fetchFolders() {
-        Task {
+        _Concurrency.Task {
             do {
                 let usecase = GetFolderListUseCase()
                 let data = try await usecase.execute()
@@ -96,6 +103,21 @@ final class AddViewModel {
             } catch {
                 throw error
             }
+        }
+    }
+    
+    private func convertDateFormat(input: String) -> String? {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yy년 MM월 dd일 HH:mm"
+        inputFormatter.locale = Locale(identifier: "ko_KR") // 한글 형식 대응
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        if let date = inputFormatter.date(from: input) {
+            return outputFormatter.string(from: date)
+        } else {
+            return nil
         }
     }
 }

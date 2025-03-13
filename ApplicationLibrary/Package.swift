@@ -3,8 +3,6 @@
 
 import PackageDescription
 
-// swift-tools-version:5.3
-import PackageDescription
 
 let package = Package(
     name: "ApplicationLibrary",
@@ -28,7 +26,7 @@ let package = Package(
             name: "ApplicationLibrary",
             dependencies: ["SnapKit", "Then", "Kingfisher",
                            .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
-                           .product(name: "Lottie", package: "lottie-spm")
+                           .product(name: "Lottie", package: "lottie-spm"),
                           ]),
         .testTarget(
             name: "ApplicationLibraryTests",

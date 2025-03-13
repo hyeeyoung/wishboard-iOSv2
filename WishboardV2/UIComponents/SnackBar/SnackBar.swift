@@ -12,7 +12,6 @@ import Core
 final class SnackBar {
     
     static let shared = SnackBar()
-    private var isShowing = false // 스낵바 표시 여부를 추적
     
     let SNACKBAR_HEIGHT = 48
     let SNACKBAR_INTERVAL = 34
@@ -21,123 +20,112 @@ final class SnackBar {
     var window: UIViewController?
     var type: SnackBarType?
     
-    // TODO: Share-Extension일 때 ERROR
-    public init(in viewController: UIViewController? = nil) {
-        #if WISHBOARD_APP
-        self.window = UIApplication.shared.keyWindow?.rootViewController
-        #else
-        self.window = viewController
-        #endif
-        
-        let translationY = SNACKBAR_HEIGHT + SNACKBAR_INTERVAL
-        TRANSLATION_Y = CGFloat(-translationY)
-    }
-    
     // MARK: Views
-    let backgroundView = UIView().then{
+    private let backgroundView = UIView().then {
         $0.backgroundColor = .gray_700
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 24
+        $0.alpha = 0.0 // 처음엔 보이지 않도록 설정
     }
-    var title = UILabel().then{
+
+    private let title = UILabel().then {
         $0.textColor = .white
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD2)
         $0.textAlignment = .center
         $0.numberOfLines = 0
     }
     
+    // TODO: Share-Extension일 때 ERROR
+    public init(in viewController: UIViewController? = nil) {
+        let translationY = SNACKBAR_HEIGHT + SNACKBAR_INTERVAL
+        TRANSLATION_Y = CGFloat(-translationY)
+        
+        #if WISHBOARD_APP
+        self.setupUI()
+        #else
+        self.window = viewController
+        #endif
+    }
+    
+    
     // MARK: Methods
     func show(type: SnackBarType) {
         self.type = type
         
-        // 스낵바가 이미 표시 중이면 중복 표시하지 않습니다.
-        guard !isShowing else {
-            return
-        }
-        
-        isShowing = true // 스낵바가 표시 중임을 표시
-        
-        setSnackBarUI()
+        configure(type)
         performAnimation()
-        
     }
-    /// 스낵바의 UI 설정
-    private func setSnackBarUI() {
-        setSnackBarContent()
-        addSnackBarSubview()
-        setSnackBarConstraints()
+
+    /// 스낵바 UI 설정
+    private func setupUI() {
+        DispatchQueue.main.async {
+            self.addSubviewsAndConstraints()
+        }
     }
+
     /// 스낵바의 문구 내용 설정
-    private func setSnackBarContent() {
-        guard let type = self.type else {return}
-        title.text = type.message
+    private func configure(_ type: SnackBarType) {
+        let message = type.message
+        title.text = message
     }
+
     /// 스낵바의 addSubView
-    private func addSnackBarSubview() {
-        defer {
-            backgroundView.addSubview(title)
-        }
-        
+    private func addSubviewsAndConstraints() {
         #if WISHBOARD_APP
-        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) {
-            window.addSubview(backgroundView)
-        } else {
-            // 앱에서 활성화된 윈도우를 찾을 수 없는 경우 예외 처리
-            print("No active window found")
-            guard let window = self.window else {return}
-            window.view.addSubview(backgroundView)
-        }
+        let window = UIApplication.shared.keyWindow
+        window?.addSubview(self.backgroundView)
+        backgroundView.addSubview(title)
+        
+        setConstraints()
         
         #else
-        window?.view.addSubview(backgroundView)
-        
+        DispatchQueue.main.async {
+            self.window?.view.addSubview(self.backgroundView)
+            self.backgroundView.addSubview(self.title)
+            self.setConstraints()
+        }
         #endif
-        
     }
-    /// 스낵바의 제약 조건 설정
-    private func setSnackBarConstraints() {
+
+    /// 스낵바 제약 조건 설정
+    private func setConstraints() {
         title.snp.makeConstraints { make in
             make.centerY.centerX.equalToSuperview()
         }
+        
         backgroundView.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(SNACKBAR_HEIGHT)
-            // 스낵바 길이 정적 고정
+            make.bottom.equalToSuperview().offset(SNACKBAR_HEIGHT) // 시작 위치를 화면 아래로 설정
             make.leading.trailing.lessThanOrEqualToSuperview().inset(35)
-            // 스낵바 길이 동적 (아랫줄 코드)
-//            make.width.equalTo(title.snp.width).offset(32 * 2)
             make.height.equalTo(SNACKBAR_HEIGHT)
             make.centerX.equalToSuperview()
         }
     }
-    
-    /// 스낵바의 애니메이션 설정
+
+    /// 스낵바 애니메이션 실행
     private func performAnimation() {
         DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.5) {
+            // ✅ 1) 초기 상태 유지 (이미 아래에 위치함)
+            self.backgroundView.alpha = 0.0
+            
+            // ✅ 2) 올라오는 애니메이션 (0.5초)
+            UIView.animate(withDuration: 0.5, delay: 0, options: .transitionFlipFromBottom, animations: {
                 self.backgroundView.transform = CGAffineTransform(translationX: 0, y: self.TRANSLATION_Y)
-            } completion: { finished in
-                self.performAnimationAtApp()
+                self.backgroundView.alpha = 1.0
+                self.backgroundView.superview?.layoutIfNeeded()
+            }) { _ in
+                // ✅ 3) 2.5초 동안 유지
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                    // ✅ 4) 내려가는 애니메이션 (0.5초)
+                    UIView.animate(withDuration: 0.5, delay: 0, options: .transitionFlipFromTop, animations: {
+                        self.backgroundView.transform = .identity
+                        self.backgroundView.alpha = 0.0
+                        self.backgroundView.superview?.layoutIfNeeded()
+                    }) { _ in
+                        self.backgroundView.alpha = 0.0
+                    }
+                }
             }
         }
     }
-    /// 앱에서 스낵바를 실행
-    private func performAnimationAtApp() {
-        
-        UIView.animate(withDuration: 0.5, delay: 2.5) {
-            self.backgroundView.transform = .identity
-        } completion: { finish in
-            #if WISHBOARD_APP
-            self.hide()
-            
-            #else
-            self.hide()
-            
-            #endif
-        }
-    }
-    /// 스낵바가 닫힐 때 호출되는 메서드
-    private func hide() {
-        isShowing = false // 스낵바가 닫혔음을 표시
-        backgroundView.removeFromSuperview() // 스낵바를 화면에서 제거
-    }
+
 }

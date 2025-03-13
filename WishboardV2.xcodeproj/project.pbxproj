@@ -30,11 +30,11 @@
 		2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */; };
 		2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */; };
 		2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E5612C7B0A1A00CC9509 /* ShareViewModel.swift */; };
-		2357E5632C7B0AE600CC9509 /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
 		2357E5652C7B0D3A00CC9509 /* FolderCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E5642C7B0D3900CC9509 /* FolderCollectionViewCell.swift */; };
 		235ABA0D2C8C70D900763900 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235ABA0C2C8C70D900763900 /* CalendarViewController.swift */; };
 		235ABA102C8C712900763900 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235ABA0F2C8C712900763900 /* CalendarView.swift */; };
 		235ABA132C8C716500763900 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235ABA122C8C716500763900 /* CalendarViewModel.swift */; };
+		23611C922D81AA67003606DE /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
 		23626D5B2D7B0CEC000A144A /* AppGuideSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5A2D7B0CEC000A144A /* AppGuideSheet.swift */; };
 		23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */; };
 		23626D602D7B17B1000A144A /* AppGuideCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */; };
@@ -1194,8 +1194,8 @@
 				23C4D22F2C7A4EFE00BB0B08 /* ShareView.swift in Sources */,
 				2357E5652C7B0D3A00CC9509 /* FolderCollectionViewCell.swift in Sources */,
 				2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */,
-				2357E5632C7B0AE600CC9509 /* SnackBar.swift in Sources */,
 				230DE29E2D6B08BB00B7BCE7 /* UIImageViewExtension.swift in Sources */,
+				23611C922D81AA67003606DE /* SnackBar.swift in Sources */,
 				23C4D21A2C7A4D6D00BB0B08 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
