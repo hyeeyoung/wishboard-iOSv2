@@ -155,6 +155,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
         self.navigationController?.popViewController(animated: true)
     }
     
+    /// 아이템 삭제
     func deleteNaviItemTap() {
         // 아이템 삭제 알럿창
         let alert = AlertViewController(alertType: .deleteItem)
@@ -184,8 +185,21 @@ extension ItemDetailViewController: DetailToolBarDelegate {
         self.present(alert, animated: true, completion: nil)
     }
     
+    /// 아이템 수정
     func modifyNaviItemTap() {
-        print("item modify")
+        guard let item = self.viewModel.item else {return}
+        let addViewController = AddViewController(type: .modify, item: item)
+        addViewController.modalPresentationStyle = .fullScreen
+        
+        // 새로고침
+        addViewController.confirmAction = { [weak self] in
+            if let idx = self?.viewModel.item?.item_id {
+                self?.viewModel.fetchItemDetail(id: idx)
+                self?.delegate.refreshItems()
+            }
+        }
+        
+        present(addViewController, animated: true)
     }
 }
 

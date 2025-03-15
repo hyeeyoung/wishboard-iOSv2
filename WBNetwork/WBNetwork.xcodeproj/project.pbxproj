@@ -77,6 +77,7 @@
 		23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */; };
 		23CB0DE02C79FBBB0053EB40 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDF2C79FBBB0053EB40 /* UserRepository.swift */; };
 		23CB0DE32C79FBEF0053EB40 /* GetUserInfoUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */; };
+		23EFA1C82D85B8FB00A0EB42 /* ModifyItemUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EFA1C72D85B8FB00A0EB42 /* ModifyItemUseCase.swift */; };
 		23F0F53F2C840586001ABAA9 /* ModifyProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0F53E2C840586001ABAA9 /* ModifyProfileUseCase.swift */; };
 /* End PBXBuildFile section */
 
@@ -161,6 +162,7 @@
 		23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIManager.swift; sourceTree = "<group>"; };
 		23CB0DDF2C79FBBB0053EB40 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserInfoUseCase.swift; sourceTree = "<group>"; };
+		23EFA1C72D85B8FB00A0EB42 /* ModifyItemUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyItemUseCase.swift; sourceTree = "<group>"; };
 		23F0F53E2C840586001ABAA9 /* ModifyProfileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyProfileUseCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -280,6 +282,7 @@
 				2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */,
 				2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */,
 				2325525E2C838C28001FC96D /* AddItemUseCase.swift */,
+				23EFA1C72D85B8FB00A0EB42 /* ModifyItemUseCase.swift */,
 			);
 			path = Item;
 			sourceTree = "<group>";
@@ -575,6 +578,7 @@
 				23BD37792D79C14C00D39D0F /* LoginWithoutPasswordUseCase.swift in Sources */,
 				2347A91A2C7ADCD7009F9480 /* DeleteItemUseCase.swift in Sources */,
 				23BD377B2D79C54400D39D0F /* RegisterUseCase.swift in Sources */,
+				23EFA1C82D85B8FB00A0EB42 /* ModifyItemUseCase.swift in Sources */,
 				2347A90E2C7AC985009F9480 /* GetFolderListUseCase.swift in Sources */,
 				23CB0DDC2C79FB070053EB40 /* UserAPI.swift in Sources */,
 				23AD9D752C80A8DA007AB8D1 /* NoticeRepository.swift in Sources */,

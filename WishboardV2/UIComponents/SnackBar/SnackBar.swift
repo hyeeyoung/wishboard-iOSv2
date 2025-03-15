@@ -75,7 +75,6 @@ final class SnackBar {
         let window = UIApplication.shared.keyWindow
         window?.addSubview(self.backgroundView)
         backgroundView.addSubview(title)
-        
         setConstraints()
         
         #else

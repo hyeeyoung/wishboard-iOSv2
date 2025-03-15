@@ -20,7 +20,7 @@ final class AddViewModel {
     @Published var selectedAlarmType: String? = nil
     @Published var selectedAlarmDate: String? = nil
     @Published var selectedLink: String? = nil
-    @Published var memo: String = ""
+    @Published var memo: String? = nil
     
     @Published var selectedAlarm: String? = nil
     @Published var selectedFolder: String? = nil
@@ -78,6 +78,40 @@ final class AddViewModel {
             
             let usecase = AddItemUseCase()
             _ = try await usecase.execute(type: .manual, item: item)
+        } catch {
+            SnackBar.shared.show(type: .errorMessage)
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                if response.statusCode == 400 {
+                    print("400 error")
+//                    SnackBar.shared.show(type: .errorMessage)
+                }
+            }
+            throw error
+        }
+    }
+    
+    func modifyItem(idx: Int) async throws {
+        do {
+            
+            let itemName = self.itemName
+            let itemPrice = self.itemPrice
+            let selectedFolderId = self.selectedFolderId
+            let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
+            let itemURL = self.selectedLink
+            let itemMemo = self.memo
+            let notiType = self.selectedAlarmType
+            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
+            
+            let item = RequestItemDTO(folderId: selectedFolderId,
+                                         photo: itemImage,
+                                         itemName: itemName,
+                                         itemPrice: itemPrice,
+                                         itemURL: itemURL,
+                                         itemMemo: itemMemo,
+                                         itemNotificationType: notiType, itemNotificationDate: notiDate)
+            
+            let usecase = ModifyItemUseCase()
+            _ = try await usecase.execute(idx: idx, item: item)
         } catch {
             SnackBar.shared.show(type: .errorMessage)
             if let moyaError = error as? MoyaError, let response = moyaError.response {

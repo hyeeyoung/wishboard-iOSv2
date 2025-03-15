@@ -72,7 +72,7 @@ extension TabBarViewController: UITabBarControllerDelegate {
         
         // ADD 버튼을 누르면 새로운 화면 Present
         if viewController == viewControllers[2] { // 3번째 탭 (index 2)
-            let addViewController = AddViewController() // ADD 메뉴의 화면
+            let addViewController = AddViewController(type: .manual) // ADD 메뉴의 화면
             addViewController.modalPresentationStyle = .fullScreen
             
             addViewController.confirmAction = { [weak self] in

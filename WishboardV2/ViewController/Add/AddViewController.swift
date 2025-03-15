@@ -13,6 +13,11 @@ import Then
 import Core
 import WBNetwork
 
+enum AddItemType {
+    case manual
+    case modify
+}
+
 final class AddViewController: UIViewController {
     
     // MARK: - Properties
@@ -28,7 +33,68 @@ final class AddViewController: UIViewController {
     private let shoppingLinkBottomSheet = ShoppingLinkBottomSheet()
     private let selectDateBottomSheet = SelectDateBottomSheet()
     
+    // 모드
+    private let type: AddItemType
+    private var item: WishListResponse?
+    
     // MARK: - Initializers
+    
+    init(type: AddItemType, item: WishListResponse? = nil) {
+        self.type = type
+        self.item = item
+        super.init(nibName: nil, bundle: nil)
+        
+        if type == .modify {
+            setModifyItemData()
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    /// 수정 모드라면 뷰모델에 데이터 삽입
+    private func setModifyItemData() {
+        self.addView.itemNameTextField.text = self.item?.item_name ?? ""
+        self.addView.itemPriceTextField.text = self.item?.item_price ?? "0"
+        
+        if let item_name = self.item?.item_name, !item_name.isEmpty {
+            self.viewModel.itemName = item_name
+        }
+        if let item_price = self.item?.item_price, !item_price.isEmpty {
+            self.viewModel.itemPrice = item_price
+        }
+        self.viewModel.selectedFolderId = self.item?.folder_id
+        if let folder_name = self.item?.folder_name, !folder_name.isEmpty {
+            self.viewModel.selectedFolder = folder_name
+        }
+        if let item_url = self.item?.item_url, !item_url.isEmpty {
+            self.viewModel.selectedLink = item_url
+        }
+        if let item_memo = self.item?.item_memo, !item_memo.isEmpty {
+            self.viewModel.memo = item_memo
+        }
+        self.viewModel.selectedAlarmType = self.item?.item_notification_type
+        self.viewModel.selectedAlarmDate = self.item?.item_notification_date
+        if let selectedAlarmType = viewModel.selectedAlarmType, let selectedAlarmDate = viewModel.selectedAlarmDate {
+            self.viewModel.selectedAlarm = "[\(selectedAlarmType)] \(selectedAlarmDate)"
+        }
+        
+        // 이미지
+        if let imageUrl = self.item?.item_img_url {
+            fetchImage(from: imageUrl) { image in
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self.viewModel.selectedImage = image
+                    }
+                } else {
+                    print("❌ 이미지 변환 실패")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Life Cycles
     
     override func viewDidLoad() {
         self.view.backgroundColor = .white
@@ -349,14 +415,33 @@ extension AddViewController: AddToolBarDelegate {
     }
     
     func rightItemTap() {
+        let lottie = SpinningLottie()
         Task {
             do {
-                try await self.viewModel.addItem()
+                
+                lottie.startAnimation()
+                
+                if self.type == .manual {
+                    try await self.viewModel.addItem()
+                } else if self.type == .modify {
+                    guard let itemIdx = self.item?.item_id else {return}
+                    try await self.viewModel.modifyItem(idx: itemIdx)
+                }
+                
+                lottie.stopAnimation()
+                
                 self.dismiss(animated: true) {
-                    SnackBar.shared.show(type: .addItem)
+                    // 스낵바 노출
+                    if self.type == .manual {
+                        SnackBar.shared.show(type: .addItem)
+                    } else if self.type == .modify {
+                        SnackBar.shared.show(type: .modifyItem)
+                    }
                 }
                 self.confirmAction?()
+                
             } catch {
+                lottie.stopAnimation()
                 throw error
             }
         }
@@ -419,5 +504,32 @@ extension AddViewController {
             let offset = fieldBottomY - availableHeight + 20
             self.addView.scrollView.setContentOffset(CGPoint(x: 0, y: offset), animated: true)
         }
+    }
+}
+
+extension AddViewController {
+    func fetchImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("❌ 이미지 다운로드 실패: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+
+            guard let data = data, let image = UIImage(data: data) else {
+                print("❌ 유효하지 않은 이미지 데이터")
+                completion(nil)
+                return
+            }
+
+            DispatchQueue.main.async {
+                completion(image)
+            }
+        }.resume()
     }
 }

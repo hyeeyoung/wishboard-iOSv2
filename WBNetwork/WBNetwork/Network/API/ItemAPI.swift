@@ -55,6 +55,8 @@ public enum ItemAPI {
     case parseItemUrl(link: String)
     /// 아이템 추가
     case addItem(type: AddItemType, item: RequestItemDTO)
+    /// 아이템 수정
+    case modifyItem(idx: Int, item: RequestItemDTO)
 }
 
 extension ItemAPI: TargetType, AccessTokenAuthorizable {
@@ -77,6 +79,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             return "/parse"
         case .addItem:
             return ""
+        case .modifyItem(let idx, _):
+            return "/\(idx)"
         }
     }
 
@@ -90,6 +94,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             return .delete
         case .addItem:
             return .post
+        case .modifyItem:
+            return .put
         }
     }
 
@@ -104,6 +110,9 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         case .addItem(let type, let item):
             let data = makeMultipartFormData(param: item)
             return .uploadCompositeMultipart(data, urlParameters: ["type": type.rawValue])
+        case .modifyItem(_, let item):
+            let data = makeMultipartFormData(param: item)
+            return .uploadMultipart(data)
         default:
             parameters = [:]
         }
