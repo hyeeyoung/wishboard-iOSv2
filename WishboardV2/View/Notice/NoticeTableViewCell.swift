@@ -17,6 +17,12 @@ final class NoticeTableViewCell: UITableViewCell {
     
     // MARK: - Views
     
+    public let background = UIView().then {
+        $0.backgroundColor = .gray_50
+        $0.layer.cornerRadius = 24
+        $0.clipsToBounds = true
+        $0.isHidden = true
+    }
     let itemImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFill
         $0.backgroundColor = .black_5

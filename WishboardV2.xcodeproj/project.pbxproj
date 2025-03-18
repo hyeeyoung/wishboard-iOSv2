@@ -39,6 +39,7 @@
 		23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */; };
 		23626D602D7B17B1000A144A /* AppGuideCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */; };
 		236ED4D02C6E37BB000EA85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */; };
+		2373A6CE2D899A160036E54F /* CalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2373A6CD2D899A160036E54F /* CalendarCell.swift */; };
 		237468B32D77181D00959E09 /* EmailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B22D77181D00959E09 /* EmailInputViewModel.swift */; };
 		237468B62D77183D00959E09 /* EmailInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B52D77183D00959E09 /* EmailInputViewController.swift */; };
 		237468B82D77187300959E09 /* InputToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B72D77187300959E09 /* InputToolBar.swift */; };
@@ -261,6 +262,7 @@
 		23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideCollectionViewCell.swift; sourceTree = "<group>"; };
 		236ED4CE2C6E3515000EA85B /* WishboardV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WishboardV2.entitlements; sourceTree = "<group>"; };
 		236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		2373A6CD2D899A160036E54F /* CalendarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCell.swift; sourceTree = "<group>"; };
 		237468B22D77181D00959E09 /* EmailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputViewModel.swift; sourceTree = "<group>"; };
 		237468B52D77183D00959E09 /* EmailInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputViewController.swift; sourceTree = "<group>"; };
 		237468B72D77187300959E09 /* InputToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputToolBar.swift; sourceTree = "<group>"; };
@@ -461,6 +463,7 @@
 			isa = PBXGroup;
 			children = (
 				235ABA0F2C8C712900763900 /* CalendarView.swift */,
+				2373A6CD2D899A160036E54F /* CalendarCell.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -1220,6 +1223,7 @@
 				23D5B6632C7A309F00B73174 /* AlertViewController.swift in Sources */,
 				2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */,
 				23C6107B2D68D6B1003E71F4 /* AddView.swift in Sources */,
+				2373A6CE2D899A160036E54F /* CalendarCell.swift in Sources */,
 				23C610802D68D791003E71F4 /* OptionSelectorView.swift in Sources */,
 				237468BB2D771E5500959E09 /* EmailInputView.swift in Sources */,
 				23CBF4D52C55162A0061D22F /* OnboardingViewModel.swift in Sources */,

@@ -23,8 +23,10 @@ final class CalendarViewController: UIViewController {
         setupUI()
         setupDelegates()
         setupBindings()
+        addTargets()
         
-        viewModel.fetchHighlightedDates()
+        viewModel.updateCalendarDays()
+        viewModel.fetchAlarms()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,88 +46,139 @@ final class CalendarViewController: UIViewController {
     }
     
     private func setupDelegates() {
-        calendarView.calendar.delegate = self
-        calendarView.calendar.selectionBehavior = UICalendarSelectionSingleDate(delegate: self)
-        
-//        calendarView.tableView.delegate = self
+        self.setupCollectionView()
+        self.setupTableView()
+    }
+    
+    private func setupCollectionView() {
+        calendarView.collectionView.delegate = self
+        calendarView.collectionView.dataSource = self
+        calendarView.collectionView.register(CalendarCell.self, forCellWithReuseIdentifier: CalendarCell.identifier)
+    }
+
+    private func setupTableView() {
+        calendarView.tableView.delegate = self
         calendarView.tableView.dataSource = self
+        calendarView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "AlarmCell")
     }
     
     private func setupBindings() {
-        viewModel.$notificationItems
-            .receive(on: RunLoop.main)
-            .sink { [weak self] items in
-                self?.calendarView.emptyLabel.isHidden = !(items.isEmpty)
+        viewModel.$currentMonth
+            .sink { [weak self] newMonth in
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "MMMM yyyy"
+                self?.calendarView.monthLabel.text = dateFormatter.string(from: newMonth)
+                self?.calendarView.collectionView.reloadData()
+            }
+            .store(in: &cancellables)
+
+        viewModel.$selectedAlarms
+            .sink { [weak self] _ in
                 self?.calendarView.tableView.reloadData()
             }
             .store(in: &cancellables)
         
-        viewModel.$selectedDate
-            .receive(on: RunLoop.main)
-            .sink { [weak self] date in
-                let dateStr = date.toString()
-                self?.calendarView.dateLabel.text = FormatManager.shared.notiDateToKoreanStr(dateStr)
-                self?.viewModel.fetchNotifications(for: date)
-                self?.calendarView.tableView.reloadData()
+        viewModel.$days
+            .sink { [weak self] _ in
+                self?.calendarView.collectionView.reloadData()
             }
             .store(in: &cancellables)
     }
     
-    private func updateTitleLabel() {
-        // 현재 보이는 달을 기준으로 타이틀 업데이트
-        let visibleMonth = calendarView.calendar.visibleDateComponents.month ?? 1
-        let visibleYear = calendarView.calendar.visibleDateComponents.year ?? 2024
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMMM yyyy"
-        
-        if let date = Calendar.current.date(from: DateComponents(year: visibleYear, month: visibleMonth)) {
-            calendarView.monthLabel.text = dateFormatter.string(from: date)
-        }
-    }
-}
-
-// MARK: - UICalendarView Delegate
-extension CalendarViewController: UICalendarViewDelegate {
-    func calendarView(_ calendarView: UICalendarView, visibleDateComponentsDidChange dateComponents: DateComponents) {
-        // 달이 변경될 때마다 타이틀 업데이트
-        updateTitleLabel()
+    private func addTargets() {
+        calendarView.quitButton.addTarget(self, action: #selector(quitCalenderView), for: .touchUpInside)
     }
     
-    func calendarView(_ calendarView: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
-        guard let date = Calendar.current.date(from: dateComponents) else {
-            return nil
-        }
-        
-        // 알림이 있는 날짜에 대한 배경 설정
-        if viewModel.highlightedDates.contains(where: { Calendar.current.isDate($0.notiDate.toNotiDate() ?? Date(), inSameDayAs: date) }) {
-            return .default(color: .green_500, size: .medium)
-        }
-        
-        return nil
-    }
-}
-// MARK: - UICalendarSelectionSingleDateDelegate
-extension CalendarViewController: UICalendarSelectionSingleDateDelegate {
-    func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-        guard let dateComponents = dateComponents,
-              let selectedDate = Calendar.current.date(from: dateComponents) else {
-            return
-        }
-        
-        viewModel.selectedDate = selectedDate
+    @objc private func quitCalenderView() {
+        self.dismiss(animated: true)
     }
 }
 
-// MARK: - UITableView DataSource
-extension CalendarViewController: UITableViewDataSource {
+// MARK: - UICollectionViewDataSource & UICollectionViewDelegate
+extension CalendarViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return viewModel.days.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCell.identifier, for: indexPath) as? CalendarCell else {
+            return UICollectionViewCell()
+        }
+
+        if let date = viewModel.days[indexPath.item] {
+            let isSelected = viewModel.selectedDate != nil && Calendar.current.isDate(viewModel.selectedDate!, inSameDayAs: date)
+            let hasAlarm = viewModel.alarms[date] != nil
+            let day = Calendar.current.component(.day, from: date)
+            let isCurrentMonth = Calendar.current.isDate(date, equalTo: viewModel.currentMonth, toGranularity: .month)
+            let isToday = Calendar.current.isDate(date, inSameDayAs: Date())
+
+            cell.configure(day: day, hasAlarm: hasAlarm, isSelected: isSelected, isCurrentMonth: isCurrentMonth, isToday: isToday)
+        } else {
+            cell.configure(day: 0, hasAlarm: false, isSelected: false, isCurrentMonth: false, isToday: false) // 빈 칸 처리
+        }
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let selectedDate = viewModel.days[indexPath.item] else { return }
+
+        let previousSelectedIndex = viewModel.days.firstIndex(where: {
+            if let selected = viewModel.selectedDate {
+                return Calendar.current.isDate(selected, inSameDayAs: $0 ?? Date())
+            }
+            return false
+        })
+
+        viewModel.selectDate(selectedDate)
+
+        var indexPathsToReload: [IndexPath] = [indexPath]
+        
+        // 기존 선택된 날짜가 있으면 해당 셀도 갱신
+        if let previousIndex = previousSelectedIndex {
+            let previousIndexPath = IndexPath(item: previousIndex, section: 0)
+            indexPathsToReload.append(previousIndexPath)
+        }
+
+        collectionView.reloadItems(at: indexPathsToReload)
+        
+        calendarView.configureSelectedLabel(selectedDate)
+    }
+}
+
+// MARK: - UITableViewDataSource & UITableViewDelegate
+extension CalendarViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.notificationItems.count
+        return viewModel.selectedAlarms.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        let item = viewModel.notificationItems[indexPath.row]
-        cell.textLabel?.text = item.name
+        guard indexPath.row < viewModel.selectedAlarms.count else {
+            print("Index out of range: selectedAlarms 배열에 접근할 수 없음")
+            return UITableViewCell() // 빈 셀 반환
+        }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: NoticeTableViewCell.reuseIdentifier, for: indexPath) as? NoticeTableViewCell else { return UITableViewCell() }
+        cell.configure(with: viewModel.selectedAlarms[indexPath.row])
+        cell.background.isHidden = false
+        
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 112
+    }
+}
+
+// MARK: - ScrollView Delegates
+extension CalendarViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let velocity = scrollView.panGestureRecognizer.velocity(in: scrollView) // 스와이프 속도 감지
+
+        if velocity.x < -500 {
+            viewModel.moveToNextMonth() // 🔥 오른쪽으로 스와이프 → 다음 달
+        } else if velocity.x > 500 {
+            viewModel.moveToPreviousMonth() // 🔥 왼쪽으로 스와이프 → 이전 달
+        }
+        viewModel.updateCalendarDays()
     }
 }

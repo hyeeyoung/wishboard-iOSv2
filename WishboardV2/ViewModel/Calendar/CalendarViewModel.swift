@@ -8,41 +8,74 @@
 import Foundation
 import Combine
 
-struct CalendarItem {
-    let id: Int
-    let imageUrl: String
-    let notiType: String
-    let name: String
-    let notiDate: String
-}
-
-final class CalendarViewModel {
-    // Input
-    @Published var selectedDate: Date = Date()
+class CalendarViewModel: ObservableObject {
+    @Published var currentMonth: Date = Date() // 현재 표시 중인 달
+    @Published var alarms: [Date: [NoticeItem]] = [:] // 날짜별 알람 데이터
+    @Published var selectedDate: Date? = nil // 선택된 날짜
+    @Published var selectedAlarms: [NoticeItem] = [] // 선택한 날짜의 알람 리스트
+    @Published var days: [Date?] = [] // 달력에 표시할 날짜 리스트
     
-    // Output
-    @Published var notificationItems: [CalendarItem] = [] // 선택된 날짜의 알림 일정
-    @Published var highlightedDates: [CalendarItem] = [] // 알림이 있는 날짜 목록
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
-        fetchHighlightedDates()
+        fetchAlarms()
+    }
+    
+    // 🛠 API 호출 (모든 알람 가져오기)
+    func fetchAlarms() {
+        // 예시: 서버에서 데이터 가져오는 API (비동기 처리)
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+            let dummyAlarms = [
+                NoticeItem(id: 0, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-18 13:13:13", link: nil)
+            ]
+            
+            DispatchQueue.main.async {
+                self.alarms = self.processAlarms(dummyAlarms)
+            }
+        }
     }
 
-    // 서버에서 알림이 있는 날짜 가져오기 (Mock 데이터)
-    public func fetchHighlightedDates() {
-        let mockData = [
-            CalendarItem(id: 1, imageUrl: "", notiType: "", name: "item1", notiDate: "2024-09-02 10:00"),
-            CalendarItem(id: 2, imageUrl: "", notiType: "", name: "item2", notiDate: "2024-09-02 10:00"),
-            CalendarItem(id: 3, imageUrl: "", notiType: "", name: "item3", notiDate: "2024-09-03 10:00"),
-            CalendarItem(id: 4, imageUrl: "", notiType: "", name: "item4", notiDate: "2024-09-04 10:00"),
-        ]
-        self.highlightedDates = mockData
-    }
+    // 🛠 서버에서 가져온 알람 데이터를 날짜별 Dictionary로 변환
+    private func processAlarms(_ alarms: [NoticeItem]) -> [Date: [NoticeItem]] {
+        var alarmDict: [Date: [NoticeItem]] = [:]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
-    // 특정 날짜에 대한 알림 일정 가져오기
-    func fetchNotifications(for date: Date) {
-        // 서버 통신으로 해당 날짜의 알림 일정 가져오는 코드 (Mock 예시)
-        let filteredItems = highlightedDates.filter { Calendar.current.isDate($0.notiDate.toNotiDate() ?? Date(), inSameDayAs: date) }
-        self.notificationItems = filteredItems
+        for alarm in alarms {
+            if let date = dateFormatter.date(from: alarm.notiDate) {
+                alarmDict[date, default: []].append(alarm)
+            }
+        }
+        return alarmDict
+    }
+    
+    // 🛠 이전 달 이동
+    func moveToPreviousMonth() {
+        currentMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth)!
+    }
+    
+    // 🛠 다음 달 이동
+    func moveToNextMonth() {
+        currentMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth)!
+    }
+    
+    func updateCalendarDays() {
+        let calendar = Calendar(identifier: .gregorian)
+        var components = calendar.dateComponents([.year, .month], from: currentMonth)
+        components.day = 1
+
+        guard let firstDayOfMonth = calendar.date(from: components) else { return }
+
+        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth) // 일요일 = 1, 월요일 = 2, ..., 토요일 = 7
+
+        let daysToSubtract = firstWeekday - 1
+        let startDate = calendar.date(byAdding: .day, value: -daysToSubtract, to: firstDayOfMonth)!
+
+        days = (0..<42).map { calendar.date(byAdding: .day, value: $0, to: startDate) }
+    }
+    
+    func selectDate(_ date: Date) {
+        selectedDate = date
+        selectedAlarms = alarms[date] ?? []
     }
 }
