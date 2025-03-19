@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import WBNetwork
 
 class CalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date() // 현재 표시 중인 달
@@ -23,20 +24,27 @@ class CalendarViewModel: ObservableObject {
     
     // 🛠 API 호출 (모든 알람 가져오기)
     func fetchAlarms() {
-        // 예시: 서버에서 데이터 가져오는 API (비동기 처리)
-        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
-            let dummyAlarms = [
-                NoticeItem(id: 0, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-18 13:13:13", link: nil),
-                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
-                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
-                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
-                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
-                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
-                NoticeItem(id: 2, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-02-18 11:13:13", link: nil)
-            ]
-            
-            DispatchQueue.main.async {
-                self.alarms = self.processAlarms(dummyAlarms)
+        Task {
+            do {
+                let usecase = GetCalendarNoticesUseCase(repository: NoticeRepository())
+                let response = try await usecase.execute()
+                
+                let items = response.map {
+                    return NoticeItem(id: $0.item_id ?? 0,
+                                      imageUrl: $0.item_img_url,
+                                      notiType: $0.item_notification_type ?? "",
+                                      name: $0.item_name ?? "",
+                                      readState: $0.read_state == 1,
+                                      notiDate: $0.item_notification_date ?? "",
+                                      link: $0.item_url)
+                }
+                
+                DispatchQueue.main.async {
+                    self.alarms = self.processAlarms(items)
+                }
+                
+            } catch {
+                throw error
             }
         }
     }

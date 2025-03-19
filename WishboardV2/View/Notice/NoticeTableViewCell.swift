@@ -123,7 +123,7 @@ final class NoticeTableViewCell: UITableViewCell {
             self.itemImageView.image = Image.emptyView
         }
         self.notiDateLabel.text = createdDateToKoreanStr(item.notiDate)
-        self.readStateView.isHidden = item.readState
+        self.readStateView.isHidden = true
         self.background.isHidden = false
     }
     

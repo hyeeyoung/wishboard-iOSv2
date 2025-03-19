@@ -10,6 +10,7 @@ import Foundation
 public protocol NoticeRepositoryInterface {
     func getNotices() async throws -> [NoticeResponse]
     func updateState(itemId: String) async throws -> EmptyResponse
+    func getCalendarNotices() async throws -> [NoticeResponse]
 }
 
 public final class NoticeRepository: NoticeRepositoryInterface {
@@ -20,5 +21,8 @@ public final class NoticeRepository: NoticeRepositoryInterface {
     }
     public func updateState(itemId: String) async throws -> EmptyResponse {
         return try await NoticeManager.shared.updateState(itemId: itemId)
+    }
+    public func getCalendarNotices() async throws -> [NoticeResponse] {
+        return try await NoticeManager.shared.getCalendarNotices()
     }
 }

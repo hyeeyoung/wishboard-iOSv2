@@ -17,4 +17,8 @@ public final class NoticeManager {
     public func updateState(itemId: String) async throws -> EmptyResponse {
         return try await API.Notice.request(.updateState(itemId: itemId))
     }
+    
+    public func getCalendarNotices() async throws -> [NoticeResponse] {
+        return try await API.Notice.requestRaw(.getCalendar)
+    }
 }

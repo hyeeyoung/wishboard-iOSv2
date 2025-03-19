@@ -14,6 +14,8 @@ public enum NotiAPI {
     case getNotices
     /// 알림 읽음 처리
     case updateState(itemId: String)
+    /// 캘린더 알람 조회
+    case getCalendar
 }
 
 extension NotiAPI: TargetType, AccessTokenAuthorizable {
@@ -27,6 +29,8 @@ extension NotiAPI: TargetType, AccessTokenAuthorizable {
             return ""
         case .updateState(let itemId):
             return "/\(itemId)/read-state"
+        case .getCalendar:
+            return "/calendar"
         }
     }
 
@@ -36,6 +40,8 @@ extension NotiAPI: TargetType, AccessTokenAuthorizable {
             return .get
         case .updateState:
             return .put
+        case .getCalendar:
+            return .get
         }
     }
 
