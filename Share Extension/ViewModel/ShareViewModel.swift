@@ -14,6 +14,11 @@ import WBNetwork
 final class ShareViewModel {
     @Published var item: WishListResponse?
     @Published var folders: [FolderListResponse] = []
+    
+    @Published var selectedAlarmType: String? = nil
+    @Published var selectedAlarmDate: String? = nil
+    @Published var selectedAlarm: String? = nil
+    
     private var cancellables = Set<AnyCancellable>()
 
     init() {

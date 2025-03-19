@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 import Core
 import WBNetwork
 import MobileCoreServices
@@ -15,10 +16,13 @@ class ShareViewController: UIViewController {
     private let shareView = ShareView()
     private let viewModel = ShareViewModel()
     
-    private let bottomSheetView = FolderBottomSheet()
+    private let folderSheetView = FolderBottomSheet()
+    private let alarmSheetView = SelectDateBottomSheet()
     private let backgroundDimView = UIView()
     
     private var link: String?
+    
+    private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +31,7 @@ class ShareViewController: UIViewController {
         setupBackgroundDimView()
         setupBottomSheet()
         setUpObservers()
+        setupBindings()
         
         // fetch datas
         viewModel.fetchFolders()
@@ -42,6 +47,7 @@ class ShareViewController: UIViewController {
         }
         shareView.configure(with: viewModel)
         
+        shareView.setNotificationButton.addTarget(self, action: #selector(setNotiButtonTapped), for: .touchUpInside)
         shareView.addFolderButton.addTarget(self, action: #selector(addFolderButtonTapped), for: .touchUpInside)
         shareView.quitButton.addTarget(self, action: #selector(quitShareView), for: .touchUpInside)
         shareView.completeButton.addTarget(self, action: #selector(addItem), for: .touchUpInside)
@@ -71,6 +77,15 @@ class ShareViewController: UIViewController {
         }
     }
     
+    private func setupBindings() {
+        viewModel.$selectedAlarm
+            .receive(on: RunLoop.main)
+            .sink { [weak self] text in
+                self?.shareView.configureNotiDateButton(text ?? "상품 일정 알림 선택")
+            }
+            .store(in: &cancellables)
+    }
+    
     private func setupBackgroundDimView() {
         backgroundDimView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
         backgroundDimView.alpha = 0.0 // 초기에는 투명하게 설정
@@ -82,24 +97,43 @@ class ShareViewController: UIViewController {
     }
     
     private func setupBottomSheet() {
-        view.addSubview(bottomSheetView)
+        view.addSubview(folderSheetView)
+        view.addSubview(alarmSheetView)
         
-        bottomSheetView.snp.makeConstraints { make in
+        folderSheetView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
         }
         
-        bottomSheetView.onClose = { [weak self] in
+        folderSheetView.onClose = { [weak self] in
             self?.dismissKeyboard()
             self?.hideBottomSheet()
         }
         
-        bottomSheetView.onActionButtonTap = { [weak self] folderName, folder in
+        folderSheetView.onActionButtonTap = { [weak self] folderName, folder in
             self?.dismissKeyboard()
             // 새 폴더 추가
             self?.viewModel.addFolder(name: folderName)
             self?.hideBottomSheet()
             SnackBar(in: self).show(type: .addFolder)
+        }
+        
+        alarmSheetView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+        }
+        alarmSheetView.onClose = { [weak self] in
+            self?.hideDateBottomSheet()
+        }
+        alarmSheetView.onActionButtonTap = { [weak self] data in
+            
+            let (type, date, hour, minute) = data
+            
+            self?.hideDateBottomSheet()
+            guard let type = data.0, let date = data.1, let hour = data.2, let minute = data.3 else {return}
+            self?.viewModel.selectedAlarmType = type
+            self?.viewModel.selectedAlarmDate = "\(date) \(hour):\(minute)"
+            self?.viewModel.selectedAlarm = "[\(type)] \(self?.viewModel.selectedAlarmDate ?? "")"
         }
     }
     
@@ -108,12 +142,12 @@ class ShareViewController: UIViewController {
     private func showBottomSheet(for folder: FolderListResponse? = nil) {
         DispatchQueue.main.async {
             self.dismissKeyboard()
-            self.bottomSheetView.initView()
-            self.bottomSheetView.configure(with: folder)
+            self.folderSheetView.initView()
+            self.folderSheetView.configure(with: folder)
             
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 1.0
-                self.bottomSheetView.snp.updateConstraints { make in
+                self.folderSheetView.snp.updateConstraints { make in
                     make.bottom.equalToSuperview()
                 }
                 self.view.layoutIfNeeded()
@@ -124,11 +158,39 @@ class ShareViewController: UIViewController {
     private func hideBottomSheet() {
         DispatchQueue.main.async {
             self.dismissKeyboard()
-            self.bottomSheetView.resetView()
+            self.folderSheetView.resetView()
             
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
-                self.bottomSheetView.snp.updateConstraints { make in
+                self.folderSheetView.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 날짜 선택 시트 노출
+    private func showDateBottomSheet() {
+        DispatchQueue.main.async {
+            self.alarmSheetView.configure()
+            
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 1.0
+                self.alarmSheetView.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview()
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 날짜 선택 시트 미노출
+    private func hideDateBottomSheet() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 0.0
+                self.alarmSheetView.snp.updateConstraints { make in
                     make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
                 }
                 self.view.layoutIfNeeded()
@@ -146,6 +208,11 @@ class ShareViewController: UIViewController {
     /// 새 폴더 추가
     @objc private func addFolderButtonTapped() {
         self.showBottomSheet()
+    }
+    
+    /// 알림 설정 추가
+    @objc private func setNotiButtonTapped() {
+        self.showDateBottomSheet()
     }
     
     /// 링크 공유 종료
@@ -169,7 +236,8 @@ class ShareViewController: UIViewController {
                                      itemPrice: itemPrice,
                                      itemURL: self.link,
                                      itemMemo: nil,
-                                     itemNotificationType: nil, itemNotificationDate: nil)
+                                     itemNotificationType: viewModel.selectedAlarmType,
+                                     itemNotificationDate: viewModel.selectedAlarmDate)
         
         Task {
             do {

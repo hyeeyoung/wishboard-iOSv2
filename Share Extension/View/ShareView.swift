@@ -249,6 +249,21 @@ final class ShareView: UIView {
             self.itemPriceTextField.text = "0"
         }
     }
+    
+    public func configureNotiDateButton(_ date: String) {
+        self.setNotificationButton = UIButton().then {
+            var config = UIButton.Configuration.plain()
+            var attText: AttributedString!
+            
+            attText = AttributedString.init(" \(date)")
+            attText.font = TypoStyle.SuitD3.font
+            attText.foregroundColor = UIColor.gray_700
+            config.attributedTitle = attText
+            config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+            
+            $0.configuration = config
+        }
+    }
 }
 
 // MARK: - CollecionView Delegate

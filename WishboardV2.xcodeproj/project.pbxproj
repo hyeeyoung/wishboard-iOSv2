@@ -55,6 +55,8 @@
 		238595252C71C7E700B85CBC /* BaseToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595242C71C7E700B85CBC /* BaseToolBar.swift */; };
 		238F45A82C70A83600A6119B /* HomeToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F45A72C70A83600A6119B /* HomeToolBar.swift */; };
 		239540F12C6A179B003AB3D5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239540F02C6A179B003AB3D5 /* LoginView.swift */; };
+		2395DFF22D8AF75B005489FD /* SelectDateBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */; };
+		2395DFF32D8AF767005489FD /* SetNotificationDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */; };
 		23974D512C5E5304006BBC97 /* SUIT-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23974D4D2C5E5303006BBC97 /* SUIT-Medium.ttf */; };
 		23974D522C5E5304006BBC97 /* SUIT-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23974D4E2C5E5304006BBC97 /* SUIT-Regular.ttf */; };
 		23974D532C5E5304006BBC97 /* SUIT-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23974D4F2C5E5304006BBC97 /* SUIT-SemiBold.ttf */; };
@@ -1196,7 +1198,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				23C4D23D2C7A52B300BB0B08 /* FolderBottomSheet.swift in Sources */,
+				2395DFF32D8AF767005489FD /* SetNotificationDate.swift in Sources */,
 				23C4D2302C7A4F6F00BB0B08 /* AnimationButton.swift in Sources */,
+				2395DFF22D8AF75B005489FD /* SelectDateBottomSheet.swift in Sources */,
 				23C4D22F2C7A4EFE00BB0B08 /* ShareView.swift in Sources */,
 				2357E5652C7B0D3A00CC9509 /* FolderCollectionViewCell.swift in Sources */,
 				2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */,
