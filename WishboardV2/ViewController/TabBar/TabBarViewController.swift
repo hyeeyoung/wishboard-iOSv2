@@ -76,8 +76,8 @@ extension TabBarViewController: UITabBarControllerDelegate {
             addViewController.modalPresentationStyle = .fullScreen
             
             addViewController.confirmAction = { [weak self] in
-                self?.wishListVC.refreshItems()
-                self?.folderVC.refreshItems()
+//                self?.wishListVC.refreshItems()
+//                self?.folderVC.refreshItems()
                 self?.selectedIndex = 0
             }
             

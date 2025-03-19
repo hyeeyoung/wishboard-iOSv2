@@ -22,10 +22,12 @@ class ProfileHeaderView: UIView {
     }
     let userNameLabel = UILabel().then{
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitH2)
+        $0.numberOfLines = 1
     }
     let emailLabel = UILabel().then{
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitB3)
         $0.textColor = .gray_200
+        $0.numberOfLines = 1
     }
     let modifyButton = UIButton().then{
         $0.setTitle("편집", for: .normal)
@@ -75,10 +77,12 @@ class ProfileHeaderView: UIView {
         userNameLabel.snp.makeConstraints { make in
             make.leading.equalTo(profileImage.snp.trailing).offset(16)
             make.top.equalToSuperview().offset(45)
+            make.trailing.equalTo(modifyButton.snp.leading).offset(-8)
         }
         emailLabel.snp.makeConstraints { make in
             make.top.equalTo(userNameLabel.snp.bottom).offset(8)
             make.leading.equalTo(userNameLabel)
+            make.trailing.equalTo(modifyButton.snp.leading).offset(-8)
         }
         modifyButton.snp.makeConstraints { make in
             make.width.equalTo(45)
@@ -95,7 +99,7 @@ class ProfileHeaderView: UIView {
     
     func configure(with user: User) {
         profileImage.loadImage(from: user.profileImageUrl ?? "", placeholder: Image.defaultProfile)
-        if let tempNickName = UserManager.tempNickname {
+        if let tempNickName = UserManager.tempNickname, !tempNickName.isEmpty {
             userNameLabel.text = tempNickName
         } else {
             userNameLabel.text = user.nickname

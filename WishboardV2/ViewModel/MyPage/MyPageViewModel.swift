@@ -48,7 +48,7 @@ class MypageViewModel {
                     let nickname = userinfoResponse.nickname
                     // 닉네임이 있다면 기기에 저장된 임시닉네임 삭제
                     if nickname != nil {
-                        UserManager.tempNickname = nil
+                        UserManager.tempNickname = ""
                     }
                     
                     self.user = User(profileImageUrl: userinfoResponse.profile_img_url,

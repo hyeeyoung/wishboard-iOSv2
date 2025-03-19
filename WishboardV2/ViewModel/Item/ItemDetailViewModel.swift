@@ -67,7 +67,7 @@ final class ItemDetailViewModel {
     func deleteItem(id: Int) async throws {
         do {
             let usecase = DeleteItemUseCase()
-            let data = try await usecase.execute(id: id)
+            let _ = try await usecase.execute(id: id)
             
             DispatchQueue.main.async {
                 SnackBar.shared.show(type: .deleteItem)

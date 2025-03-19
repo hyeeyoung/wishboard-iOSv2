@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import WBNetwork
+import Moya
 
 final class FolderDetailViewModel {
     
@@ -24,7 +25,7 @@ final class FolderDetailViewModel {
     }
     
     func fetchItems() {
-        Task {
+        _Concurrency.Task {
             do {
                 let usecase = GetFolderItemListUseCase()
                 let data = try await usecase.execute(folderId: folderId)
@@ -33,6 +34,11 @@ final class FolderDetailViewModel {
                     self.items = data
                 }
             } catch {
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    if response.statusCode == 404 {
+                        self.items = []
+                    }
+                }
                 throw error
             }
         }

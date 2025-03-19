@@ -9,12 +9,11 @@ import Foundation
 import UIKit
 import SnapKit
 
-final class FolderDetailViewController: UIViewController, ToolBarDelegate, ItemDetailDelegate {
+final class FolderDetailViewController: UIViewController, ToolBarDelegate {
    
     private let folderView: FolderDetailView
     private let viewModel: FolderDetailViewModel
     private let folderTitle: String
-    public var delegate: ItemDetailDelegate?
     
     init(folderId: String, folderTitle: String) {
         folderView = FolderDetailView(folderTitle: folderTitle)
@@ -46,6 +45,7 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate, ItemD
     
     override func viewDidAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
+        self.refreshItems()
     }
     
     func leftNaviItemTap() {
@@ -54,7 +54,6 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate, ItemD
     
     func refreshItems() {
         viewModel.fetchItems()
-        self.delegate?.refreshItems()
     }
 }
 
@@ -62,7 +61,7 @@ extension FolderDetailViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = viewModel.items[indexPath.row]
         let detailViewModel = ItemDetailViewModel(item: item)
-        let detailViewController = ItemDetailViewController(viewModel: detailViewModel, delegate: self)
+        let detailViewController = ItemDetailViewController(viewModel: detailViewModel)
         navigationController?.pushViewController(detailViewController, animated: true)
     }
 }

@@ -31,6 +31,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
+        self.refreshItems()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -219,7 +220,6 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         let folderTitle = item.folder_name ?? ""
         let folderDetailVC = FolderDetailViewController(folderId: String(folderId), folderTitle: folderTitle)
-        folderDetailVC.delegate = self
         self.navigationController?.pushViewController(folderDetailVC, animated: true)
     }
 }
@@ -231,27 +231,3 @@ extension FolderViewController: FolderToolBarDelegate {
         showBottomSheet()
     }
 }
-
-//// MARK: - Keyboard Event
-//extension FolderViewController {
-//    @objc private func keyboardWillShow(notification: NSNotification) {
-//        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-//            let keyboardHeight = keyboardFrame.height
-//            UIView.animate(withDuration: 0.3) {
-//                self.bottomSheetView.snp.updateConstraints { make in
-//                    make.bottom.equalToSuperview().offset(-keyboardHeight)
-//                }
-//                self.view.layoutIfNeeded()
-//            }
-//        }
-//    }
-//
-//    @objc private func keyboardWillHide(notification: NSNotification) {
-//        UIView.animate(withDuration: 0.3) {
-//            self.bottomSheetView.snp.updateConstraints { make in
-//                make.bottom.equalToSuperview()
-//            }
-//            self.view.layoutIfNeeded()
-//        }
-//    }
-//}

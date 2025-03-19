@@ -24,11 +24,9 @@ final class ItemDetailViewController: UIViewController {
     
     private let bottomSheetView = FolderSelectBottomSheet()
     private let backgroundDimView = UIView()
-    public let delegate: ItemDetailDelegate
     
-    init(viewModel: ItemDetailViewModel, delegate: ItemDetailDelegate) {
+    init(viewModel: ItemDetailViewModel) {
         self.viewModel = viewModel
-        self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -108,7 +106,7 @@ final class ItemDetailViewController: UIViewController {
             if let folderId = folderId, let itemId = self?.viewModel.item?.item_id {
                 Task {
                     try await self?.viewModel.modifyItemFolder(itemId: itemId, folderId: folderId)
-                    NotificationCenter.default.post(name: .ItemUpdated, object: nil)
+//                    NotificationCenter.default.post(name: .ItemUpdated, object: nil)
                 }
             }
         }
@@ -173,8 +171,8 @@ extension ItemDetailViewController: DetailToolBarDelegate {
                         if let id = self.viewModel.item?.item_id {
                             // delete item
                             try await self.viewModel.deleteItem(id: id)
-                            // 진입 화면의 refreshItems
-                            self.delegate.refreshItems()
+                            // TODO: 진입 화면의 refreshItems
+                            
                             // 뒤로가기
                             self.leftNaviItemTap()
                         }
