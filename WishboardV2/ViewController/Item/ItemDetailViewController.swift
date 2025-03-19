@@ -100,12 +100,16 @@ final class ItemDetailViewController: UIViewController {
             make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
         }
         
+        // 폴더 수정
         bottomSheetView.onClose = { [weak self] folderId, folderName in
             self?.dismissKeyboard()
             self?.hideBottomSheet()
             
             if let folderId = folderId, let itemId = self?.viewModel.item?.item_id {
-                self?.viewModel.modifyItemFolder(itemId: itemId, folderId: folderId)
+                Task {
+                    try await self?.viewModel.modifyItemFolder(itemId: itemId, folderId: folderId)
+                    NotificationCenter.default.post(name: .ItemUpdated, object: nil)
+                }
             }
         }
         
@@ -195,7 +199,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
         addViewController.confirmAction = { [weak self] in
             if let idx = self?.viewModel.item?.item_id {
                 self?.viewModel.fetchItemDetail(id: idx)
-                self?.delegate.refreshItems()
+                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
             }
         }
         

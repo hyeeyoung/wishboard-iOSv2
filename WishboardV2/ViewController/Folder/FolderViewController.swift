@@ -22,6 +22,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         view.backgroundColor = .white
         self.navigationController?.navigationBar.isHidden = true
         
+        setupNotifications()
         setUpFolderView()
         setupBackgroundDimView()
         setupBottomSheet()
@@ -41,6 +42,10 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
     }
     
     // MARK: - Methods
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshItems), name: .ItemUpdated, object: nil)
+    }
     
     private func setUpFolderView() {
         self.view.addSubview(folderView)
@@ -171,7 +176,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         }
     }
     
-    func refreshItems() {
+    @objc func refreshItems() {
         viewModel.fetchFolders()
     }
     

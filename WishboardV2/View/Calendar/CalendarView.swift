@@ -85,6 +85,7 @@ final class CalendarView: UIView {
 
         tableView = UITableView()
         tableView.register(NoticeTableViewCell.self, forCellReuseIdentifier: "NoticeTableViewCell")
+        tableView.separatorStyle = .none
         contentView.addSubview(tableView)
         
         scrollView.snp.makeConstraints { make in
@@ -103,7 +104,7 @@ final class CalendarView: UIView {
             make.centerX.centerY.equalToSuperview()
         }
         quitButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(13)
+            make.leading.equalToSuperview()
             make.width.height.equalTo(24)
             make.centerY.equalToSuperview()
         }

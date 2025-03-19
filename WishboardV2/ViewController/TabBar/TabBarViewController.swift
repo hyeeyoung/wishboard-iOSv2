@@ -77,6 +77,8 @@ extension TabBarViewController: UITabBarControllerDelegate {
             
             addViewController.confirmAction = { [weak self] in
                 self?.wishListVC.refreshItems()
+                self?.folderVC.refreshItems()
+                self?.selectedIndex = 0
             }
             
             present(addViewController, animated: true)

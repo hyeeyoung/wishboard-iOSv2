@@ -51,17 +51,15 @@ final class ItemDetailViewModel {
     }
     
     // 아이템의 폴더 지정하기
-    func modifyItemFolder(itemId: Int, folderId: Int) {
-        Task {
-            do {
-                let usecase = ModifyItemFolderUseCase()
-                let data = try await usecase.execute(itemId: itemId, folderId: folderId)
-                
-                self.fetchItemDetail(id: itemId)
-                self.fetchFolders()
-            } catch {
-                throw error
-            }
+    func modifyItemFolder(itemId: Int, folderId: Int) async throws {
+        do {
+            let usecase = ModifyItemFolderUseCase()
+            let _ = try await usecase.execute(itemId: itemId, folderId: folderId)
+            
+            self.fetchItemDetail(id: itemId)
+            self.fetchFolders()
+        } catch {
+            throw error
         }
     }
     

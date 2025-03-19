@@ -26,7 +26,13 @@ class CalendarViewModel: ObservableObject {
         // 예시: 서버에서 데이터 가져오는 API (비동기 처리)
         DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
             let dummyAlarms = [
-                NoticeItem(id: 0, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-18 13:13:13", link: nil)
+                NoticeItem(id: 0, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-18 13:13:13", link: nil),
+                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
+                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
+                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
+                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
+                NoticeItem(id: 1, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-03-27 09:13:13", link: nil),
+                NoticeItem(id: 2, imageUrl: "", notiType: "재입고", name: "회의 알람", readState: true, notiDate: "2025-02-18 11:13:13", link: nil)
             ]
             
             DispatchQueue.main.async {
@@ -40,10 +46,17 @@ class CalendarViewModel: ObservableObject {
         var alarmDict: [Date: [NoticeItem]] = [:]
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let calendar = Calendar.current
 
         for alarm in alarms {
-            if let date = dateFormatter.date(from: alarm.notiDate) {
-                alarmDict[date, default: []].append(alarm)
+            if let fullDate = dateFormatter.date(from: alarm.notiDate) {
+                // 시, 분, 초를 00:00:00으로 설정하여 새로운 날짜 생성
+                let alarmDate = calendar.startOfDay(for: fullDate)
+
+                // "년-월-일"끼리 그룹핑
+                alarmDict[alarmDate, default: []].append(alarm)
             }
         }
         return alarmDict

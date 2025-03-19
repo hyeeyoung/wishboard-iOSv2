@@ -22,6 +22,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         view.backgroundColor = .white
         self.navigationController?.navigationBar.isHidden = true
         
+        setupNotifications()
         setupUI()
         setupDelegates()
         setupBackgroundDimView()
@@ -36,8 +37,16 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         }
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshItems), name: .ItemUpdated, object: nil)
     }
     
     private func setupUI() {
@@ -59,7 +68,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         
     }
     
-    func refreshItems() {
+    @objc func refreshItems() {
         viewModel.fetchItems()
     }
     

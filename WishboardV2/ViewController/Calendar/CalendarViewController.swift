@@ -27,6 +27,9 @@ final class CalendarViewController: UIViewController {
         
         viewModel.updateCalendarDays()
         viewModel.fetchAlarms()
+        
+        // 첫 진입 시 오늘날짜 선택
+        selectToday()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -75,10 +78,17 @@ final class CalendarViewController: UIViewController {
         viewModel.$selectedAlarms
             .sink { [weak self] _ in
                 self?.calendarView.tableView.reloadData()
+                self?.updateTableViewHeight()
             }
             .store(in: &cancellables)
         
         viewModel.$days
+            .sink { [weak self] _ in
+                self?.calendarView.collectionView.reloadData()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$alarms
             .sink { [weak self] _ in
                 self?.calendarView.collectionView.reloadData()
             }
@@ -91,6 +101,27 @@ final class CalendarViewController: UIViewController {
     
     @objc private func quitCalenderView() {
         self.dismiss(animated: true)
+    }
+    
+    private func selectToday() {
+        let today = Date()
+        
+        // 현재 달의 days 배열에서 오늘 날짜의 index 찾기
+        if let todayIndex = viewModel.days.firstIndex(where: {
+            guard let date = $0 else { return false }
+            return Calendar.current.isDate(date, inSameDayAs: today)
+        }) {
+            viewModel.selectDate(today) // 오늘 날짜 선택
+            let indexPath = IndexPath(item: todayIndex, section: 0)
+            calendarView.collectionView.reloadItems(at: [indexPath]) // 선택된 셀 업데이트
+            calendarView.configureSelectedLabel(today) // 상단 라벨도 업데이트
+        }
+    }
+    
+    private func updateTableViewHeight() {
+        calendarView.tableView.snp.updateConstraints { make in
+            make.height.equalTo(calendarView.tableView.contentSize.height)
+        }
     }
 }
 
@@ -158,14 +189,22 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate {
             return UITableViewCell() // 빈 셀 반환
         }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: NoticeTableViewCell.reuseIdentifier, for: indexPath) as? NoticeTableViewCell else { return UITableViewCell() }
-        cell.configure(with: viewModel.selectedAlarms[indexPath.row])
-        cell.background.isHidden = false
+        cell.configureCalendarAlarm(with: viewModel.selectedAlarms[indexPath.row])
         
+        DispatchQueue.main.async {
+            self.updateTableViewHeight()
+        }
+        cell.selectionStyle = .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 112
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let item = viewModel.selectedAlarms[indexPath.row]
+        // TODO: 이동
     }
 }
 

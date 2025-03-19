@@ -17,7 +17,7 @@ final class NoticeTableViewCell: UITableViewCell {
     
     // MARK: - Views
     
-    public let background = UIView().then {
+    let background = UIView().then {
         $0.backgroundColor = .gray_50
         $0.layer.cornerRadius = 24
         $0.clipsToBounds = true
@@ -64,6 +64,7 @@ final class NoticeTableViewCell: UITableViewCell {
     }
     
     private func setupViews() {
+        contentView.addSubview(background)
         contentView.addSubview(itemImageView)
         contentView.addSubview(notiTypeLabel)
         contentView.addSubview(readStateView)
@@ -72,6 +73,10 @@ final class NoticeTableViewCell: UITableViewCell {
     }
     
     private func setupConstraints() {
+        background.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.verticalEdges.equalToSuperview().inset(3)
+        }
         itemImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
@@ -107,5 +112,36 @@ final class NoticeTableViewCell: UITableViewCell {
         }
         self.notiDateLabel.text = FormatManager.shared.createdDateToKoreanStr(item.notiDate)
         self.readStateView.isHidden = item.readState
+    }
+    
+    public func configureCalendarAlarm(with item: NoticeItem) {
+        itemNameLabel.text = item.name
+        notiTypeLabel.text = "\(item.notiType) 알림"
+        if let imageUrl = item.imageUrl {
+            self.itemImageView.loadImage(from: imageUrl, placeholder: Image.emptyView)
+        } else {
+            self.itemImageView.image = Image.emptyView
+        }
+        self.notiDateLabel.text = createdDateToKoreanStr(item.notiDate)
+        self.readStateView.isHidden = item.readState
+        self.background.isHidden = false
+    }
+    
+    func createdDateToKoreanStr(_ dateString: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // 원본 날짜 포맷
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+
+        guard let date = dateFormatter.date(from: dateString) else {
+            return "날짜 오류"
+        }
+
+        // 🔥 원하는 출력 형식: "오전 10시" 또는 "오후 3시"
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "a h시" // "a"는 AM/PM, "h"는 12시간제 시
+        outputFormatter.locale = Locale(identifier: "ko_KR")
+
+        return outputFormatter.string(from: date)
     }
 }

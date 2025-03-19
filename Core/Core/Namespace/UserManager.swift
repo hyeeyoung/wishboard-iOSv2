@@ -62,7 +62,7 @@ public class UserManager {
     @UserDefault(key: UserDefaultKey.isFirstLogin, defaultValue: nil, storage: sharedDefaults)
     public static var isFirstLogin: Bool?
     
-    @UserDefault(key: UserDefaultKey.tempNickname, defaultValue: nil, storage: sharedDefaults)
+    @UserDefault(key: UserDefaultKey.tempNickname, defaultValue: "", storage: sharedDefaults)
     public static var tempNickname: String?
     
     /// 사용자 데이터 삭제 (로그아웃, 탈퇴)
