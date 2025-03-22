@@ -11,7 +11,13 @@ import WBNetwork
 
 class CalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date() // 현재 표시 중인 달
-    @Published var alarms: [Date: [NoticeItem]] = [:] // 날짜별 알람 데이터
+    @Published var alarms: [Date: [NoticeItem]] = [:] {
+        didSet {
+            if let selected = selectedDate {
+                selectedAlarms = alarms[selected] ?? []
+            }
+        }
+    } // 날짜별 알람 데이터
     @Published var selectedDate: Date? = nil // 선택된 날짜
     @Published var selectedAlarms: [NoticeItem] = [] // 선택한 날짜의 알람 리스트
     @Published var days: [Date?] = [] // 달력에 표시할 날짜 리스트
@@ -19,33 +25,31 @@ class CalendarViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        fetchAlarms()
+//        fetchAlarms()
     }
     
     // 🛠 API 호출 (모든 알람 가져오기)
-    func fetchAlarms() {
-        Task {
-            do {
-                let usecase = GetCalendarNoticesUseCase(repository: NoticeRepository())
-                let response = try await usecase.execute()
-                
-                let items = response.map {
-                    return NoticeItem(id: $0.item_id ?? 0,
-                                      imageUrl: $0.item_img_url,
-                                      notiType: $0.item_notification_type ?? "",
-                                      name: $0.item_name ?? "",
-                                      readState: $0.read_state == 1,
-                                      notiDate: $0.item_notification_date ?? "",
-                                      link: $0.item_url)
-                }
-                
-                DispatchQueue.main.async {
-                    self.alarms = self.processAlarms(items)
-                }
-                
-            } catch {
-                throw error
+    func fetchAlarms() async throws {
+        do {
+            let usecase = GetCalendarNoticesUseCase(repository: NoticeRepository())
+            let response = try await usecase.execute()
+            
+            let items = response.map {
+                return NoticeItem(id: $0.item_id ?? 0,
+                                  imageUrl: $0.item_img_url,
+                                  notiType: $0.item_notification_type ?? "",
+                                  name: $0.item_name ?? "",
+                                  readState: $0.read_state == 1,
+                                  notiDate: $0.item_notification_date ?? "",
+                                  link: $0.item_url)
             }
+            
+            DispatchQueue.main.async {
+                self.alarms = self.processAlarms(items)
+            }
+            
+        } catch {
+            throw error
         }
     }
 
@@ -55,8 +59,10 @@ class CalendarViewModel: ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")!
         
-        let calendar = Calendar.current
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
 
         for alarm in alarms {
             if let fullDate = dateFormatter.date(from: alarm.notiDate) {

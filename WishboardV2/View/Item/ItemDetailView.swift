@@ -243,7 +243,9 @@ final class ItemDetailView: UIView {
     
     private func configureItemImg(_ url: String?) {
         if let imgUrl = url {
-            imageView.loadImage(from: imgUrl)
+            self.imageView.loadImage(from: imgUrl, placeholder: Image.emptyView)
+        } else {
+            self.imageView.image = Image.emptyView
         }
     }
     

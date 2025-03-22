@@ -25,11 +25,18 @@ final class CalendarViewController: UIViewController {
         setupBindings()
         addTargets()
         
-        viewModel.updateCalendarDays()
-        viewModel.fetchAlarms()
-        
-        // 첫 진입 시 오늘날짜 선택
-        selectToday()
+        Task {
+            do {
+                viewModel.updateCalendarDays()
+                try await viewModel.fetchAlarms()
+                // 첫 진입 시 오늘날짜 선택
+                DispatchQueue.main.async {
+                    self.selectToday()
+                }
+            } catch {
+                throw error
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -77,8 +84,10 @@ final class CalendarViewController: UIViewController {
 
         viewModel.$selectedAlarms
             .sink { [weak self] _ in
-                self?.calendarView.tableView.reloadData()
-                self?.updateTableViewHeight()
+                DispatchQueue.main.async {
+                   self?.calendarView.tableView.reloadData()
+                   self?.updateTableViewHeight()
+               }
             }
             .store(in: &cancellables)
         
@@ -104,12 +113,15 @@ final class CalendarViewController: UIViewController {
     }
     
     private func selectToday() {
-        let today = Date()
+        var koreanCalendar = Calendar.current
+        koreanCalendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
+
+        let today = koreanCalendar.startOfDay(for: Date())
         
         // 현재 달의 days 배열에서 오늘 날짜의 index 찾기
         if let todayIndex = viewModel.days.firstIndex(where: {
             guard let date = $0 else { return false }
-            return Calendar.current.isDate(date, inSameDayAs: today)
+            return koreanCalendar.isDate(date, inSameDayAs: today)
         }) {
             viewModel.selectDate(today) // 오늘 날짜 선택
             let indexPath = IndexPath(item: todayIndex, section: 0)
@@ -180,6 +192,7 @@ extension CalendarViewController: UICollectionViewDataSource, UICollectionViewDe
 // MARK: - UITableViewDataSource & UITableViewDelegate
 extension CalendarViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("count: \(viewModel.selectedAlarms.count)")
         return viewModel.selectedAlarms.count
     }
 
