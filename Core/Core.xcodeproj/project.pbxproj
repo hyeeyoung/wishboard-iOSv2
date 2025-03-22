@@ -30,6 +30,7 @@
 		23D5B65B2C7A26AF00B73174 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D5B65A2C7A26AF00B73174 /* UIDevice.swift */; };
 		23D5B65F2C7A306F00B73174 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D5B65E2C7A306F00B73174 /* AlertType.swift */; };
 		23F3FFC02C78FBA0003C7DA9 /* SnackBarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBF2C78FBA0003C7DA9 /* SnackBarType.swift */; };
+		23FE59222D8F0046004A67BE /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FE59212D8F0046004A67BE /* UITextView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		23D5B65A2C7A26AF00B73174 /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
 		23D5B65E2C7A306F00B73174 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
 		23F3FFBF2C78FBA0003C7DA9 /* SnackBarType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnackBarType.swift; sourceTree = "<group>"; };
+		23FE59212D8F0046004A67BE /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 				23ACCEC62C6A1F0600E93953 /* UITextField.swift */,
 				23D5B65A2C7A26AF00B73174 /* UIDevice.swift */,
 				230DE2962D6AFF7700B7BCE7 /* UIResponder.swift */,
+				23FE59212D8F0046004A67BE /* UITextView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -314,6 +317,7 @@
 				232466722C6F910600979940 /* UserManager.swift in Sources */,
 				23D288512C55292D0044DF16 /* UIImage.swift in Sources */,
 				23D288542C55292D0044DF16 /* Optional.swift in Sources */,
+				23FE59222D8F0046004A67BE /* UITextView.swift in Sources */,
 				23D2884C2C55291D0044DF16 /* Image.swift in Sources */,
 				23974D762C5E5A1B006BBC97 /* NetworkMacro.swift in Sources */,
 				23F3FFC02C78FBA0003C7DA9 /* SnackBarType.swift in Sources */,

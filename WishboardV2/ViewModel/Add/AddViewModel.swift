@@ -10,6 +10,7 @@ import UIKit
 import Combine
 import WBNetwork
 import Moya
+import Core
 
 final class AddViewModel {
     // 입력 데이터
@@ -60,7 +61,7 @@ final class AddViewModel {
         do {
             
             let itemName = self.itemName
-            let itemPrice = self.itemPrice
+            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
             let selectedFolderId = self.selectedFolderId
             let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
             let itemURL = self.selectedLink
@@ -94,7 +95,7 @@ final class AddViewModel {
         do {
             
             let itemName = self.itemName
-            let itemPrice = self.itemPrice
+            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
             let selectedFolderId = self.selectedFolderId
             let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
             let itemURL = self.selectedLink

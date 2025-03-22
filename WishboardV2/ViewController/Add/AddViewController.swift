@@ -132,6 +132,13 @@ final class AddViewController: UIViewController {
             .assign(to: \.itemPrice, on: viewModel)
             .store(in: &cancellables)
         
+        addView.memoTextView.textPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak viewModel] text in
+                viewModel?.memo = text
+            }
+            .store(in: &cancellables)
+        
         viewModel.$selectedFolder
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
@@ -157,6 +164,14 @@ final class AddViewController: UIViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] image in
                 self?.addView.imagePickerView.image = image ?? UIImage()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$memo
+            .receive(on: RunLoop.main)
+            .sink { [weak self] text in
+                self?.addView.memoPlaceholder.isHidden = (text != nil)
+                self?.addView.memoTextView.text = text
             }
             .store(in: &cancellables)
         
@@ -265,6 +280,7 @@ final class AddViewController: UIViewController {
     /// 폴더 선택 시트 노출
     private func showFolderBottomSheet(for folders: [FolderListResponse]) {
         DispatchQueue.main.async {
+            self.view.endEditing(true)
             self.folderSelectBottomSheet.configure(with: folders)
             
             UIView.animate(withDuration: 0.3) {
@@ -308,6 +324,7 @@ final class AddViewController: UIViewController {
     /// 쇼핑몰 링크 입력 시트 미노출
     private func hideLinkBottomSheet() {
         DispatchQueue.main.async {
+            self.shoppingLinkBottomSheet.removeObservers()
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.shoppingLinkBottomSheet.snp.updateConstraints { make in
@@ -321,6 +338,7 @@ final class AddViewController: UIViewController {
     /// 날짜 선택 시트 노출
     private func showDateBottomSheet() {
         DispatchQueue.main.async {
+            self.view.endEditing(true)
             self.selectDateBottomSheet.configure()
             
             UIView.animate(withDuration: 0.3) {
@@ -351,6 +369,8 @@ final class AddViewController: UIViewController {
 extension AddViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     /// Image Picker
     @objc private func selectImage() {
+        self.view.endEditing(true)
+        
         let actionSheet = UIAlertController(title: "사진 선택", message: nil, preferredStyle: .actionSheet)
         actionSheet.addAction(UIAlertAction(title: "카메라", style: .default) { _ in
             self.openCamera()
@@ -418,7 +438,7 @@ extension AddViewController: AddToolBarDelegate {
         let lottie = SpinningLottie()
         Task {
             do {
-                
+                self.view.endEditing(true)
                 lottie.startAnimation()
                 
                 if self.type == .manual {

@@ -37,6 +37,13 @@ final class ShoppingLinkBottomSheet: UIView {
         $0.autocapitalizationType = .none
         $0.clearButtonMode = .always
     }
+    private let errorLabel = UILabel().then {
+        $0.text = "쇼핑몰 링크를 다시 확인해 주세요."
+        $0.font = TypoStyle.SuitD3.font
+        $0.textAlignment = .left
+        $0.textColor = .pink_700
+        $0.isHidden = true
+    }
     private let actionButton = AnimatedButton().then {
         $0.setTitle("완료", for: .normal)
         $0.backgroundColor = .gray_100
@@ -65,6 +72,10 @@ final class ShoppingLinkBottomSheet: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        removeObservers()
+    }
+    
     // MARK: - Setup View
     private func setupView() {
         backgroundColor = .white
@@ -74,6 +85,7 @@ final class ShoppingLinkBottomSheet: UIView {
         addSubview(titleLabel)
         addSubview(closeButton)
         addSubview(textField)
+        addSubview(errorLabel)
         addSubview(actionButton)
         
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
@@ -104,6 +116,11 @@ final class ShoppingLinkBottomSheet: UIView {
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(42)
         }
+        
+        errorLabel.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(textField)
+            make.top.equalTo(textField.snp.bottom).offset(6)
+        }
     }
     
     private func setupTextField() {
@@ -114,15 +131,27 @@ final class ShoppingLinkBottomSheet: UIView {
     // MARK: - Actions
     @objc private func textFieldEditingChanged(_ textField: UITextField) {
         guard let text = textField.text else { return }
+        errorLabel.isHidden = true
         updateActionButtonState(isEnabled: text.count >= 1)
     }
     
     @objc private func closeButtonTapped() {
+        self.endEditing(true)
+        self.removeObservers()
         onClose?()
     }
     
     @objc private func actionButtonTapped() {
+        self.endEditing(true)
+        self.removeObservers()
         guard let text = textField.text, !text.isEmpty else { return }
+        
+        // 유효하지 않은 링크 예외처리
+        guard let url = URL(string: text), ["http", "https"].contains(url.scheme?.lowercased()) else {
+            errorLabel.isHidden = false
+            updateActionButtonState(isEnabled: false)
+            return
+        }
         onActionButtonTap?(text)
     }
     
@@ -137,7 +166,7 @@ final class ShoppingLinkBottomSheet: UIView {
     // MARK: - Public Methods
     
     func initView() {
-        self.setUpObservers()
+//        self.setUpObservers()
         self.isHidden = false
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -152,6 +181,7 @@ final class ShoppingLinkBottomSheet: UIView {
     }
     
     func configure(with prevLink: String? = nil) {
+        setUpObservers()
         
         self.snp.makeConstraints { make in
             make.height.equalToSuperview().multipliedBy(0.4)
@@ -174,7 +204,7 @@ extension ShoppingLinkBottomSheet {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func removeObservers() {
+    public func removeObservers() {
         NotificationCenter.default.removeObserver(self)
     }
     

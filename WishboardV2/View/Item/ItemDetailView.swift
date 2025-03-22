@@ -68,10 +68,15 @@ final class ItemDetailView: UIView {
         $0.font = TypoStyle.SuitB2.font
         $0.textColor = .gray_700
     }
-    private let memoLabel = UILabel().then {
+    private let memoTextView = UITextView().then {
         $0.font = TypoStyle.SuitD2.font
         $0.textColor = .gray_700
-        $0.numberOfLines = 0
+        $0.textContainer.maximumNumberOfLines = 0
+        $0.isEditable = false
+        $0.isSelectable = true
+        $0.dataDetectorTypes = [.all]
+        $0.isScrollEnabled = false
+        $0.textContainerInset = .zero
     }
     private let linkLabel = UILabel().then {
         $0.font = TypoStyle.SuitD3.font
@@ -89,7 +94,7 @@ final class ItemDetailView: UIView {
 
     private let stackView = UIStackView().then {
         $0.axis = .vertical
-        $0.spacing = 10
+        $0.spacing = 0
     }
     
     private var item: WishListResponse?
@@ -370,9 +375,19 @@ final class ItemDetailView: UIView {
             $0.backgroundColor = .gray_100
         }
         
+        memoTextView.text = memo
+        
+        // 텍스트뷰 크기 계산
+        let estimatedSize = memoTextView.sizeThatFits(CGSize(width: UIScreen.main.bounds.width - 32, height: CGFloat.greatestFiniteMagnitude))
+        
+        // 높이 constraint 따로 잡기 위해 저장
+        let heightConstraint = memoTextView.heightAnchor.constraint(equalToConstant: estimatedSize.height)
+        heightConstraint.priority = .defaultHigh // 레이아웃 충돌 방지용
+        heightConstraint.isActive = true
+        
         view.addSubview(separatorView)
         view.addSubview(memoTitleLabel)
-        view.addSubview(memoLabel)
+        view.addSubview(memoTextView)
         
         separatorView.snp.makeConstraints { make in
             make.height.equalTo(0.5)
@@ -381,11 +396,11 @@ final class ItemDetailView: UIView {
         memoTitleLabel.snp.makeConstraints { make in
             make.leading.top.equalToSuperview().inset(16)
         }
-        memoLabel.snp.makeConstraints { make in
+        memoTextView.snp.makeConstraints { make in
             make.top.equalTo(memoTitleLabel.snp.bottom).offset(10)
-            make.leading.trailing.bottom.equalToSuperview().inset(16)
+            make.leading.trailing.bottom.equalToSuperview().inset(12)
         }
-        memoLabel.text = memo
+        
         return view
     }
 }

@@ -77,6 +77,8 @@ final class AddView: UIView {
         $0.textContainer.lineFragmentPadding = 0
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
+        $0.isSelectable = true
+        $0.dataDetectorTypes = [.all]
     }
     
     let memoPlaceholder = UILabel().then {
@@ -92,7 +94,9 @@ final class AddView: UIView {
     // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         setupUI()
+        setupDelegates()
     }
     
     required init?(coder: NSCoder) {
@@ -170,5 +174,16 @@ final class AddView: UIView {
                 }
             }
         }
+    }
+    
+    private func setupDelegates() {
+        self.itemPriceTextField.addTarget(self, action: #selector(priceTextChanged(_:)), for: .editingChanged)
+    }
+    
+    @objc func priceTextChanged(_ textField: UITextField) {
+        guard let currentText = textField.text as String? else { return }
+        let filteredText = currentText.filter { $0.isNumber }
+        let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
+        textField.text = formattedText
     }
 }
