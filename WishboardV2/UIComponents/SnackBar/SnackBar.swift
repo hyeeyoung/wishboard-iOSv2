@@ -77,11 +77,15 @@ final class SnackBar {
         backgroundView.addSubview(title)
         setConstraints()
         
+        window?.layoutIfNeeded()
+        
         #else
         DispatchQueue.main.async {
             self.window?.view.addSubview(self.backgroundView)
             self.backgroundView.addSubview(self.title)
             self.setConstraints()
+            
+            self.window?.view.layoutIfNeeded()
         }
         #endif
     }
@@ -107,7 +111,7 @@ final class SnackBar {
             self.backgroundView.alpha = 0.0
             
             // ✅ 2) 올라오는 애니메이션 (0.5초)
-            UIView.animate(withDuration: 0.5, delay: 0, options: .transitionFlipFromBottom, animations: {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
                 self.backgroundView.transform = CGAffineTransform(translationX: 0, y: self.TRANSLATION_Y)
                 self.backgroundView.alpha = 1.0
                 self.backgroundView.superview?.layoutIfNeeded()
@@ -115,7 +119,7 @@ final class SnackBar {
                 // ✅ 3) 2.5초 동안 유지
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                     // ✅ 4) 내려가는 애니메이션 (0.5초)
-                    UIView.animate(withDuration: 0.5, delay: 0, options: .transitionFlipFromTop, animations: {
+                    UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
                         self.backgroundView.transform = .identity
                         self.backgroundView.alpha = 0.0
                         self.backgroundView.superview?.layoutIfNeeded()
