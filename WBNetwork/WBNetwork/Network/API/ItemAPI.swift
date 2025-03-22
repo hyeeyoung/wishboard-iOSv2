@@ -22,7 +22,7 @@ public struct RequestItemDTO {
     public let itemURL: String?
     public let itemMemo: String?
     public let itemNotificationType: String?
-    public let itemNotificationDate: String?
+    public var itemNotificationDate: String?
     
     public init(folderId: Int?, 
                 photo: Data?,
@@ -150,14 +150,17 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
            itemNotificationTypeData = MultipartFormData(provider: .data(notificationType.data(using: String.Encoding.utf8) ?? Data()), name: "item_notification_type")
        }
        if let notificationDate = param.itemNotificationDate {
-           let itemNotificationDate = notificationDate + ":00"
+           let itemNotificationDate = notificationDate /*+ ":00"*/
            itemNotificationDateData = MultipartFormData(provider: .data(itemNotificationDate.data(using: String.Encoding.utf8) ?? Data()), name: "item_notification_date")
        }
 
-       let imageData = param.photo ?? Data()
-       let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "item_img", fileName: "item.jpeg", mimeType: "image/jpeg")
+        var formData: [Moya.MultipartFormData] = []
+        // 이미지 데이터가 있다면 폼데이터에 추가
+        if let imageData = param.photo {
+            let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "item_img", fileName: "item.jpeg", mimeType: "image/jpeg")
+            formData = [imageMultipartFormData]
+        }
        
-       var formData: [Moya.MultipartFormData] = [imageMultipartFormData]
        formData.append(itemNameData)
        formData.append(itemPriceData)
        formData.append(itemURLData)

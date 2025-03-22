@@ -185,10 +185,11 @@ final class ShareView: UIView {
     }
     
     /// Complete 버튼 상태를 업데이트하는 메서드
-    private func updateCompleteButtonState() {
+    public func updateCompleteButtonState() {
         completeButton.titleLabel?.font = TypoStyle.SuitH3.font
         // 로그인 상태가 아닐 때
         if UserManager.accessToken == nil || UserManager.refreshToken == nil {
+            completeButton.setTitle("로그인 후 이용해주세요", for: .normal)
             completeButton.isEnabled = false
             return
         }
@@ -250,18 +251,14 @@ final class ShareView: UIView {
         }
     }
     
+    /// 알람 선택 후 알람설정 버튼 텍스트 업데이트
     public func configureNotiDateButton(_ date: String) {
-        self.setNotificationButton = UIButton().then {
-            var config = UIButton.Configuration.plain()
-            var attText: AttributedString!
-            
-            attText = AttributedString.init(" \(date)")
-            attText.font = TypoStyle.SuitD3.font
-            attText.foregroundColor = UIColor.gray_700
-            config.attributedTitle = attText
-            config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-            
-            $0.configuration = config
+        if var config = setNotificationButton.configuration {
+            var newTitle = AttributedString(date)
+            newTitle.font = TypoStyle.SuitD3.font
+            newTitle.foregroundColor = UIColor.gray_700
+            config.attributedTitle = newTitle
+            setNotificationButton.configuration = config
         }
     }
 }
@@ -315,13 +312,19 @@ extension ShareView: UITextFieldDelegate {
             let filteredText = newText.filter { $0.isNumber }
             let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
             textField.text = formattedText
+            
+            // 입력이 발생할 때마다 호출되며, 입력이 완료된 후 button 상태를 업데이트
+            DispatchQueue.main.async { [weak self] in
+                self?.updateCompleteButtonState()
+            }
+            return false
+        } else {
+            // 입력이 발생할 때마다 호출되며, 입력이 완료된 후 button 상태를 업데이트
+            DispatchQueue.main.async { [weak self] in
+                self?.updateCompleteButtonState()
+            }
+            return true
         }
-        
-        // 입력이 발생할 때마다 호출되며, 입력이 완료된 후 button 상태를 업데이트
-        DispatchQueue.main.async { [weak self] in
-            self?.updateCompleteButtonState()
-        }
-        return false
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {

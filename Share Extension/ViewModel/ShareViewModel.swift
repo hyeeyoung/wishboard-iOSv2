@@ -12,35 +12,25 @@ import Core
 import WBNetwork
 
 final class ShareViewModel {
+    @Published var isLogined: Bool = true
     @Published var item: WishListResponse?
     @Published var folders: [FolderListResponse] = []
-    
     @Published var selectedAlarmType: String? = nil
     @Published var selectedAlarmDate: String? = nil
     @Published var selectedAlarm: String? = nil
-    
     private var cancellables = Set<AnyCancellable>()
-
-    init() {
-        
-    }
     
     /// 웹url로 아이템 파싱하기
-    func fetchItem(link: String) {
-        Task {
-            do {
-                let usecase = ParseItemUrlUseCase()
-                let data = try await usecase.execute(link: link)
-                
-                DispatchQueue.main.async {
-                    self.item = data
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    SnackBar.shared.show(type: .failShoppingLink)
-                }
-                throw error
+    func fetchItem(link: String) async throws {
+        do {
+            let usecase = ParseItemUrlUseCase()
+            let data = try await usecase.execute(link: link)
+            
+            DispatchQueue.main.async {
+                self.item = data
             }
+        } catch {
+            throw error
         }
     }
     
@@ -50,9 +40,11 @@ final class ShareViewModel {
             do {
                 // 로그인 상태가 아닐 때
                 if UserManager.accessToken == nil || UserManager.refreshToken == nil {
+                    self.isLogined = false
                     return
                 }
                 
+                self.isLogined = true
                 let usecase = GetFoldersUseCase()
                 let data = try await usecase.execute()
                 
@@ -88,5 +80,4 @@ final class ShareViewModel {
             throw error
         }
     }
-    
 }

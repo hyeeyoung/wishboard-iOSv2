@@ -21,7 +21,6 @@ class ShareViewController: UIViewController {
     private let backgroundDimView = UIView()
     
     private var link: String?
-    
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -36,8 +35,22 @@ class ShareViewController: UIViewController {
         // fetch datas
         viewModel.fetchFolders()
         self.getSharedUrl { [weak self] url in
-            self?.viewModel.fetchItem(link: url)
+            Task {
+                do {
+                    // 아이템 정보 파싱
+                    try await self?.viewModel.fetchItem(link: url)
+                } catch {
+                    // 파싱 실패 시 스낵바 노출
+                    SnackBar(in: self).show(type: .failShoppingLink)
+                    throw error
+                }
+            }
         }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        self.dismissKeyboard()
     }
     
     private func setUpShareView() {
@@ -82,6 +95,13 @@ class ShareViewController: UIViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
                 self?.shareView.configureNotiDateButton(text ?? "상품 일정 알림 선택")
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isLogined
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isLogined in
+                self?.shareView.updateCompleteButtonState()
             }
             .store(in: &cancellables)
     }
@@ -173,6 +193,7 @@ class ShareViewController: UIViewController {
     /// 날짜 선택 시트 노출
     private func showDateBottomSheet() {
         DispatchQueue.main.async {
+            self.dismissKeyboard()
             self.alarmSheetView.configure()
             
             UIView.animate(withDuration: 0.3) {
@@ -207,6 +228,10 @@ class ShareViewController: UIViewController {
     
     /// 새 폴더 추가
     @objc private func addFolderButtonTapped() {
+        // 로그인 상태가 아니라면 비활성화
+        if UserManager.accessToken == nil || UserManager.refreshToken == nil {
+            return
+        }
         self.showBottomSheet()
     }
     
@@ -228,7 +253,11 @@ class ShareViewController: UIViewController {
         let itemName = shareView.itemNameTextField.text
         let itemPrice = FormatManager.shared.priceToStr(price: shareView.itemPriceTextField.text ?? "")
         let selectedFolderId = shareView.selectedFolderId
-        let itemImage = shareView.itemImage.image?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
+        
+        var itemImage: Data?
+        if let _ = viewModel.item?.item_img {
+            itemImage = shareView.itemImage.image?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
+        }
         
         let itemDTO = RequestItemDTO(folderId: selectedFolderId, 
                                      photo: itemImage,
@@ -237,28 +266,46 @@ class ShareViewController: UIViewController {
                                      itemURL: self.link,
                                      itemMemo: nil,
                                      itemNotificationType: viewModel.selectedAlarmType,
-                                     itemNotificationDate: viewModel.selectedAlarmDate)
+                                     itemNotificationDate: convertDateFormat(input: viewModel.selectedAlarmDate ?? ""))
         
         Task {
             do {
                 try await viewModel.addItem(item: itemDTO)
                 shareView.completeButton.stopAnimation()
+                shareView.isUserInteractionEnabled = false
                 shareView.completeButton.isEnabled = false
                 
                 // complete snackbar
                 SnackBar(in: self).show(type: .addItem)
-                // 1초 후 quit
-                DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) { [weak self] in
+                // quit
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
                     self?.quitShareView()
                 }
             } catch {
                 shareView.completeButton.stopAnimation()
+                shareView.isUserInteractionEnabled = true
                 shareView.completeButton.isEnabled = false
                 SnackBar(in: self).show(type: .errorMessage)
                 throw error
             }
         }
         
+    }
+    
+    /// 서버에 전송하기 위해 날짜 포맷팅
+    private func convertDateFormat(input: String) -> String? {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yy년 MM월 dd일 HH:mm"
+        inputFormatter.locale = Locale(identifier: "ko_KR") // 한글 형식 대응
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        if let date = inputFormatter.date(from: input) {
+            return outputFormatter.string(from: date)
+        } else {
+            return nil
+        }
     }
 
 }

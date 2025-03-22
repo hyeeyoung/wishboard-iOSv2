@@ -44,6 +44,7 @@ final class SnackBar {
         self.setupUI()
         #else
         self.window = viewController
+        self.setupUI()
         #endif
     }
     
