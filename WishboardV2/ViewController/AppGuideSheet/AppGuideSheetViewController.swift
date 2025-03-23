@@ -23,6 +23,8 @@ final class AppGuideSheetViewController: UIViewController {
         setupActions()
         
         appGuideSheet.layer.cornerRadius = 20
+        appGuideSheet.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        appGuideSheet.clipsToBounds = true
     }
 
     private func setupUI() {
@@ -39,8 +41,8 @@ final class AppGuideSheetViewController: UIViewController {
         view.addSubview(appGuideSheet)
         appGuideSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(639)
-            make.bottom.equalToSuperview().offset(639) // 처음엔 화면 아래에 위치
+            make.height.equalTo(673)
+            make.bottom.equalToSuperview().offset(673)
         }
 
         // 애니메이션으로 시트 올리기
@@ -61,7 +63,7 @@ final class AppGuideSheetViewController: UIViewController {
     private func dismissSheet() {
         UIView.animate(withDuration: 0.3, animations: {
             self.appGuideSheet.snp.updateConstraints { make in
-                make.bottom.equalToSuperview().offset(639)
+                make.bottom.equalToSuperview().offset(673)
             }
             self.view.layoutIfNeeded()
         }) { _ in

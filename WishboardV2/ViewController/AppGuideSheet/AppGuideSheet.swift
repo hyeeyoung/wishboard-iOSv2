@@ -64,7 +64,7 @@ final class AppGuideSheet: UIView {
         
         let layout = UICollectionViewFlowLayout()
         let cellWidth = (UIScreen.main.bounds.width)
-        layout.itemSize = CGSize(width: cellWidth, height: 600)
+        layout.itemSize = CGSize(width: cellWidth, height: 509)
         layout.minimumLineSpacing = 0
         layout.scrollDirection = .horizontal
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -105,7 +105,7 @@ final class AppGuideSheet: UIView {
         
         collectionView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(411)
+            make.height.equalTo(509)
         }
         pageControl.snp.makeConstraints { make in
             make.bottom.equalTo(ctaButton.snp.top).offset(-22)
@@ -128,7 +128,7 @@ final class AppGuideSheet: UIView {
     func configure() {
         self.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(639)
+            make.height.equalTo(673)
         }
     }
 }

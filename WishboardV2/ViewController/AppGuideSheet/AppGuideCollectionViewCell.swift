@@ -16,10 +16,7 @@ final class AppGuideCollectionViewCell: UICollectionViewCell {
     // MARK: - Views
     private let appGuideImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
-        $0.layer.cornerRadius = 20
-        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         $0.backgroundColor = .EDEDED
-        $0.clipsToBounds = true
     }
     private let titleLabel = UILabel().then {
         $0.font = TypoStyle.SuitH1.font

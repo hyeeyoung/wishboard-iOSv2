@@ -47,6 +47,7 @@ final class AlertViewController: UIViewController {
         $0.autocorrectionType = .no
         $0.clipsToBounds = true
         $0.clearButtonMode = .whileEditing
+        $0.font = TypoStyle.SuitD1.font
     }
     public let errorMessageLabel = UILabel().then {
         $0.text = "이메일을 다시 확인해 주세요."
