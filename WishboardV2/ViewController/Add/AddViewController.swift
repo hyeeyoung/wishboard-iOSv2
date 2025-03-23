@@ -18,6 +18,10 @@ enum AddItemType {
     case modify
 }
 
+public protocol ActiveFieldDelegate: AnyObject {
+    func setActiveField(_ field: UIView)
+}
+
 final class AddViewController: UIViewController {
     
     // MARK: - Properties
@@ -36,6 +40,9 @@ final class AddViewController: UIViewController {
     // 모드
     private let type: AddItemType
     private var item: WishListResponse?
+    
+    // Keyboard
+    private weak var activeField: UIView?
     
     // MARK: - Initializers
     
@@ -204,6 +211,7 @@ final class AddViewController: UIViewController {
     }
     
     private func setupDelegates() {
+        addView.delegate = self
         addView.toolBar.delegate = self
         addView.memoTextView.delegate = self
     }
@@ -419,8 +427,14 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
 
 // MARK: - UITextView Delegates
 extension AddViewController: UITextViewDelegate {
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        activeField = textView
+    }
+    
     func textViewDidChange(_ textView: UITextView) {
         addView.memoPlaceholder.isHidden = !textView.text.isEmpty
+        activeField = textView
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -468,6 +482,13 @@ extension AddViewController: AddToolBarDelegate {
     }
 }
 
+// MARK: - 활성화 필드 Delegate
+extension AddViewController: ActiveFieldDelegate {
+    func setActiveField(_ field: UIView) {
+        self.activeField = field
+    }
+}
+
 // MARK: - Keyboard 관련 Methodds & Delegates
 extension AddViewController {
     
@@ -501,8 +522,8 @@ extension AddViewController {
         }
         
         // 현재 포커싱된 뷰를 스크롤
-        if let activeField = UIResponder.currentFirstResponder as? UIView {
-            self.scrollToActiveField(activeField, keyboardHeight: keyboardHeight)
+        if let field = activeField {
+            self.scrollToActiveField(field, keyboardHeight: keyboardHeight)
         }
     }
     
@@ -516,13 +537,17 @@ extension AddViewController {
     
     /// 현재 포커싱된 필드를 키보드 높이에 맞게 조정
     private func scrollToActiveField(_ activeField: UIView, keyboardHeight: CGFloat) {
-        let fieldFrame = activeField.convert(activeField.bounds, to: self.view)
-        let fieldBottomY = fieldFrame.maxY
-        let availableHeight = view.frame.height - keyboardHeight
+        // scrollView 기준으로 frame 변환
+        let scrollView = self.addView.scrollView
+        let fieldFrameInScrollView = activeField.convert(activeField.bounds, to: scrollView)
         
-        if fieldBottomY > availableHeight {
-            let offset = fieldBottomY - availableHeight + 20
-            self.addView.scrollView.setContentOffset(CGPoint(x: 0, y: offset), animated: true)
+        // 현재 스크롤 offset + visible height (keyboard 고려)
+        let visibleHeight = scrollView.bounds.height - keyboardHeight
+        let visibleRect = CGRect(x: 0, y: scrollView.contentOffset.y, width: scrollView.bounds.width, height: visibleHeight)
+        
+        if !visibleRect.contains(fieldFrameInScrollView) {
+            // 아래로 스크롤해야 함
+            scrollView.scrollRectToVisible(fieldFrameInScrollView.insetBy(dx: 0, dy: -20), animated: true)
         }
     }
 }

@@ -92,6 +92,9 @@ final class AddView: UIView {
     }, count: 6)
     
     // MARK: - Init
+    
+    public weak var delegate: ActiveFieldDelegate?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -178,6 +181,8 @@ final class AddView: UIView {
     
     private func setupDelegates() {
         self.itemPriceTextField.addTarget(self, action: #selector(priceTextChanged(_:)), for: .editingChanged)
+        self.itemNameTextField.addTarget(self, action: #selector(nameTextBegin(_:)), for: .editingDidBegin)
+        self.itemPriceTextField.addTarget(self, action: #selector(priceTextBegin(_:)), for: .editingDidBegin)
     }
     
     @objc func priceTextChanged(_ textField: UITextField) {
@@ -185,5 +190,13 @@ final class AddView: UIView {
         let filteredText = currentText.filter { $0.isNumber }
         let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
         textField.text = formattedText
+    }
+    
+    @objc func priceTextBegin(_ textField: UITextField) {
+        self.delegate?.setActiveField(textField)
+    }
+    
+    @objc func nameTextBegin(_ textField: UITextField) {
+        self.delegate?.setActiveField(textField)
     }
 }

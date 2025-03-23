@@ -143,7 +143,6 @@ final class ShoppingLinkBottomSheet: UIView {
     
     @objc private func actionButtonTapped() {
         self.endEditing(true)
-        self.removeObservers()
         guard let text = textField.text, !text.isEmpty else { return }
         
         // 유효하지 않은 링크 예외처리
@@ -153,6 +152,7 @@ final class ShoppingLinkBottomSheet: UIView {
             return
         }
         onActionButtonTap?(text)
+        self.removeObservers()
     }
     
     @objc func dismissKeyboard() {
