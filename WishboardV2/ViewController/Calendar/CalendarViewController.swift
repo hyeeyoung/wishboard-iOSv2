@@ -83,10 +83,11 @@ final class CalendarViewController: UIViewController {
             .store(in: &cancellables)
 
         viewModel.$selectedAlarms
-            .sink { [weak self] _ in
+            .sink { [weak self] alarms in
                 DispatchQueue.main.async {
-                   self?.calendarView.tableView.reloadData()
-                   self?.updateTableViewHeight()
+                    self?.calendarView.setEmptyView(isHidden: !(alarms.isEmpty))
+                    self?.calendarView.tableView.reloadData()
+                    self?.updateTableViewHeight()
                }
             }
             .store(in: &cancellables)
@@ -192,7 +193,6 @@ extension CalendarViewController: UICollectionViewDataSource, UICollectionViewDe
 // MARK: - UITableViewDataSource & UITableViewDelegate
 extension CalendarViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("count: \(viewModel.selectedAlarms.count)")
         return viewModel.selectedAlarms.count
     }
 

@@ -13,133 +13,187 @@ import Combine
 import Core
 
 final class CalendarView: UIView {
-    var collectionView: UICollectionView!
-    var tableView: UITableView!
-    var scrollView: UIScrollView!
+    // MARK: - UI Components
+    private let scrollView = UIScrollView().then {
+        $0.alwaysBounceVertical = true
+    }
+    
+    private let contentView = UIView()
+
     let toolBar = UIView().then {
         $0.backgroundColor = .white
     }
-    var monthLabel: UILabel!
+
+    let monthLabel = UILabel().then {
+        $0.font = TypoStyle.MontserratH1.font
+        $0.textAlignment = .center
+    }
+
     let quitButton = UIButton().then {
         $0.setImage(Image.quit, for: .normal)
     }
-    var weekDaysStackView: UIStackView!
-    let selectedDateLabel = UILabel().then {
-        $0.font = TypoStyle.SuitH3.font
-        $0.textColor = .gray_700
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupUI()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+
+    private let weekDaysStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.distribution = .fillEqually
     }
 
-    private func setupUI() {
-        scrollView = UIScrollView()
-        scrollView.alwaysBounceVertical = true
-        addSubview(scrollView)
-
-        let contentView = UIView()
-        scrollView.addSubview(contentView)
-
-        monthLabel = UILabel()
-        monthLabel.font = TypoStyle.MontserratH1.font
-        monthLabel.textAlignment = .center
-        
-        toolBar.addSubview(monthLabel)
-        toolBar.addSubview(quitButton)
-        contentView.addSubview(toolBar)
-        
-        let weekDays = ["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"]
-        weekDaysStackView = UIStackView()
-        weekDaysStackView.axis = .horizontal
-        weekDaysStackView.distribution = .fillEqually
-
-        for day in weekDays {
-            let label = UILabel()
-            label.text = day
-            label.textAlignment = .center
-            label.font = TypoStyle.MontserratB2.font
-            weekDaysStackView.addArrangedSubview(label)
-        }
-        contentView.addSubview(weekDaysStackView)
-
+    let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         layout.sectionInset = .zero
-        let cellWidth = floor(UIScreen.main.bounds.width / 7)
-        layout.itemSize = CGSize(width: cellWidth, height: 50)
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        contentView.addSubview(collectionView)
-        
-        collectionView.isScrollEnabled = true
-        collectionView.isPagingEnabled = true
-        collectionView.alwaysBounceHorizontal = true // 좌우 스크롤 활성화
-        
-        contentView.addSubview(selectedDateLabel)
+        layout.itemSize = CGSize(width: floor(UIScreen.main.bounds.width / 7), height: 50)
 
-        tableView = UITableView()
-        tableView.register(NoticeTableViewCell.self, forCellReuseIdentifier: "NoticeTableViewCell")
-        tableView.separatorStyle = .none
-        contentView.addSubview(tableView)
-        
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        return UICollectionView(frame: .zero, collectionViewLayout: layout).then {
+            $0.isScrollEnabled = true
+            $0.isPagingEnabled = true
+            $0.alwaysBounceHorizontal = true
         }
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalTo(scrollView)
+    }()
+
+    let selectedDateLabel = UILabel().then {
+        $0.font = TypoStyle.SuitH3.font
+        $0.textColor = .gray_700
+    }
+
+    let tableView = UITableView().then {
+        $0.register(NoticeTableViewCell.self, forCellReuseIdentifier: "NoticeTableViewCell")
+        $0.separatorStyle = .none
+    }
+
+    private let emptyView = UIView().then {
+        $0.isHidden = true
+    }
+
+    private let emptyImageView = UIImageView().then {
+        $0.image = Image.notiLarge
+        $0.contentMode = .scaleAspectFit
+    }
+
+    private let emptyLabel = UILabel().then {
+        $0.text = "앗, 일정이 없어요!\n상품 일정을 지정하고 알림을 받아보세요!"
+        $0.numberOfLines = 0
+        $0.textColor = .gray_200
+        $0.setTypoStyleWithMultiLine(typoStyle: .SuitB3)
+        $0.textAlignment = .center
+    }
+
+    // MARK: - Init
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setup
+    private func setupUI() {
+        addSubview(scrollView)
+        scrollView.addSubview(contentView)
+
+        [toolBar, weekDaysStackView, collectionView, selectedDateLabel, tableView, emptyView].forEach {
+            contentView.addSubview($0)
         }
-        toolBar.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.top.equalToSuperview()
-            make.height.equalTo(42)
+
+        toolBar.addSubview(monthLabel)
+        toolBar.addSubview(quitButton)
+
+        let weekDays = ["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"]
+        weekDays.forEach { day in
+            let label = UILabel().then {
+                $0.text = day
+                $0.textAlignment = .center
+                $0.font = TypoStyle.MontserratB2.font
+            }
+            weekDaysStackView.addArrangedSubview(label)
         }
-        monthLabel.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
+
+        emptyView.addSubview(emptyImageView)
+        emptyView.addSubview(emptyLabel)
+
+        setupConstraints()
+    }
+
+    private func setupConstraints() {
+        scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
+
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalTo(scrollView)
         }
-        quitButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.width.height.equalTo(24)
-            make.centerY.equalToSuperview()
+
+        toolBar.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(42)
         }
-        weekDaysStackView.snp.makeConstraints { make in
-            make.top.equalTo(toolBar.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(20)
+
+        monthLabel.snp.makeConstraints { $0.center.equalToSuperview() }
+        quitButton.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+            $0.centerY.equalToSuperview()
+            $0.size.equalTo(24)
         }
-        collectionView.snp.makeConstraints { make in
-            make.top.equalTo(weekDaysStackView.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(303)
+
+        weekDaysStackView.snp.makeConstraints {
+            $0.top.equalTo(toolBar.snp.bottom).offset(10)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(20)
         }
-        selectedDateLabel.snp.makeConstraints { make in
-            make.top.equalTo(collectionView.snp.bottom).offset(32)
-            make.leading.equalToSuperview().offset(16)
+
+        collectionView.snp.makeConstraints {
+            $0.top.equalTo(weekDaysStackView.snp.bottom).offset(10)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(303)
         }
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(selectedDateLabel.snp.bottom).offset(16)
-            make.leading.trailing.bottom.equalToSuperview().inset(16)
-            make.height.equalTo(200)
+
+        selectedDateLabel.snp.makeConstraints {
+            $0.top.equalTo(collectionView.snp.bottom).offset(32)
+            $0.leading.equalToSuperview().offset(16)
+        }
+
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(selectedDateLabel.snp.bottom).offset(16)
+            $0.leading.trailing.bottom.equalToSuperview().inset(16)
+            $0.height.equalTo(200)
+        }
+
+        emptyView.snp.makeConstraints {
+            $0.edges.equalTo(tableView)
+        }
+
+        emptyImageView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().offset(40)
+            $0.width.equalTo(74)
+            $0.height.equalTo(75)
+        }
+
+        emptyLabel.snp.makeConstraints {
+            $0.top.equalTo(emptyImageView.snp.bottom).offset(20)
+            $0.centerX.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
         }
     }
-    
+
+    // MARK: - Public
     public func configureSelectedLabel(_ rawDate: Date) {
         let formattedDate = formatDate(rawDate)
         selectedDateLabel.text = "\(formattedDate) 일정"
     }
-    
-    private func formatDate(_ date: Date) -> String {
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "M월 d일"
-        outputFormatter.locale = Locale(identifier: "ko_KR")
-        outputFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
 
-        return outputFormatter.string(from: date)
+    public func setEmptyView(isHidden: Bool) {
+        emptyView.isHidden = isHidden
+        tableView.isHidden = !isHidden
+    }
+
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M월 d일"
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        return formatter.string(from: date)
     }
 }
