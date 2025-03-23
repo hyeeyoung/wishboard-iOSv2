@@ -78,6 +78,14 @@ final class CalendarView: UIView {
         $0.setTypoStyleWithMultiLine(typoStyle: .SuitB3)
         $0.textAlignment = .center
     }
+    
+    private let firstSeparatorView = UIView().then {
+        $0.backgroundColor = .gray_100
+    }
+    
+    private let secondSeparatorView = UIView().then {
+        $0.backgroundColor = .gray_100
+    }
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -94,7 +102,7 @@ final class CalendarView: UIView {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
 
-        [toolBar, weekDaysStackView, collectionView, selectedDateLabel, tableView, emptyView].forEach {
+        [toolBar, weekDaysStackView, collectionView, firstSeparatorView, secondSeparatorView, selectedDateLabel, tableView, emptyView].forEach {
             contentView.addSubview($0)
         }
 
@@ -126,8 +134,9 @@ final class CalendarView: UIView {
         }
 
         toolBar.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview().inset(16)
+            $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(42)
+            $0.top.equalToSuperview()
         }
 
         monthLabel.snp.makeConstraints { $0.center.equalToSuperview() }
@@ -142,13 +151,21 @@ final class CalendarView: UIView {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(20)
         }
-
         collectionView.snp.makeConstraints {
             $0.top.equalTo(weekDaysStackView.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(303)
         }
-
+        firstSeparatorView.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.top)
+            make.height.equalTo(0.52)
+            make.leading.trailing.equalToSuperview()
+        }
+        secondSeparatorView.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.bottom)
+            make.height.equalTo(0.52)
+            make.leading.trailing.equalToSuperview()
+        }
         selectedDateLabel.snp.makeConstraints {
             $0.top.equalTo(collectionView.snp.bottom).offset(32)
             $0.leading.equalToSuperview().offset(16)

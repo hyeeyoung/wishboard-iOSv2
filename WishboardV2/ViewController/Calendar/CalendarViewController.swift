@@ -34,6 +34,10 @@ final class CalendarViewController: UIViewController {
                     self.selectToday()
                 }
             } catch {
+                // 첫 진입 시 오늘날짜 선택
+                DispatchQueue.main.async {
+                    self.selectToday()
+                }
                 throw error
             }
         }
@@ -228,9 +232,31 @@ extension CalendarViewController: UIScrollViewDelegate {
 
         if velocity.x < -500 {
             viewModel.moveToNextMonth() // 🔥 오른쪽으로 스와이프 → 다음 달
+            animateCalendarSlide(to: .left)
         } else if velocity.x > 500 {
             viewModel.moveToPreviousMonth() // 🔥 왼쪽으로 스와이프 → 이전 달
+            animateCalendarSlide(to: .right)
         }
         viewModel.updateCalendarDays()
     }
+    
+    func animateCalendarSlide(to direction: SlideDirection) {
+        let calendarView = self.calendarView.collectionView
+        let animationOffset: CGFloat = 50
+        let offsetX = (direction == .left) ? animationOffset : -animationOffset
+
+        calendarView.transform = CGAffineTransform(translationX: offsetX, y: 0)
+        calendarView.alpha = 0.0
+
+        UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseOut], animations: {
+            calendarView.transform = .identity
+            calendarView.alpha = 1.0
+        })
+    }
+}
+
+/// 애니메이팅 시 필요한 Enum - slide direction
+enum SlideDirection {
+    case left
+    case right
 }
