@@ -11,6 +11,7 @@
 		231F51D32C709A3400524968 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51D22C709A3400524968 /* NotificationName.swift */; };
 		232466722C6F910600979940 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232466712C6F910600979940 /* UserManager.swift */; };
 		2337C86B2C71078700E2A67B /* FormatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C86A2C71078700E2A67B /* FormatManager.swift */; };
+		2367DAE72D9068440007C8A4 /* UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367DAE62D9068440007C8A4 /* UIApplication.swift */; };
 		23974D762C5E5A1B006BBC97 /* NetworkMacro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23974D752C5E5A1B006BBC97 /* NetworkMacro.swift */; };
 		23ACCEC72C6A1F0600E93953 /* UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ACCEC62C6A1F0600E93953 /* UITextField.swift */; };
 		23D2881F2C5523AD0044DF16 /* Core.docc in Sources */ = {isa = PBXBuildFile; fileRef = 23D2881E2C5523AD0044DF16 /* Core.docc */; };
@@ -48,6 +49,7 @@
 		231F51D22C709A3400524968 /* NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationName.swift; sourceTree = "<group>"; };
 		232466712C6F910600979940 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		2337C86A2C71078700E2A67B /* FormatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatManager.swift; sourceTree = "<group>"; };
+		2367DAE62D9068440007C8A4 /* UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplication.swift; sourceTree = "<group>"; };
 		23974D752C5E5A1B006BBC97 /* NetworkMacro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMacro.swift; sourceTree = "<group>"; };
 		23ACCEC62C6A1F0600E93953 /* UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextField.swift; sourceTree = "<group>"; };
 		23D2881A2C5523AD0044DF16 /* Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,6 +108,7 @@
 				23D5B65A2C7A26AF00B73174 /* UIDevice.swift */,
 				230DE2962D6AFF7700B7BCE7 /* UIResponder.swift */,
 				23FE59212D8F0046004A67BE /* UITextView.swift */,
+				2367DAE62D9068440007C8A4 /* UIApplication.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				23ACCEC72C6A1F0600E93953 /* UITextField.swift in Sources */,
 				23D5B65F2C7A306F00B73174 /* AlertType.swift in Sources */,
 				23D2885E2C5529340044DF16 /* TypoStyle.swift in Sources */,
+				2367DAE72D9068440007C8A4 /* UIApplication.swift in Sources */,
 				23D2885F2C5529340044DF16 /* UIFont.swift in Sources */,
 				23D288622C55293D0044DF16 /* UIColor.swift in Sources */,
 			);

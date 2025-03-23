@@ -11,7 +11,7 @@ import Core
 
 final class SnackBar {
     
-    static let shared = SnackBar()
+    static var shared = SnackBar()
     
     let SNACKBAR_HEIGHT = 48
     let SNACKBAR_INTERVAL = 34

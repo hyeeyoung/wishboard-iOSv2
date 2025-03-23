@@ -107,6 +107,8 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
         let tabBarController = TabBarViewController()
         tabBarController.modalPresentationStyle = .fullScreen
         self.present(tabBarController, animated: true, completion: nil)
+        
+        SnackBar.shared = SnackBar()
     }
     
     @objc private func moveToEmailLogin() {
