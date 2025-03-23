@@ -12,10 +12,8 @@ public enum NetworkMacro {
     public static var BaseURL: String {
         #if DEBUG
         return "http://3.37.20.199/dev"
-        #elseif REL
-        return "http://3.37.20.199"
         #else
-        return ""
+        return "http://3.37.20.199"
         #endif
     }
     
@@ -25,13 +23,11 @@ public enum NetworkMacro {
             "User-Agent": "wishboard-ios/dev",
             "Content-Type": "application/json"
         ]
-        #elseif REL
+        #else
         return [
             "User-Agent": "wishboard-ios/prod",
             "Content-Type": "application/json"
         ]
-        #else
-        return [:]
         #endif
     }
     
