@@ -1536,6 +1536,7 @@
 				DEVELOPMENT_TEAM = B974XY47GZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WishboardV2/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WishBoard;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -1567,6 +1568,7 @@
 				DEVELOPMENT_TEAM = B974XY47GZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WishboardV2/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WishBoard;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
