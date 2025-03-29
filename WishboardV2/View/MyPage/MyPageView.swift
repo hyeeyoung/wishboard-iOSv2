@@ -83,6 +83,14 @@ extension MypageView: UITableViewDataSource, UITableViewDelegate {
             self?.delegate?.pushStateStatusChanged(isOn: isOn)
         }
         
+        // 알림설정, 버전정보는 선택이벤트 X
+        switch indexPath.row {
+        case 0, 7:
+            cell.selectionStyle = .none
+        default:
+            break
+        }
+        
         return cell
     }
     
