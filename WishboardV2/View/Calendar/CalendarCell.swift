@@ -64,6 +64,6 @@ class CalendarCell: UICollectionViewCell {
         stickerView.isHidden = !isToday
         
         alarmBackgroundView.isHidden = !hasAlarm
-        alarmBackgroundView.backgroundColor = hasAlarm ? .green_200 : nil
+        alarmBackgroundView.backgroundColor = hasAlarm ? (isCurrentMonth ? .green_200: nil) : nil
     }
 }
