@@ -27,11 +27,6 @@ final class ItemDetailView: UIView {
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
     }
-    private let dimmedView = UIView().then {
-        $0.backgroundColor = .black_5
-        $0.layer.cornerRadius = 32
-        $0.clipsToBounds = true
-    }
     private let notiTypetag = PaddedLabel().then {
         $0.text = "알람 종류"
         $0.font = TypoStyle.SuitB5.font
@@ -110,7 +105,6 @@ final class ItemDetailView: UIView {
         scrollView.addSubview(contentView)
         
         contentView.addSubview(imageView)
-        imageView.addSubview(dimmedView)
         imageView.addSubview(notiTypetag)
         imageView.addSubview(notiDatetag)
         contentView.addSubview(folderLabelButton)
@@ -140,10 +134,6 @@ final class ItemDetailView: UIView {
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalToSuperview()
             make.height.equalTo(imageView.snp.width).multipliedBy(1.154)
-        }
-        
-        dimmedView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
         }
         
         notiTypetag.snp.makeConstraints { make in
