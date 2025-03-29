@@ -24,6 +24,9 @@ final class FolderView: UIView {
         $0.isHidden = true
     }
     
+    public let refreshControl = UIRefreshControl()
+    public var refreshAction: (() -> Void)?
+    
     override init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
         let cellWidth = (UIScreen.main.bounds.width - 16 * 3) / 2
@@ -32,11 +35,13 @@ final class FolderView: UIView {
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .white
+        collectionView.showsVerticalScrollIndicator = false
         
         super.init(frame: frame)
         
         setupViews()
         setupConstraints()
+        setupRefreshControl()
     }
     
     required init?(coder: NSCoder) {
@@ -61,5 +66,14 @@ final class FolderView: UIView {
         emptyLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+    }
+    
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+    }
+    
+    @objc private func handleRefresh() {
+        self.refreshAction?()
     }
 }

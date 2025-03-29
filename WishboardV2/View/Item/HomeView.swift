@@ -26,7 +26,11 @@ final class HomeView: UIView {
         $0.isHidden = true
     }
     
+    // MARK: - Properties
+    
     private var viewModel: HomeViewModel?
+    private let refreshControl = UIRefreshControl()
+    public var refreshAction: (() -> Void)?
     
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -38,11 +42,13 @@ final class HomeView: UIView {
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .white
+        collectionView.showsVerticalScrollIndicator = false
         
         super.init(frame: frame)
         
         setupViews()
         setupConstraints()
+        setupRefreshControl()
     }
     
     required init?(coder: NSCoder) {
@@ -71,6 +77,15 @@ final class HomeView: UIView {
         }
     }
     
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+    }
+    
+    @objc private func handleRefresh() {
+        self.refreshAction?()
+    }
+    
     // MARK: - Public Methods
     func configure(with viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -78,6 +93,7 @@ final class HomeView: UIView {
         viewModel.$items
             .receive(on: RunLoop.main)
             .sink { [weak self] items in
+                self?.refreshControl.endRefreshing()
                 self?.emptyLabel.isHidden = !(items.isEmpty)
                 self?.collectionView.reloadData()
             }

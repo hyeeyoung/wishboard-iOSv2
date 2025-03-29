@@ -27,6 +27,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         setupDelegates()
         setupBackgroundDimView()
         setupBottomSheet()
+        setupBindings()
         
         viewModel.fetchItems()
         
@@ -70,7 +71,9 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
     
     private func setupBindings() {
-        
+        homeView.refreshAction = { [weak self] in
+            self?.refreshItems()
+        }
     }
     
     @objc func refreshItems() {

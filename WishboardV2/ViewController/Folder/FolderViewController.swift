@@ -67,6 +67,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         viewModel.$folders
             .receive(on: RunLoop.main)
             .sink { [weak self] folders in
+                self?.folderView.refreshControl.endRefreshing()
                 self?.folderView.emptyLabel.isHidden = !(folders.isEmpty)
                 self?.folderView.collectionView.reloadData()
             }
@@ -77,6 +78,10 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         // 키보드 닫기 처리: 바텀 시트의 어디든 탭하면 키보드를 내림
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.backgroundDimView.addGestureRecognizer(tapGesture)
+        
+        self.folderView.refreshAction = { [weak self] in
+            self?.refreshItems()
+        }
     }
     
     private func setupBackgroundDimView() {

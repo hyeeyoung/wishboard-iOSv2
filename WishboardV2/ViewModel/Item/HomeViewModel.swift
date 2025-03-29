@@ -25,6 +25,9 @@ final class HomeViewModel {
                     self.items = data
                 }
             } catch {
+                DispatchQueue.main.async {
+                    self.items = []
+                }
                 throw error
             }
         }
