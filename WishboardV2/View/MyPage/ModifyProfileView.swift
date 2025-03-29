@@ -21,6 +21,7 @@ final class ModifyProfileView: UIView {
         $0.contentMode = .scaleAspectFill
         $0.layer.cornerRadius = 53
         $0.clipsToBounds = true
+        $0.isUserInteractionEnabled = true
     }
     private let dimmedView = UIView().then {
         $0.backgroundColor = .black_5
