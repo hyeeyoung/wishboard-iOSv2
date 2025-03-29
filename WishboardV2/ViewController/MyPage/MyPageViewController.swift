@@ -200,10 +200,13 @@ extension MypageViewController: MypageViewDelegate {
     private func requestDeleteUser() {
         Task {
             try await self.viewModel.deleteUser()
-            self.dismiss(animated: true)
-            NotificationCenter.default.post(name: .SignOut, object: nil)
-            // 스낵바 출력
-            SnackBar.shared.show(type: .deleteUser)
+            self.dismiss(animated: true) {
+                NotificationCenter.default.post(name: .SignOut, object: nil)
+                // 스낵바 출력
+                DispatchQueue.main.async {
+                    SnackBar.shared.show(type: .deleteUser)
+                }
+            }
         }
     }
     
