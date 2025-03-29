@@ -47,6 +47,7 @@ final class ModifyProfileView: UIView {
         $0.autocorrectionType = .no
         $0.clearButtonMode = .whileEditing
         $0.becomeFirstResponder()
+        $0.spellCheckingType = .no
     }
     
     public lazy var actionButton = AnimatedButton().then {

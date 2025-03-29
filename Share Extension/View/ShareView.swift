@@ -36,6 +36,7 @@ final class ShareView: UIView {
         $0.placeholder = Placeholder.shareItemName
         $0.autocorrectionType = .no
         $0.textColor = .gray_700
+        $0.spellCheckingType = .no
     }
     let itemPriceTextField = UITextField().then{
         $0.borderStyle = .none
@@ -45,6 +46,7 @@ final class ShareView: UIView {
         $0.placeholder = Placeholder.shareItemPrice
         $0.autocorrectionType = .no
         $0.textColor = .gray_700
+        $0.spellCheckingType = .no
     }
     var setNotificationButton = UIButton().then {
         var config = UIButton.Configuration.plain()

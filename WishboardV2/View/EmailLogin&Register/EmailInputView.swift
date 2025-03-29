@@ -41,6 +41,7 @@ final class EmailInputView: UIView {
         textField.backgroundColor = .gray_50
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
+        textField.spellCheckingType = .no
         return textField
     }()
     

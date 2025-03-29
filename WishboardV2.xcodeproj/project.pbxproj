@@ -81,6 +81,7 @@
 		23B82A9F2D786B7400EF2194 /* PasswordInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B82A9E2D786B7400EF2194 /* PasswordInputView.swift */; };
 		23B82AA12D786C0600EF2194 /* PasswordInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B82AA02D786C0600EF2194 /* PasswordInputViewModel.swift */; };
 		23B82AA32D7870AC00EF2194 /* TermsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B82AA22D7870AC00EF2194 /* TermsLabel.swift */; };
+		23BDE0CA2D985530005D2C96 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */; };
 		23C4D21A2C7A4D6D00BB0B08 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C4D2192C7A4D6D00BB0B08 /* ShareViewController.swift */; };
 		23C4D21D2C7A4D6D00BB0B08 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23C4D21B2C7A4D6D00BB0B08 /* MainInterface.storyboard */; };
 		23C4D2212C7A4D6D00BB0B08 /* Share Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 23C4D2172C7A4D6D00BB0B08 /* Share Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -1192,6 +1193,7 @@
 				230DE29E2D6B08BB00B7BCE7 /* UIImageViewExtension.swift in Sources */,
 				23611C922D81AA67003606DE /* SnackBar.swift in Sources */,
 				23C4D21A2C7A4D6D00BB0B08 /* ShareViewController.swift in Sources */,
+				23BDE0CA2D985530005D2C96 /* PaddingLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

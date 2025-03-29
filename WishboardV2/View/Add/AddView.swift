@@ -51,6 +51,7 @@ final class AddView: UIView {
         $0.setLeftPaddingPoints(16)
         $0.autocapitalizationType = .none
         $0.autocorrectionType = .no
+        $0.spellCheckingType = .no
     }
     
     let itemPriceTextField = UITextField().then {
@@ -59,6 +60,7 @@ final class AddView: UIView {
         $0.keyboardType = .numberPad
         $0.borderStyle = .none
         $0.setLeftPaddingPoints(16)
+        $0.spellCheckingType = .no
     }
     
     let folderView = OptionSelectorView().then {

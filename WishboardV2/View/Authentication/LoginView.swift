@@ -29,6 +29,7 @@ final class LoginView: UIView {
         $0.layer.cornerRadius = 6
         $0.setLeftPaddingPoints(12)
         $0.autocapitalizationType = .none
+        $0.spellCheckingType = .no
     }
     
     private let passwordLabel = UILabel().then {
@@ -44,6 +45,7 @@ final class LoginView: UIView {
         $0.layer.cornerRadius = 6
         $0.setLeftPaddingPoints(12)
         $0.isSecureTextEntry = true
+        $0.spellCheckingType = .no
     }
     
     public lazy var loginButton = AnimatedButton().then {

@@ -48,6 +48,7 @@ final class AlertViewController: UIViewController {
         $0.clipsToBounds = true
         $0.clearButtonMode = .whileEditing
         $0.font = TypoStyle.SuitD1.font
+        $0.spellCheckingType = .no
     }
     public let errorMessageLabel = UILabel().then {
         $0.text = ErrorMessage.email

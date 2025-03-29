@@ -21,21 +21,19 @@ final class SnackBar {
     var type: SnackBarType?
     
     // MARK: Views
-    private let backgroundView = UIView().then {
-        $0.backgroundColor = .gray_700
-        $0.clipsToBounds = true
-        $0.layer.cornerRadius = 24
-        $0.alpha = 0.0 // 처음엔 보이지 않도록 설정
-    }
 
-    private let title = UILabel().then {
+    private let snackBarLabel = PaddedLabel().then {
         $0.textColor = .white
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD2)
         $0.textAlignment = .center
         $0.numberOfLines = 0
+        $0.edgeInsets = UIEdgeInsets(top: 16, left: 32, bottom: 16, right: 32)
+        $0.layer.cornerRadius = 24
+        $0.clipsToBounds = true
+        $0.backgroundColor = .gray_700
+        $0.alpha = 0.0
     }
     
-    // TODO: Share-Extension일 때 ERROR
     public init(in viewController: UIViewController? = nil) {
         let translationY = SNACKBAR_HEIGHT + SNACKBAR_INTERVAL
         TRANSLATION_Y = CGFloat(-translationY)
@@ -67,23 +65,21 @@ final class SnackBar {
     /// 스낵바의 문구 내용 설정
     private func configure(_ type: SnackBarType) {
         let message = type.message
-        title.text = message
+        snackBarLabel.text = message
     }
 
     /// 스낵바의 addSubView
     private func addSubviewsAndConstraints() {
         #if WISHBOARD_APP
         let window = UIApplication.shared.keyWindow
-        window?.addSubview(self.backgroundView)
-        backgroundView.addSubview(title)
+        window?.addSubview(self.snackBarLabel)
         setConstraints()
         
         window?.layoutIfNeeded()
         
         #else
         DispatchQueue.main.async {
-            self.window?.view.addSubview(self.backgroundView)
-            self.backgroundView.addSubview(self.title)
+            self.window?.view.addSubview(self.snackBarLabel)
             self.setConstraints()
             
             self.window?.view.layoutIfNeeded()
@@ -93,13 +89,10 @@ final class SnackBar {
 
     /// 스낵바 제약 조건 설정
     private func setConstraints() {
-        title.snp.makeConstraints { make in
-            make.centerY.centerX.equalToSuperview()
-        }
-        
-        backgroundView.snp.makeConstraints { make in
+        snackBarLabel.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(SNACKBAR_HEIGHT) // 시작 위치를 화면 아래로 설정
-            make.leading.trailing.lessThanOrEqualToSuperview().inset(35)
+            make.leading.greaterThanOrEqualToSuperview().offset(35)
+            make.trailing.lessThanOrEqualToSuperview().offset(-35)
             make.height.equalTo(SNACKBAR_HEIGHT)
             make.centerX.equalToSuperview()
         }
@@ -109,23 +102,23 @@ final class SnackBar {
     private func performAnimation() {
         DispatchQueue.main.async {
             // ✅ 1) 초기 상태 유지 (이미 아래에 위치함)
-            self.backgroundView.alpha = 0.0
+            self.snackBarLabel.alpha = 0.0
             
             // ✅ 2) 올라오는 애니메이션 (0.5초)
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
-                self.backgroundView.transform = CGAffineTransform(translationX: 0, y: self.TRANSLATION_Y)
-                self.backgroundView.alpha = 1.0
-                self.backgroundView.superview?.layoutIfNeeded()
+                self.snackBarLabel.transform = CGAffineTransform(translationX: 0, y: self.TRANSLATION_Y)
+                self.snackBarLabel.alpha = 1.0
+                self.snackBarLabel.superview?.layoutIfNeeded()
             }) { _ in
                 // ✅ 3) 2.5초 동안 유지
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                     // ✅ 4) 내려가는 애니메이션 (0.5초)
                     UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
-                        self.backgroundView.transform = .identity
-                        self.backgroundView.alpha = 0.0
-                        self.backgroundView.superview?.layoutIfNeeded()
+                        self.snackBarLabel.transform = .identity
+                        self.snackBarLabel.alpha = 0.0
+                        self.snackBarLabel.superview?.layoutIfNeeded()
                     }) { _ in
-                        self.backgroundView.alpha = 0.0
+                        self.snackBarLabel.alpha = 0.0
                     }
                 }
             }

@@ -31,6 +31,7 @@ final class ModifyPasswordView: UIView {
         $0.isSecureTextEntry = true
         $0.autocapitalizationType = .none
         $0.autocorrectionType = .no
+        $0.spellCheckingType = .no
     }
     
     public let newPasswordErrorLabel = UILabel().then {
@@ -55,6 +56,7 @@ final class ModifyPasswordView: UIView {
         $0.isSecureTextEntry = true
         $0.autocapitalizationType = .none
         $0.autocorrectionType = .no
+        $0.spellCheckingType = .no
     }
     
     public let repeatErrorLabel = UILabel().then {

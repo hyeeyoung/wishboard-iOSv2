@@ -36,6 +36,7 @@ final class FolderBottomSheet: UIView {
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
         $0.clearButtonMode = .always
+        $0.spellCheckingType = .no
     }
     private let textCountLabel = UILabel().then {
         $0.text = "(0/10)자"

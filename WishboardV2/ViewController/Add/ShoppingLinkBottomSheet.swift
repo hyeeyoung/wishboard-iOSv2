@@ -36,6 +36,7 @@ final class ShoppingLinkBottomSheet: UIView {
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
         $0.clearButtonMode = .always
+        $0.spellCheckingType = .no
     }
     private let errorLabel = UILabel().then {
         $0.text = ErrorMessage.shoppingLink
