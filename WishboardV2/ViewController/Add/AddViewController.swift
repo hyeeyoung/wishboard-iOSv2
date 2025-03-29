@@ -383,13 +383,23 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         self.view.endEditing(true)
         
         let actionSheet = UIAlertController(title: "사진 선택", message: nil, preferredStyle: .actionSheet)
-        actionSheet.addAction(UIAlertAction(title: "카메라", style: .default) { _ in
+        
+        let action = UIAlertAction(title: "사진 찍기", style: .default) { _ in
             self.openCamera()
-        })
-        actionSheet.addAction(UIAlertAction(title: "앨범", style: .default) { _ in
+        }
+        action.setValue(UIColor.gray_700, forKey: "titleTextColor")
+        
+        let album = UIAlertAction(title: "사진 보관함", style: .default) { _ in
             self.openPhotoLibrary()
-        })
-        actionSheet.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        }
+        album.setValue(UIColor.gray_700, forKey: "titleTextColor")
+
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        cancel.setValue(UIColor.gray_700, forKey: "titleTextColor")
+
+        actionSheet.addAction(action)
+        actionSheet.addAction(album)
+        actionSheet.addAction(cancel)
         
         present(actionSheet, animated: true)
     }
