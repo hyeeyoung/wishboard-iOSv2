@@ -20,6 +20,7 @@ final class ModifyProfileViewController: UIViewController {
     
     init(_ currentProfileImgUrl: String?, _ currentNickname: String?) {
         modifyProfileView = ModifyProfileView(currentProfileImgUrl, currentNickname)
+        modifyProfileView.viewModel = self.viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -98,6 +99,8 @@ extension ModifyProfileViewController: UIImagePickerControllerDelegate, UINaviga
         
         if let selectedImage = info[.originalImage] as? UIImage {
             modifyProfileView.profileImgView.image = selectedImage
+            viewModel.profileImageChanged = true
+            modifyProfileView.updateLoginButtonState()
         }
     }
     

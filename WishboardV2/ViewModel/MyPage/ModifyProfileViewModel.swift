@@ -12,6 +12,10 @@ import UIKit
 import WBNetwork
 
 final class ModifyProfileViewModel {
+    
+    var profileNameChanged: Bool = false
+    var profileImageChanged: Bool = false
+    
     init() { }
     
     /// 프로필 편집 후 유저 프로필 업데이트

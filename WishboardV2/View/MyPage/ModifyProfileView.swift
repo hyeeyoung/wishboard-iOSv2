@@ -61,6 +61,8 @@ final class ModifyProfileView: UIView {
     
     // MARK: - Initializers
     
+    var prevNameInput: String = ""
+    var viewModel: ModifyProfileViewModel?
     var completeAction: ((UIImage?, String?) -> Void)?
     
     override init(frame: CGRect) {
@@ -81,7 +83,8 @@ final class ModifyProfileView: UIView {
         }
         if let currentNickname = currentNickname, !(currentNickname.isEmpty) {
             self.nameTextField.text = currentNickname
-            self.actionButton.isEnabled = true
+            self.actionButton.isEnabled = false
+            self.prevNameInput = currentNickname
         }
     }
     
@@ -145,7 +148,10 @@ final class ModifyProfileView: UIView {
     // MARK: - Actions
     
     @objc private func textFieldEditingChanged(_ textField: UITextField) {
+        // 유저의 닉네임 입력값이 변경되었다면 버튼 활성화
+        // 유저의 기존 닉네임 그대로라면 버튼 비활성화
         guard let text = textField.text else { return }
+        viewModel?.profileNameChanged = (text != self.prevNameInput)
         updateLoginButtonState()
     }
     
@@ -164,7 +170,11 @@ final class ModifyProfileView: UIView {
             return
         }
         if let nameInput = nameTextField.text {
-            actionButton.isEnabled = !(nameInput.isEmpty)
+            if viewModel!.profileNameChanged || viewModel!.profileImageChanged {
+                actionButton.isEnabled = !(nameInput.isEmpty)
+            } else {
+                actionButton.isEnabled = false
+            }
         } else {
             actionButton.isEnabled = false
         }
