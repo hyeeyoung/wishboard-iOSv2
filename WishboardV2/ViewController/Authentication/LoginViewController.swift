@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Combine
+import Moya
 import Core
 import WBNetwork
 
@@ -82,7 +83,7 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
     
     /// '로그인하기' 버튼 탭 이벤트
     @objc func loginButtonTapped() {
-        Task {
+        _Concurrency.Task {
             do {
                 loginView.loginButton.startAnimation()
                 
@@ -91,10 +92,20 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
                 loginView.loginButton.stopAnimation()
                 self.moveToMain()
             } catch {
-                print("login error")
-                loginView.loginButton.stopAnimation()
-                self.loginView.updateLoginButtonState(isEnabled: false)
-                SnackBar.shared.show(type: .errorMessage)
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    DispatchQueue.main.async {
+                        self.loginView.loginButton.stopAnimation()
+                        self.loginView.updateLoginButtonState(isEnabled: false)
+                        
+                        // 로그인 에러
+                        if response.statusCode == 400 {
+                            SnackBar.shared.show(type: .login)
+                        } else {
+                            SnackBar.shared.show(type: .errorMessage)
+                        }
+                    }
+                }
+                
                 throw error
             }
         }

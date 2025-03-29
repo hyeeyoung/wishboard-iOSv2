@@ -79,7 +79,6 @@ final class LoginViewModel {
             UserManager.tempNickname = data.tempNickname ?? ""
             
         } catch {
-            SnackBar.shared.show(type: .errorMessage)
             throw error
         }
     }
