@@ -21,7 +21,7 @@ final public class HomeToolBar: UIView {
     
     // MARK: - Views
     private let logo = UIImageView().then {
-        $0.image = Image.homeAppLogo
+        $0.image = Image.wishboardLogo
     }
     
     private let alarmButton = UIButton().then {
