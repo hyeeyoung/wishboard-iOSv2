@@ -53,7 +53,7 @@ final class FolderBottomSheet: UIView {
         $0.backgroundColor = .gray_100
         $0.setTitleColor(.gray_300, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitH3.font
-        $0.layer.cornerRadius = 24
+        $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
     }
     
@@ -110,7 +110,7 @@ final class FolderBottomSheet: UIView {
         actionButton.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-34)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(48)
+            make.height.equalTo(50)
         }
         
         textField.snp.makeConstraints { make in

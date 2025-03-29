@@ -253,10 +253,13 @@ final class AddViewController: UIViewController {
             make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
         }
         // Folder Binding
-        folderSelectBottomSheet.onClose = { [weak self] folderId, folderName in
+        folderSelectBottomSheet.selectAction = { [weak self] folderId, folderName in
             self?.hideFolderBottomSheet()
             self?.viewModel.selectedFolderId = folderId
             self?.viewModel.selectedFolder = folderName
+        }
+        folderSelectBottomSheet.onClose = { [weak self] in
+            self?.hideFolderBottomSheet()
         }
         // Shopping Link Binding
         shoppingLinkBottomSheet.onClose = { [weak self] in

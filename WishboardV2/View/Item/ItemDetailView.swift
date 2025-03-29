@@ -174,7 +174,7 @@ final class ItemDetailView: UIView {
 
         actionButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(48)
+            make.height.equalTo(50)
             make.bottom.equalTo(self.safeAreaLayoutGuide)
         }
         

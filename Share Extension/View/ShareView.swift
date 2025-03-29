@@ -70,7 +70,7 @@ final class ShareView: UIView {
         } else {
             $0.setTitle("위시리스트에 추가", for: .normal)
         }
-        $0.layer.cornerRadius = 24
+        $0.layer.cornerRadius = 12
         $0.titleLabel?.font = TypoStyle.SuitH3.font
         $0.isEnabled = false
         $0.clipsToBounds = true
@@ -187,7 +187,7 @@ final class ShareView: UIView {
             make.trailing.equalToSuperview()
         }
         completeButton.snp.makeConstraints { make in
-            make.height.equalTo(48)
+            make.height.equalTo(50)
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(addFolderButton.snp.bottom).offset(16)
             make.bottom.equalToSuperview().offset(-34)

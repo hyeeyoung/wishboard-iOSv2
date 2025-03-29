@@ -102,7 +102,7 @@ final class ItemDetailViewController: UIViewController {
         }
         
         // 폴더 수정
-        bottomSheetView.onClose = { [weak self] folderId, folderName in
+        bottomSheetView.selectAction = { [weak self] folderId, folderName in
             self?.dismissKeyboard()
             self?.hideBottomSheet()
             
@@ -112,6 +112,10 @@ final class ItemDetailViewController: UIViewController {
 //                    NotificationCenter.default.post(name: .ItemUpdated, object: nil)
                 }
             }
+        }
+        bottomSheetView.onClose = { [weak self] in
+            self?.dismissKeyboard()
+            self?.hideBottomSheet()
         }
         
         // fetch FolderList

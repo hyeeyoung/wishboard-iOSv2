@@ -35,7 +35,7 @@ final class OnboardingView: UIView {
         $0.setTitleColor(.gray_700, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitH3.font
         $0.backgroundColor = .green_500
-        $0.layer.cornerRadius = 24
+        $0.layer.cornerRadius = 12
     }
     
     // 이미 계정이 있으신가요? 로그인
@@ -112,7 +112,7 @@ final class OnboardingView: UIView {
             make.bottom.equalToSuperview().offset(-66)
         }
         self.registerButton.snp.makeConstraints { make in
-            make.height.equalTo(48)
+            make.height.equalTo(50)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalTo(loginLabel.snp.top).offset(-16)

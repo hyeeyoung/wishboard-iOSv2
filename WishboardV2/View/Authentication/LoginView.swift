@@ -48,7 +48,7 @@ final class LoginView: UIView {
     
     public lazy var loginButton = AnimatedButton().then {
         $0.setTitle("로그인하기", for: .normal)
-        $0.layer.cornerRadius = 24
+        $0.layer.cornerRadius = 12
         $0.setTitleColor(.gray_300, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitH3.font
         $0.backgroundColor = .gray_100
@@ -122,7 +122,7 @@ final class LoginView: UIView {
         
         loginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(48)
+            make.height.equalTo(50)
             make.bottom.equalTo(forgotPasswordLabel.snp.top).offset(-16)
         }
 

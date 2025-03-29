@@ -51,7 +51,7 @@ final class ModifyProfileView: UIView {
     
     public lazy var actionButton = AnimatedButton().then {
         $0.setTitle("완료", for: .normal)
-        $0.layer.cornerRadius = 24
+        $0.layer.cornerRadius = 12
         $0.setTitleColor(.gray_300, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitH3.font
         $0.backgroundColor = .gray_100
@@ -140,7 +140,7 @@ final class ModifyProfileView: UIView {
         
         actionButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(48)
+            make.height.equalTo(50)
             make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
         }
     }
