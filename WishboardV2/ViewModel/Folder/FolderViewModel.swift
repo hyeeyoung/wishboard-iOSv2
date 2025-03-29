@@ -9,10 +9,12 @@ import Foundation
 import Foundation
 import Combine
 import WBNetwork
+import Moya
 
 final class FolderViewModel {
     @Published var folders: [FolderListResponse] = []
     private var cancellables = Set<AnyCancellable>()
+    public var folderActionFail: ((Int) -> Void)?
 
     // 초기화 시에 폴더 데이터를 불러옵니다.
     init() {
@@ -21,7 +23,7 @@ final class FolderViewModel {
     
     // 폴더 데이터 가져오기
     func fetchFolders() {
-        Task {
+        _Concurrency.Task {
             do {
                 let usecase = GetFoldersUseCase()
                 let data = try await usecase.execute()
@@ -36,9 +38,9 @@ final class FolderViewModel {
     }
     
     // 폴더 이름 변경
-    func renameFolder(id: Int, newName: String) {
+    func renameFolder(id: Int, newName: String) async throws {
         
-        Task {
+//        _Concurrency.Task {
             do {
                 let usecase = ModifyFolderNameUseCase()
                 let _ = try await usecase.execute(folderId: String(id), folderName: newName)
@@ -50,15 +52,18 @@ final class FolderViewModel {
                     }
                 }
             } catch {
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    self.folderActionFail?(response.statusCode)
+                }
                 throw error
             }
-        }
+//        }
         
     }
     
     // 폴더 추가
-    func addFolder(name: String) {
-        Task {
+    func addFolder(name: String) async throws {
+//        _Concurrency.Task {
             do {
                 let usecase = AddFolderNameUseCase()
                 let _ = try await usecase.execute(folderName: name)
@@ -68,14 +73,17 @@ final class FolderViewModel {
                     SnackBar.shared.show(type: .addFolder)
                 }
             } catch {
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    self.folderActionFail?(response.statusCode)
+                }
                 throw error
             }
-        }
+//        }
     }
     
     // 폴더 삭제
     func deleteFolder(id: Int) {
-        Task {
+        _Concurrency.Task {
             do {
                 let usecase = DeleteFolderUseCase()
                 let _ = try await usecase.execute(folderId: String(id))

@@ -52,19 +52,23 @@ class AnimatedButton: UIButton {
     }
     
     func startAnimation() {
-        originalTitle = self.title(for: .normal) // 현재 타이틀을 저장
-        self.setTitle(nil, for: .normal) // 타이틀을 제거하여 숨김 처리
-        
-        animationView.isHidden = false
-        animationView.play()
-        self.isUserInteractionEnabled = false
+        DispatchQueue.main.async {
+            self.originalTitle = self.title(for: .normal) // 현재 타이틀을 저장
+            self.setTitle(nil, for: .normal) // 타이틀을 제거하여 숨김 처리
+            
+            self.animationView.isHidden = false
+            self.animationView.play()
+            self.isUserInteractionEnabled = false
+        }
     }
     
     func stopAnimation() {
-        animationView.stop()
-        animationView.isHidden = true
-        
-        self.setTitle(originalTitle, for: .normal) // 원래 타이틀을 복원
-        self.isUserInteractionEnabled = true
+        DispatchQueue.main.async {
+            self.animationView.stop()
+            self.animationView.isHidden = true
+            
+            self.setTitle(self.originalTitle, for: .normal) // 원래 타이틀을 복원
+            self.isUserInteractionEnabled = true
+        }
     }
 }

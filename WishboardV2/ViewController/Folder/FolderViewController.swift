@@ -144,12 +144,29 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
             self?.dismissKeyboard()
             if let folder = folder, let id = folder.folder_id {
                 // 폴더 이름 수정
-                self?.viewModel.renameFolder(id: id, newName: folderName)
+                Task {
+                    self?.bottomSheetView.actionButton.startAnimation()
+                    try await self?.viewModel.renameFolder(id: id, newName: folderName)
+                    self?.bottomSheetView.actionButton.stopAnimation()
+                    self?.hideBottomSheet()
+                }
             } else {
                 // 새 폴더 추가
-                self?.viewModel.addFolder(name: folderName)
+                Task {
+                    self?.bottomSheetView.actionButton.startAnimation()
+                    try await self?.viewModel.addFolder(name: folderName)
+                    self?.bottomSheetView.actionButton.stopAnimation()
+                    self?.hideBottomSheet()
+                }
             }
-            self?.hideBottomSheet()
+        }
+        
+        // 서버 에러 났을 때 예외처리
+        viewModel.folderActionFail = { [weak self] code in
+            if code == 409 {
+                self?.bottomSheetView.actionButton.stopAnimation()
+                self?.bottomSheetView.displayErrorMessage("동일 이름의 폴더가 있어요!")
+            }
         }
     }
     

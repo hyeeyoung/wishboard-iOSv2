@@ -34,6 +34,8 @@ final class FolderBottomSheet: UIView {
         $0.setLeftPaddingPoints(12)
         $0.clipsToBounds = true
         $0.autocorrectionType = .no
+        $0.autocapitalizationType = .none
+        $0.clearButtonMode = .always
     }
     private let textCountLabel = UILabel().then {
         $0.text = "(0/10)자"
@@ -46,7 +48,7 @@ final class FolderBottomSheet: UIView {
         $0.textColor = .pink_700
         $0.isHidden = true
     }
-    private let actionButton = AnimatedButton().then {
+    public let actionButton = AnimatedButton().then {
         $0.setTitle("추가", for: .normal)
         $0.backgroundColor = .gray_100
         $0.setTitleColor(.gray_300, for: .normal)
@@ -166,8 +168,10 @@ final class FolderBottomSheet: UIView {
     
     // MARK: - Public Methods
     func displayErrorMessage(_ message: String) {
-        errorMessageLabel.text = message
-        errorMessageLabel.isHidden = false
+        DispatchQueue.main.async {
+            self.errorMessageLabel.text = message
+            self.errorMessageLabel.isHidden = false
+        }
     }
     
     func initView() {
@@ -197,9 +201,11 @@ final class FolderBottomSheet: UIView {
         if let folder = folder {
             titleLabel.text = "폴더명 수정"
             textField.text = folder.folder_name
+            actionButton.setTitle("수정", for: .normal)
         } else {
             titleLabel.text = "새 폴더 추가"
             textField.text = ""
+            actionButton.setTitle("추가", for: .normal)
         }
         textCountLabel.text = "\(textField.text?.count ?? 0)/\(maxTextLength) 자"
         errorMessageLabel.isHidden = true
