@@ -27,7 +27,7 @@ final class ShoppingLinkBottomSheet: UIView {
         $0.tintColor = .gray_700
     }
     private let textField = UITextField().then {
-        $0.placeholder = "쇼핑몰 링크를 입력해주세요."
+        $0.placeholder = Placeholder.shoppingLink
         $0.font = TypoStyle.SuitD1.font
         $0.backgroundColor = .gray_50
         $0.layer.cornerRadius = 6
@@ -38,7 +38,7 @@ final class ShoppingLinkBottomSheet: UIView {
         $0.clearButtonMode = .always
     }
     private let errorLabel = UILabel().then {
-        $0.text = "쇼핑몰 링크를 다시 확인해 주세요."
+        $0.text = ErrorMessage.shoppingLink
         $0.font = TypoStyle.SuitD3.font
         $0.textAlignment = .left
         $0.textColor = .pink_700
@@ -187,7 +187,7 @@ final class ShoppingLinkBottomSheet: UIView {
             make.height.equalToSuperview().multipliedBy(0.4)
         }
         
-        titleLabel.text = "쇼핑몰 링크 추가"
+        titleLabel.text = Title.shoppingLinkBottomSheet
         textField.text = prevLink
         self.updateActionButtonState(isEnabled: (prevLink != nil))
     }
