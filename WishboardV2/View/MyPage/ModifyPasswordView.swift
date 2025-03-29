@@ -17,13 +17,13 @@ final class ModifyPasswordView: UIView {
     private let toolbar = ToolBar()
     
     private let newPasswordLabel = UILabel().then {
-        $0.text = "새 비밀번호"
+        $0.text = Title.newPassword
         $0.font = TypoStyle.SuitB3.font
         $0.textColor = .gray_700
     }
     
     public let newPasswordTextField = UITextField().then {
-        $0.placeholder = "새 비밀번호를 입력해 주세요."
+        $0.placeholder = Placeholder.newPassword
         $0.backgroundColor = .gray_50
         $0.font = TypoStyle.SuitD1.font
         $0.layer.cornerRadius = 6
@@ -34,20 +34,20 @@ final class ModifyPasswordView: UIView {
     }
     
     public let newPasswordErrorLabel = UILabel().then {
-        $0.text = "8자리 이상의 영문자, 숫자, 특수 문자 조합으로 입력해주세요."
+        $0.text = ErrorMessage.password
         $0.font = TypoStyle.SuitD3.font
         $0.textColor = .pink_700
         $0.isHidden = true
     }
     
     private let repeatLabel = UILabel().then {
-        $0.text = "새 비밀번호"
+        $0.text = Title.passwordRewrite
         $0.font = TypoStyle.SuitB3.font
         $0.textColor = .gray_700
     }
     
     public let repeatTextField = UITextField().then {
-        $0.placeholder = "새 비밀번호를 다시 입력해 주세요."
+        $0.placeholder = Placeholder.rewritePassword
         $0.backgroundColor = .gray_50
         $0.font = TypoStyle.SuitD1.font
         $0.layer.cornerRadius = 6
@@ -58,7 +58,7 @@ final class ModifyPasswordView: UIView {
     }
     
     public let repeatErrorLabel = UILabel().then {
-        $0.text = "비밀번호가 일치하지 않아요!"
+        $0.text = ErrorMessage.passwordRewrite
         $0.font = TypoStyle.SuitD3.font
         $0.textColor = .pink_700
         $0.isHidden = true
