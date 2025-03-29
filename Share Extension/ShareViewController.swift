@@ -94,7 +94,7 @@ class ShareViewController: UIViewController {
         viewModel.$selectedAlarm
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.shareView.configureNotiDateButton(text ?? Title.notificationItem)
+                self?.shareView.configureNotiDateButton(text ?? "상품 알림 설정하기")
             }
             .store(in: &cancellables)
         

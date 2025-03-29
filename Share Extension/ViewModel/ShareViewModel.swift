@@ -30,6 +30,7 @@ final class ShareViewModel {
                 self.item = data
             }
         } catch {
+            self.item = nil
             throw error
         }
     }

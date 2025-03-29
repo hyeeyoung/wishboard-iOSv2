@@ -19,9 +19,11 @@ class AnimatedButton: UIButton {
             if isEnabled {
                 self.setTitleColor(.gray_700, for: .normal)
                 self.backgroundColor = .green_500
+                self.titleLabel?.font = TypoStyle.SuitH3.font
             } else {
                 self.setTitleColor(.gray_300, for: .normal)
                 self.backgroundColor = .gray_100
+                self.titleLabel?.font = TypoStyle.SuitH3.font
             }
         }
     }
@@ -49,6 +51,8 @@ class AnimatedButton: UIButton {
             make.height.equalToSuperview()
             make.centerY.centerX.equalToSuperview()
         }
+        
+        self.titleLabel?.font = TypoStyle.SuitH3.font
     }
     
     func startAnimation() {
@@ -68,6 +72,7 @@ class AnimatedButton: UIButton {
             self.animationView.isHidden = true
             
             self.setTitle(self.originalTitle, for: .normal) // 원래 타이틀을 복원
+            self.titleLabel?.font = TypoStyle.SuitH3.font
             self.isUserInteractionEnabled = true
         }
     }

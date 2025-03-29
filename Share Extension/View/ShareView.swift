@@ -50,11 +50,12 @@ final class ShareView: UIView {
         var config = UIButton.Configuration.plain()
         var attText: AttributedString!
         
-        attText = AttributedString.init(" 상품 알림 설정하기")
+        attText = AttributedString.init("상품 알림 설정하기")
         attText.font = TypoStyle.SuitD3.font
         attText.foregroundColor = UIColor.gray_700
         config.attributedTitle = attText
         config.image = Image.noti
+        config.imagePadding = 4
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         
         $0.configuration = config
@@ -129,6 +130,22 @@ final class ShareView: UIView {
         backgroundView.addSubview(completeButton)
         
         addSubview(itemImage)
+        
+        itemNameTextField.attributedPlaceholder = NSAttributedString(
+            string: Placeholder.shareItemName,
+            attributes: [
+                .foregroundColor: UIColor.gray_300,
+                .font: TypoStyle.SuitD2.font
+            ]
+        )
+        itemPriceTextField.attributedPlaceholder = NSAttributedString(
+            string: Placeholder.shareItemPrice,
+            attributes: [
+                .foregroundColor: UIColor.gray_300,
+                .font: TypoStyle.MontserratH3.font
+            ]
+        )
+        
     }
     private func setUpConstraint() {
         backgroundView.snp.makeConstraints { make in
@@ -249,7 +266,7 @@ final class ShareView: UIView {
             let formatPrice = FormatManager.shared.strToPrice(numStr: price)
             self.itemPriceTextField.text = formatPrice
         } else {
-            self.itemPriceTextField.text = "0"
+            self.itemPriceTextField.text = nil
         }
     }
     
