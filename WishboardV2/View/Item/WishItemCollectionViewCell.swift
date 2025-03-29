@@ -47,14 +47,14 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        DispatchQueue.main.async {
-            self.itemName.text = nil
-            self.itemPrice.text = nil
-        }
-    }
+//    override func prepareForReuse() {
+//        super.prepareForReuse()
+//        
+//        DispatchQueue.main.async {
+//            self.itemName.text = nil
+//            self.itemPrice.text = nil
+//        }
+//    }
     
     // MARK: - Setup
     private func setupViews() {

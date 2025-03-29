@@ -141,18 +141,18 @@ final class AddViewModel {
         }
     }
     
-    private func convertDateFormat(input: String) -> String? {
+    private func convertDateFormat(input: String) -> String {
         let inputFormatter = DateFormatter()
         inputFormatter.dateFormat = "yy년 MM월 dd일 HH:mm"
         inputFormatter.locale = Locale(identifier: "ko_KR") // 한글 형식 대응
 
         let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm"
 
         if let date = inputFormatter.date(from: input) {
             return outputFormatter.string(from: date)
         } else {
-            return nil
+            return input
         }
     }
 }
