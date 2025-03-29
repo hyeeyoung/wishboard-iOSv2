@@ -35,6 +35,7 @@ final class ShareView: UIView {
         $0.textAlignment = .center
         $0.placeholder = Placeholder.shareItemName
         $0.autocorrectionType = .no
+        $0.textColor = .gray_700
     }
     let itemPriceTextField = UITextField().then{
         $0.borderStyle = .none
@@ -43,6 +44,7 @@ final class ShareView: UIView {
         $0.textAlignment = .center
         $0.placeholder = Placeholder.shareItemPrice
         $0.autocorrectionType = .no
+        $0.textColor = .gray_700
     }
     var setNotificationButton = UIButton().then {
         var config = UIButton.Configuration.plain()
@@ -70,6 +72,7 @@ final class ShareView: UIView {
         $0.layer.cornerRadius = 24
         $0.titleLabel?.font = TypoStyle.SuitH3.font
         $0.isEnabled = false
+        $0.clipsToBounds = true
     }
     
     // MARK: - Properties
@@ -103,8 +106,6 @@ final class ShareView: UIView {
             let flowLayout = UICollectionViewFlowLayout()
             flowLayout.minimumInteritemSpacing = 0
             flowLayout.minimumLineSpacing = 10
-            
-            
             flowLayout.itemSize = CGSize(width: 80, height: 80)
             flowLayout.scrollDirection = .horizontal
             
@@ -112,7 +113,7 @@ final class ShareView: UIView {
             $0.dataSource = dataSourceDelegate
             $0.delegate = dataSourceDelegate
             $0.showsHorizontalScrollIndicator = false
-            
+            $0.backgroundColor = .white
             $0.register(FolderCollectionViewCell.self, forCellWithReuseIdentifier: FolderCollectionViewCell.reuseIdentifier)
         }
     }
@@ -186,11 +187,11 @@ final class ShareView: UIView {
     
     /// Complete 버튼 상태를 업데이트하는 메서드
     public func updateCompleteButtonState() {
-        completeButton.titleLabel?.font = TypoStyle.SuitH3.font
         // 로그인 상태가 아닐 때
         if UserManager.accessToken == nil || UserManager.refreshToken == nil {
             completeButton.setTitle("로그인 후 이용해주세요", for: .normal)
             completeButton.isEnabled = false
+            completeButton.titleLabel?.font = TypoStyle.SuitH3.font
             return
         }
         
@@ -200,6 +201,7 @@ final class ShareView: UIView {
         let shouldEnableButton = isItemNameFilled && isItemPriceFilled
         
         completeButton.isEnabled = shouldEnableButton
+        completeButton.titleLabel?.font = TypoStyle.SuitH3.font
     }
     
     // MARK: - Public Methods
