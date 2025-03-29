@@ -91,15 +91,13 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         } else {
             self.imageView.image = Image.emptyView
         }
-        DispatchQueue.main.async {
-            // item name
-            if let item_name = item.item_name {
-                self.configureItemName(with: item_name)
-            }
-            // item price
-            if let item_price = item.item_price {
-                self.configurePriceLabel(with: item_price)
-            }
+        // item name
+        if let item_name = item.item_name {
+            self.configureItemName(with: item_name)
+        }
+        // item price
+        if let item_price = item.item_price {
+            self.configurePriceLabel(with: item_price)
         }
     }
     
