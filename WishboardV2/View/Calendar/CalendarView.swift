@@ -178,18 +178,20 @@ final class CalendarView: UIView {
         }
 
         emptyView.snp.makeConstraints {
-            $0.edges.equalTo(tableView)
+            $0.top.equalTo(selectedDateLabel.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
 
         emptyImageView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().offset(40)
             $0.width.equalTo(74)
             $0.height.equalTo(75)
+            $0.bottom.equalTo(emptyView.snp.centerY).offset(-10)
         }
 
         emptyLabel.snp.makeConstraints {
-            $0.top.equalTo(emptyImageView.snp.bottom).offset(20)
+            $0.top.equalTo(emptyView.snp.centerY).offset(10)
             $0.centerX.equalToSuperview()
             $0.leading.trailing.equalToSuperview()
         }
