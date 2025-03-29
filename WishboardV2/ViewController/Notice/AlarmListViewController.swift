@@ -93,13 +93,13 @@ extension AlarmListViewController: UITableViewDataSource {
         // Safari 화면 이동
         if let link = item.link, let url = NSURL(string: link) {
             if !(["http", "https"].contains(url.scheme?.lowercased())) {
-                SnackBar.shared.show(type: .errorMessage)
+                SnackBar.shared.show(type: .shoppingLinkNotExist)
                 return
             }
             let linkView: SFSafariViewController = SFSafariViewController(url: url as URL)
             self.present(linkView, animated: true, completion: nil)
         } else {
-            SnackBar.shared.show(type: .ShoppingLink)
+            SnackBar.shared.show(type: .shoppingLinkNotExist)
         }
         
     }

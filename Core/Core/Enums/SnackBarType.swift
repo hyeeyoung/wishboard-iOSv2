@@ -20,7 +20,7 @@ public enum SnackBarType {
     case modifyProfile
     case modifyPassword
     case deleteUser
-    case ShoppingLink
+    case shoppingLinkNotExist
     case failShoppingLink
     case emptyItemContent
     case errorMessage
@@ -40,7 +40,7 @@ public enum SnackBarType {
         case .modifyProfile: return "프로필이 수정되었어요!👩‍🎤"
         case .modifyPassword: return "비밀번호가 변경되었어요!👩‍🎤"
         case .deleteUser: return "탈퇴 완료되었어요. 이용해주셔서 감사합니다!☺️"
-        case .ShoppingLink: return "쇼핑몰 링크를 등록해 주세요!🛍️️"
+        case .shoppingLinkNotExist: return "쇼핑몰 링크를 등록해 주세요!🛍️️"
         case .failShoppingLink: return "앗, 아이템 정보를 불러오지 못했어요🥲"
         case .emptyItemContent: return "앗, 상품명과 가격을 입력해 주세요😁"
         case .errorMessage: return "예상하지 못한 오류가 발생했어요!\n잠시후 다시 시도해주세요."

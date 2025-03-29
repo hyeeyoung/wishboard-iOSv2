@@ -66,7 +66,7 @@ public final class FormatManager {
         guard let startTime = format.date(from: date) else {return "?"}
         guard let endTime = format.date(from: Date().toString()) else {return "?"}
 
-        var diffTime = Int(startTime.timeIntervalSince(endTime))
+        let diffTime = Int(startTime.timeIntervalSince(endTime))
         
         return dDayFormat(diffTime, startTime)
     }
