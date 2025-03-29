@@ -229,15 +229,24 @@ extension MypageViewController: MFMailComposeViewControllerDelegate {
             let appVersion = UserManager.appVersion ?? ""
             
             let messageBody = """
+                            안녕하세요. 위시보드 입니다. 🔫
+                            문의 내용을 하단에 작성해 주세요.
+                            답변은 전송주신 메일로 회신드리겠습니다. 💌
+                            감사합니다. 😉
+                            -------------
+
+
+
+
+
+                            -------------
                             Device: \(deviceModel)
+                            App version: \(appVersion)
                             OS Version: \(osVersion)
-                            App Version: \(appVersion)
-                            ---------------------
-                            문의할 내용을 입력해 주세요.
                             """
             
             compseVC.setToRecipients(["wishboard2022@gmail.com"])
-            compseVC.setSubject("위시보드팀에 문의하기")
+            compseVC.setSubject("위시보드에게 문의하기")
             compseVC.setMessageBody(messageBody, isHTML: false)
             
             self.present(compseVC, animated: true, completion: nil)
