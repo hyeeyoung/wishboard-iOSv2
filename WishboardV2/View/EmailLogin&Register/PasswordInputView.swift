@@ -41,6 +41,7 @@ final class PasswordInputView: UIView {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         textField.spellCheckingType = .no
+        textField.clearButtonMode = .always
         return textField
     }()
     

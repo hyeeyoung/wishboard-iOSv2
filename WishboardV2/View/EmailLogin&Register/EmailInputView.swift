@@ -42,12 +42,13 @@ final class EmailInputView: UIView {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         textField.spellCheckingType = .no
+        textField.clearButtonMode = .always
         return textField
     }()
     
     public let errorLabel: UILabel = {
         let label = UILabel()
-        label.text = "올바른 이메일 형식이 아닙니다."
+        label.text = "이메일 주소를 정확하게 입력해주세요."
         label.textColor = .pink_700
         label.font = TypoStyle.SuitD3.font
         label.isHidden = true
@@ -168,7 +169,7 @@ final class EmailInputView: UIView {
     
     /// 올바른 이메일 형식이 아님
     public func showInvalidEmail() {
-        self.errorLabel.text = "올바른 이메일 형식이 아닙니다."
+        self.errorLabel.text = "이메일 주소를 정확하게 입력해주세요."
         self.errorLabel.isHidden = false
     }
     

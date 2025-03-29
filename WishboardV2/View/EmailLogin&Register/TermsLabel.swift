@@ -38,7 +38,7 @@ class TermsLabel: UILabel {
         if let termsRange = fullText.range(of: termsText) {
             let nsRange = NSRange(termsRange, in: fullText)
             attributedString.addAttributes([
-                .font: TypoStyle.SuitD3.font,
+                .font: TypoStyle.SuitB4.font,
                 .foregroundColor: UIColor.green_700,
                 .underlineStyle: NSUnderlineStyle.single.rawValue
             ], range: nsRange)
@@ -48,7 +48,7 @@ class TermsLabel: UILabel {
         if let privacyRange = fullText.range(of: privacyText) {
             let nsRange = NSRange(privacyRange, in: fullText)
             attributedString.addAttributes([
-                .font: TypoStyle.SuitD3.font,
+                .font: TypoStyle.SuitB4.font,
                 .foregroundColor: UIColor.green_700,
                 .underlineStyle: NSUnderlineStyle.single.rawValue
             ], range: nsRange)
