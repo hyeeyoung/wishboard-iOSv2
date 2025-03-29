@@ -149,21 +149,21 @@ final class AddViewController: UIViewController {
         viewModel.$selectedFolder
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.addView.folderView.updateText(text ?? "폴더 선택")
+                self?.addView.folderView.updateText(text ?? Title.folder)
             }
             .store(in: &cancellables)
         
         viewModel.$selectedAlarm
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.addView.alarmView.updateText(text ?? "상품 일정 알림 선택")
+                self?.addView.alarmView.updateText(text ?? Title.notificationItem)
             }
             .store(in: &cancellables)
         
         viewModel.$selectedLink
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.addView.linkView.updateText(text ?? "쇼핑몰 링크 선택")
+                self?.addView.linkView.updateText(text ?? Title.shoppingMallLink)
             }
             .store(in: &cancellables)
         

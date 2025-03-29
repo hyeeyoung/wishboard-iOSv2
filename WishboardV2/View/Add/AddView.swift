@@ -45,7 +45,7 @@ final class AddView: UIView {
     }
     
     let itemNameTextField = UITextField().then {
-        $0.placeholder = "상품명(필수)"
+        $0.placeholder = Placeholder.uploadItemName
         $0.font = TypoStyle.SuitB3.font
         $0.borderStyle = .none
         $0.setLeftPaddingPoints(16)
@@ -54,7 +54,7 @@ final class AddView: UIView {
     }
     
     let itemPriceTextField = UITextField().then {
-        $0.placeholder = "₩ 가격(필수)"
+        $0.placeholder = Placeholder.uploadItemPrice
         $0.font = TypoStyle.SuitB3.font
         $0.keyboardType = .numberPad
         $0.borderStyle = .none
@@ -62,13 +62,13 @@ final class AddView: UIView {
     }
     
     let folderView = OptionSelectorView().then {
-        $0.configure("폴더")
+        $0.configure(Title.folder)
     }
     let alarmView = OptionSelectorView().then {
-        $0.configure("상품 일정 알림")
+        $0.configure(Title.notificationItem)
     }
     let linkView = OptionSelectorView().then {
-        $0.configure("쇼핑몰 링크")
+        $0.configure(Title.shoppingMallLink)
     }
     
     let memoTextView = UITextView().then {
@@ -82,7 +82,7 @@ final class AddView: UIView {
     }
     
     let memoPlaceholder = UILabel().then {
-        $0.text = "브랜드, 사이즈, 컬러 등 아이템 정보를 적어보세요! 😉"
+        $0.text = Placeholder.uploadItemMemo
         $0.textColor = .gray_200
         $0.font = TypoStyle.SuitB3.font
     }
