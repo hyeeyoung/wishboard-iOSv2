@@ -40,7 +40,7 @@ final class AlertViewController: UIViewController {
     public let emailTextField = UITextField().then {
         $0.layer.cornerRadius = 6
         $0.backgroundColor = .gray_50
-        $0.placeholder = "이메일을 입력하세요"
+        $0.placeholder = Placeholder.email
         $0.isHidden = true // 기본적으로 숨김, 필요 시 표시
         $0.setLeftPaddingPoints(12)
         $0.autocapitalizationType = .none
@@ -50,7 +50,7 @@ final class AlertViewController: UIViewController {
         $0.font = TypoStyle.SuitD1.font
     }
     public let errorMessageLabel = UILabel().then {
-        $0.text = "이메일을 다시 확인해 주세요."
+        $0.text = ErrorMessage.email
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
         $0.textAlignment = .left
         $0.textColor = .pink_700

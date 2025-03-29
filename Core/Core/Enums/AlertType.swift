@@ -27,7 +27,7 @@ public enum AlertType: Equatable {
         case .logout:
             return "로그아웃"
         case .accountDeletion:
-            return "회원탈퇴"
+            return "회원 탈퇴"
         case .deleteItem:
             return "아이템 삭제"
         case .deleteFolder:
@@ -73,7 +73,7 @@ public enum AlertType: Equatable {
         case .logout:
             return ["취소", "로그아웃"]
         case .accountDeletion:
-            return ["취소", "탈퇴하기"]
+            return ["취소", "탈퇴"]
         case .deleteItem, .deleteFolder, .deleteCart:
             return ["취소", "삭제"]
         case .recommendUpdate:
