@@ -118,7 +118,7 @@ extension AlarmListViewController: AlarmToolBarDelegate {
     }
     
     func calendarNaviItemTap() {
-        let nextVC = CalendarViewController()
+        let nextVC = UINavigationController(rootViewController: CalendarViewController())
         nextVC.modalPresentationStyle = .fullScreen
         self.present(nextVC, animated: true, completion: nil)
     }

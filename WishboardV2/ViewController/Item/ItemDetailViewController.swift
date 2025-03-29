@@ -19,14 +19,15 @@ public protocol ItemDetailDelegate {
 final class ItemDetailViewController: UIViewController {
     
     private let detailView = ItemDetailView()
-    private let viewModel: ItemDetailViewModel
+    private let viewModel = ItemDetailViewModel()
     private var cancellables = Set<AnyCancellable>()
     
     private let bottomSheetView = FolderSelectBottomSheet()
     private let backgroundDimView = UIView()
+    private let id: Int
     
-    init(viewModel: ItemDetailViewModel) {
-        self.viewModel = viewModel
+    init(id: Int) {
+        self.id = id
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,6 +44,8 @@ final class ItemDetailViewController: UIViewController {
         setupDetailView()
         setupBackgroundDimView()
         setupBottomSheet()
+        
+        self.viewModel.fetchItemDetail(id: self.id)
         
         viewModel.$item
             .receive(on: RunLoop.main)

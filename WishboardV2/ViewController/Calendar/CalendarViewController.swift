@@ -24,7 +24,35 @@ final class CalendarViewController: UIViewController {
         setupDelegates()
         setupBindings()
         addTargets()
+        fetchDatas()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = true
+        self.tabBarController?.tabBar.isHidden = true
+        super.viewWillAppear(animated)
         
+        Task {
+            do {
+                viewModel.updateCalendarDays()
+                try await viewModel.fetchAlarms()
+            } catch {
+                throw error
+            }
+        }
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .white
+        
+        self.view.addSubview(calendarView)
+        calendarView.snp.makeConstraints { make in
+            make.top.equalTo(self.view.safeAreaLayoutGuide)
+            make.horizontalEdges.bottom.equalToSuperview()
+        }
+    }
+    
+    private func fetchDatas() {
         Task {
             do {
                 viewModel.updateCalendarDays()
@@ -40,22 +68,6 @@ final class CalendarViewController: UIViewController {
                 }
                 throw error
             }
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = true
-        self.tabBarController?.tabBar.isHidden = true
-        super.viewWillAppear(animated)
-    }
-    
-    private func setupUI() {
-        view.backgroundColor = .white
-        
-        self.view.addSubview(calendarView)
-        calendarView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide)
-            make.horizontalEdges.bottom.equalToSuperview()
         }
     }
     
@@ -78,6 +90,7 @@ final class CalendarViewController: UIViewController {
     
     private func setupBindings() {
         viewModel.$currentMonth
+            .receive(on: RunLoop.main)
             .sink { [weak self] newMonth in
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "MMMM yyyy"
@@ -87,6 +100,7 @@ final class CalendarViewController: UIViewController {
             .store(in: &cancellables)
 
         viewModel.$selectedAlarms
+            .receive(on: RunLoop.main)
             .sink { [weak self] alarms in
                 DispatchQueue.main.async {
                     self?.calendarView.setEmptyView(isHidden: !(alarms.isEmpty))
@@ -97,12 +111,14 @@ final class CalendarViewController: UIViewController {
             .store(in: &cancellables)
         
         viewModel.$days
+            .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.calendarView.collectionView.reloadData()
             }
             .store(in: &cancellables)
         
         viewModel.$alarms
+            .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.calendarView.collectionView.reloadData()
             }
@@ -221,7 +237,8 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = viewModel.selectedAlarms[indexPath.row]
-        // TODO: 이동
+        let detailViewController = ItemDetailViewController(id: item.id)
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
 

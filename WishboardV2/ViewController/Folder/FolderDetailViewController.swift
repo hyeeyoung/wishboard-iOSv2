@@ -60,8 +60,9 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
 extension FolderDetailViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = viewModel.items[indexPath.row]
-        let detailViewModel = ItemDetailViewModel(item: item)
-        let detailViewController = ItemDetailViewController(viewModel: detailViewModel)
-        navigationController?.pushViewController(detailViewController, animated: true)
+        if let itemIdx = item.item_id {
+            let detailViewController = ItemDetailViewController(id: itemIdx)
+            navigationController?.pushViewController(detailViewController, animated: true)
+        }
     }
 }

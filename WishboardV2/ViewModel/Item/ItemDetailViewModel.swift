@@ -14,8 +14,8 @@ final class ItemDetailViewModel {
     @Published var item: WishListResponse?
     @Published var folders: [FolderListResponse] = []
 
-    init(item: WishListResponse) {
-        self.item = item
+    init() {
+        
     }
     
     // 아이템 상세 데이터 가져오기

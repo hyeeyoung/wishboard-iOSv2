@@ -49,6 +49,7 @@ class CalendarViewModel: ObservableObject {
             }
             
         } catch {
+            self.alarms = [:]
             throw error
         }
     }
