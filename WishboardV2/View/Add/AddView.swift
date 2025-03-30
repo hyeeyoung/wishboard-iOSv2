@@ -152,6 +152,20 @@ final class AddView: UIView {
             make.leading.trailing.equalTo(memoTextView).inset(16)
             make.top.equalTo(memoTextView).offset(16)
         }
+        
+        itemNameTextField.attributedPlaceholder = NSAttributedString(
+            string: Placeholder.uploadItemName,
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
+        
+        itemPriceTextField.attributedPlaceholder = NSAttributedString(
+            string: Placeholder.uploadItemPrice,
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
 
         let fields: [UIView] = [
             itemNameTextField, itemPriceTextField, folderView, alarmView, linkView, memoTextView

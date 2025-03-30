@@ -136,6 +136,13 @@ final class FolderBottomSheet: UIView {
         // 텍스트 필드와 기타 UI 요소 설정
         textField.delegate = self
         textField.addTarget(self, action: #selector(textFieldEditingChanged(_:)), for: .editingChanged)
+        
+        textField.attributedPlaceholder = NSAttributedString(
+            string: "폴더명을 입력해주세요.",
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
     }
     
     // MARK: - Actions

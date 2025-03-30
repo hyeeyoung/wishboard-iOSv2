@@ -132,6 +132,20 @@ final class LoginView: UIView {
             make.centerX.equalToSuperview()
             make.bottom.equalTo(super.safeAreaLayoutGuide).offset(-16)
         }
+        
+        emailTextField.attributedPlaceholder = NSAttributedString(
+            string: "이메일을 입력해 주세요.",
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
+        
+        passwordTextField.attributedPlaceholder = NSAttributedString(
+            string: "비밀번호를 입력해주세요.",
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
     }
     
     // MARK: - Public Methods

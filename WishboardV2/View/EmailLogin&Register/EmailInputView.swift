@@ -126,6 +126,13 @@ final class EmailInputView: UIView {
             make.height.equalTo(50)
             make.bottom.equalTo(super.safeAreaLayoutGuide).inset(16)
         }
+        
+        emailTextField.attributedPlaceholder = NSAttributedString(
+            string: "이메일을 입력해 주세요.",
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
     }
     
     private func addTargets() {

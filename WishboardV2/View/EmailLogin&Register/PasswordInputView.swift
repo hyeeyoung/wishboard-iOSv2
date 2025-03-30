@@ -161,7 +161,13 @@ final class PasswordInputView: UIView {
             toolBar.configure(title: "이메일로 로그인하기", rightButtonTitle: "2/2단계")
             actionButton.setTitle("로그인하기", for: .normal)
             descriptionLabel.text = "인증코드가 전송되었어요!\n이메일을 확인해주세요."
-            textField.placeholder = "인증코드를 입력해 주세요."
+//            textField.placeholder = "인증코드를 입력해 주세요."
+            textField.attributedPlaceholder = NSAttributedString(
+                string: "인증코드를 입력해 주세요.",
+                attributes: [
+                    .foregroundColor: UIColor.gray_300
+                ]
+            )
             errorLabel.text = "인증코드를 다시 확인해 주세요."
             termsLabel.isHidden = true
             timerLabel.isHidden = false
@@ -171,7 +177,13 @@ final class PasswordInputView: UIView {
             toolBar.configure(title: "가입하기", rightButtonTitle: "2/2단계")
             actionButton.setTitle("가입하기", for: .normal)
             descriptionLabel.text = "마지막 비밀번호 입력 단계예요!\n입력된 비밀번호로 바로 가입되니 신중히 입력해 주세요."
-            textField.placeholder = "비밀번호를 입력해 주세요."
+//            textField.placeholder = "비밀번호를 입력해 주세요."
+            textField.attributedPlaceholder = NSAttributedString(
+                string: "비밀번호를 입력해 주세요.",
+                attributes: [
+                    .foregroundColor: UIColor.gray_300
+                ]
+            )
             errorLabel.text = "8자리 이상의 영문자, 숫자, 특수 문자 조합으로 입력해주세요."
             termsLabel.isHidden = false
             timerLabel.isHidden = true

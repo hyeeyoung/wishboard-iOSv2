@@ -74,6 +74,13 @@ final class ModifyProfileView: UIView {
         
         nameTextField.addTarget(self, action: #selector(textFieldEditingChanged(_:)), for: .editingChanged)
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
+        
+        nameTextField.attributedPlaceholder = NSAttributedString(
+            string: "닉네임을 입력해 주세요.",
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
     }
     
     convenience init(_ currentProfileImgUrl: String?, _ currentNickname: String?) {

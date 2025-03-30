@@ -100,6 +100,13 @@ final class AlertViewController: UIViewController {
         messageLabel.text = customMessage ?? alertType.message
         
         // Email TextField는 회원탈퇴일 경우에만 표시
+        emailTextField.attributedPlaceholder = NSAttributedString(
+            string: Placeholder.email,
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
+        
         if alertType == .accountDeletion {
             emailTextField.isHidden = false
             alertView.addSubview(emailTextField)

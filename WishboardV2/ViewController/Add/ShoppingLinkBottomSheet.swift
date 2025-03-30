@@ -127,6 +127,13 @@ final class ShoppingLinkBottomSheet: UIView {
     private func setupTextField() {
         // 텍스트 필드와 기타 UI 요소 설정
         textField.addTarget(self, action: #selector(textFieldEditingChanged(_:)), for: .editingChanged)
+        
+        textField.attributedPlaceholder = NSAttributedString(
+            string: Placeholder.shoppingLink,
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
     }
     
     // MARK: - Actions

@@ -143,6 +143,20 @@ final class ModifyPasswordView: UIView {
             make.height.equalTo(50)
             make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
         }
+        
+        newPasswordTextField.attributedPlaceholder = NSAttributedString(
+            string: Placeholder.newPassword,
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
+        
+        repeatTextField.attributedPlaceholder = NSAttributedString(
+            string: Placeholder.rewritePassword,
+            attributes: [
+                .foregroundColor: UIColor.gray_300
+            ]
+        )
     }
     
     // MARK: - Public Methods
