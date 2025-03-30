@@ -61,13 +61,15 @@ extension TabBarViewController: UITabBarControllerDelegate {
         guard let viewControllers = self.viewControllers else { return true }
         
         // 현재 선택된 탭을 다시 선택하면 최상단으로 이동
-        if let navController = viewController as? UINavigationController {
-            if let topVC = navController.topViewController as? HomeViewController {
-                topVC.scrollToTop()
-            } else if let topVC = navController.topViewController as? FolderViewController {
-                topVC.scrollToTop()
+        if tabBarController.selectedViewController == viewController {
+            if let navController = viewController as? UINavigationController {
+                if let topVC = navController.topViewController as? HomeViewController {
+                    topVC.scrollToTop()
+                } else if let topVC = navController.topViewController as? FolderViewController {
+                    topVC.scrollToTop()
+                }
+                return true
             }
-            return true
         }
         
         // ADD 버튼을 누르면 새로운 화면 Present
@@ -76,8 +78,6 @@ extension TabBarViewController: UITabBarControllerDelegate {
             addViewController.modalPresentationStyle = .fullScreen
             
             addViewController.confirmAction = { [weak self] in
-//                self?.wishListVC.refreshItems()
-//                self?.folderVC.refreshItems()
                 self?.selectedIndex = 0
             }
             

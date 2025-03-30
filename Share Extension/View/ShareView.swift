@@ -172,6 +172,7 @@ final class ShareView: UIView {
         itemPriceTextField.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(itemNameTextField.snp.bottom).offset(6)
+            make.height.equalTo(16)
         }
         setNotificationButton.snp.makeConstraints { make in
             make.height.equalTo(14)
