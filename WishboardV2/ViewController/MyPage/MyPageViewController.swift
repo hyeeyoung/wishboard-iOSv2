@@ -225,9 +225,9 @@ extension MypageViewController: MFMailComposeViewControllerDelegate {
             let compseVC = MFMailComposeViewController()
             compseVC.mailComposeDelegate = self
             
-            let deviceModel = UserManager.deviceModel ?? ""
-            let osVersion = UserManager.OSVersion ?? ""
-            let appVersion = UserManager.appVersion ?? ""
+            let deviceModel = UIDevice.current.modelName
+            let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+            let osVersion = UIDevice.current.systemVersion
             
             let messageBody = """
                             안녕하세요. 위시보드 입니다. 🔫
