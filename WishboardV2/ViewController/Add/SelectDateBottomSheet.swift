@@ -21,6 +21,7 @@ final class SelectDateBottomSheet: UIView {
         $0.text = "Title"
         $0.font = TypoStyle.SuitH3.font
         $0.textAlignment = .center
+        $0.textColor = .gray_700
     }
     private let closeButton = UIButton(type: .system).then {
         $0.setImage(Image.quit, for: .normal)
@@ -197,6 +198,7 @@ extension SelectDateBottomSheet: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         var label = UILabel()
         if let v = view as? UILabel { label = v }
+        label.textColor = .gray_700
         label.setTypoStyleWithSingleLine(typoStyle: .SuitD2)
         label.textAlignment = .center
         
