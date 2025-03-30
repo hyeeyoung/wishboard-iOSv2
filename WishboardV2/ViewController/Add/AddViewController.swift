@@ -177,7 +177,7 @@ final class AddViewController: UIViewController {
         viewModel.$memo
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.addView.memoPlaceholder.isHidden = (text != nil)
+                self?.addView.memoPlaceholder.isHidden = !(text?.isEmpty ?? true)
                 self?.addView.memoTextView.text = text
             }
             .store(in: &cancellables)
