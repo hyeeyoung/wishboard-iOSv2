@@ -34,7 +34,7 @@ final class EmailInputView: UIView {
     public let emailTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .none
-        textField.placeholder = "이메일을 입력해 주세요."
+        textField.placeholder = Placeholder.email
         textField.keyboardType = .emailAddress
         textField.setLeftPaddingPoints(16)
         textField.layer.cornerRadius = 6
@@ -128,7 +128,7 @@ final class EmailInputView: UIView {
         }
         
         emailTextField.attributedPlaceholder = NSAttributedString(
-            string: "이메일을 입력해 주세요.",
+            string: Placeholder.email,
             attributes: [
                 .foregroundColor: UIColor.gray_300
             ]

@@ -23,7 +23,7 @@ final class LoginView: UIView {
     }
     
     public let emailTextField = UITextField().then {
-        $0.placeholder = "이메일을 입력해 주세요."
+        $0.placeholder = Placeholder.email
         $0.backgroundColor = .gray_50
         $0.font = TypoStyle.SuitD1.font
         $0.layer.cornerRadius = 6
@@ -39,7 +39,7 @@ final class LoginView: UIView {
     }
     
     public let passwordTextField = UITextField().then {
-        $0.placeholder = "비밀번호를 입력해주세요."
+        $0.placeholder = Placeholder.password
         $0.backgroundColor = .gray_50
         $0.font = TypoStyle.SuitD1.font
         $0.layer.cornerRadius = 6
@@ -134,14 +134,14 @@ final class LoginView: UIView {
         }
         
         emailTextField.attributedPlaceholder = NSAttributedString(
-            string: "이메일을 입력해 주세요.",
+            string: Placeholder.email,
             attributes: [
                 .foregroundColor: UIColor.gray_300
             ]
         )
         
         passwordTextField.attributedPlaceholder = NSAttributedString(
-            string: "비밀번호를 입력해주세요.",
+            string: Placeholder.password,
             attributes: [
                 .foregroundColor: UIColor.gray_300
             ]
