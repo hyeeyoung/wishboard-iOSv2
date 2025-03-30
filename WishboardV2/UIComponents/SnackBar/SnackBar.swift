@@ -51,7 +51,7 @@ final class SnackBar {
     // MARK: Methods
     func show(type: SnackBarType) {
         self.type = type
-        
+        self.addSubviewsAndConstraints()
         configure(type)
         performAnimation()
     }
@@ -71,7 +71,12 @@ final class SnackBar {
 
     /// 스낵바의 addSubView
     private func addSubviewsAndConstraints() {
+        
         #if WISHBOARD_APP
+        
+        backgroundView.removeFromSuperview()
+        title.removeFromSuperview()
+        
         let window = UIApplication.shared.keyWindow
         window?.addSubview(self.backgroundView)
         backgroundView.addSubview(title)

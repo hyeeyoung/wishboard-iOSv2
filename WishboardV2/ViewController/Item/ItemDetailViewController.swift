@@ -204,7 +204,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
         addViewController.confirmAction = { [weak self] in
             if let idx = self?.viewModel.item?.item_id {
                 self?.viewModel.fetchItemDetail(id: idx)
-                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
+//                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
             }
         }
         
