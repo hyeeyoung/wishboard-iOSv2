@@ -80,7 +80,6 @@ final class AddViewModel {
             let usecase = AddItemUseCase()
             _ = try await usecase.execute(type: .manual, item: item)
         } catch {
-            SnackBar.shared.show(type: .errorMessage)
             if let moyaError = error as? MoyaError, let response = moyaError.response {
                 if response.statusCode == 400 {
                     print("400 error")
@@ -114,10 +113,9 @@ final class AddViewModel {
             let usecase = ModifyItemUseCase()
             _ = try await usecase.execute(idx: idx, item: item)
         } catch {
-            SnackBar.shared.show(type: .errorMessage)
+//            SnackBar.shared.show(type: .errorMessage)
             if let moyaError = error as? MoyaError, let response = moyaError.response {
                 if response.statusCode == 400 {
-                    print("400 error")
 //                    SnackBar.shared.show(type: .errorMessage)
                 }
             }
@@ -147,7 +145,7 @@ final class AddViewModel {
         inputFormatter.locale = Locale(identifier: "ko_KR") // 한글 형식 대응
 
         let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
         if let date = inputFormatter.date(from: input) {
             return outputFormatter.string(from: date)

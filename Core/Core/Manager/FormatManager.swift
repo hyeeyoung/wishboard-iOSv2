@@ -72,6 +72,9 @@ public final class FormatManager {
     }
     // 상품 일정 디데이 포맷
     public func dDayFormat(_ diffTime: Int, _ date: Date) -> String? {
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "HH시 mm분"
+        
         /*
          - 디데이 당일 오늘 15시 30분
          - 디데이 경과 전 D-6
@@ -79,11 +82,17 @@ public final class FormatManager {
          */
         switch diffTime {
         case 0...86400:
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = "HH시 mm분"
-            let todayTime = dateformatter.string(from: date)
+            let calendar = Calendar.current
+            let timeString = self.formatHourMinute(from: date)
             
-            return "오늘 \(todayTime)"
+            // 24시간 미만이어도 내일 일자라면 내일로 표시 (25.03.30)
+            if calendar.isDateInToday(date) {
+                return "오늘 \(timeString)"
+            } else if calendar.isDateInTomorrow(date) {
+                return "내일 \(timeString)"
+            } else {
+                return timeString
+            }
         case 86400...:
             return "D-\(diffTime / 86400)"
         default:
@@ -93,6 +102,21 @@ public final class FormatManager {
             return "\(todayTime)"
         }
     }
+    
+    private func formatHourMinute(from date: Date) -> String {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute], from: date)
+        
+        let hour = components.hour ?? 0
+        let minute = components.minute ?? 0
+        
+        if minute == 0 {
+            return "\(hour)시"
+        } else {
+            return "\(hour)시 \(minute)분"
+        }
+    }
+    
     // "YY년 MM월 dd일 HH:mm"을 "YYYY-MM-dd HH:mm:ss"로 변환
     // 2022-9-20 1:30
     public func koreanStrToDate(_ str: String) -> String? {

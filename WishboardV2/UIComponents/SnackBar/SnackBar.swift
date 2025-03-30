@@ -48,11 +48,13 @@ final class SnackBar {
     
     
     // MARK: Methods
+    @MainActor
     func show(type: SnackBarType) {
-        self.type = type
-        
-        configure(type)
-        performAnimation()
+        DispatchQueue.main.async {
+            self.type = type
+            self.configure(type)
+            self.performAnimation()
+        }
     }
 
     /// 스낵바 UI 설정
@@ -65,7 +67,9 @@ final class SnackBar {
     /// 스낵바의 문구 내용 설정
     private func configure(_ type: SnackBarType) {
         let message = type.message
-        snackBarLabel.text = message
+        DispatchQueue.main.async {
+            self.snackBarLabel.text = message
+        }
     }
 
     /// 스낵바의 addSubView

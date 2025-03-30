@@ -489,6 +489,9 @@ extension AddViewController: AddToolBarDelegate {
                 
             } catch {
                 lottie.stopAnimation()
+                
+                SnackBar.shared.show(type: .errorMessage)
+                
                 throw error
             }
         }

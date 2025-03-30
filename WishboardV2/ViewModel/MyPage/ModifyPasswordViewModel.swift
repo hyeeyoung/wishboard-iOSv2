@@ -84,7 +84,7 @@ final class ModifyPasswordViewModel {
             let usecase = ModifyPasswordUseCase()
             _ = try await usecase.execute(password: self.password)
         } catch {
-            SnackBar.shared.show(type: .errorMessage)
+            await SnackBar.shared.show(type: .errorMessage)
             throw error
         }
     }
