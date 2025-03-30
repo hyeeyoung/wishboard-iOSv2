@@ -61,7 +61,7 @@ class CalendarCell: UICollectionViewCell {
         dayLabel.text = "\(day)"
         dayLabel.font = isSelected ? TypoStyle.SuitH3.font : TypoStyle.SuitD1.font
         dayLabel.textColor = isCurrentMonth ? .gray_700 : .white
-        stickerView.isHidden = !isToday
+        stickerView.isHidden = (isCurrentMonth ? (!isToday) : true)
         
         alarmBackgroundView.isHidden = !hasAlarm
         alarmBackgroundView.backgroundColor = hasAlarm ? (isCurrentMonth ? .green_200: nil) : nil
