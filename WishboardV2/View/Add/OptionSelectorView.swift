@@ -61,6 +61,7 @@ final class OptionSelectorView: UIView {
     }
     
     @objc private func handleTap() {
+        UIDevice.vibrate()
         onTap?()
     }
     

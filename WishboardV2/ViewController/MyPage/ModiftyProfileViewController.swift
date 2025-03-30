@@ -112,6 +112,7 @@ extension ModifyProfileViewController: UIImagePickerControllerDelegate, UINaviga
 // MARK: - ToolBar Delegate
 extension ModifyProfileViewController: ToolBarDelegate {
     func leftNaviItemTap() {
+        UIDevice.vibrate()
         self.navigationController?.popViewController(animated: true)
     }
 }

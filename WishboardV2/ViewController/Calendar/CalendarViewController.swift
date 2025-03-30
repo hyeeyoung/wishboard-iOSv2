@@ -130,6 +130,7 @@ final class CalendarViewController: UIViewController {
     }
     
     @objc private func quitCalenderView() {
+        UIDevice.vibrate()
         self.dismiss(animated: true)
     }
     
@@ -186,7 +187,7 @@ extension CalendarViewController: UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let selectedDate = viewModel.days[indexPath.item] else { return }
-
+        UIDevice.vibrate()
         let previousSelectedIndex = viewModel.days.firstIndex(where: {
             if let selected = viewModel.selectedDate {
                 return Calendar.current.isDate(selected, inSameDayAs: $0 ?? Date())
@@ -236,6 +237,7 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        UIDevice.vibrate()
         let item = viewModel.selectedAlarms[indexPath.row]
         let detailViewController = ItemDetailViewController(id: item.id)
         navigationController?.pushViewController(detailViewController, animated: true)

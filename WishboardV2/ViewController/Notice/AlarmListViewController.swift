@@ -84,6 +84,7 @@ extension AlarmListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        UIDevice.vibrate()
         tableView.deselectRow(at: indexPath, animated: true)
         
         let item = viewModel.noticeItems[indexPath.row]
@@ -114,10 +115,12 @@ extension AlarmListViewController: UITableViewDelegate {
 
 extension AlarmListViewController: AlarmToolBarDelegate {
     func leftNaviItemTap() {
+        UIDevice.vibrate()
         self.navigationController?.popViewController(animated: true)
     }
     
     func calendarNaviItemTap() {
+        UIDevice.vibrate()
         let nextVC = UINavigationController(rootViewController: CalendarViewController())
         nextVC.modalPresentationStyle = .fullScreen
         self.present(nextVC, animated: true, completion: nil)

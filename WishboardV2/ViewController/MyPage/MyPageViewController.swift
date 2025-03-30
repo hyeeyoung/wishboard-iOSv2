@@ -77,6 +77,7 @@ class MypageViewController: UIViewController {
     }
     
     func didTapEditProfile() {
+        UIDevice.vibrate()
         // 프로필 편집 화면으로 이동
         let profileImgUrl = self.viewModel.user.profileImageUrl
         let nickname = self.viewModel.user.nickname

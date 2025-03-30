@@ -164,6 +164,7 @@ final class ModifyProfileView: UIView {
     }
     
     @objc private func actionButtonTapped() {
+        UIDevice.vibrate()
         var inputData: (UIImage?, String?) = (nil, nil)
         
         // 프로필 이미지 변경

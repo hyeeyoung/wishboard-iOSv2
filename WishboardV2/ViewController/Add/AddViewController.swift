@@ -458,10 +458,12 @@ extension AddViewController: UITextViewDelegate {
 // MARK: - 상단바 Delegate
 extension AddViewController: AddToolBarDelegate {
     func leftItemTap() {
+        UIDevice.vibrate()
         self.dismiss(animated: true)
     }
     
     func rightItemTap() {
+        UIDevice.vibrate()
         let lottie = SpinningLottie()
         Task {
             do {

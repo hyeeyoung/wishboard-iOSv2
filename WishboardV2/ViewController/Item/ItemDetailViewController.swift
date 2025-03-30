@@ -161,11 +161,13 @@ final class ItemDetailViewController: UIViewController {
 
 extension ItemDetailViewController: DetailToolBarDelegate {
     func leftNaviItemTap() {
+        UIDevice.vibrate()
         self.navigationController?.popViewController(animated: true)
     }
     
     /// 아이템 삭제
     func deleteNaviItemTap() {
+        UIDevice.vibrate()
         // 아이템 삭제 알럿창
         let alert = AlertViewController(alertType: .deleteItem)
         alert.buttonHandlers = [
@@ -197,6 +199,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
     /// 아이템 수정
     func modifyNaviItemTap() {
         guard let item = self.viewModel.item else {return}
+        UIDevice.vibrate()
         let addViewController = AddViewController(type: .modify, item: item)
         addViewController.modalPresentationStyle = .fullScreen
         

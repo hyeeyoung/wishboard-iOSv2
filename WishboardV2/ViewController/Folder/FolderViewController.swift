@@ -243,6 +243,7 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = viewModel.folders[indexPath.item]
         guard let folderId = item.folder_id else {return}
+        UIDevice.vibrate()
         
         let folderTitle = item.folder_name ?? ""
         let folderDetailVC = FolderDetailViewController(folderId: String(folderId), folderTitle: folderTitle)
@@ -252,8 +253,7 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
 
 extension FolderViewController: FolderToolBarDelegate {
     func rightNaviItemTap() {
-        print("add folder tap!")
-        
+        UIDevice.vibrate()
         showBottomSheet()
     }
 }

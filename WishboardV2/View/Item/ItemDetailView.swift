@@ -192,10 +192,12 @@ final class ItemDetailView: UIView {
     
     @objc private func actionButtonTapped() {
         guard let item = self.item, let url = item.item_url else { return }
+        UIDevice.vibrate()
         self.linkButtonAction?(url)
     }
     
     @objc private func folderListButtonTapped() {
+        UIDevice.vibrate()
         self.folderListButtonAction?()
     }
     

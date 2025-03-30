@@ -119,6 +119,7 @@ final class AppGuideSheet: UIView {
     }
     
     @objc private func closeButtonTapped() {
+        UIDevice.vibrate()
         onTapped?()
     }
     

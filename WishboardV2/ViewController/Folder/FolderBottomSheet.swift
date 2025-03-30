@@ -155,10 +155,12 @@ final class FolderBottomSheet: UIView {
     }
     
     @objc private func closeButtonTapped() {
+        UIDevice.vibrate()
         onClose?()
     }
     
     @objc private func actionButtonTapped() {
+        UIDevice.vibrate()
         guard let text = textField.text, !text.isEmpty else {
             displayErrorMessage("폴더명을 입력해주세요.")
             return

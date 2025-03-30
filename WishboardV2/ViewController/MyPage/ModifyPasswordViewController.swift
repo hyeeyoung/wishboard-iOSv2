@@ -89,11 +89,13 @@ final class ModifyPasswordViewController: UIViewController, ToolBarDelegate {
     
     // MARK: - Actions
     func leftNaviItemTap() {
+        UIDevice.vibrate()
         navigationController?.popViewController(animated: true)
     }
     
     /// 하단 버튼 탭 이벤트
     @objc func completeButtonTapped() {
+        UIDevice.vibrate()
         Task {
             do {
                 self.view.endEditing(true)

@@ -119,6 +119,7 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = viewModel.items[indexPath.row]
         if let itemIdx = item.item_id {
+            UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
             navigationController?.pushViewController(detailViewController, animated: true)
         }
@@ -127,6 +128,7 @@ extension HomeViewController: UICollectionViewDelegate {
 
 extension HomeViewController: HomeToolBarDelegate {
     func alarmNaviItemTap() {
+        UIDevice.vibrate()
         let nextVC = AlarmListViewController()
         navigationController?.pushViewController(nextVC, animated: true)
     }

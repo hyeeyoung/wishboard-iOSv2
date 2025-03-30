@@ -121,6 +121,7 @@ final class FolderCollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func etcButtonTapped() {
+        UIDevice.vibrate()
         etcButtonAction?()
     }
 }

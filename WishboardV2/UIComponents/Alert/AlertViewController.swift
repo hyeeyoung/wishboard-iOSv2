@@ -216,12 +216,14 @@ final class AlertViewController: UIViewController {
     }
 
     @objc private func buttonTappedWithDismiss(_ sender: UIButton) {
+        UIDevice.vibrate()
         self.dismissAlert {
             self.buttonHandlers[sender.tag](sender)
         }
     }
     
     @objc private func buttonTapped(_ sender: UIButton) {
+        UIDevice.vibrate()
         self.buttonHandlers[sender.tag](sender)
     }
 
