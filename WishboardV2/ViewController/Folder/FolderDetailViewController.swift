@@ -41,6 +41,10 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
         folderView.collectionView.delegate = self
         folderView.toolbar.delegate = self
         viewModel.fetchItems()
+        
+        folderView.refreshAction = { [weak self] in
+            self?.refreshItems()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

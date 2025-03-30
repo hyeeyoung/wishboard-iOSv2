@@ -30,6 +30,8 @@ final class FolderDetailView: UIView {
     // MARK: - Initializers
     
     private var viewModel: FolderDetailViewModel?
+    private let refreshControl = UIRefreshControl()
+    public var refreshAction: (() -> Void)?
     
     override init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
@@ -62,6 +64,7 @@ final class FolderDetailView: UIView {
         addSubview(collectionView)
         addSubview(emptyLabel)
         
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.register(WishItemCollectionViewCell.self, forCellWithReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier)
     }
     
@@ -79,6 +82,10 @@ final class FolderDetailView: UIView {
         }
     }
     
+    @objc private func handleRefresh() {
+        self.refreshAction?()
+    }
+    
     // MARK: - Public Methods
     func configure(with viewModel: FolderDetailViewModel) {
         self.viewModel = viewModel
@@ -86,6 +93,7 @@ final class FolderDetailView: UIView {
         viewModel.$items
             .receive(on: RunLoop.main)
             .sink { [weak self] items in
+                self?.refreshControl.endRefreshing()
                 self?.emptyLabel.isHidden = !(items.isEmpty)
                 self?.collectionView.reloadData()
             }
