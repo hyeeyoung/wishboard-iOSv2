@@ -50,6 +50,9 @@ final class SelectDateBottomSheet: UIView {
     var onClose: (() -> Void)?
     var onActionButtonTap: (((String?, String?, String?, String?)) -> Void)?
     
+    // Picker Properties
+    private let INFINITE_MULTIPLIER = 1000
+    
     // MARK: - Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -162,31 +165,27 @@ extension SelectDateBottomSheet: UIPickerViewDelegate, UIPickerViewDataSource {
          */
         return 5
     }
+    
     /// row 당 아이템 개수
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch component {
-        case 0:
-            return 6
-        case 1:
-            return 90
-        case 2:
-            return 24
-        case 4:
-            return 2
-        default:
-            return 1
+        case 0: return SetNotificationDate.notificationData.count * INFINITE_MULTIPLIER // 무한 스크롤 적용
+        case 1: return SetNotificationDate.dateData.count * INFINITE_MULTIPLIER // 무한 스크롤 적용
+        case 2: return SetNotificationDate.hourData.count * INFINITE_MULTIPLIER // 무한 스크롤 적용
+        case 4: return SetNotificationDate.minuteData.count
+        default: return 1
         }
-        
     }
+    
     /// row 당 아이템 타이틀
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch component {
         case 0:
-            return SetNotificationDate.notificationData[row]
+            return SetNotificationDate.notificationData[row % SetNotificationDate.notificationData.count]
         case 1:
-            return SetNotificationDate.dateData[row]
+            return SetNotificationDate.dateData[row % SetNotificationDate.dateData.count]
         case 2:
-            return SetNotificationDate.hourData[row]
+            return SetNotificationDate.hourData[row % SetNotificationDate.hourData.count]
         case 4:
             return SetNotificationDate.minuteData[row]
         default:
@@ -203,11 +202,11 @@ extension SelectDateBottomSheet: UIPickerViewDelegate, UIPickerViewDataSource {
         
         switch component {
         case 0:
-            label.text = SetNotificationDate.notificationData[row]
+            label.text = SetNotificationDate.notificationData[row % SetNotificationDate.notificationData.count]
         case 1:
-            label.text = SetNotificationDate.dateData[row]
+            label.text = SetNotificationDate.dateData[row % SetNotificationDate.dateData.count]
         case 2:
-            label.text = SetNotificationDate.hourData[row]
+            label.text = SetNotificationDate.hourData[row % SetNotificationDate.hourData.count]
         case 4:
             label.text = SetNotificationDate.minuteData[row]
         default:
@@ -240,11 +239,11 @@ extension SelectDateBottomSheet: UIPickerViewDelegate, UIPickerViewDataSource {
         
         switch component {
             // type
-        case 0: self.selectedData.0 = SetNotificationDate.notificationData[row]
+        case 0: self.selectedData.0 = SetNotificationDate.notificationData[row % SetNotificationDate.notificationData.count]
             // date
-        case 1: self.selectedData.1 = SetNotificationDate.dateData[row]
+        case 1: self.selectedData.1 = SetNotificationDate.dateData[row % SetNotificationDate.dateData.count]
             // hour
-        case 2: self.selectedData.2 = SetNotificationDate.hourData[row]
+        case 2: self.selectedData.2 = SetNotificationDate.hourData[row % SetNotificationDate.hourData.count]
             // minute
         case 4: self.selectedData.3 = SetNotificationDate.minuteData[row]
         default: break
