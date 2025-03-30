@@ -1532,6 +1532,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WishboardV2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "위시보드";
+				INFOPLIST_KEY_NSCameraUsageDescription = "상품 등록을 위해 카메라 접근 권한이 필요합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "상품 등록을 위해 앨범 접근 권한이 필요합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "상품 등록을 위해 앨범 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -1568,6 +1571,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WishboardV2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "위시보드";
+				INFOPLIST_KEY_NSCameraUsageDescription = "상품 등록을 위해 카메라 접근 권한이 필요합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "상품 등록을 위해 앨범 접근 권한이 필요합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "상품 등록을 위해 앨범 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

@@ -9,6 +9,8 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>상품 알림을 위해 알림 권한이 필요합니다.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SUIT-Bold.ttf</string>
