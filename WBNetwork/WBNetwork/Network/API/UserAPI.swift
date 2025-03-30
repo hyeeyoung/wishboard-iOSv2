@@ -90,20 +90,18 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
     }
     
     func makeMultipartFormData(profileImg: Data?, nickname: String?) -> [Moya.MultipartFormData] {
+        var formData: [Moya.MultipartFormData] = []
         
-        var nameData: MultipartFormData?
+        if let imageData = profileImg {
+            let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "profile_img", fileName: "profile.jpeg", mimeType: "image/jpeg")
+            formData.append(imageMultipartFormData)
+        }
+        
         if let nickname = nickname {
-            nameData = MultipartFormData(provider: .data(nickname.data(using: String.Encoding.utf8) ?? Data()), name: "nickname")
+            let nameData = MultipartFormData(provider: .data(nickname.data(using: String.Encoding.utf8) ?? Data()), name: "nickname")
+            formData.append(nameData)
         }
 
-        let imageData = profileImg ?? Data()
-        let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "profile_img", fileName: "profile.jpeg", mimeType: "image/jpeg")
-       
-       var formData: [Moya.MultipartFormData] = [imageMultipartFormData]
-       if let nameData = nameData {
-           formData.append(nameData)
-       }
-       
        return formData
    }
 }
