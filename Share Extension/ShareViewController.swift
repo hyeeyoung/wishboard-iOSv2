@@ -71,17 +71,29 @@ class ShareViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    /// URL 가져오기
     private func getSharedUrl(completion: @escaping(String) -> Void) {
-        // 공유된 URL 가져오기
         if let item = self.extensionContext?.inputItems.first as? NSExtensionItem {
             if let attachment = item.attachments?.first {
                 if attachment.hasItemConformingToTypeIdentifier(kUTTypeURL as String) {
                     attachment.loadItem(forTypeIdentifier: kUTTypeURL as String, options: nil) { (urlItem, error) in
-                        if let url = urlItem as? URL {
-                            DispatchQueue.main.async {
-                                print("Shared URL: \(url)")
+                        DispatchQueue.main.async {
+                            if let url = urlItem as? URL {
+                                print("✅ Shared URL (as URL): \(url)")
                                 self.link = url.absoluteString
                                 completion(self.link ?? "")
+                            } else if let urlString = urlItem as? String {
+                                print("🌀 Shared URL (as String): \(urlString)")
+                                // 이중 인코딩 복원 시도
+                                let decodedOnce = urlString.removingPercentEncoding ?? urlString
+                                let decodedTwice = decodedOnce.removingPercentEncoding ?? decodedOnce
+                                
+                                print("🛠 Final Decoded URL: \(decodedTwice)")
+                                self.link = decodedTwice
+                                completion(decodedTwice)
+                            } else {
+                                print("❌ Unknown URL type received.")
+                                completion("")
                             }
                         }
                     }
