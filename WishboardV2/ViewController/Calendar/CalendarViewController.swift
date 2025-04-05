@@ -16,6 +16,11 @@ final class CalendarViewController: UIViewController {
     private var calendarView = CalendarView()
     private var cancellables = Set<AnyCancellable>()
     
+    // 첫 진입 시에 로직이 다르기 때문에 플래그 분리
+    // 첫 진입 시엔 API 호출 및 오늘날짜 선택
+    // 다른 경우에는 API 호출만 진행
+    private var isFirstLoad = true
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +29,10 @@ final class CalendarViewController: UIViewController {
         setupDelegates()
         setupBindings()
         addTargets()
-        fetchDatas()
+        
+        if isFirstLoad {
+            fetchDatas()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,6 +40,7 @@ final class CalendarViewController: UIViewController {
         self.tabBarController?.tabBar.isHidden = true
         super.viewWillAppear(animated)
         
+        if isFirstLoad {return}
         Task {
             do {
                 viewModel.updateCalendarDays()
@@ -57,6 +66,7 @@ final class CalendarViewController: UIViewController {
             do {
                 viewModel.updateCalendarDays()
                 try await viewModel.fetchAlarms()
+                self.isFirstLoad = false
                 // 첫 진입 시 오늘날짜 선택
                 DispatchQueue.main.async {
                     self.selectToday()
