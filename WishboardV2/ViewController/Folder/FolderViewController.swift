@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Combine
 import WBNetwork
+import Moya
 
 final class FolderViewController: UIViewController, ItemDetailDelegate {
     private let folderView = FolderView()
@@ -151,31 +152,44 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         }
         
         bottomSheetView.onActionButtonTap = { [weak self] folderName, folder in
-            self?.dismissKeyboard()
             if let folder = folder, let id = folder.folder_id {
                 // 폴더 이름 수정
-                Task {
-                    self?.bottomSheetView.actionButton.startAnimation()
-                    try await self?.viewModel.renameFolder(id: id, newName: folderName)
-                    self?.bottomSheetView.actionButton.stopAnimation()
-                    self?.hideBottomSheet()
+                _Concurrency.Task {
+                    do {
+                        self?.bottomSheetView.actionButton.startAnimation()
+                        try await self?.viewModel.renameFolder(id: id, newName: folderName)
+                        self?.dismissKeyboard()
+                        self?.bottomSheetView.actionButton.stopAnimation()
+                        self?.hideBottomSheet()
+                    } catch {
+                        if let moyaError = error as? MoyaError, let response = moyaError.response {
+                            if response.statusCode == 409 {
+                                self?.bottomSheetView.actionButton.stopAnimation()
+                                self?.bottomSheetView.displayErrorMessage("동일 이름의 폴더가 있어요!")
+                            }
+                        }
+                        throw error
+                    }
                 }
             } else {
                 // 새 폴더 추가
-                Task {
-                    self?.bottomSheetView.actionButton.startAnimation()
-                    try await self?.viewModel.addFolder(name: folderName)
-                    self?.bottomSheetView.actionButton.stopAnimation()
-                    self?.hideBottomSheet()
+                _Concurrency.Task {
+                    do {
+                        self?.bottomSheetView.actionButton.startAnimation()
+                        try await self?.viewModel.addFolder(name: folderName)
+                        self?.dismissKeyboard()
+                        self?.bottomSheetView.actionButton.stopAnimation()
+                        self?.hideBottomSheet()
+                    } catch {
+                        if let moyaError = error as? MoyaError, let response = moyaError.response {
+                            if response.statusCode == 409 {
+                                self?.bottomSheetView.actionButton.stopAnimation()
+                                self?.bottomSheetView.displayErrorMessage("동일 이름의 폴더가 있어요!")
+                            }
+                        }
+                        throw error
+                    }
                 }
-            }
-        }
-        
-        // 서버 에러 났을 때 예외처리
-        viewModel.folderActionFail = { [weak self] code in
-            if code == 409 {
-                self?.bottomSheetView.actionButton.stopAnimation()
-                self?.bottomSheetView.displayErrorMessage("동일 이름의 폴더가 있어요!")
             }
         }
     }

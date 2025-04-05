@@ -39,46 +39,40 @@ final class FolderViewModel {
     
     // 폴더 이름 변경
     func renameFolder(id: Int, newName: String) async throws {
-        
-//        _Concurrency.Task {
-            do {
-                let usecase = ModifyFolderNameUseCase()
-                let _ = try await usecase.execute(folderId: String(id), folderName: newName)
-                
-                DispatchQueue.main.async {
-                    if let index = self.folders.firstIndex(where: { $0.folder_id == id }) {
-                        self.folders[index].folder_name = newName
-                        SnackBar.shared.show(type: .modifyFolder)
-                    }
+        do {
+            let usecase = ModifyFolderNameUseCase()
+            let _ = try await usecase.execute(folderId: String(id), folderName: newName)
+            
+            DispatchQueue.main.async {
+                if let index = self.folders.firstIndex(where: { $0.folder_id == id }) {
+                    self.folders[index].folder_name = newName
+                    SnackBar.shared.show(type: .modifyFolder)
                 }
-            } catch {
-                if let moyaError = error as? MoyaError, let response = moyaError.response {
-                    self.folderActionFail?(response.statusCode)
-                }
-                throw error
             }
-//        }
-        
+        } catch {
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                self.folderActionFail?(response.statusCode)
+            }
+            throw error
+        }
     }
     
     // 폴더 추가
     func addFolder(name: String) async throws {
-//        _Concurrency.Task {
-            do {
-                let usecase = AddFolderNameUseCase()
-                let _ = try await usecase.execute(folderName: name)
-                
-                self.fetchFolders()
-                DispatchQueue.main.async {
-                    SnackBar.shared.show(type: .addFolder)
-                }
-            } catch {
-                if let moyaError = error as? MoyaError, let response = moyaError.response {
-                    self.folderActionFail?(response.statusCode)
-                }
-                throw error
+        do {
+            let usecase = AddFolderNameUseCase()
+            let _ = try await usecase.execute(folderName: name)
+            
+            self.fetchFolders()
+            DispatchQueue.main.async {
+                SnackBar.shared.show(type: .addFolder)
             }
-//        }
+        } catch {
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                self.folderActionFail?(response.statusCode)
+            }
+            throw error
+        }
     }
     
     // 폴더 삭제
