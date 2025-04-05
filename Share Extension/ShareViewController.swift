@@ -41,6 +41,8 @@ class ShareViewController: UIViewController {
                     try await self?.viewModel.fetchItem(link: url)
                 } catch {
                     // 파싱 실패 시 스낵바 노출
+                    // 미로그인 상태에서는 스낵바 미노출
+                    if UserManager.accessToken == nil || UserManager.refreshToken == nil { return }
                     SnackBar(in: self).show(type: .failShoppingLink)
                     throw error
                 }
