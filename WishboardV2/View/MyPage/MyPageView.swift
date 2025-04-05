@@ -89,6 +89,7 @@ extension MypageView: UITableViewDataSource, UITableViewDelegate {
         case 0, 7:
             cell.selectionStyle = .none
         default:
+            cell.selectionStyle = .default
             break
         }
         
