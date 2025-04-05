@@ -35,7 +35,7 @@
 		235ABA102C8C712900763900 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235ABA0F2C8C712900763900 /* CalendarView.swift */; };
 		235ABA132C8C716500763900 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235ABA122C8C716500763900 /* CalendarViewModel.swift */; };
 		23611C922D81AA67003606DE /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
-		23626D5B2D7B0CEC000A144A /* AppGuideSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5A2D7B0CEC000A144A /* AppGuideSheet.swift */; };
+		23626D5B2D7B0CEC000A144A /* AppGuideSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5A2D7B0CEC000A144A /* AppGuideSheetView.swift */; };
 		23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */; };
 		23626D602D7B17B1000A144A /* AppGuideCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */; };
 		236ED4D02C6E37BB000EA85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 236ED4CF2C6E37BB000EA85B /* GoogleService-Info.plist */; };
@@ -246,7 +246,7 @@
 		235ABA0C2C8C70D900763900 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		235ABA0F2C8C712900763900 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		235ABA122C8C716500763900 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
-		23626D5A2D7B0CEC000A144A /* AppGuideSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideSheet.swift; sourceTree = "<group>"; };
+		23626D5A2D7B0CEC000A144A /* AppGuideSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideSheetView.swift; sourceTree = "<group>"; };
 		23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideSheetViewController.swift; sourceTree = "<group>"; };
 		23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideCollectionViewCell.swift; sourceTree = "<group>"; };
 		236ED4CE2C6E3515000EA85B /* WishboardV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WishboardV2.entitlements; sourceTree = "<group>"; };
@@ -469,7 +469,7 @@
 			isa = PBXGroup;
 			children = (
 				23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */,
-				23626D5A2D7B0CEC000A144A /* AppGuideSheet.swift */,
+				23626D5A2D7B0CEC000A144A /* AppGuideSheetView.swift */,
 				23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */,
 			);
 			path = AppGuideSheet;
@@ -1232,7 +1232,7 @@
 				23CBF49A2C5514510061D22F /* AppDelegate.swift in Sources */,
 				23B82AA12D786C0600EF2194 /* PasswordInputViewModel.swift in Sources */,
 				23B82AA32D7870AC00EF2194 /* TermsLabel.swift in Sources */,
-				23626D5B2D7B0CEC000A144A /* AppGuideSheet.swift in Sources */,
+				23626D5B2D7B0CEC000A144A /* AppGuideSheetView.swift in Sources */,
 				23798B712C8C253700F6DA90 /* ModifyPasswordView.swift in Sources */,
 				23CB0DD42C79E2910053EB40 /* ProfileHeaderView.swift in Sources */,
 				23CBF4D12C55160C0061D22F /* OnboardingView.swift in Sources */,

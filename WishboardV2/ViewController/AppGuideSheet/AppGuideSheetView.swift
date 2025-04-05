@@ -20,7 +20,7 @@ struct GuideData {
     var description: String
 }
 
-final class AppGuideSheet: UIView {
+final class AppGuideSheetView: UIView {
     
     // MARK: - UI Components
     
@@ -37,6 +37,7 @@ final class AppGuideSheet: UIView {
         $0.tintColor = .gray_700
         $0.setTitle("네! 알겠어요", for: .normal)
         $0.setTitleColor(.white, for: .normal)
+        $0.setTitleColor(.gray_300, for: .disabled)
         $0.titleLabel?.font = TypoStyle.SuitH3.font
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
@@ -81,6 +82,7 @@ final class AppGuideSheet: UIView {
         
         setupView()
         setupConstraints()
+        updateCTAButton(false)
     }
     
     required init?(coder: NSCoder) {
@@ -123,6 +125,10 @@ final class AppGuideSheet: UIView {
         onTapped?()
     }
     
+    private func updateCTAButton(_ enabled: Bool) {
+        self.ctaButton.isEnabled = enabled
+        self.ctaButton.backgroundColor = enabled ? .gray_700 : .gray_100
+    }
     
     // MARK: - Public Methods
     
@@ -135,7 +141,7 @@ final class AppGuideSheet: UIView {
 }
 
 // MARK: - CollectionView Delegate
-extension AppGuideSheet: UICollectionViewDelegate, UICollectionViewDataSource {
+extension AppGuideSheetView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.guideData.count
     }
@@ -152,5 +158,8 @@ extension AppGuideSheet: UICollectionViewDelegate, UICollectionViewDataSource {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageIndex = Int(round(scrollView.contentOffset.x / scrollView.frame.width))
         pageControl.currentPage = pageIndex
+        
+        // 마지막 페이지가 아니라면 하단버튼 비활성화
+        self.updateCTAButton(pageIndex == 2)
     }
 }

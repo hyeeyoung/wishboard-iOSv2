@@ -13,7 +13,7 @@ import Core
 final class AppGuideSheetViewController: UIViewController {
 
     private let backgroundDimView = UIView()
-    private let appGuideSheet = AppGuideSheet()
+    private let appGuideSheet = AppGuideSheetView()
 
     var onDismiss: (() -> Void)?
 
