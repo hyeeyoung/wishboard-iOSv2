@@ -118,7 +118,7 @@ final class AddView: UIView {
         contentView.addSubview(stackView)
         memoTextView.addSubview(memoPlaceholder)
         
-        toolBar.configure(title: "아이템 추가")
+        toolBar.configure(title: Title.addItem)
         
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(toolBar.snp.bottom)

@@ -62,6 +62,8 @@ final class AddViewController: UIViewController {
     
     /// 수정 모드라면 뷰모델에 데이터 삽입
     private func setModifyItemData() {
+        self.addView.toolBar.configure(title: Title.modifyItem)
+        
         self.addView.itemNameTextField.text = self.item?.item_name ?? ""
         self.addView.itemPriceTextField.text = self.item?.item_price ?? "0"
         
