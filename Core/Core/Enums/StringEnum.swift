@@ -123,14 +123,13 @@ public enum Button {
     // MARK: Item
     public static let item = "아이템 불러오기"
     public static let addToWishList = "위시리스트에 추가"
-    
     public static let complete = "완료"
     public static let next = "다음"
     public static let save = "저장"
     public static let add = "추가"
     public static let modify = "수정"
-    
     public static let howTo = "네! 알겠어요"
+    public static let setNoti = "상품 알림 설정하기"
 }
 
 public enum EmptyMessage {

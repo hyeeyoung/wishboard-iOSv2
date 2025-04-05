@@ -106,7 +106,7 @@ class ShareViewController: UIViewController {
         viewModel.$selectedAlarm
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.shareView.configureNotiDateButton(text ?? "상품 알림 설정하기")
+                self?.shareView.configureNotiDateButton(text ?? Button.setNoti)
             }
             .store(in: &cancellables)
         
@@ -116,6 +116,10 @@ class ShareViewController: UIViewController {
                 self?.shareView.updateCompleteButtonState()
             }
             .store(in: &cancellables)
+        
+        shareView.clearNotiAction = { [weak self] in
+            self?.viewModel.selectedAlarm = nil
+        }
     }
     
     private func setupBackgroundDimView() {

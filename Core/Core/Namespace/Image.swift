@@ -44,6 +44,7 @@ public enum Image{
     // noti
     public static let noti = UIImage(named: "ic_noti")!
     public static let notiLarge = UIImage(named: "noti_large")!
+    public static let notiClear = UIImage(named: "noti_clear")!
     
     public static let imageBackground = UIImage(named: "image_background")!
     

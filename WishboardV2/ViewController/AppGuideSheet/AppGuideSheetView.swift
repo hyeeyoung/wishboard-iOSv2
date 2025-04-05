@@ -35,7 +35,7 @@ final class AppGuideSheetView: UIView {
     
     private let ctaButton = UIButton(type: .system).then {
         $0.tintColor = .gray_700
-        $0.setTitle("네! 알겠어요", for: .normal)
+        $0.setTitle(Button.howTo, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.setTitleColor(.gray_300, for: .disabled)
         $0.titleLabel?.font = TypoStyle.SuitH3.font

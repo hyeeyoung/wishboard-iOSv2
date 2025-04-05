@@ -52,7 +52,7 @@ final class ShareView: UIView {
         var config = UIButton.Configuration.plain()
         var attText: AttributedString!
         
-        attText = AttributedString.init("상품 알림 설정하기")
+        attText = AttributedString.init(Button.setNoti)
         attText.font = TypoStyle.SuitD3.font
         attText.foregroundColor = UIColor.gray_700
         config.attributedTitle = attText
@@ -61,6 +61,11 @@ final class ShareView: UIView {
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         
         $0.configuration = config
+    }
+    let clearNotiButton = UIImageView().then {
+        $0.image = Image.notiClear
+        $0.isHidden = true
+        $0.isUserInteractionEnabled = true
     }
     let addFolderButton = UIButton().then{
         $0.setImage(Image.addFolder, for: .normal)
@@ -81,6 +86,7 @@ final class ShareView: UIView {
     // MARK: - Properties
     private var viewModel: ShareViewModel?
     var folderCollectionView: UICollectionView!
+    public var clearNotiAction: (() -> Void)?
     public var selectedFolderId: Int? {
         didSet {
             DispatchQueue.main.async {
@@ -98,6 +104,7 @@ final class ShareView: UIView {
         self.setUpView()
         self.setUpConstraint()
         self.setupTextFieldDelegates()
+        self.addTargets()
     }
     
     required init?(coder: NSCoder) {
@@ -127,6 +134,7 @@ final class ShareView: UIView {
         backgroundView.addSubview(itemNameTextField)
         backgroundView.addSubview(itemPriceTextField)
         backgroundView.addSubview(setNotificationButton)
+        backgroundView.addSubview(clearNotiButton)
         backgroundView.addSubview(addFolderButton)
         backgroundView.addSubview(folderCollectionView)
         backgroundView.addSubview(completeButton)
@@ -179,6 +187,12 @@ final class ShareView: UIView {
             make.centerX.equalToSuperview()
             make.top.equalTo(itemPriceTextField.snp.bottom).offset(16)
         }
+        clearNotiButton.snp.makeConstraints { make in
+            make.leading.equalTo(setNotificationButton.snp.trailing).offset(2)
+            make.width.height.equalTo(14)
+            make.centerY.equalTo(setNotificationButton)
+            make.trailing.lessThanOrEqualToSuperview().offset(-16)
+        }
         addFolderButton.snp.makeConstraints { make in
             make.width.height.equalTo(80)
             make.leading.equalToSuperview().offset(16)
@@ -195,6 +209,11 @@ final class ShareView: UIView {
             make.top.equalTo(addFolderButton.snp.bottom).offset(16)
             make.bottom.equalToSuperview().offset(-34)
         }
+    }
+    
+    private func addTargets() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(clearNotiButtonTapped))
+        clearNotiButton.addGestureRecognizer(tapGesture)
     }
     
     private func setupTextFieldDelegates() {
@@ -282,6 +301,12 @@ final class ShareView: UIView {
             config.attributedTitle = newTitle
             setNotificationButton.configuration = config
         }
+        
+        self.clearNotiButton.isHidden = (date == Button.setNoti)
+    }
+    
+    @objc private func clearNotiButtonTapped() {
+        self.clearNotiAction?()
     }
 }
 
