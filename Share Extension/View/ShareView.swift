@@ -214,10 +214,12 @@ final class ShareView: UIView {
     private func addTargets() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(clearNotiButtonTapped))
         clearNotiButton.addGestureRecognizer(tapGesture)
+        
+        self.itemNameTextField.addTarget(self, action: #selector(itemNameTextFieldEditing(_:)), for: .editingChanged)
     }
     
     private func setupTextFieldDelegates() {
-        itemNameTextField.delegate = self
+//        itemNameTextField.delegate = self
         itemPriceTextField.delegate = self
         
         // 초기 상태 확인
@@ -312,6 +314,10 @@ final class ShareView: UIView {
     @objc private func clearNotiButtonTapped() {
         self.clearNotiAction?()
     }
+    
+    @objc private func itemNameTextFieldEditing(_ sender: UITextField) {
+        self.updateCompleteButtonState()
+    }
 }
 
 // MARK: - CollecionView Delegate
@@ -369,13 +375,8 @@ extension ShareView: UITextFieldDelegate {
                 self?.updateCompleteButtonState()
             }
             return false
-        } else {
-            // 입력이 발생할 때마다 호출되며, 입력이 완료된 후 button 상태를 업데이트
-            DispatchQueue.main.async { [weak self] in
-                self?.updateCompleteButtonState()
-            }
-            return true
         }
+        return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
