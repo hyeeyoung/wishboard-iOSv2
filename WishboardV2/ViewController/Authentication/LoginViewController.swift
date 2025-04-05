@@ -85,6 +85,7 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
     @objc func loginButtonTapped() {
         _Concurrency.Task {
             do {
+                self.view.endEditing(true)
                 loginView.loginButton.startAnimation()
                 
                 try await viewModel.login()
@@ -95,7 +96,7 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
                 if let moyaError = error as? MoyaError, let response = moyaError.response {
                     DispatchQueue.main.async {
                         self.loginView.loginButton.stopAnimation()
-                        self.loginView.updateLoginButtonState(isEnabled: false)
+                        self.loginView.updateLoginButtonState(isEnabled: true)
                         
                         // 로그인 에러
                         if response.statusCode == 400 {
