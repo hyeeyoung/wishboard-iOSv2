@@ -12,4 +12,5 @@ extension Foundation.Notification.Name {
     public static let ReceivedNetworkError = Foundation.Notification.Name("didReceiveUnauthorizedError")
     public static let ShowSnackBar = Foundation.Notification.Name("ShowSnackBar")
     public static let ItemUpdated = Foundation.Notification.Name("ItemUpdated")
+    public static let NetworkStatusChanged = Foundation.Notification.Name("NetworkStatusChanged")
 }

@@ -50,10 +50,19 @@ final class SnackBar {
     
     // MARK: Methods
     func show(type: SnackBarType) {
+        // 이미 스낵바가 띄워져있다면 return
+        if backgroundView.alpha == 1.0 { return }
+        
         self.type = type
         self.addSubviewsAndConstraints()
         configure(type)
-        performAnimation()
+        
+        // 네트워크 체킹 스낵바와 애니메이션이 다름
+        if type == .networkCheck {
+            performNetworkCheckingAnimation()
+        } else {
+            performAnimation()
+        }
     }
 
     /// 스낵바 UI 설정
@@ -140,5 +149,34 @@ final class SnackBar {
             }
         }
     }
+    
+    /// 네트워크 체킹 스낵바 - 별도로 애니메이팅
+    private func performNetworkCheckingAnimation() {
+        DispatchQueue.main.async {
+            // ✅ 1) 초기 상태 유지 (이미 아래에 위치함)
+            self.backgroundView.alpha = 0.0
+            
+            // ✅ 2) 올라오는 애니메이션 (0.5초)
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
+                self.backgroundView.transform = CGAffineTransform(translationX: 0, y: self.TRANSLATION_Y)
+                self.backgroundView.alpha = 1.0
+                self.backgroundView.superview?.layoutIfNeeded()
+            }) { _ in
+                
+            }
+        }
+    }
 
+    public func hideNetworkCheckingSnackBar() {
+        DispatchQueue.main.async {
+            // 내려가는 애니메이션 (0.5초)
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+                self.backgroundView.transform = .identity
+                self.backgroundView.alpha = 0.0
+                self.backgroundView.superview?.layoutIfNeeded()
+            }) { _ in
+                self.backgroundView.alpha = 0.0
+            }
+        }
+    }
 }

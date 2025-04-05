@@ -9,6 +9,7 @@ import UIKit
 import FirebaseMessaging
 import Firebase
 import UserNotifications
+import Core
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
@@ -26,6 +27,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         application.registerForRemoteNotifications()
+        
+        // 네트워크 모니터링 시작
+        NetworkMonitor.shared.startMonitoring()
+        // 네트워크 체킹 감지
+        NotificationCenter.default.addObserver(forName: .NetworkStatusChanged, object: nil, queue: .main) { notification in
+            if let isConnected = notification.object as? Bool {
+                if !isConnected {
+                    UIApplication.shared.connectedScenes
+                        .compactMap { $0 as? UIWindowScene }
+                        .flatMap { $0.windows }
+                        .first { $0.isKeyWindow }?
+                        .endEditing(true)
+                    SnackBar.shared.show(type: .networkCheck)
+                } else {
+                    SnackBar.shared.hideNetworkCheckingSnackBar()
+                }
+            }
+        }
         
         return true
     }
