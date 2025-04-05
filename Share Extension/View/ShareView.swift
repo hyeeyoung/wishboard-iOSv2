@@ -69,6 +69,7 @@ final class ShareView: UIView {
     }
     let addFolderButton = UIButton().then{
         $0.setImage(Image.addFolder, for: .normal)
+        $0.adjustsImageWhenHighlighted = false
     }
     let completeButton = AnimatedButton().then {
         // 로그인 상태가 아닐 때

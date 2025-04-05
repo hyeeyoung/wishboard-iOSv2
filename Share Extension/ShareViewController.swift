@@ -265,6 +265,10 @@ class ShareViewController: UIViewController {
     
     /// 알림 설정 추가
     @objc private func setNotiButtonTapped() {
+        // 로그인 상태가 아니라면 비활성화
+        if UserManager.accessToken == nil || UserManager.refreshToken == nil {
+            return
+        }
         self.showDateBottomSheet()
     }
     
