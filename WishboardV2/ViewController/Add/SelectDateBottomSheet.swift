@@ -135,12 +135,23 @@ final class SelectDateBottomSheet: UIView {
     }
     
     func resetView() {
-        pickerView.selectRow(0, inComponent: 0, animated: false) // 알림 유형 초기화
-        pickerView.selectRow(0, inComponent: 1, animated: false) // 날짜 초기화
-        pickerView.selectRow(0, inComponent: 2, animated: false) // 시 초기화
-        pickerView.selectRow(0, inComponent: 4, animated: false) // 분 초기화
-
         self.updateActionButtonState(isEnabled: true)
+        
+        let typeRow = INFINITE_MULTIPLIER + 2
+        let dateRow = INFINITE_MULTIPLIER + 2
+        let hourRow = INFINITE_MULTIPLIER + 9
+        let minuteRow = 0
+
+        pickerView.selectRow(typeRow, inComponent: 0, animated: false)
+        pickerView.selectRow(dateRow, inComponent: 1, animated: false)
+        pickerView.selectRow(hourRow, inComponent: 2, animated: false)
+        pickerView.selectRow(minuteRow, inComponent: 4, animated: false)
+
+        // ✅ 선택된 값 수동 설정
+        selectedData.0 = SetNotificationDate.notificationData[typeRow % SetNotificationDate.notificationData.count]
+        selectedData.1 = SetNotificationDate.dateData[dateRow % SetNotificationDate.dateData.count]
+        selectedData.2 = SetNotificationDate.hourData[hourRow % SetNotificationDate.hourData.count]
+        selectedData.3 = SetNotificationDate.minuteData[minuteRow]
     }
     
     func configure() {
@@ -150,6 +161,22 @@ final class SelectDateBottomSheet: UIView {
         
         titleLabel.text = "상품 알림 설정"
         self.updateActionButtonState(isEnabled: true)
+        
+        let typeRow = INFINITE_MULTIPLIER + 2
+        let dateRow = INFINITE_MULTIPLIER + 2
+        let hourRow = INFINITE_MULTIPLIER + 9
+        let minuteRow = 0
+
+        pickerView.selectRow(typeRow, inComponent: 0, animated: false)
+        pickerView.selectRow(dateRow, inComponent: 1, animated: false)
+        pickerView.selectRow(hourRow, inComponent: 2, animated: false)
+        pickerView.selectRow(minuteRow, inComponent: 4, animated: false)
+
+        // ✅ 선택된 값 수동 설정
+        selectedData.0 = SetNotificationDate.notificationData[typeRow % SetNotificationDate.notificationData.count]
+        selectedData.1 = SetNotificationDate.dateData[dateRow % SetNotificationDate.dateData.count]
+        selectedData.2 = SetNotificationDate.hourData[hourRow % SetNotificationDate.hourData.count]
+        selectedData.3 = SetNotificationDate.minuteData[minuteRow]
     }
 }
 
