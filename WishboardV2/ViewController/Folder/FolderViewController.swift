@@ -87,11 +87,21 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
     private func setupBackgroundDimView() {
         backgroundDimView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
         backgroundDimView.alpha = 0.0 // 초기에는 투명하게 설정
+        backgroundDimView.isUserInteractionEnabled = true
+        view.insertSubview(backgroundDimView, belowSubview: bottomSheetView)
         view.addSubview(backgroundDimView)
+        view.bringSubviewToFront(backgroundDimView)
         
         backgroundDimView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissModal))
+        tapGesture.delegate = self
+        backgroundDimView.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissModal() {
+        self.hideBottomSheet()
     }
     
     private func presentActionSheet(for folder: FolderListResponse) {
@@ -255,5 +265,12 @@ extension FolderViewController: FolderToolBarDelegate {
     func rightNaviItemTap() {
         UIDevice.vibrate()
         showBottomSheet()
+    }
+}
+
+extension FolderViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        self.hideBottomSheet()
+        return true // 무조건 받도록
     }
 }

@@ -91,6 +91,12 @@ final class ItemDetailViewController: UIViewController {
         backgroundDimView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissModal))
+        backgroundDimView.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissModal() {
+        self.hideBottomSheet()
     }
     
     private func setupBottomSheet() {

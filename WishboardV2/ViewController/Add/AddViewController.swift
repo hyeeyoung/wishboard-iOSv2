@@ -235,7 +235,17 @@ final class AddViewController: UIViewController {
         backgroundDimView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissModal))
+        backgroundDimView.addGestureRecognizer(tapGesture)
     }
+    
+    @objc private func dismissModal() {
+        self.hideFolderBottomSheet()
+        self.hideDateBottomSheet()
+        self.hideLinkBottomSheet()
+    }
+    
     /// 시트 설정
     private func setupBottomSheet() {
         view.addSubview(folderSelectBottomSheet)
