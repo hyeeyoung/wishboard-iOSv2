@@ -45,7 +45,7 @@ public final class FormatManager {
             return "\(dateNum / 31536000)년 전"
         }
     }
-    // MARK: 아이템 일반 등록 뷰
+    // MARK: - 아이템 일반 등록 뷰
     // 상품 알림 설정 후 출력되는 날짜 Text
     public func notiDateToKoreanStr(_ date: String) -> String? {
         let dateToDate = date.toNotiDate() //YYYY-MM-dd HH:mm
@@ -55,66 +55,54 @@ public final class FormatManager {
             return dateformatter.string(from: dateToDate)
         } else {return nil}
     }
-    // MARK: 아이템 상세 뷰
+    // MARK: - 아이템 상세 뷰
     // 서버에서 받은 notification_date를 변환
     // YYYY-MM-dd HH:mm -> YY년 MM월 dd일 HH:mm
+    /*
+     - 디데이 경과 전 : D-n
+     - 디데이 경과까지 24시간 미만 남은 경우 : 내일 x시 y분
+         - x는 24시간제, 0-9시는 한자리수로 표현, y는 0분이라면 포기하지 않음
+     - 디데이 당일 : 오늘 x시 y분
+         - x는 24시간제, 0-9시는 한자리수로 표현, y는 0분이라면 포기하지 않음
+     - 디데이 경과 후 : 21년 a월 b일
+         - a, b 모두 1-9는 한자리 수로 표기해 주세요!
+     */
     public func showNotificationDateInItemDetail(_ date: String) -> String? {
         let format = DateFormatter()
         format.dateFormat = "yyyy-MM-dd HH:mm"
         format.locale = Locale(identifier: "ko_KR")
 
-        guard let startTime = format.date(from: date) else {return "?"}
-        guard let endTime = format.date(from: Date().toString()) else {return "?"}
+        guard let targetDate = format.date(from: date) else { return "?" }
 
-        let diffTime = Int(startTime.timeIntervalSince(endTime))
-        
-        return dDayFormat(diffTime, startTime)
-    }
-    // 상품 일정 디데이 포맷
-    public func dDayFormat(_ diffTime: Int, _ date: Date) -> String? {
-        let dateformatter = DateFormatter()
-        dateformatter.dateFormat = "HH시 mm분"
-        
-        /*
-         - 디데이 당일 오늘 15시 30분
-         - 디데이 경과 전 D-6
-         - 디데이 경과 후 21년 1월 1일
-         */
-        switch diffTime {
-        case 0...86400:
-            let calendar = Calendar.current
-            let timeString = self.formatHourMinute(from: date)
-            
-            // 24시간 미만이어도 내일 일자라면 내일로 표시 (25.03.30)
-            if calendar.isDateInToday(date) {
-                return "오늘 \(timeString)"
-            } else if calendar.isDateInTomorrow(date) {
-                return "내일 \(timeString)"
-            } else {
-                return timeString
-            }
-        case 86400...:
-            return "D-\(diffTime / 86400)"
+        let now = Date()
+        let calendar = Calendar.current
+
+        // day 차이만 따로 계산!
+        let dayDiff = calendar.dateComponents([.day], from: now.startOfDay(), to: targetDate.startOfDay()).day ?? 0
+
+        switch dayDiff {
+        case 0:
+            // D-0: 오늘이면 시간까지 보여줌
+            return "오늘 \(formatHourMinute(from: targetDate))"
+        case 1:
+            return "내일 \(formatHourMinute(from: targetDate))"
+        case 2...:
+            return "D-\(dayDiff)"
         default:
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = "YY년 MM월 dd일"
-            let todayTime = dateformatter.string(from: date)
-            return "\(todayTime)"
+            // 지난 날짜
+            let pastFormatter = DateFormatter()
+            pastFormatter.dateFormat = "YY년 MM월 dd일"
+            return pastFormatter.string(from: targetDate)
         }
     }
-    
     private func formatHourMinute(from date: Date) -> String {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.hour, .minute], from: date)
-        
+
         let hour = components.hour ?? 0
         let minute = components.minute ?? 0
-        
-        if minute == 0 {
-            return "\(hour)시"
-        } else {
-            return "\(hour)시 \(minute)분"
-        }
+
+        return minute == 0 ? "\(hour)시" : "\(hour)시 \(minute)분"
     }
     
     // "YY년 MM월 dd일 HH:mm"을 "YYYY-MM-dd HH:mm:ss"로 변환
@@ -198,5 +186,8 @@ extension Date {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         dateFormatter.timeZone = TimeZone(identifier: "ko_KR")
         return dateFormatter.string(from: self)
+    }
+    func startOfDay() -> Date {
+        return Calendar.current.startOfDay(for: self)
     }
 }
