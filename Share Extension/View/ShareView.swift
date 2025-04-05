@@ -250,7 +250,11 @@ final class ShareView: UIView {
         // 폴더 바인딩
         viewModel.$folders
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] folders in
+                // 첫번째 폴더 자동선택 처리 (요구사항)
+                if folders.count > 0 {
+                    self?.selectedFolderId = folders[0].folder_id
+                }
                 self?.folderCollectionView.reloadData()
             }
             .store(in: &cancellables)
