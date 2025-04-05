@@ -26,7 +26,7 @@ public enum Placeholder {
     public static let newPassword = "새 비밀번호를 입력해 주세요."
     public static let rewritePassword = "새 비밀번호를 다시 입력해 주세요."
     
-    public static let uploadItemName = "상품명"
+    public static let uploadItemName = "상품명(필수)"
     public static let uploadItemPrice = "₩ 가격(필수)"
     public static let uploadItemMemo = "브랜드, 사이즈, 컬러 등 아이템 정보를 메모로 남겨보세요!😉"
 }
