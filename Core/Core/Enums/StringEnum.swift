@@ -42,9 +42,11 @@ public enum ErrorMessage {
     
     // MARK: 500 Error
     public static let fiveHundredError = "예상하지 못한 오류가 발생했어요!\n잠시후 다시 시도해주세요."
-    
+    // MARK: Not Valid
     public static let shoppingLink = "쇼핑몰 링크를 다시 확인해 주세요."
+    // MARK: Already Exist
     public static let sameFolderName = "동일이름의 폴더가 있어요!"
+    public static let existingNickName = "이미 사용 중인 닉네임이에요!"
 }
 
 public enum Message {
@@ -67,7 +69,6 @@ public enum Message {
     // MARK: Item
     public static let itemNotification = "30분 전에 일정을 알려드려요. 시간은 30분 단위로 설정 가능해요!"
     public static let shoppingLink = "복사한 링크로 아이템을 불러올 수 있어요!"
-    
     public static let onboarding = "흩어져있는 위시리스트를\n위시보드로 간편하게 통합 관리해 보세요!️"
 }
 

@@ -10,6 +10,7 @@ import UIKit
 import MessageUI
 import Combine
 import Core
+import Moya
 
 final class ModifyProfileViewController: UIViewController {
     
@@ -61,7 +62,7 @@ final class ModifyProfileViewController: UIViewController {
         modifyProfileView.icon.addTarget(self, action: #selector(showAlbum), for: .touchUpInside)
         
         modifyProfileView.completeAction = { [weak self] (image, name) in
-            Task {
+            _Concurrency.Task {
                 do {
                     self?.modifyProfileView.actionButton.startAnimation()
                     try await self?.viewModel.updateProfile(img: image, name: name)
@@ -72,7 +73,16 @@ final class ModifyProfileViewController: UIViewController {
                     self?.modifyProfileAction?()
                 } catch {
                     self?.modifyProfileView.updateLoginButtonState(false)
-                    SnackBar.shared.show(type: .errorMessage)
+                    self?.modifyProfileView.actionButton.stopAnimation()
+                    
+                    if let moyaError = error as? MoyaError, let response = moyaError.response {
+                        if response.statusCode == 409 {
+                            print("이미 존재하는 닉네임")
+                            self?.modifyProfileView.errorMessageLabel.isHidden = false
+                        } else {
+                            SnackBar.shared.show(type: .errorMessage)
+                        }
+                    }
                     throw error
                 }
             }

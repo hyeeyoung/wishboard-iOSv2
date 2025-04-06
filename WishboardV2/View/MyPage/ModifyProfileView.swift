@@ -50,6 +50,14 @@ final class ModifyProfileView: UIView {
         $0.spellCheckingType = .no
     }
     
+    public let errorMessageLabel = UILabel().then {
+        $0.text = ErrorMessage.existingNickName
+        $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
+        $0.textAlignment = .left
+        $0.textColor = .pink_700
+        $0.isHidden = true
+    }
+    
     public lazy var actionButton = AnimatedButton().then {
         $0.setTitle("완료", for: .normal)
         $0.layer.cornerRadius = 12
@@ -112,6 +120,7 @@ final class ModifyProfileView: UIView {
         addSubview(icon)
         addSubview(nicknameLabel)
         addSubview(nameTextField)
+        addSubview(errorMessageLabel)
         addSubview(actionButton)
     }
     
@@ -146,6 +155,12 @@ final class ModifyProfileView: UIView {
             make.height.equalTo(42)
         }
         
+        errorMessageLabel.snp.makeConstraints { make in
+            make.top.equalTo(nameTextField.snp.bottom).offset(6)
+            make.leading.equalTo(nameTextField)
+            make.trailing.lessThanOrEqualTo(nameTextField)
+        }
+        
         actionButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(50)
@@ -156,6 +171,7 @@ final class ModifyProfileView: UIView {
     // MARK: - Actions
     
     @objc private func textFieldEditingChanged(_ textField: UITextField) {
+        self.errorMessageLabel.isHidden = true
         // 유저의 닉네임 입력값이 변경되었다면 버튼 활성화
         // 유저의 기존 닉네임 그대로라면 버튼 비활성화
         guard let text = textField.text else { return }
