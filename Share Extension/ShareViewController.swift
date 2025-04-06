@@ -150,6 +150,8 @@ class ShareViewController: UIViewController {
         
         folderSheetView.onActionButtonTap = { [weak self] folderName, folder in
             self?.dismissKeyboard()
+            // 새 폴더 추가 시에는 체크표시 (요구사항)
+            self?.shareView.newFolderAdded = true
             // 새 폴더 추가
             self?.viewModel.addFolder(name: folderName)
             self?.hideBottomSheet()

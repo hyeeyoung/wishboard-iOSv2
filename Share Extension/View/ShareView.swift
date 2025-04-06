@@ -95,6 +95,7 @@ final class ShareView: UIView {
             }
         }
     }
+    public var newFolderAdded: Bool = false
     
     //MARK: - Life Cycles
     
@@ -254,11 +255,12 @@ final class ShareView: UIView {
         viewModel.$folders
             .receive(on: RunLoop.main)
             .sink { [weak self] folders in
-                // 첫번째 폴더 자동선택 처리 (요구사항)
-                if folders.count > 0 {
-                    self?.selectedFolderId = folders[0].folder_id
+                guard let self = self else {return}
+                // 새 폴더 추가 시, 자동선택 처리 (요구사항)
+                if folders.count > 0, self.newFolderAdded {
+                    self.selectedFolderId = folders[0].folder_id
                 }
-                self?.folderCollectionView.reloadData()
+                self.folderCollectionView.reloadData()
             }
             .store(in: &cancellables)
         
