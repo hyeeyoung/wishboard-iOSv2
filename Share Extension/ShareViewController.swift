@@ -38,6 +38,9 @@ class ShareViewController: UIViewController {
             Task {
                 do {
                     // 아이템 정보 파싱
+                    if !(url.isEmpty) {
+                        self?.link = url
+                    }
                     try await self?.viewModel.fetchItem(link: url)
                 } catch {
                     // 파싱 실패 시 스낵바 노출
@@ -82,8 +85,7 @@ class ShareViewController: UIViewController {
                         DispatchQueue.main.async {
                             if let url = urlItem as? URL {
                                 print("✅ Shared URL (as URL): \(url)")
-                                self.link = url.absoluteString
-                                completion(self.link ?? "")
+                                completion(url.absoluteString)
                             } else if let urlString = urlItem as? String {
                                 print("🌀 Shared URL (as String): \(urlString)")
                                 // 이중 인코딩 복원 시도
@@ -91,7 +93,6 @@ class ShareViewController: UIViewController {
                                 let decodedTwice = decodedOnce.removingPercentEncoding ?? decodedOnce
                                 
                                 print("🛠 Final Decoded URL: \(decodedTwice)")
-                                self.link = decodedTwice
                                 completion(decodedTwice)
                             } else {
                                 print("❌ Unknown URL type received.")
