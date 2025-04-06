@@ -138,8 +138,8 @@ final class SelectDateBottomSheet: UIView {
         self.updateActionButtonState(isEnabled: true)
         
         let typeRow = INFINITE_MULTIPLIER + 2
-        let dateRow = INFINITE_MULTIPLIER + 2
-        let hourRow = INFINITE_MULTIPLIER + 9
+        let dateRow = INFINITE_MULTIPLIER + 1
+        let hourRow = INFINITE_MULTIPLIER + 8
         let minuteRow = 0
 
         pickerView.selectRow(typeRow, inComponent: 0, animated: false)
@@ -163,8 +163,8 @@ final class SelectDateBottomSheet: UIView {
         self.updateActionButtonState(isEnabled: true)
         
         let typeRow = INFINITE_MULTIPLIER + 2
-        let dateRow = INFINITE_MULTIPLIER + 2
-        let hourRow = INFINITE_MULTIPLIER + 9
+        let dateRow = INFINITE_MULTIPLIER + 1
+        let hourRow = INFINITE_MULTIPLIER + 8
         let minuteRow = 0
 
         pickerView.selectRow(typeRow, inComponent: 0, animated: false)
