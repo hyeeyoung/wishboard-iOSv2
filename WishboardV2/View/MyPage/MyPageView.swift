@@ -18,21 +18,24 @@ final class MypageView: UIView {
     
     private let toolBar = BaseToolBar()
     let tableView = UITableView(frame: .zero, style: .grouped)
-    weak var delegate: MypageViewDelegate?
+    public let refreshControl = UIRefreshControl()
     
+    weak var delegate: MypageViewDelegate?
     private var settings: [Setting] = []
     private var user: User?
-    
     public var moveModifyProfile: (() -> Void)?
+    public var refreshAction: (() -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        setupRefreshControl()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
+        setupRefreshControl()
     }
     
     private func setupView() {
@@ -62,6 +65,15 @@ final class MypageView: UIView {
     func updateSettings(with settings: [Setting]) {
         self.settings = settings
         tableView.reloadData()
+    }
+    
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+    }
+    
+    @objc private func handleRefresh() {
+        self.refreshAction?()
     }
 }
 

@@ -59,6 +59,10 @@ class MypageViewController: UIViewController {
         mypageView.moveModifyProfile = { [weak self] in
             self?.didTapEditProfile()
         }
+        mypageView.refreshAction = { [weak self] in
+            self?.viewModel.fetchUserData()
+            self?.mypageView.refreshControl.endRefreshing()
+        }
     }
     
     private func setupBindings() {
