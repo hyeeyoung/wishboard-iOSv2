@@ -28,7 +28,7 @@ final class AddView: UIView {
     let imagePickerView = UIImageView().then {
         $0.backgroundColor = .gray_100
         $0.layer.cornerRadius = 32
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
     }
     
