@@ -10,7 +10,7 @@ import UIKit
 import Combine
 import SnapKit
 import Core
-
+import Moya
 
 final class PasswordInputViewController: UIViewController {
     
@@ -107,7 +107,7 @@ final class PasswordInputViewController: UIViewController {
     
     /// 이메일로 로그인하기
     private func callLoginWithoutPassword() {
-        Task {
+        _Concurrency.Task {
             do {
                 let _ = try await self.viewModel.loginWithoutPassword(verify: true, email: self.email)
                 print("이메일과 인증번호로 로그인 성공")
@@ -119,6 +119,12 @@ final class PasswordInputViewController: UIViewController {
                 self.present(tabBarController, animated: true, completion: nil)
                 
             } catch {
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    if response.statusCode == 404 {
+                        print("존재하지 않는 유저")
+                    }
+                    SnackBar.shared.show(type: .errorMessage)
+                }
                 throw error
             }
         }
@@ -126,7 +132,7 @@ final class PasswordInputViewController: UIViewController {
     
     /// 회원가입하기
     private func callRegisterAPI() {
-        Task {
+        _Concurrency.Task {
             do {
                 let _ = try await self.viewModel.register(email: self.email)
                 print("회원가입 성공")
@@ -138,6 +144,19 @@ final class PasswordInputViewController: UIViewController {
                 self.present(tabBarController, animated: true, completion: nil)
                 
             } catch {
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    if response.statusCode == 404 {
+                        print("이미 존재하는 fcmToken")
+                        return
+                    } else if response.statusCode == 409 {
+                        self.passwordInputView.errorLabel.text = ErrorMessage.existAccount
+                        self.passwordInputView.errorLabel.isHidden = false
+                        return
+                    } else {
+                        SnackBar.shared.show(type: .errorMessage)
+                    }
+                }
+                
                 throw error
             }
         }
@@ -168,6 +187,7 @@ final class PasswordInputViewController: UIViewController {
         case .register:
             viewModel.$isValidPW.dropFirst()
                 .sink { [weak self] isValid in
+                    self?.passwordInputView.errorLabel.text = ErrorMessage.password
                     self?.passwordInputView.errorLabel.isHidden = isValid
                 }
                 .store(in: &cancellables)

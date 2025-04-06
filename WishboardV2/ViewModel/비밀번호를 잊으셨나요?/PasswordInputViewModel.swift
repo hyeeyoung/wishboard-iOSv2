@@ -84,12 +84,6 @@ class PasswordInputViewModel {
             UserManager.tempNickname = tempNickname
             
         } catch {
-            if let moyaError = error as? MoyaError, let response = moyaError.response {
-                if response.statusCode == 404 {
-                    print("존재하지 않는 유저")
-                    return
-                }
-            }
             throw error
         }
     }
@@ -120,12 +114,6 @@ class PasswordInputViewModel {
             UserManager.isFirstLogin = true
             
         } catch {
-            if let moyaError = error as? MoyaError, let response = moyaError.response {
-                if response.statusCode == 404 {
-                    print("이미 존재하는 fcmToken")
-                    return
-                }
-            }
             throw error
         }
     }

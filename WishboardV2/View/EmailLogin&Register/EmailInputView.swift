@@ -170,7 +170,7 @@ final class EmailInputView: UIView {
     
     /// 존재하지 않는 유저
     public func showInvalidUser() {
-        self.errorLabel.text = "앗, 가입되지 않은 계정이에요! 가입하기부터 진행해 주세요."
+        self.errorLabel.text = ErrorMessage.nonExistAccount
         self.errorLabel.isHidden = false
     }
     
@@ -182,7 +182,7 @@ final class EmailInputView: UIView {
     
     /// 이미 가입된 유저
     public func showDuplicateUser() {
-        self.errorLabel.text = "앗, 이미 가입된 계정이에요! 로그인으로 진행해 주세요."
+        self.errorLabel.text = ErrorMessage.existAccount
         self.errorLabel.isHidden = false
     }
     

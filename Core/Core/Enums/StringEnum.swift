@@ -47,6 +47,7 @@ public enum ErrorMessage {
     // MARK: Already Exist
     public static let sameFolderName = "동일이름의 폴더가 있어요!"
     public static let existingNickName = "이미 사용 중인 닉네임이에요!"
+    public static let existingAccount = "앗, 이미 가입된 계정이에요! 로그인으로 진행해 주세요."
 }
 
 public enum Message {
