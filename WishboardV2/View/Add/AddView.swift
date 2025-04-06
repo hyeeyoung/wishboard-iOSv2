@@ -205,7 +205,7 @@ final class AddView: UIView {
         guard let currentText = textField.text as String? else { return }
         let filteredText = currentText.filter { $0.isNumber }
         let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
-        textField.text = formattedText
+        textField.text = "₩ \(formattedText ?? "")"
     }
     
     @objc func priceTextBegin(_ textField: UITextField) {

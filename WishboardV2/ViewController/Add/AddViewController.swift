@@ -65,7 +65,8 @@ final class AddViewController: UIViewController {
         self.addView.toolBar.configure(title: Title.modifyItem)
         
         self.addView.itemNameTextField.text = self.item?.item_name ?? ""
-        self.addView.itemPriceTextField.text = self.item?.item_price ?? "0"
+        let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.item_price ?? "0")
+        self.addView.itemPriceTextField.text = "₩ \(formattedText ?? "")"
         
         if let item_name = self.item?.item_name, !item_name.isEmpty {
             self.viewModel.itemName = item_name
