@@ -14,7 +14,8 @@ final class SnackBar {
     static var shared = SnackBar()
     
     let SNACKBAR_HEIGHT = 48
-    let SNACKBAR_INTERVAL = 106
+    let SNACKBAR_INTERVAL_APP = 106
+    let SNACKBAR_INTERVAL_EXTENSION = 34
     let TRANSLATION_Y: CGFloat
     
     var window: UIViewController?
@@ -36,12 +37,14 @@ final class SnackBar {
     }
     
     public init(in viewController: UIViewController? = nil) {
-        let translationY = SNACKBAR_HEIGHT + SNACKBAR_INTERVAL
-        TRANSLATION_Y = CGFloat(-translationY)
         
         #if WISHBOARD_APP
+        let translationY = SNACKBAR_HEIGHT + SNACKBAR_INTERVAL_APP
+        TRANSLATION_Y = CGFloat(-translationY)
         self.setupUI()
         #else
+        let translationY = SNACKBAR_HEIGHT + SNACKBAR_INTERVAL_EXTENSION
+        TRANSLATION_Y = CGFloat(-translationY)
         self.window = viewController
         self.setupUI()
         #endif
