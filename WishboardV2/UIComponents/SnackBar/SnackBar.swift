@@ -14,7 +14,7 @@ final class SnackBar {
     static var shared = SnackBar()
     
     let SNACKBAR_HEIGHT = 48
-    let SNACKBAR_INTERVAL = 16 + 56
+    let SNACKBAR_INTERVAL = 106
     let TRANSLATION_Y: CGFloat
     
     var window: UIViewController?
