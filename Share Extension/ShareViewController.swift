@@ -9,7 +9,6 @@ import UIKit
 import Combine
 import Core
 import WBNetwork
-import MobileCoreServices
 
 class ShareViewController: UIViewController {
     
@@ -34,7 +33,7 @@ class ShareViewController: UIViewController {
         
         // fetch datas
         viewModel.fetchFolders()
-        self.getSharedUrl { [weak self] url in
+        viewModel.getSharedUrl(self) { [weak self] url in
             Task {
                 do {
                     // 아이템 정보 파싱
@@ -74,35 +73,6 @@ class ShareViewController: UIViewController {
     private func setUpObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    /// URL 가져오기
-    private func getSharedUrl(completion: @escaping(String) -> Void) {
-        if let item = self.extensionContext?.inputItems.first as? NSExtensionItem {
-            if let attachment = item.attachments?.first {
-                if attachment.hasItemConformingToTypeIdentifier(kUTTypeURL as String) {
-                    attachment.loadItem(forTypeIdentifier: kUTTypeURL as String, options: nil) { (urlItem, error) in
-                        DispatchQueue.main.async {
-                            if let url = urlItem as? URL {
-                                print("✅ Shared URL (as URL): \(url)")
-                                completion(url.absoluteString)
-                            } else if let urlString = urlItem as? String {
-                                print("🌀 Shared URL (as String): \(urlString)")
-                                // 이중 인코딩 복원 시도
-                                let decodedOnce = urlString.removingPercentEncoding ?? urlString
-                                let decodedTwice = decodedOnce.removingPercentEncoding ?? decodedOnce
-                                
-                                print("🛠 Final Decoded URL: \(decodedTwice)")
-                                completion(decodedTwice)
-                            } else {
-                                print("❌ Unknown URL type received.")
-                                completion("")
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
     
     private func setupBindings() {
