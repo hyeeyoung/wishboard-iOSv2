@@ -29,8 +29,6 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         setupBottomSheet()
         setupBindings()
         
-        viewModel.fetchItems()
-        
         // 앱 이용방법
         guard let isFirstLogin = UserManager.isFirstLogin else { return }
         if isFirstLogin {
