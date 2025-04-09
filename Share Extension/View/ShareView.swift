@@ -48,6 +48,10 @@ final class ShareView: UIView {
         $0.textColor = .gray_700
         $0.spellCheckingType = .no
     }
+    private let notiButtonStack = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 2
+    }
     var setNotificationButton = UIButton().then {
         var config = UIButton.Configuration.plain()
         var attText: AttributedString!
@@ -135,8 +139,9 @@ final class ShareView: UIView {
         backgroundView.addSubview(quitButton)
         backgroundView.addSubview(itemNameTextField)
         backgroundView.addSubview(itemPriceTextField)
-        backgroundView.addSubview(setNotificationButton)
-        backgroundView.addSubview(clearNotiButton)
+        backgroundView.addSubview(notiButtonStack)
+        notiButtonStack.addArrangedSubview(setNotificationButton)
+        notiButtonStack.addArrangedSubview(clearNotiButton)
         backgroundView.addSubview(addFolderButton)
         backgroundView.addSubview(folderCollectionView)
         backgroundView.addSubview(completeButton)
@@ -184,16 +189,18 @@ final class ShareView: UIView {
             make.top.equalTo(itemNameTextField.snp.bottom).offset(6)
             make.height.equalTo(16)
         }
-        setNotificationButton.snp.makeConstraints { make in
+        notiButtonStack.snp.makeConstraints { make in
             make.height.equalTo(14)
             make.centerX.equalToSuperview()
             make.top.equalTo(itemPriceTextField.snp.bottom).offset(16)
+            make.trailing.lessThanOrEqualToSuperview().offset(-16)
+        }
+        setNotificationButton.snp.makeConstraints { make in
+            make.height.equalTo(14)
         }
         clearNotiButton.snp.makeConstraints { make in
-            make.leading.equalTo(setNotificationButton.snp.trailing).offset(2)
             make.width.height.equalTo(14)
             make.centerY.equalTo(setNotificationButton)
-            make.trailing.lessThanOrEqualToSuperview().offset(-16)
         }
         addFolderButton.snp.makeConstraints { make in
             make.width.height.equalTo(80)
