@@ -185,7 +185,7 @@ final class SelectDateBottomSheet: UIView {
     
     func configure() {
         self.snp.makeConstraints { make in
-            make.height.equalToSuperview().multipliedBy(0.4)
+            make.height.equalTo(340)
         }
         
         titleLabel.text = "상품 알림 설정"
