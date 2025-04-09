@@ -23,6 +23,7 @@ public enum SnackBarType {
     case shoppingLinkNotExist
     case failShoppingLink
     case emptyItemContent
+    case selectPastTime
     case errorMessage
     case test
     
@@ -43,6 +44,7 @@ public enum SnackBarType {
         case .shoppingLinkNotExist: return "쇼핑몰 링크를 등록해 주세요!🛍️️"
         case .failShoppingLink: return "앗, 아이템 정보를 불러오지 못했어요🥲"
         case .emptyItemContent: return "앗, 상품명과 가격을 입력해 주세요😁"
+        case .selectPastTime: return "현재 시간 이후로만 선택할 수 있어요"
         case .errorMessage: return "예상하지 못한 오류가 발생했어요!\n잠시후 다시 시도해주세요."
             
         case .test: return "로그아웃"

@@ -50,6 +50,7 @@ final class SelectDateBottomSheet: UIView {
     
     var onClose: (() -> Void)?
     var onActionButtonTap: (((String?, String?, String?, String?)) -> Void)?
+    var selectErrorAction: (() -> Void)?
     
     // Picker Properties
     private let INFINITE_MULTIPLIER = 1000
@@ -121,6 +122,34 @@ final class SelectDateBottomSheet: UIView {
     }
     
     @objc private func actionButtonTapped() {
+        
+        guard let dateString = selectedData.1,
+                  let hourString = selectedData.2,
+                  let minuteString = selectedData.3,
+                  let hour = Int(hourString),
+                  let minute = Int(minuteString) else { return }
+        
+        // 날짜 포맷 설정
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 MM월 dd일 HH:mm"
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        
+        // 날짜 문자열 생성
+        let fullDateString = "20\(dateString) \(String(format: "%02d", hour)):\(String(format: "%02d", minute))"
+        
+        guard let selectedDate = formatter.date(from: fullDateString) else {
+            return // 변환 실패도 오류로 처리
+        }
+
+        let currentDate = Date()
+
+        // 과거 날짜 예외처리
+        if selectedDate < currentDate {
+            self.selectErrorAction?()
+            return
+        }
+        
         onActionButtonTap?(selectedData)
     }
     

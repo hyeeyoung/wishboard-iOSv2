@@ -158,6 +158,14 @@ class ShareViewController: UIViewController {
             
             self?.viewModel.selectedAlarm = "[\(type)] \(dateText)"
         }
+        
+        alarmSheetView.selectErrorAction = { [weak self] in
+            #if WISHBOARD_APP
+            SnackBar.shared.show(type: .selectPastTime)
+            #else
+            SnackBar(in: self).show(type: .selectPastTime)
+            #endif
+        }
     }
     
     /// 폴더 관련 바텀시트 노출

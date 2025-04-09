@@ -296,6 +296,13 @@ final class AddViewController: UIViewController {
             self?.viewModel.selectedAlarmDate = "\(date) \(hour):\(minute)"
             self?.viewModel.selectedAlarm = "[\(type)] \(self?.viewModel.selectedAlarmDate ?? "")"
         }
+        selectDateBottomSheet.selectErrorAction = { [weak self] in
+            #if WISHBOARD_APP
+            SnackBar.shared.show(type: .selectPastTime)
+            #else
+            SnackBar(in: self).show(type: .selectPastTime)
+            #endif
+        }
         
         // data - fetch FolderList
         self.viewModel.fetchFolders()
