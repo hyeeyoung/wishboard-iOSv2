@@ -17,9 +17,7 @@ final class FolderViewModel {
     public var folderActionFail: ((Int) -> Void)?
 
     // 초기화 시에 폴더 데이터를 불러옵니다.
-    init() {
-        fetchFolders()
-    }
+    init() { }
     
     // 폴더 데이터 가져오기
     func fetchFolders() {
