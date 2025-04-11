@@ -27,6 +27,14 @@ final class FolderSelectBottomSheet: UIView {
         $0.tintColor = .gray_700
     }
     public var folderTableView = UITableView(frame: .zero)
+    public let emptyLabel = UILabel().then {
+        $0.text = EmptyMessage.folder
+        $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
+        $0.textColor = .gray_200
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
     
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
@@ -70,6 +78,7 @@ final class FolderSelectBottomSheet: UIView {
         addSubview(titleLabel)
         addSubview(closeButton)
         addSubview(folderTableView)
+        addSubview(emptyLabel)
         
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
     }
@@ -91,6 +100,10 @@ final class FolderSelectBottomSheet: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
             make.leading.trailing.bottom.equalToSuperview()
         }
+        
+        emptyLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
     
     @objc private func closeButtonTapped() {
@@ -107,6 +120,7 @@ final class FolderSelectBottomSheet: UIView {
         }
         
         self.folders = folders
+        self.emptyLabel.isHidden = !(folders.isEmpty)
         self.folderTableView.reloadData()
     }
 }

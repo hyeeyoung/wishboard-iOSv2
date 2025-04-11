@@ -136,7 +136,7 @@ public enum Button {
 
 public enum EmptyMessage {
     public static let item = "앗, 아이템이 없어요!\n갖고 싶은 아이템을 등록해보세요!"
-    public static let folder = "앗, 폴더가 없어요!\n폴더를 추가해서 아이템을 정리해 보세요!"
+    public static let folder = "앗, 폴더가 없어요!\n폴더를 추가해서 아이템을 정리해보세요!"
     public static let cart = "앗, 장바구니가 비어있어요!\n구매할 아이템을 장바구니에 담아보세요!"
 }
 

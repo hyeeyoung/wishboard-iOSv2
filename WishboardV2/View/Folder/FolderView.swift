@@ -16,7 +16,7 @@ final class FolderView: UIView {
     public let toolBar = BaseToolBar()
     public let collectionView: UICollectionView
     public let emptyLabel = UILabel().then {
-        $0.text = "앗, 폴더가 없어요!\n폴더를 추가해서 아이템을 정리해 보세요!"
+        $0.text = EmptyMessage.folder
         $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
         $0.textColor = .gray_200
         $0.numberOfLines = 0
