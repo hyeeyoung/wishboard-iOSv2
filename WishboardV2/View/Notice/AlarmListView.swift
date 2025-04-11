@@ -14,6 +14,9 @@ import Core
 final class AlarmListView: UIView {
     let toolBar = AlarmToolBar()
     let tableView = UITableView()
+    public let refreshControl = UIRefreshControl()
+    public var refreshAction: (() -> Void)?
+    
     public let emptyLabel = UILabel().then {
         $0.text = "앗, 일정이 없어요!\n상품 일정을 지정하고 알림을 받아보세요!"
         $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
@@ -27,6 +30,7 @@ final class AlarmListView: UIView {
         super.init(frame: frame)
         setupViews()
         setupConstraints()
+        setupRefreshControl()
     }
     
     required init?(coder: NSCoder) {
@@ -49,5 +53,14 @@ final class AlarmListView: UIView {
         emptyLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+    }
+    
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+    }
+    
+    @objc private func handleRefresh() {
+        self.refreshAction?()
     }
 }

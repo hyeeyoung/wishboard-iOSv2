@@ -62,8 +62,13 @@ final class AlarmListViewController: UIViewController, ItemDetailDelegate {
             .sink { [weak self] items in
                 self?.noticeView.emptyLabel.isHidden = !(items.isEmpty)
                 self?.noticeView.tableView.reloadData()
+                self?.noticeView.refreshControl.endRefreshing()
             }
             .store(in: &cancellables)
+        
+        noticeView.refreshAction = { [weak self] in
+            self?.viewModel.fetchItems()
+        }
     }
 }
 

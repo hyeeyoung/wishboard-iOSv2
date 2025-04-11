@@ -157,7 +157,17 @@ final class CalendarViewController: UIViewController {
         }) {
             viewModel.selectDate(today) // 오늘 날짜 선택
             let indexPath = IndexPath(item: todayIndex, section: 0)
-            calendarView.collectionView.reloadItems(at: [indexPath]) // 선택된 셀 업데이트
+            
+            // indexPath가 collectionView의 범위 내에 있는지 확인
+            let numberOfItems = calendarView.collectionView.numberOfItems(inSection: 0)
+            if todayIndex < numberOfItems {
+                calendarView.collectionView.reloadItems(at: [indexPath]) // 선택된 셀 업데이트
+            } else {
+                // index가 범위 초과인 경우
+                print("🚨 todayIndex(\(todayIndex)) is out of bounds: numberOfItems = \(numberOfItems)")
+                calendarView.collectionView.reloadData() // 전체 reload로 대체
+            }
+            
             calendarView.configureSelectedLabel(today) // 상단 라벨도 업데이트
         }
     }
