@@ -207,6 +207,11 @@ extension CalendarViewController: UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let selectedDate = viewModel.days[indexPath.item] else { return }
+        
+        // 현재 달이 아니라면 날짜 선택X
+        let isCurrentMonth = Calendar.current.isDate(selectedDate, equalTo: viewModel.currentMonth, toGranularity: .month)
+        if !isCurrentMonth { return }
+        
         UIDevice.vibrate()
         let previousSelectedIndex = viewModel.days.firstIndex(where: {
             if let selected = viewModel.selectedDate {

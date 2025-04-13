@@ -263,7 +263,7 @@ final class AddViewController: UIViewController {
         }
         selectDateBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+            make.bottom.equalToSuperview().offset(340)
         }
         // Folder Binding
         folderSelectBottomSheet.selectAction = { [weak self] folderId, folderName in
@@ -388,7 +388,7 @@ final class AddViewController: UIViewController {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.selectDateBottomSheet.snp.updateConstraints { make in
-                    make.bottom.equalToSuperview().offset(-340)
+                    make.bottom.equalToSuperview().offset(340)
                 }
                 self.view.layoutIfNeeded()
             }
