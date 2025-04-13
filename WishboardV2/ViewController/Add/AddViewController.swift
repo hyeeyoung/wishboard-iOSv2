@@ -388,7 +388,7 @@ final class AddViewController: UIViewController {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.selectDateBottomSheet.snp.updateConstraints { make in
-                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                    make.bottom.equalToSuperview().offset(-340)
                 }
                 self.view.layoutIfNeeded()
             }

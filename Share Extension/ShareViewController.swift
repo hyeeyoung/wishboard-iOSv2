@@ -131,7 +131,7 @@ class ShareViewController: UIViewController {
         
         alarmSheetView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+            make.bottom.equalToSuperview().offset(340)
         }
         alarmSheetView.onClose = { [weak self] in
             self?.hideDateBottomSheet()
@@ -223,7 +223,7 @@ class ShareViewController: UIViewController {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.alarmSheetView.snp.updateConstraints { make in
-                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                    make.bottom.equalToSuperview().offset(340)
                 }
                 self.view.layoutIfNeeded()
             }

@@ -204,6 +204,10 @@ final class AddView: UIView {
     @objc func priceTextChanged(_ textField: UITextField) {
         guard let currentText = textField.text as String? else { return }
         let filteredText = currentText.filter { $0.isNumber }
+        if filteredText.isEmpty {
+            textField.text = nil
+            return
+        }
         let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
         textField.text = "₩ \(formattedText ?? "")"
     }

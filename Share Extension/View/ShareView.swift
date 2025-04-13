@@ -377,8 +377,12 @@ extension ShareView: UITextFieldDelegate {
             guard let currentText = textField.text as NSString? else { return true }
             let newText = currentText.replacingCharacters(in: range, with: string)
             let filteredText = newText.filter { $0.isNumber }
-            let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
-            textField.text = formattedText
+            if filteredText.isEmpty {
+                textField.text = nil
+            } else {
+                let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
+                textField.text = formattedText
+            }
             
             // 입력이 발생할 때마다 호출되며, 입력이 완료된 후 button 상태를 업데이트
             DispatchQueue.main.async { [weak self] in
