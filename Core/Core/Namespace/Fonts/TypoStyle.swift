@@ -47,7 +47,7 @@ public enum TypoStyle: Int, CaseIterable {     // font size / type / line height
     case SuitB4           // 12pt / semibold / 14 / 20(m) / 14(u)
     case SuitB5           // 12pt / medium / 14 / 18(m)
     
-    case SuitD1           // 16pt / regular / 18 / 22(m)
+    case SuitD1           // 16pt / regular / 22 / 22(m)
     case SuitD2           // 14pt / regular / 16 / 20(m)
     case SuitD3           // 12pt / regular / 14 / 18(m)
     
@@ -105,7 +105,7 @@ extension TypoStyle {
             case .SuitB4:               return LabelDescription(singleLineHeight: 14, multiLineHeight: 20)
             case .SuitB5:               return LabelDescription(singleLineHeight: 14, multiLineHeight: 18)
                 
-            case .SuitD1:               return LabelDescription(singleLineHeight: 18, multiLineHeight: 22)
+            case .SuitD1:               return LabelDescription(singleLineHeight: 22, multiLineHeight: 22)
             case .SuitD2:               return LabelDescription(singleLineHeight: 16, multiLineHeight: 20)
             case .SuitD3:               return LabelDescription(singleLineHeight: 14, multiLineHeight: 18)
                 
