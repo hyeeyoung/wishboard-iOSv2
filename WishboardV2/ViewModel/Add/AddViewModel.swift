@@ -153,4 +153,62 @@ final class AddViewModel {
             return input
         }
     }
+    
+    func convertKoreanShortDateTimeToFullFormat(_ input: String) -> String? {
+        // 예: "26.7.14 오후 3시 30분"
+        let pattern = #"(\d{2})\.(\d{1,2})\.(\d{1,2})\s+(오전|오후)\s+(\d{1,2})시(?:\s+(\d{1,2})분)?"#
+        let regex = try! NSRegularExpression(pattern: pattern)
+
+        guard let match = regex.firstMatch(in: input, range: NSRange(input.startIndex..., in: input)) else {
+            return nil
+        }
+
+        func group(_ i: Int) -> String? {
+            guard let range = Range(match.range(at: i), in: input) else { return nil }
+            return String(input[range])
+        }
+
+        guard let yearStr = group(1),
+              let monthStr = group(2),
+              let dayStr = group(3),
+              let ampm = group(4),
+              let hourStr = group(5) else {
+            return nil
+        }
+
+        let minuteStr = group(6) ?? "0"
+
+        guard let year = Int(yearStr),
+              let month = Int(monthStr),
+              let day = Int(dayStr),
+              var hour = Int(hourStr),
+              let minute = Int(minuteStr) else {
+            return nil
+        }
+
+        // 오후면 12 더해줌 (단, 12시는 그대로)
+        if ampm == "오후", hour < 12 {
+            hour += 12
+        } else if ampm == "오전", hour == 12 {
+            hour = 0
+        }
+
+        var components = DateComponents()
+        components.year = 2000 + year
+        components.month = month
+        components.day = day
+        components.hour = hour
+        components.minute = minute
+        components.second = 0
+
+        let calendar = Calendar(identifier: .gregorian)
+        guard let date = calendar.date(from: components) else {
+            return nil
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
+    }
 }

@@ -24,7 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(showSnackBar), name: .ShowSnackBar, object: nil)
         
         // MARK: Navigation controller
-        let splashVC = SplashViewController()
+        // TODO: 요거 주석
+//        let splashVC = SplashViewController()
+        let splashVC = AddViewController(type: .manual)
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
@@ -40,11 +42,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             self.window?.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
         }
         
-        // 일정 시간 후에 온보딩 화면으로 전환
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            // 앱 버전 체크 후 화면이동
-            splashVC.checkAppVersion()
-        }
+        // TODO: 요거 주석
+//        // 일정 시간 후에 온보딩 화면으로 전환
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+//            // 앱 버전 체크 후 화면이동
+//            splashVC.checkAppVersion()
+//        }
     }
     
     /// 네트워크 에러 발생 시 온보딩으로 이동
@@ -83,10 +86,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     /// 온보딩 화면 설정
     private func setRootOnboarding() {
-        let onboardingViewController = OnboardingViewController()
-        let navigationController = UINavigationController(rootViewController: onboardingViewController)
-        self.window?.rootViewController = navigationController
-        self.window?.makeKeyAndVisible()
+        // TODO: 요거 주석
+//        let onboardingViewController = OnboardingViewController()
+//        let navigationController = UINavigationController(rootViewController: onboardingViewController)
+//        self.window?.rootViewController = navigationController
+//        self.window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

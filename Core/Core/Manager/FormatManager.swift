@@ -115,6 +115,45 @@ public final class FormatManager {
             return strToDate.toString()
         } else {return nil}
     }
+    
+    // 14:30 을 '오후 2시 30분'으로 변환
+    public func convertTimeToKoreanFormat(hour: String, minute: String) -> String {
+        let timeString = "\(hour):\(minute)"
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.locale = Locale(identifier: "ko_KR")
+        
+        guard let date = formatter.date(from: timeString) else {
+            return timeString
+        }
+
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute], from: date)
+        let isZeroMinute = (components.minute == 0)
+
+        formatter.dateFormat = isZeroMinute ? "a h시" : "a h시 m분"
+        return formatter.string(from: date)
+    }
+    
+    // "25년 07월 17일" -> "25.7.17" 로 변환
+    public func convertKoreanDateToShortFormat(_ input: String) -> String {
+        // "25년 07월 17일"
+        let components = input
+            .replacingOccurrences(of: "년", with: "")
+            .replacingOccurrences(of: "월", with: "")
+            .replacingOccurrences(of: "일", with: "")
+            .split(separator: " ")
+        
+        guard components.count == 3,
+              let year = Int(components[0]),
+              let month = Int(components[1]),
+              let day = Int(components[2]) else {
+            return input  // fallback
+        }
+        
+        return "\(year).\(month).\(day)"
+    }
     // MARK: - Number (price)
     /// 숫자를 ,넣은 문자열로     // 1000 -> 1,000
     public func numToPrice(num: Int) -> String? {

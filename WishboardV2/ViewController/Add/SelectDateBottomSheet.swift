@@ -46,7 +46,7 @@ final class SelectDateBottomSheet: UIView {
     
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
-    public var selectedData: (String?, String?, String?, String?) = ("재입고", "\(SetNotificationDate.currentYear)년 \(SetNotificationDate.currentMonth)월 \(SetNotificationDate.currentDay)일", "00", "00")
+    public var selectedData: (String?, String?, String?, String?) = ("재입고", "\(SetNotificationDate.currentYear). \(SetNotificationDate.currentMonth). \(SetNotificationDate.currentDay)", "00", "00")
     
     var onClose: (() -> Void)?
     var onActionButtonTap: (((String?, String?, String?, String?)) -> Void)?
@@ -150,6 +150,7 @@ final class SelectDateBottomSheet: UIView {
             return
         }
         
+        self.selectedData.1 = FormatManager.shared.convertKoreanDateToShortFormat(dateString)
         onActionButtonTap?(selectedData)
     }
     

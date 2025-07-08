@@ -25,17 +25,26 @@ final class AddView: UIView {
     
     let contentView = UIView()
     
-    let imagePickerView = UIImageView().then {
-        $0.backgroundColor = .gray_100
-        $0.layer.cornerRadius = 32
-        $0.contentMode = .scaleAspectFit
+    // Image Pick View
+    let imagePickerContainer = UIView().then {
+        $0.backgroundColor = .gray_50
+        $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
     }
     
+    let cameraContainer = UIView()
     let cameraIcon = UIImageView().then {
         $0.tintColor = .gray_200
         $0.image = Image.cameraGray
     }
+    
+    let imageCountLabel = UILabel().then {
+        $0.text = "0/10"
+        $0.font = TypoStyle.SuitD3.font
+        $0.textColor = .gray_200
+    }
+    
+    // Contents
     
     let stackView = UIStackView().then {
         $0.axis = .vertical
@@ -44,34 +53,36 @@ final class AddView: UIView {
         $0.distribution = .fill
     }
     
-    let itemNameTextField = UITextField().then {
-        $0.placeholder = Placeholder.uploadItemName
-        $0.font = TypoStyle.SuitB3.font
-        $0.borderStyle = .none
-        $0.setLeftPaddingPoints(16)
-        $0.autocapitalizationType = .none
-        $0.autocorrectionType = .no
-        $0.spellCheckingType = .no
-    }
+    let itemNameSection = FormItemView(title: Title.itemName,
+                                       isRequired: true,
+                                       type: .textField(placeholder: Placeholder.uploadItemName,
+                                                        isEditable: true,
+                                                        showsArrow: false))
     
-    let itemPriceTextField = UITextField().then {
-        $0.placeholder = Placeholder.uploadItemPrice
-        $0.font = TypoStyle.SuitB3.font
-        $0.keyboardType = .numberPad
-        $0.borderStyle = .none
-        $0.setLeftPaddingPoints(16)
-        $0.spellCheckingType = .no
-    }
+    let itemPriceSection = FormItemView(title: Title.price,
+                                       isRequired: true,
+                                       type: .textField(placeholder: Placeholder.uploadItemPrice,
+                                                        isEditable: true,
+                                                        showsArrow: false))
     
-    let folderView = OptionSelectorView().then {
-        $0.configure(Title.folder)
-    }
-    let alarmView = OptionSelectorView().then {
-        $0.configure(Title.notificationItem)
-    }
-    let linkView = OptionSelectorView().then {
-        $0.configure(Title.shoppingMallLink)
-    }
+    let folderSection = FormItemView(title: Title.folder,
+                                       isRequired: false,
+                                       type: .textField(placeholder: Placeholder.uploadItemPrice,
+                                                        isEditable: false,
+                                                        showsArrow: false))
+    
+    let alarmSection = FormItemView(title: Title.notificationItem,
+                                    isRequired: false,
+                                    type: .textField(placeholder: Placeholder.uploadItemNoti,
+                                                     isEditable: false,
+                                                     showsArrow: true))
+     
+    let itemLinkSection = FormItemView(title: Title.shoppingMallLink,
+                                       isRequired: false,
+                                       type: .textField(placeholder: Placeholder.uploadItemLink,
+                                                        isEditable: false,
+                                                        showsArrow: true))
+    
     
     let memoTextView = UITextView().then {
         $0.font = TypoStyle.SuitB3.font
@@ -90,7 +101,7 @@ final class AddView: UIView {
     }
     
     let separatorViews: [UIView] = Array(repeating: UIView().then {
-        $0.backgroundColor = .lightGray
+        $0.backgroundColor = .gray_100
     }, count: 6)
     
     // MARK: - Init
@@ -113,8 +124,10 @@ final class AddView: UIView {
         addSubview(toolBar)
         addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubview(imagePickerView)
-        imagePickerView.addSubview(cameraIcon)
+        contentView.addSubview(imagePickerContainer)
+        imagePickerContainer.addSubview(cameraContainer)
+        cameraContainer.addSubview(cameraIcon)
+        cameraContainer.addSubview(imageCountLabel)
         contentView.addSubview(stackView)
         memoTextView.addSubview(memoPlaceholder)
         
@@ -131,19 +144,30 @@ final class AddView: UIView {
             make.width.equalToSuperview()
         }
         
-        imagePickerView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(imagePickerView.snp.width).multipliedBy(0.67)
+        imagePickerContainer.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(18)
+            make.leading.equalToSuperview().offset(16)
+            make.width.height.equalTo(100)
+        }
+        
+        cameraContainer.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
         
         cameraIcon.snp.makeConstraints { make in
-            make.width.equalTo(32.81)
-            make.height.equalTo(29.17)
-            make.center.equalTo(imagePickerView)
+            make.width.height.equalTo(26)
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+        }
+        
+        imageCountLabel.snp.makeConstraints { make in
+            make.top.equalTo(cameraIcon.snp.bottom).offset(6)
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(imagePickerView.snp.bottom)
+            make.top.equalTo(imagePickerContainer.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().offset(-16)
         }
@@ -152,23 +176,9 @@ final class AddView: UIView {
             make.leading.trailing.equalTo(memoTextView).inset(16)
             make.top.equalTo(memoTextView).offset(16)
         }
-        
-        itemNameTextField.attributedPlaceholder = NSAttributedString(
-            string: Placeholder.uploadItemName,
-            attributes: [
-                .foregroundColor: UIColor.gray_300
-            ]
-        )
-        
-        itemPriceTextField.attributedPlaceholder = NSAttributedString(
-            string: Placeholder.uploadItemPrice,
-            attributes: [
-                .foregroundColor: UIColor.gray_300
-            ]
-        )
 
         let fields: [UIView] = [
-            itemNameTextField, itemPriceTextField, folderView, alarmView, linkView, memoTextView
+            itemNameSection, itemPriceSection, folderSection, alarmSection, itemLinkSection, memoTextView
         ]
         
         for (index, field) in fields.enumerated() {
@@ -182,26 +192,30 @@ final class AddView: UIView {
                 }
             } else {
                 field.snp.makeConstraints { make in
-                    make.height.equalTo(55)
+                    make.height.equalTo(84)
                 }
             }
             
             if index < fields.count - 1 { // 마지막 항목에는 구분선 안 붙이기
                 stackView.addArrangedSubview(separatorView)
                 separatorView.snp.makeConstraints { make in
-                    make.height.equalTo(1)
+                    make.height.equalTo(0.5)
                 }
             }
         }
     }
     
     private func setupDelegates() {
-        self.itemPriceTextField.addTarget(self, action: #selector(priceTextChanged(_:)), for: .editingChanged)
-        self.itemNameTextField.addTarget(self, action: #selector(nameTextBegin(_:)), for: .editingDidBegin)
-        self.itemPriceTextField.addTarget(self, action: #selector(priceTextBegin(_:)), for: .editingDidBegin)
+        itemPriceSection.onTextChanged = { [weak self] textField in
+            self?.delegate?.setActiveField(textField)
+            self?.priceTextChanged(textField)
+        }
+        itemNameSection.onTextChanged = { [weak self] textField in
+            self?.delegate?.setActiveField(textField)
+        }
     }
     
-    @objc func priceTextChanged(_ textField: UITextField) {
+    private func priceTextChanged(_ textField: UITextField) {
         guard let currentText = textField.text as String? else { return }
         let filteredText = currentText.filter { $0.isNumber }
         if filteredText.isEmpty {
@@ -209,14 +223,10 @@ final class AddView: UIView {
             return
         }
         let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
-        textField.text = "₩ \(formattedText ?? "")"
+        textField.text = "\(formattedText ?? "")원"
     }
     
     @objc func priceTextBegin(_ textField: UITextField) {
-        self.delegate?.setActiveField(textField)
-    }
-    
-    @objc func nameTextBegin(_ textField: UITextField) {
         self.delegate?.setActiveField(textField)
     }
 }

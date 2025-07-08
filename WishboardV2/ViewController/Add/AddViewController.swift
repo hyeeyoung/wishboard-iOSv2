@@ -64,9 +64,9 @@ final class AddViewController: UIViewController {
     private func setModifyItemData() {
         self.addView.toolBar.configure(title: Title.modifyItem)
         
-        self.addView.itemNameTextField.text = self.item?.item_name ?? ""
+        self.addView.itemNameSection.text = self.item?.item_name ?? ""
         let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.item_price ?? "0")
-        self.addView.itemPriceTextField.text = "₩ \(formattedText ?? "")"
+        self.addView.itemPriceSection.text = "\(formattedText ?? "")원"
         
         if let item_name = self.item?.item_name, !item_name.isEmpty {
             self.viewModel.itemName = item_name
@@ -87,7 +87,7 @@ final class AddViewController: UIViewController {
         self.viewModel.selectedAlarmType = self.item?.item_notification_type
         self.viewModel.selectedAlarmDate = self.item?.item_notification_date
         if let selectedAlarmType = viewModel.selectedAlarmType, let selectedAlarmDate = viewModel.selectedAlarmDate {
-            self.viewModel.selectedAlarm = "[\(selectedAlarmType)] \(selectedAlarmDate)"
+            self.viewModel.selectedAlarm = "\(selectedAlarmDate) \(selectedAlarmType)"
         }
         
         // 이미지
@@ -132,12 +132,12 @@ final class AddViewController: UIViewController {
     
     // MARK: - Bindings
     private func setupBindings() {
-        addView.itemNameTextField.textPublisher
+        addView.itemNameSection.`textPublisher`
             .receive(on: RunLoop.main)
             .assign(to: \.itemName, on: viewModel)
             .store(in: &cancellables)
 
-        addView.itemPriceTextField.textPublisher
+        addView.itemPriceSection.textPublisher
             .receive(on: RunLoop.main)
             .assign(to: \.itemPrice, on: viewModel)
             .store(in: &cancellables)
@@ -152,28 +152,32 @@ final class AddViewController: UIViewController {
         viewModel.$selectedFolder
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.addView.folderView.updateText(text ?? Title.folder)
+//                self?.addView.folderView.updateText(text ?? Title.folder)
             }
             .store(in: &cancellables)
         
         viewModel.$selectedAlarm
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.addView.alarmView.updateText(text ?? Title.notificationItem)
+                if let text = text {
+                    self?.addView.alarmSection.text = text
+                }
             }
             .store(in: &cancellables)
         
         viewModel.$selectedLink
             .receive(on: RunLoop.main)
             .sink { [weak self] text in
-                self?.addView.linkView.updateText(text ?? Title.shoppingMallLink)
+                if let text = text {
+                    self?.addView.itemLinkSection.text = text
+                }
             }
             .store(in: &cancellables)
         
         viewModel.$selectedImage
             .receive(on: RunLoop.main)
             .sink { [weak self] image in
-                self?.addView.imagePickerView.image = image ?? UIImage()
+//                self?.addView.imagePickerContainer.image = image ?? UIImage()
             }
             .store(in: &cancellables)
         
@@ -195,22 +199,22 @@ final class AddViewController: UIViewController {
     
     // MARK: - Actions
     private func setupActions() {
-        addView.folderView.onTap = { [weak self] in
-            guard let folders = self?.viewModel.folders else {return}
-            self?.showFolderBottomSheet(for: folders)
-        }
+//        addView.folderView.onTap = { [weak self] in
+//            guard let folders = self?.viewModel.folders else {return}
+//            self?.showFolderBottomSheet(for: folders)
+//        }
         
-        addView.alarmView.onTap = { [weak self] in
+        addView.alarmSection.onTap = { [weak self] in
             self?.showDateBottomSheet()
         }
         
-        addView.linkView.onTap = { [weak self] in
+        addView.itemLinkSection.onTap = { [weak self] in
             self?.showLinkBottomSheet(with: self?.viewModel.selectedLink)
         }
         
         let imageTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectImage))
-        addView.imagePickerView.isUserInteractionEnabled = true
-        addView.imagePickerView.addGestureRecognizer(imageTapGesture)
+        addView.imagePickerContainer.isUserInteractionEnabled = true
+        addView.imagePickerContainer.addGestureRecognizer(imageTapGesture)
     }
     
     private func setupDelegates() {
@@ -293,8 +297,9 @@ final class AddViewController: UIViewController {
             self?.hideDateBottomSheet()
             guard let type = data.0, let date = data.1, let hour = data.2, let minute = data.3 else {return}
             self?.viewModel.selectedAlarmType = type
-            self?.viewModel.selectedAlarmDate = "\(date) \(hour):\(minute)"
-            self?.viewModel.selectedAlarm = "[\(type)] \(self?.viewModel.selectedAlarmDate ?? "")"
+            let time = FormatManager.shared.convertTimeToKoreanFormat(hour: hour, minute: minute)
+            self?.viewModel.selectedAlarmDate = "\(date) \(time)"
+            self?.viewModel.selectedAlarm = "\(self?.viewModel.selectedAlarmDate ?? "") \(type)"
         }
         selectDateBottomSheet.selectErrorAction = { [weak self] in
             #if WISHBOARD_APP
@@ -305,7 +310,8 @@ final class AddViewController: UIViewController {
         }
         
         // data - fetch FolderList
-        self.viewModel.fetchFolders()
+        // TODO: 요거 주석
+//        self.viewModel.fetchFolders()
     }
     
     /// 폴더 선택 시트 노출
@@ -448,7 +454,6 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
             viewModel.selectedImage = editedImage
         } else if let originalImage = info[.originalImage] as? UIImage {
             viewModel.selectedImage = originalImage
-            addView.cameraIcon.isHidden = (viewModel.selectedImage != nil)
         }
         picker.dismiss(animated: true)
     }
