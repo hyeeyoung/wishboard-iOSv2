@@ -11,9 +11,9 @@ public enum NetworkMacro {
     
     public static var BaseURL: String {
         #if DEBUG
-        return "http://3.37.20.199/dev"
+        return "http://43.201.137.248/v2"
         #else
-        return "http://3.37.20.199"
+        return "http://43.201.137.248/v2"
         #endif
     }
     
