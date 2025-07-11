@@ -83,10 +83,15 @@ final class AddView: UIView {
                                                         isEditable: false,
                                                         showsArrow: true))
     
-    
+    let memoContainer = UIView()
+    let memoTitleLabel = UILabel().then {
+        $0.font = TypoStyle.SuitB2.font
+        $0.textColor = .gray_700
+        $0.text = Title.memo
+    }
     let memoTextView = UITextView().then {
-        $0.font = TypoStyle.SuitB3.font
-        $0.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        $0.font = TypoStyle.SuitD1.font
+        $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         $0.textContainer.lineFragmentPadding = 0
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
@@ -97,7 +102,8 @@ final class AddView: UIView {
     let memoPlaceholder = UILabel().then {
         $0.text = Placeholder.uploadItemMemo
         $0.textColor = .gray_200
-        $0.font = TypoStyle.SuitB3.font
+        $0.font = TypoStyle.SuitD1.font
+        $0.numberOfLines = 0
     }
     
     let separatorViews: [UIView] = Array(repeating: UIView().then {
@@ -129,6 +135,8 @@ final class AddView: UIView {
         cameraContainer.addSubview(cameraIcon)
         cameraContainer.addSubview(imageCountLabel)
         contentView.addSubview(stackView)
+        memoContainer.addSubview(memoTitleLabel)
+        memoContainer.addSubview(memoTextView)
         memoTextView.addSubview(memoPlaceholder)
         
         toolBar.configure(title: Title.addItem)
@@ -172,13 +180,22 @@ final class AddView: UIView {
             make.bottom.equalToSuperview().offset(-16)
         }
         
+        memoTitleLabel.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().offset(16)
+        }
+        
+        memoTextView.snp.makeConstraints { make in
+            make.top.equalTo(memoTitleLabel.snp.bottom).offset(14)
+            make.leading.trailing.bottom.equalToSuperview().inset(16)
+            make.height.equalTo(300)
+        }
+        
         memoPlaceholder.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(memoTextView).inset(16)
-            make.top.equalTo(memoTextView).offset(16)
+            make.top.leading.trailing.equalTo(memoTextView)
         }
 
         let fields: [UIView] = [
-            itemNameSection, itemPriceSection, folderSection, alarmSection, itemLinkSection, memoTextView
+            itemNameSection, itemPriceSection, folderSection, alarmSection, itemLinkSection, memoContainer
         ]
         
         for (index, field) in fields.enumerated() {
@@ -186,9 +203,9 @@ final class AddView: UIView {
             
             stackView.addArrangedSubview(field)
             
-            if field == memoTextView {
+            if field == memoContainer {
                 field.snp.makeConstraints { make in
-                    make.height.equalTo(300)
+                    make.height.equalTo(362)
                 }
             } else {
                 field.snp.makeConstraints { make in
