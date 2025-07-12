@@ -11,6 +11,7 @@ import Combine
 import Lottie
 import Then
 import PhotosUI
+import Moya
 import Core
 import WBNetwork
 
@@ -35,6 +36,7 @@ final class AddViewController: UIViewController {
     // Bottom Sheets
     private let backgroundDimView = UIView()
     private let folderSelectBottomSheet = FolderSelectBottomSheet()
+    private let addFolderBottomSheet = FolderBottomSheet()
     private let shoppingLinkBottomSheet = ShoppingLinkBottomSheet()
     private let selectDateBottomSheet = SelectDateBottomSheet()
     
@@ -213,8 +215,7 @@ final class AddViewController: UIViewController {
     // MARK: - Actions
     private func setupActions() {
         addView.folderSection.onNewFolderTap = {
-            // 새 폴더 버튼 눌렀을 때 로직
-            print("새 폴더 버튼")
+            self.showAddFolderBottomSheet()
         }
         
         addView.folderSection.onFolderSelected = { [weak self] folderId in
@@ -223,7 +224,7 @@ final class AddViewController: UIViewController {
 
         addView.folderSection.onArrowTap = { [weak self] in
             guard let folders = self?.viewModel.folders else {return}
-            self?.showFolderBottomSheet(for: folders)
+            self?.showSelectFolderBottomSheet(for: folders)
         }
         
         addView.alarmSection.onTap = { [weak self] in
@@ -267,7 +268,8 @@ final class AddViewController: UIViewController {
     }
     
     @objc private func dismissModal() {
-        self.hideFolderBottomSheet()
+        self.hideSelectFolderBottomSheet()
+        self.hideAddFolerBottomSheet()
         self.hideDateBottomSheet()
         self.hideLinkBottomSheet()
     }
@@ -275,10 +277,15 @@ final class AddViewController: UIViewController {
     /// 시트 설정
     private func setupBottomSheet() {
         view.addSubview(folderSelectBottomSheet)
+        view.addSubview(addFolderBottomSheet)
         view.addSubview(shoppingLinkBottomSheet)
         view.addSubview(selectDateBottomSheet)
         
         folderSelectBottomSheet.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+        }
+        addFolderBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
         }
@@ -292,12 +299,38 @@ final class AddViewController: UIViewController {
         }
         // Folder Binding
         folderSelectBottomSheet.selectAction = { [weak self] folderId, _ in
-            self?.hideFolderBottomSheet()
+            self?.hideAddFolerBottomSheet()
             self?.viewModel.selectedFolderId = folderId
         }
         folderSelectBottomSheet.onClose = { [weak self] in
-            self?.hideFolderBottomSheet()
+            self?.hideSelectFolderBottomSheet()
         }
+        // Add Folder
+        addFolderBottomSheet.onClose = { [weak self] in
+            self?.view.endEditing(true)
+            self?.hideAddFolerBottomSheet()
+        }
+        addFolderBottomSheet.onActionButtonTap = { [weak self] folderName, folderId in
+            // 새 폴더 추가
+            _Concurrency.Task {
+                do {
+                    self?.addFolderBottomSheet.actionButton.startAnimation()
+                    try await self?.viewModel.addFolder(name: folderName)
+                    self?.view.endEditing(true)
+                    self?.addFolderBottomSheet.actionButton.stopAnimation()
+                    self?.hideAddFolerBottomSheet()
+                } catch {
+                    if let moyaError = error as? MoyaError, let response = moyaError.response {
+                        if response.statusCode == 409 {
+                            self?.addFolderBottomSheet.actionButton.stopAnimation()
+                            self?.addFolderBottomSheet.displayErrorMessage("동일 이름의 폴더가 있어요!")
+                        }
+                    }
+                    throw error
+                }
+            }
+        }
+        
         // Shopping Link Binding
         shoppingLinkBottomSheet.onClose = { [weak self] in
             self?.hideLinkBottomSheet()
@@ -334,7 +367,7 @@ final class AddViewController: UIViewController {
     }
     
     /// 폴더 선택 시트 노출
-    private func showFolderBottomSheet(for folders: [FolderListResponse]) {
+    private func showSelectFolderBottomSheet(for folders: [FolderListResponse]) {
         DispatchQueue.main.async {
             self.view.endEditing(true)
             self.folderSelectBottomSheet.configure(with: folders)
@@ -350,11 +383,43 @@ final class AddViewController: UIViewController {
     }
     
     /// 폴더 선택 시트 미노출
-    private func hideFolderBottomSheet() {
+    private func hideSelectFolderBottomSheet() {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.folderSelectBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    /// 새 폴더 추가 시트 노출
+    private func showAddFolderBottomSheet(for folder: FolderListResponse? = nil) {
+        DispatchQueue.main.async {
+            self.tabBarController?.tabBar.isHidden = true
+            self.addFolderBottomSheet.initView()
+            
+            self.addFolderBottomSheet.configure(with: folder)
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 1.0
+                self.addFolderBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview()
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 새 폴더 추가 시트 숨김
+    private func hideAddFolerBottomSheet() {
+        DispatchQueue.main.async {
+            self.tabBarController?.tabBar.isHidden = false
+            self.addFolderBottomSheet.resetView()
+            
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 0.0
+                self.addFolderBottomSheet.snp.updateConstraints { make in
                     make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
                 }
                 self.view.layoutIfNeeded()
@@ -541,7 +606,7 @@ extension AddViewController: AddToolBarDelegate {
     func rightItemTap() {
         UIDevice.vibrate()
         let lottie = SpinningLottie()
-        Task {
+        _Concurrency.Task {
             do {
                 self.view.endEditing(true)
                 lottie.startAnimation()
