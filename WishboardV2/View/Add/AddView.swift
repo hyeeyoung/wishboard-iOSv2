@@ -150,13 +150,17 @@ final class AddView: UIView {
     private func setupUI() {
         addSubview(toolBar)
         addSubview(scrollView)
+        
         scrollView.addSubview(contentView)
+        
         contentView.addSubview(imagePickerContainer)
+        contentView.addSubview(collectionView)
+        contentView.addSubview(stackView)
+        
         imagePickerContainer.addSubview(cameraContainer)
         cameraContainer.addSubview(cameraIcon)
         cameraContainer.addSubview(imageCountLabel)
-        contentView.addSubview(collectionView)
-        contentView.addSubview(stackView)
+        
         memoContainer.addSubview(memoTitleLabel)
         memoContainer.addSubview(memoTextView)
         memoContainer.addSubview(memoPlaceholder)

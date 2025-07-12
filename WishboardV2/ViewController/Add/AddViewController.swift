@@ -45,6 +45,10 @@ final class AddViewController: UIViewController {
     // Keyboard
     private weak var activeField: UIView?
     
+    // PH Picker
+    private var selections = [String : PHPickerResult]()
+    private var selectedAssetIdentifiers = [String]()
+    
     // MARK: - Initializers
     
     init(type: AddItemType, item: WishListResponse? = nil) {
@@ -444,9 +448,18 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
     }
     
     private func openPhotoLibrary() {
-        var config = PHPickerConfiguration()
+        // 이미지의 Identifier를 사용하기 위해서는 초기화를 shared로 해줘야 합니다.
+        var config = PHPickerConfiguration(photoLibrary: .shared())
+        // 라이브러리에서 보여줄 Assets을 필터를 한다. (기본값: 이미지, 비디오, 라이브포토)
+        config.filter = PHPickerFilter.any(of: [.images])
+        // 다중 선택 갯수 설정 (0 = 무제한)
         config.selectionLimit = 10
-        config.filter = .images
+        // 선택 동작을 나타냄 (default: 기본 틱 모양, ordered: 선택한 순서대로 숫자로 표현, people: 뭔지 모르겠게요)
+        config.selection = .ordered
+        // 잘은 모르겠지만, current로 설정하면 트랜스 코딩을 방지한다고 하네요!?
+        config.preferredAssetRepresentationMode = .current
+        // 이 동작이 있어야 PHPicker를 실행 시, 선택했던 이미지를 기억해 표시할 수 있다. (델리게이트 코드 참고)
+        config.preselectedAssetIdentifiers = selectedAssetIdentifiers
 
         let picker = PHPickerViewController(configuration: config)
         picker.delegate = self
@@ -470,23 +483,37 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true)
 
-        var selectedImages: [UIImage] = []
+        let updatedIdentifiers = results.compactMap { $0.assetIdentifier }
+        selectedAssetIdentifiers = updatedIdentifiers
+
+        var newSelections: [String: PHPickerResult] = [:]
+        results.forEach {
+            if let id = $0.assetIdentifier {
+                newSelections[id] = selections[id] ?? $0
+            }
+        }
+        selections = newSelections
+
+        var selectedImages: [UIImage?] = Array(repeating: nil, count: updatedIdentifiers.count)
         let dispatchGroup = DispatchGroup()
 
-        for result in results {
-            dispatchGroup.enter()
-            result.itemProvider.loadObject(ofClass: UIImage.self) { (object, error) in
-                defer { dispatchGroup.leave() }
+        for (index, id) in updatedIdentifiers.enumerated() {
+            guard let result = selections[id] else { continue }
 
+            dispatchGroup.enter()
+            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
+                defer { dispatchGroup.leave() }
                 if let image = object as? UIImage {
-                    selectedImages.append(image)
+                    selectedImages[index] = image
                 }
             }
         }
 
         dispatchGroup.notify(queue: .main) {
-            self.viewModel.selectedImage = selectedImages
-            self.addView.updateImages(selectedImages)
+            // compactMap으로 nil 제거 후 순서 보존
+            let finalImages = selectedImages.compactMap { $0 }
+            self.viewModel.selectedImage = finalImages
+            self.addView.updateImages(finalImages)
         }
     }
 }
