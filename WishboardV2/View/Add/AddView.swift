@@ -82,11 +82,7 @@ final class AddView: UIView {
                                                         isEditable: true,
                                                         showsArrow: false))
     
-    let folderSection = FormItemView(title: Title.folder,
-                                       isRequired: false,
-                                       type: .textField(placeholder: Placeholder.uploadItemPrice,
-                                                        isEditable: false,
-                                                        showsArrow: false))
+    let folderSection = FolderFormItemView(title: Title.folder, isRequired: false)
     
     let alarmSection = FormItemView(title: Title.notificationItem,
                                     isRequired: false,

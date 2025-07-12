@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
 		230DE29E2D6B08BB00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
+		23167A012E22805E00F7D9AB /* FolderFormItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23167A002E22805E00F7D9AB /* FolderFormItemView.swift */; };
+		23167A032E22807A00F7D9AB /* FolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23167A022E22807A00F7D9AB /* FolderCell.swift */; };
 		231F51BE2C708EB400524968 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51BD2C708EB400524968 /* HomeView.swift */; };
 		231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */; };
 		231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C42C708F4A00524968 /* HomeViewModel.swift */; };
@@ -223,6 +225,8 @@
 
 /* Begin PBXFileReference section */
 		230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
+		23167A002E22805E00F7D9AB /* FolderFormItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderFormItemView.swift; sourceTree = "<group>"; };
+		23167A022E22807A00F7D9AB /* FolderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCell.swift; sourceTree = "<group>"; };
 		231F51BD2C708EB400524968 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishItemCollectionViewCell.swift; sourceTree = "<group>"; };
 		231F51C42C708F4A00524968 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -709,6 +713,8 @@
 				23C6107F2D68D791003E71F4 /* OptionSelectorView.swift */,
 				23DE157E2E1D3B8C0011924F /* FormItemView.swift */,
 				238AE48B2E21571A009C4213 /* ImageCell.swift */,
+				23167A002E22805E00F7D9AB /* FolderFormItemView.swift */,
+				23167A022E22807A00F7D9AB /* FolderCell.swift */,
 			);
 			path = Add;
 			sourceTree = "<group>";
@@ -1230,6 +1236,7 @@
 				23DE157F2E1D3B8C0011924F /* FormItemView.swift in Sources */,
 				2337C86D2C710A5F00E2A67B /* DetailToolBar.swift in Sources */,
 				239540F12C6A179B003AB3D5 /* LoginView.swift in Sources */,
+				23167A032E22807A00F7D9AB /* FolderCell.swift in Sources */,
 				231F85CB2D6B38D30060F827 /* SelectDateBottomSheet.swift in Sources */,
 				239AD1DF2C6A2410002052BD /* ToolBar.swift in Sources */,
 				23CBF4CF2C5515E80061D22F /* OnboardingViewController.swift in Sources */,
@@ -1271,6 +1278,7 @@
 				231F85C92D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift in Sources */,
 				23ACCEC52C6A1EDC00E93953 /* LoginViewModel.swift in Sources */,
 				2337C8642C70FD2B00E2A67B /* ItemDetailViewController.swift in Sources */,
+				23167A012E22805E00F7D9AB /* FolderFormItemView.swift in Sources */,
 				23F0F53B2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift in Sources */,
 				232466752C6F92A400979940 /* TabBarViewController.swift in Sources */,
 				230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */,

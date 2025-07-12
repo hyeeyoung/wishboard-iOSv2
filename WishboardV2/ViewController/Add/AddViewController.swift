@@ -80,9 +80,6 @@ final class AddViewController: UIViewController {
             self.viewModel.itemPrice = item_price
         }
         self.viewModel.selectedFolderId = self.item?.folder_id
-        if let folder_name = self.item?.folder_name, !folder_name.isEmpty {
-            self.viewModel.selectedFolder = folder_name
-        }
         if let item_url = self.item?.item_url, !item_url.isEmpty {
             self.viewModel.selectedLink = item_url
         }
@@ -155,10 +152,19 @@ final class AddViewController: UIViewController {
             .assign(to: \.memo, on: viewModel)
             .store(in: &cancellables)
         
-        viewModel.$selectedFolder
+        viewModel.$folders
             .receive(on: RunLoop.main)
-            .sink { [weak self] text in
-//                self?.addView.folderView.updateText(text ?? Title.folder)
+            .sink { [weak self] folders in
+                self?.addView.folderSection.folders = folders
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$selectedFolderId
+            .receive(on: RunLoop.main)
+            .sink { [weak self] folderId in
+                guard let folderId = folderId else { return }
+                self?.addView.folderSection.selectFolder(with: folderId)
+                self?.folderSelectBottomSheet.selectedFolderId = folderId
             }
             .store(in: &cancellables)
         
@@ -206,10 +212,19 @@ final class AddViewController: UIViewController {
     
     // MARK: - Actions
     private func setupActions() {
-//        addView.folderView.onTap = { [weak self] in
-//            guard let folders = self?.viewModel.folders else {return}
-//            self?.showFolderBottomSheet(for: folders)
-//        }
+        addView.folderSection.onNewFolderTap = {
+            // 새 폴더 버튼 눌렀을 때 로직
+            print("새 폴더 버튼")
+        }
+        
+        addView.folderSection.onFolderSelected = { [weak self] folderId in
+            self?.viewModel.selectedFolderId = folderId
+        }
+
+        addView.folderSection.onArrowTap = { [weak self] in
+            guard let folders = self?.viewModel.folders else {return}
+            self?.showFolderBottomSheet(for: folders)
+        }
         
         addView.alarmSection.onTap = { [weak self] in
             self?.showDateBottomSheet()
@@ -276,10 +291,9 @@ final class AddViewController: UIViewController {
             make.bottom.equalToSuperview().offset(340)
         }
         // Folder Binding
-        folderSelectBottomSheet.selectAction = { [weak self] folderId, folderName in
+        folderSelectBottomSheet.selectAction = { [weak self] folderId, _ in
             self?.hideFolderBottomSheet()
             self?.viewModel.selectedFolderId = folderId
-            self?.viewModel.selectedFolder = folderName
         }
         folderSelectBottomSheet.onClose = { [weak self] in
             self?.hideFolderBottomSheet()
@@ -316,8 +330,7 @@ final class AddViewController: UIViewController {
         }
         
         // data - fetch FolderList
-        // TODO: 요거 주석
-//        self.viewModel.fetchFolders()
+        self.viewModel.fetchFolders()
     }
     
     /// 폴더 선택 시트 노출

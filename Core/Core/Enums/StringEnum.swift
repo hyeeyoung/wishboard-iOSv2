@@ -136,6 +136,8 @@ public enum Button {
     public static let modify = "수정"
     public static let howTo = "네! 알겠어요"
     public static let setNoti = "상품 알림 설정하기"
+    
+    public static let addFolder = "+ 새 폴더"
 }
 
 public enum EmptyMessage {

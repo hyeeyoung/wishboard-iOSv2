@@ -24,7 +24,6 @@ final class AddViewModel {
     @Published var memo: String? = nil
     
     @Published var selectedAlarm: String? = nil
-    @Published var selectedFolder: String? = nil
     @Published var folders: [FolderListResponse] = []
     
     // 저장 버튼 활성화 여부
@@ -127,12 +126,19 @@ final class AddViewModel {
     func fetchFolders() {
         _Concurrency.Task {
             do {
-                let usecase = GetFolderListUseCase()
-                let data = try await usecase.execute()
+//                let usecase = GetFolderListUseCase()
+//                let data = try await usecase.execute()
+//                
+//                DispatchQueue.main.async {
+//                    self.folders = data
+//                }
                 
-                DispatchQueue.main.async {
-                    self.folders = data
-                }
+                let dummy = FolderListResponse(folder_id: 0, folder_name: "folder1", folder_thumbnail: "aa", item_count: 1)
+                let dummy1 = FolderListResponse(folder_id: 1, folder_name: "folder2", folder_thumbnail: "aa", item_count: 2)
+                let dummy2 = FolderListResponse(folder_id: 2, folder_name: "folder33214234234234123", folder_thumbnail: "aa", item_count: 3)
+                let dummy3 = FolderListResponse(folder_id: 3, folder_name: "folder4", folder_thumbnail: "aa", item_count: 4)
+                
+                self.folders = [dummy, dummy1, dummy2, dummy3]
             } catch {
                 throw error
             }

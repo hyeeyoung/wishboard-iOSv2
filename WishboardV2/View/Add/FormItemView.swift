@@ -44,7 +44,7 @@ class FormItemView: UIView {
     
     let mainContainer = UIView()
     
-    private let titleLabel = UILabel().then {
+    public let titleLabel = UILabel().then {
         $0.font = TypoStyle.SuitB2.font
         $0.textColor = .gray_700
     }
@@ -64,7 +64,10 @@ class FormItemView: UIView {
         
         addSubViews()
         setupUI(title: title, isRequired: isRequired, type: type)
-        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
+        
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        gesture.cancelsTouchesInView = false
+        self.addGestureRecognizer(gesture)
     }
 
     required init?(coder: NSCoder) {
@@ -193,16 +196,7 @@ class FormItemView: UIView {
             )
         case .folder:
             // TODO: 상속 받아서 구현 or delegate 활용해 외부 구성
-            // 간단한 placeholder – 실제 구현은 `FolderItemView`에서 처리 권장
-            let placeholder = UILabel().then {
-                $0.text = "+ 새 폴더"
-                $0.font = .systemFont(ofSize: 14)
-                $0.textColor = .secondaryLabel
-            }
-            mainContainer.addSubview(placeholder)
-            placeholder.snp.makeConstraints { make in
-                make.height.equalTo(44)
-            }
+            break
         }
     }
     
