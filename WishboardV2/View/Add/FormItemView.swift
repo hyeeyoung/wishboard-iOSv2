@@ -29,6 +29,7 @@ class FormItemView: UIView {
             textField?.text = newValue
             textView?.text = newValue
             textSubject.send(newValue)      // 초기값 세팅 시에도 발행
+            placeholderLabel?.isHidden = !(newValue.isEmpty)
         }
     }
 
@@ -52,8 +53,9 @@ class FormItemView: UIView {
         $0.text = "*"
         $0.textColor = .green_700
     }
-    private var textField: UITextField?
-    private var textView: UITextView?
+    public private(set) var textView: UITextView?
+    public private(set) var textField: UITextField?
+    private var placeholderLabel: UILabel?
     private var arrowImageView: UIImageView?
 
     // MARK: - Init
@@ -67,6 +69,10 @@ class FormItemView: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - UI Setup
@@ -152,15 +158,39 @@ class FormItemView: UIView {
                 $0.font = TypoStyle.SuitD1.font
                 $0.textColor = .gray_700
                 $0.isScrollEnabled = false
+                $0.textContainerInset = .zero
+                $0.textContainer.lineFragmentPadding = 0
             }
             self.textView = tv
             mainContainer.addSubview(tv)
             tv.snp.makeConstraints { make in
-                make.height.greaterThanOrEqualTo(120) // 최소 높이
-                make.leading.trailing.bottom.equalToSuperview()
+                make.height.greaterThanOrEqualTo(120)
+                make.leading.bottom.equalToSuperview()
                 make.top.equalTo(titleLabel.snp.bottom).offset(14)
             }
 
+            // placeholder label
+            let placeholder = UILabel().then {
+                $0.text = Placeholder.uploadItemMemo
+                $0.textColor = .gray_200
+                $0.font = TypoStyle.SuitD1.font
+                $0.numberOfLines = 0
+                $0.lineBreakMode = .byCharWrapping
+            }
+            placeholderLabel = placeholder
+            mainContainer.addSubview(placeholder)
+            placeholder.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview()
+                make.top.equalTo(titleLabel.snp.bottom).offset(14)
+            }
+
+            // textView text change 감지
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(textViewDidChange),
+                name: UITextView.textDidChangeNotification,
+                object: tv
+            )
         case .folder:
             // TODO: 상속 받아서 구현 or delegate 활용해 외부 구성
             // 간단한 placeholder – 실제 구현은 `FolderItemView`에서 처리 권장
@@ -184,5 +214,11 @@ class FormItemView: UIView {
     
     @objc private func handleTap() {
         self.onTap?()
+    }
+    
+    @objc private func textViewDidChange(_ notification: Foundation.Notification) {
+        guard let textView = self.textView else { return }
+        placeholderLabel?.isHidden = !textView.text.isEmpty
+        textSubject.send(textView.text ?? "")
     }
 }

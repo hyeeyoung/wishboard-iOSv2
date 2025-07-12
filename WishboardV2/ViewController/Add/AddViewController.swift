@@ -148,11 +148,11 @@ final class AddViewController: UIViewController {
             .assign(to: \.itemPrice, on: viewModel)
             .store(in: &cancellables)
         
-        addView.memoTextView.textPublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak viewModel] text in
-                viewModel?.memo = text
-            }
+        addView.memoSection.textPublisher
+            .map { Optional($0) }
+            .removeDuplicates()
+            .debounce(for: .milliseconds(100), scheduler: RunLoop.main)
+            .assign(to: \.memo, on: viewModel)
             .store(in: &cancellables)
         
         viewModel.$selectedFolder
@@ -188,10 +188,11 @@ final class AddViewController: UIViewController {
             .store(in: &cancellables)
         
         viewModel.$memo
-            .receive(on: RunLoop.main)
+            .dropFirst()
+            .removeDuplicates()
             .sink { [weak self] text in
-                self?.addView.memoPlaceholder.isHidden = !(text?.isEmpty ?? true)
-                self?.addView.memoTextView.text = text
+                guard self?.addView.memoSection.textView?.isFirstResponder == false else { return }
+                self?.addView.memoSection.text = text ?? ""
             }
             .store(in: &cancellables)
         
@@ -226,7 +227,6 @@ final class AddViewController: UIViewController {
     private func setupDelegates() {
         addView.delegate = self
         addView.toolBar.delegate = self
-        addView.memoTextView.delegate = self
     }
     
     // MARK: Alert Helper
@@ -515,23 +515,6 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
             self.viewModel.selectedImage = finalImages
             self.addView.updateImages(finalImages)
         }
-    }
-}
-
-// MARK: - UITextView Delegates
-extension AddViewController: UITextViewDelegate {
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        activeField = textView
-    }
-    
-    func textViewDidChange(_ textView: UITextView) {
-        addView.memoPlaceholder.isHidden = !textView.text.isEmpty
-        activeField = textView
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        textView.resignFirstResponder()
     }
 }
 
