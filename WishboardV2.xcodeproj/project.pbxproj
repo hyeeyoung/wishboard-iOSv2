@@ -53,6 +53,7 @@
 		238595162C71BF4F00B85CBC /* FolderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595152C71BF4F00B85CBC /* FolderViewModel.swift */; };
 		2385951A2C71C13F00B85CBC /* FolderCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595192C71C13F00B85CBC /* FolderCollectionViewCell.swift */; };
 		238595252C71C7E700B85CBC /* BaseToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595242C71C7E700B85CBC /* BaseToolBar.swift */; };
+		238AE48C2E21571A009C4213 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238AE48B2E21571A009C4213 /* ImageCell.swift */; };
 		238F45A82C70A83600A6119B /* HomeToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238F45A72C70A83600A6119B /* HomeToolBar.swift */; };
 		239540F12C6A179B003AB3D5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239540F02C6A179B003AB3D5 /* LoginView.swift */; };
 		2395DFF22D8AF75B005489FD /* SelectDateBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */; };
@@ -266,6 +267,7 @@
 		238595152C71BF4F00B85CBC /* FolderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderViewModel.swift; sourceTree = "<group>"; };
 		238595192C71C13F00B85CBC /* FolderCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCollectionViewCell.swift; sourceTree = "<group>"; };
 		238595242C71C7E700B85CBC /* BaseToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseToolBar.swift; sourceTree = "<group>"; };
+		238AE48B2E21571A009C4213 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		238F45A72C70A83600A6119B /* HomeToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeToolBar.swift; sourceTree = "<group>"; };
 		239540F02C6A179B003AB3D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		23974D4D2C5E5303006BBC97 /* SUIT-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SUIT-Medium.ttf"; sourceTree = "<group>"; };
@@ -706,6 +708,7 @@
 				23C6107A2D68D6B1003E71F4 /* AddView.swift */,
 				23C6107F2D68D791003E71F4 /* OptionSelectorView.swift */,
 				23DE157E2E1D3B8C0011924F /* FormItemView.swift */,
+				238AE48B2E21571A009C4213 /* ImageCell.swift */,
 			);
 			path = Add;
 			sourceTree = "<group>";
@@ -1209,6 +1212,7 @@
 				23CBF49E2C5514510061D22F /* ViewController.swift in Sources */,
 				23EFA1C62D85B39F00A0EB42 /* SpinningLottie.swift in Sources */,
 				23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */,
+				238AE48C2E21571A009C4213 /* ImageCell.swift in Sources */,
 				2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */,
 				231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */,
 				238595132C71BF3900B85CBC /* FolderView.swift in Sources */,

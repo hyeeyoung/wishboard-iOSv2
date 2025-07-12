@@ -14,7 +14,7 @@ import Core
 
 final class AddViewModel {
     // 입력 데이터
-    @Published var selectedImage: UIImage? = nil
+    @Published var selectedImage: [UIImage] = []
     @Published var itemName: String = ""
     @Published var itemPrice: String = ""
     @Published var selectedFolderId: Int? = nil
@@ -43,7 +43,7 @@ final class AddViewModel {
         $itemPrice.eraseToAnyPublisher()
     }
     
-    private var selectedImagePublisher: AnyPublisher<UIImage?, Never> {
+    private var selectedImagePublisher: AnyPublisher<[UIImage], Never> {
         $selectedImage.eraseToAnyPublisher()
     }
     
@@ -59,26 +59,26 @@ final class AddViewModel {
     // API 호출
     func addItem() async throws {
         do {
-            
-            let itemName = self.itemName
-            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
-            let selectedFolderId = self.selectedFolderId
-            let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
-            let itemURL = self.selectedLink
-            let itemMemo = self.memo
-            let notiType = self.selectedAlarmType
-            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
-            
-            let item = RequestItemDTO(folderId: selectedFolderId,
-                                         photo: itemImage,
-                                         itemName: itemName,
-                                         itemPrice: itemPrice,
-                                         itemURL: itemURL,
-                                         itemMemo: itemMemo,
-                                         itemNotificationType: notiType, itemNotificationDate: notiDate)
-            
-            let usecase = AddItemUseCase()
-            _ = try await usecase.execute(type: .manual, item: item)
+            // TODO: 상품 등록 다중이미지로 로직 변경
+//            let itemName = self.itemName
+//            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+//            let selectedFolderId = self.selectedFolderId
+//            let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
+//            let itemURL = self.selectedLink
+//            let itemMemo = self.memo
+//            let notiType = self.selectedAlarmType
+//            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
+//            
+//            let item = RequestItemDTO(folderId: selectedFolderId,
+//                                         photo: itemImage,
+//                                         itemName: itemName,
+//                                         itemPrice: itemPrice,
+//                                         itemURL: itemURL,
+//                                         itemMemo: itemMemo,
+//                                         itemNotificationType: notiType, itemNotificationDate: notiDate)
+//            
+//            let usecase = AddItemUseCase()
+//            _ = try await usecase.execute(type: .manual, item: item)
         } catch {
             if let moyaError = error as? MoyaError, let response = moyaError.response {
                 if response.statusCode == 400 {
@@ -92,26 +92,26 @@ final class AddViewModel {
     
     func modifyItem(idx: Int) async throws {
         do {
-            
-            let itemName = self.itemName
-            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
-            let selectedFolderId = self.selectedFolderId
-            let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
-            let itemURL = self.selectedLink
-            let itemMemo = self.memo
-            let notiType = self.selectedAlarmType
-            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
-            
-            let item = RequestItemDTO(folderId: selectedFolderId,
-                                         photo: itemImage,
-                                         itemName: itemName,
-                                         itemPrice: itemPrice,
-                                         itemURL: itemURL,
-                                         itemMemo: itemMemo,
-                                         itemNotificationType: notiType, itemNotificationDate: notiDate)
-            
-            let usecase = ModifyItemUseCase()
-            _ = try await usecase.execute(idx: idx, item: item)
+            // TODO: 상품 등록 다중이미지로 로직 변경
+//            let itemName = self.itemName
+//            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+//            let selectedFolderId = self.selectedFolderId
+//            let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
+//            let itemURL = self.selectedLink
+//            let itemMemo = self.memo
+//            let notiType = self.selectedAlarmType
+//            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
+//            
+//            let item = RequestItemDTO(folderId: selectedFolderId,
+//                                         photo: itemImage,
+//                                         itemName: itemName,
+//                                         itemPrice: itemPrice,
+//                                         itemURL: itemURL,
+//                                         itemMemo: itemMemo,
+//                                         itemNotificationType: notiType, itemNotificationDate: notiDate)
+//            
+//            let usecase = ModifyItemUseCase()
+//            _ = try await usecase.execute(idx: idx, item: item)
         } catch {
 //            SnackBar.shared.show(type: .errorMessage)
             if let moyaError = error as? MoyaError, let response = moyaError.response {

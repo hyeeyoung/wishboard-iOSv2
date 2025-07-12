@@ -113,7 +113,7 @@ class FormItemView: UIView {
             tf.attributedPlaceholder = NSAttributedString(
                 string: placeholder,
                 attributes: [
-                    .foregroundColor: UIColor.gray_300
+                    .foregroundColor: UIColor.gray_200
                 ]
             )
             tf.snp.makeConstraints { make in

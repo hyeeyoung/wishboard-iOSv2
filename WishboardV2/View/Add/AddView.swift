@@ -27,7 +27,7 @@ final class AddView: UIView {
     
     // Image Pick View
     let imagePickerContainer = UIView().then {
-        $0.backgroundColor = .gray_50
+        $0.backgroundColor = .f3f3f3
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
     }
@@ -43,6 +43,23 @@ final class AddView: UIView {
         $0.font = TypoStyle.SuitD3.font
         $0.textColor = .gray_200
     }
+    
+    // Image CollectionView
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 100, height: 100)
+        layout.minimumInteritemSpacing = 8
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
+
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.dataSource = self
+        cv.delegate = self
+        cv.isScrollEnabled = true
+        cv.showsHorizontalScrollIndicator = false
+        cv.register(SelectedImageCell.self, forCellWithReuseIdentifier: SelectedImageCell.identifier)
+        return cv
+    }()
     
     // Contents
     
@@ -104,11 +121,15 @@ final class AddView: UIView {
         $0.textColor = .gray_200
         $0.font = TypoStyle.SuitD1.font
         $0.numberOfLines = 0
+        $0.lineBreakMode = .byCharWrapping
     }
     
     let separatorViews: [UIView] = Array(repeating: UIView().then {
         $0.backgroundColor = .gray_100
     }, count: 6)
+    
+    // MARK: - Properties
+    public var selectedImages: [UIImage] = []
     
     // MARK: - Init
     
@@ -134,10 +155,11 @@ final class AddView: UIView {
         imagePickerContainer.addSubview(cameraContainer)
         cameraContainer.addSubview(cameraIcon)
         cameraContainer.addSubview(imageCountLabel)
+        contentView.addSubview(collectionView)
         contentView.addSubview(stackView)
         memoContainer.addSubview(memoTitleLabel)
         memoContainer.addSubview(memoTextView)
-        memoTextView.addSubview(memoPlaceholder)
+        memoContainer.addSubview(memoPlaceholder)
         
         toolBar.configure(title: Title.addItem)
         
@@ -172,6 +194,12 @@ final class AddView: UIView {
             make.top.equalTo(cameraIcon.snp.bottom).offset(6)
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview()
+        }
+        
+        collectionView.snp.makeConstraints { make in
+            make.leading.equalTo(imagePickerContainer.snp.trailing).offset(8)
+            make.top.bottom.equalTo(imagePickerContainer)
+            make.trailing.equalToSuperview()
         }
         
         stackView.snp.makeConstraints { make in
@@ -243,7 +271,35 @@ final class AddView: UIView {
         textField.text = "\(formattedText ?? "")원"
     }
     
+    public func updateImages(_ images: [UIImage]) {
+        selectedImages = images
+        imageCountLabel.text = "\(images.count)/10"
+        collectionView.reloadData()
+    }
+    
     @objc func priceTextBegin(_ textField: UITextField) {
         self.delegate?.setActiveField(textField)
+    }
+}
+
+extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        selectedImages.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectedImageCell.identifier, for: indexPath) as? SelectedImageCell else {
+            return UICollectionViewCell()
+        }
+
+        let image = selectedImages[indexPath.item]
+        cell.configure(with: image)
+
+        cell.onDelete = { [weak self] in
+            self?.selectedImages.remove(at: indexPath.item)
+            self?.updateImages(self?.selectedImages ?? [])
+        }
+
+        return cell
     }
 }

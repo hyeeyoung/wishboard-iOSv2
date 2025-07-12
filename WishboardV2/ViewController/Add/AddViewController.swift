@@ -10,6 +10,7 @@ import UIKit
 import Combine
 import Lottie
 import Then
+import PhotosUI
 import Core
 import WBNetwork
 
@@ -90,18 +91,19 @@ final class AddViewController: UIViewController {
             self.viewModel.selectedAlarm = "\(selectedAlarmDate) \(selectedAlarmType)"
         }
         
+        // TODO: 서버에서 받은 이미지 배열을 ... 변환해야함
         // 이미지
-        if let imageUrl = self.item?.item_img_url {
-            fetchImage(from: imageUrl) { image in
-                if let image = image {
-                    DispatchQueue.main.async {
-                        self.viewModel.selectedImage = image
-                    }
-                } else {
-                    print("❌ 이미지 변환 실패")
-                }
-            }
-        }
+//        if let imageUrl = self.item?.item_img_url {
+//            fetchImage(from: imageUrl) { image in
+//                if let image = image {
+//                    DispatchQueue.main.async {
+//                        self.viewModel.selectedImage = image
+//                    }
+//                } else {
+//                    print("❌ 이미지 변환 실패")
+//                }
+//            }
+//        }
     }
     
     // MARK: - Life Cycles
@@ -176,8 +178,8 @@ final class AddViewController: UIViewController {
         
         viewModel.$selectedImage
             .receive(on: RunLoop.main)
-            .sink { [weak self] image in
-//                self?.addView.imagePickerContainer.image = image ?? UIImage()
+            .sink { [weak self] images in
+                self?.addView.updateImages(images)
             }
             .store(in: &cancellables)
         
@@ -403,7 +405,7 @@ final class AddViewController: UIViewController {
 }
 
 // MARK: - ImagePicker 관련 Methods & Delegates
-extension AddViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension AddViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
     /// Image Picker
     @objc private func selectImage() {
         self.view.endEditing(true)
@@ -442,24 +444,50 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
     }
     
     private func openPhotoLibrary() {
-        let picker = UIImagePickerController()
+        var config = PHPickerConfiguration()
+        config.selectionLimit = 10
+        config.filter = .images
+
+        let picker = PHPickerViewController(configuration: config)
         picker.delegate = self
-        picker.sourceType = .photoLibrary
         present(picker, animated: true)
     }
     
     /// UIImagePickerControllerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editedImage = info[.editedImage] as? UIImage {
-            viewModel.selectedImage = editedImage
+            viewModel.selectedImage.append(editedImage)
         } else if let originalImage = info[.originalImage] as? UIImage {
-            viewModel.selectedImage = originalImage
+            viewModel.selectedImage.append(originalImage)
         }
         picker.dismiss(animated: true)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
+    }
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true)
+
+        var selectedImages: [UIImage] = []
+        let dispatchGroup = DispatchGroup()
+
+        for result in results {
+            dispatchGroup.enter()
+            result.itemProvider.loadObject(ofClass: UIImage.self) { (object, error) in
+                defer { dispatchGroup.leave() }
+
+                if let image = object as? UIImage {
+                    selectedImages.append(image)
+                }
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            self.viewModel.selectedImage = selectedImages
+            self.addView.updateImages(selectedImages)
+        }
     }
 }
 
