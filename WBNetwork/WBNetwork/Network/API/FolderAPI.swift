@@ -69,9 +69,9 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
         
         switch self {
         case .addFolder(let folderName):
-            parameters = ["folder_name": folderName]
+            parameters = ["folderName": folderName]
         case .modifyFolderName(_, let folderName):
-            parameters = ["folder_name": folderName]
+            parameters = ["folderName": folderName]
         default:
             parameters = [:]
         }

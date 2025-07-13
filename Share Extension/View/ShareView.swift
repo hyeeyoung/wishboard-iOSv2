@@ -265,7 +265,7 @@ final class ShareView: UIView {
                 guard let self = self else {return}
                 // 새 폴더 추가 시, 자동선택 처리 (요구사항)
                 if folders.count > 0, self.newFolderAdded {
-                    self.selectedFolderId = folders[0].folder_id
+                    self.selectedFolderId = folders[0].id
                 }
                 self.folderCollectionView.reloadData()
             }
@@ -344,7 +344,7 @@ extension ShareView: UICollectionViewDataSource, UICollectionViewDelegate {
         
         if let item = viewModel?.folders[indexPath.row] {
             cell.configure(with: item)
-            if let selectedFolderId = selectedFolderId, let folderId = item.folder_id, selectedFolderId == folderId {
+            if let selectedFolderId = selectedFolderId, let folderId = item.id, selectedFolderId == folderId {
                 cell.configureSelectedState(isSelected: true)
             } else {
                 cell.configureSelectedState(isSelected: false)
@@ -357,7 +357,7 @@ extension ShareView: UICollectionViewDataSource, UICollectionViewDelegate {
         UIDevice.vibrate()
         self.endEditing(true)
         
-        guard let folderId = viewModel?.folders[indexPath.item].folder_id else {return}
+        guard let folderId = viewModel?.folders[indexPath.item].id else {return}
         
         // 폴더 선택/선택해제
         if self.selectedFolderId == folderId {

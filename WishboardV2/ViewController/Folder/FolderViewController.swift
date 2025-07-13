@@ -121,7 +121,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
                     print("폴더 삭제 취소")
                 }, { _ in
                     print("폴더 삭제")
-                    guard let folderId = folder.folder_id else {return}
+                    guard let folderId = folder.id else {return}
                     self?.viewModel.deleteFolder(id: folderId)
                 }
             ]
@@ -152,7 +152,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         }
         
         bottomSheetView.onActionButtonTap = { [weak self] folderName, folder in
-            if let folder = folder, let id = folder.folder_id {
+            if let folder = folder, let id = folder.id {
                 // 폴더 이름 수정
                 _Concurrency.Task {
                     do {
@@ -266,10 +266,10 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = viewModel.folders[indexPath.item]
-        guard let folderId = item.folder_id else {return}
+        guard let folderId = item.id else {return}
         UIDevice.vibrate()
         
-        let folderTitle = item.folder_name ?? ""
+        let folderTitle = item.folderName ?? ""
         let folderDetailVC = FolderDetailViewController(folderId: String(folderId), folderTitle: folderTitle)
         self.navigationController?.pushViewController(folderDetailVC, animated: true)
     }

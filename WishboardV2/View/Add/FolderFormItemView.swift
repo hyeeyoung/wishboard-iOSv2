@@ -45,7 +45,13 @@ final class FolderFormItemView: FormItemView {
     
     // 폴더 목록
     var folders: [FolderListResponse] = [] {
-        didSet { folderCollectionView.reloadData() }
+        didSet {
+            folderCollectionView.reloadData()
+            folderCollectionView.performBatchUpdates(nil) { _ in
+                self.folderCollectionView.collectionViewLayout.invalidateLayout()
+                self.folderCollectionView.layoutIfNeeded()
+            }
+        }
     }
     private var selectedFolderId: Int?
     
@@ -133,12 +139,10 @@ final class FolderFormItemView: FormItemView {
     
     public func selectFolder(with id: Int) {
         selectedFolderId = id
-        guard let index = folders.firstIndex(where: { $0.folder_id == id }) else { return }
+        guard let index = folders.firstIndex(where: { $0.id == id }) else { return }
 
         let indexPath = IndexPath(item: index, section: 0)
         folderCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
-        
-//        onFolderSelected?(id)
     }
 }
 
@@ -155,21 +159,31 @@ extension FolderFormItemView: UICollectionViewDataSource, UICollectionViewDelega
         }
 
         let item = folders[indexPath.item]
-        if let cellTitle = item.folder_name {
+        if let cellTitle = item.folderName {
             cell.configure(with: cellTitle)
         }
         
         return cell
     }
 
-    // MARK: - UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedId = folders[indexPath.item].folder_id else { return }
+        guard let selectedId = folders[indexPath.item].id else { return }
         print("✅ 선택된 폴더: \(selectedId)")
         onFolderSelected?(selectedId)
     }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let folderName = folders[indexPath.item].folderName ?? ""
+        let font = TypoStyle.SuitB5.font
+        let padding: CGFloat = 20  // inset
+        let height: CGFloat = 26
 
-    // Optional: 셀 간 간격
+        let textWidth = (folderName as NSString).size(withAttributes: [.font: font]).width
+        return CGSize(width: textWidth + padding, height: height)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 6

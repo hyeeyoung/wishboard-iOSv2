@@ -300,7 +300,7 @@ final class AddViewController: UIViewController {
         }
         // Folder Binding
         folderSelectBottomSheet.selectAction = { [weak self] folderId, _ in
-            self?.hideAddFolerBottomSheet()
+            self?.hideSelectFolderBottomSheet()
             self?.viewModel.selectedFolderId = folderId
         }
         folderSelectBottomSheet.onClose = { [weak self] in

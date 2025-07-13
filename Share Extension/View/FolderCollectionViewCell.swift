@@ -86,8 +86,8 @@ final class FolderCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(with folder: FolderListResponse) {
-        folderThumbnailImg.loadImage(from: folder.folder_thumbnail ?? "")
-        folderNameLabel.text = folder.folder_name ?? ""
+        folderThumbnailImg.loadImage(from: folder.folderThumbnail ?? "")
+        folderNameLabel.text = folder.folderName ?? ""
     }
     
     func configureSelectedState(isSelected: Bool) {
