@@ -261,17 +261,18 @@ class ShareViewController: UIViewController {
         self.dismissKeyboard()
         shareView.completeButton.startAnimation()
         
-        let itemName = shareView.itemNameTextField.text
+        guard let itemName = shareView.itemNameTextField.text else { return }
         let itemPrice = FormatManager.shared.priceToStr(price: shareView.itemPriceTextField.text ?? "")
         let selectedFolderId = shareView.selectedFolderId
         
-        var itemImage: Data?
-        if let _ = viewModel.item?.itemImages {
-            itemImage = shareView.itemImage.image?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
+        var itemImage: [Data]?
+        if let _ = viewModel.item?.itemImages, 
+            let imageToData = shareView.itemImage.image?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) {
+            itemImage = [imageToData]
         }
         
         let itemDTO = RequestItemDTO(folderId: selectedFolderId, 
-                                     photo: itemImage,
+                                     photos: itemImage,
                                      itemName: itemName,
                                      itemPrice: itemPrice,
                                      itemURL: self.link,

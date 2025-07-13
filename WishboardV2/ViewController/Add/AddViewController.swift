@@ -188,7 +188,7 @@ final class AddViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.$selectedImage
+        viewModel.$selectedImages
             .receive(on: RunLoop.main)
             .sink { [weak self] images in
                 self?.addView.updateImages(images)
@@ -200,7 +200,8 @@ final class AddViewController: UIViewController {
             .removeDuplicates()
             .sink { [weak self] text in
                 guard self?.addView.memoSection.textView?.isFirstResponder == false else { return }
-                self?.addView.memoSection.text = text ?? ""
+                guard let text = text else { return }
+                self?.addView.memoSection.text = text
             }
             .store(in: &cancellables)
         
@@ -547,9 +548,9 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
     /// UIImagePickerControllerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editedImage = info[.editedImage] as? UIImage {
-            viewModel.selectedImage.append(editedImage)
+            viewModel.selectedImages.append(editedImage)
         } else if let originalImage = info[.originalImage] as? UIImage {
-            viewModel.selectedImage.append(originalImage)
+            viewModel.selectedImages.append(originalImage)
         }
         picker.dismiss(animated: true)
     }
@@ -590,7 +591,7 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         dispatchGroup.notify(queue: .main) {
             // compactMap으로 nil 제거 후 순서 보존
             let finalImages = selectedImages.compactMap { $0 }
-            self.viewModel.selectedImage = finalImages
+            self.viewModel.selectedImages = finalImages
             self.addView.updateImages(finalImages)
         }
     }

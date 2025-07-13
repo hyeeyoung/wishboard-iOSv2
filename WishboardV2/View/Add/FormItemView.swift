@@ -204,6 +204,7 @@ class FormItemView: UIView {
     @objc
     private func textDidChange(_ sender: UITextField) {
         onTextChanged?(sender)
+        textSubject.send(sender.text ?? "")
     }
     
     @objc private func handleTap() {
