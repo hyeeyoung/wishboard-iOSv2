@@ -10,6 +10,7 @@ import Foundation
 /// 응답구조 통일
 /// General 처리
 public struct CommonResponse<T: Decodable>: Decodable {
+    public var status: Int?
     public var success: Bool?
     public var message: String?
     public var data: T?

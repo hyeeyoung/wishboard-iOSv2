@@ -9,7 +9,7 @@ import Foundation
 
 public struct LoginResponse: Decodable {
     public var token: LoginRepsonseTokenData?
-    public var tempNickname: String?
+    public var temporaryNickname: String?
     public var pushState: Int?
 }
 

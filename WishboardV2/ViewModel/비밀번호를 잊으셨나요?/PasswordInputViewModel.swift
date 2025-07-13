@@ -76,7 +76,7 @@ class PasswordInputViewModel {
             let accessToken = tokenData?.accessToken
             let refreshToken = tokenData?.refreshToken
             let pushState = response.pushState
-            let tempNickname = response.tempNickname ?? ""
+            let tempNickname = response.temporaryNickname ?? ""
             
             // 기기에 토큰 정보 저장
             UserManager.accessToken = accessToken
@@ -103,7 +103,7 @@ class PasswordInputViewModel {
             let accessToken = tokenData?.accessToken
             let refreshToken = tokenData?.refreshToken
             let pushState = response.pushState
-            let tempNickname = response.tempNickname ?? ""
+            let tempNickname = response.temporaryNickname ?? ""
             
             // 기기에 토큰 정보 저장
             UserManager.accessToken = accessToken

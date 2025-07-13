@@ -76,7 +76,7 @@ final class LoginViewModel {
             // save tokens
             self.saveToken(tokenData)
             // save Temp NickName
-            UserManager.tempNickname = data.tempNickname ?? ""
+            UserManager.tempNickname = data.temporaryNickname ?? ""
             
         } catch {
             throw error
