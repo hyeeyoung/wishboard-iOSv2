@@ -94,19 +94,22 @@ final class AddViewController: UIViewController {
             self.viewModel.selectedAlarm = "\(selectedAlarmDate) \(selectedAlarmType)"
         }
         
-        // TODO: 서버에서 받은 이미지 배열을 ... 변환해야함
-        // 이미지
-//        if let imageUrl = self.item?.item_img_url {
-//            fetchImage(from: imageUrl) { image in
-//                if let image = image {
-//                    DispatchQueue.main.async {
-//                        self.viewModel.selectedImage = image
-//                    }
-//                } else {
-//                    print("❌ 이미지 변환 실패")
-//                }
-//            }
-//        }
+        // 서버에서 받은 이미지 배열 전환
+        if let itemImages = self.item?.itemImages {
+            for image in itemImages {
+                if let imageUrl = image.itemImageUrl {
+                    fetchImage(from: imageUrl) { image in
+                        if let image = image {
+                            DispatchQueue.main.async {
+                                self.viewModel.selectedImages.append(image)
+                            }
+                        } else {
+                            print("❌ 이미지 변환 실패")
+                        }
+                    }
+                }
+            }
+        }
     }
     
     // MARK: - Life Cycles

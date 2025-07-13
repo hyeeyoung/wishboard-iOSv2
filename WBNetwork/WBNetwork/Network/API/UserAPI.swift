@@ -93,7 +93,7 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
         var formData: [Moya.MultipartFormData] = []
         
         if let imageData = profileImg {
-            let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "profile_img", fileName: "profile.jpeg", mimeType: "image/jpeg")
+            let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "profileImage", fileName: "profile.jpeg", mimeType: "image/jpeg")
             formData.append(imageMultipartFormData)
         }
         

@@ -181,17 +181,7 @@ final class ModifyProfileView: UIView {
     
     @objc private func actionButtonTapped() {
         UIDevice.vibrate()
-        var inputData: (UIImage?, String?) = (nil, nil)
-        
-        // 프로필 이미지 변경
-        if let profileImageChanged = viewModel?.profileImageChanged, profileImageChanged {
-            inputData.0 = self.profileImgView.image
-        }
-        // 닉네임 변경
-        if let profileNameChanged = viewModel?.profileNameChanged, profileNameChanged {
-            inputData.1 = self.nameTextField.text
-        }
-        
+        var inputData: (UIImage?, String?) = (self.profileImgView.image, self.nameTextField.text)
         self.completeAction?(inputData.0, inputData.1)
     }
     
