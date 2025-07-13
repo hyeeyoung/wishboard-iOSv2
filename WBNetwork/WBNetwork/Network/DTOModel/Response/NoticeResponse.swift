@@ -8,11 +8,11 @@
 import Foundation
 
 public struct NoticeResponse: Decodable {
-    public let item_id: Int?
-    public let item_img_url: String?
-    public let item_name: String?
-    public let item_url: String?
-    public let item_notification_type: String?
-    public let item_notification_date: String?
-    public let read_state: Int?
+    public let id: Int?
+    public let itemImages: [ItemImageResponse]?
+    public let itemName: String?
+    public let itemUrl: String?
+    public let itemNotificationType: String?
+    public let itemNotificationDate: String?
+    public let readState: Bool?
 }

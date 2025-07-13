@@ -40,13 +40,13 @@ class AlarmListViewModel: ObservableObject {
                 
                 var items: [NoticeItem] = []
                 for data in datas {
-                    let item = NoticeItem(id: data.item_id ?? 0,
-                                          imageUrl: data.item_img_url,
-                                          notiType: data.item_notification_type ?? "",
-                                          name: data.item_name ?? "",
-                                          readState: ((data.read_state ?? 0) != 0),
-                                          notiDate: data.item_notification_date ?? "",
-                                          link: data.item_url)
+                    let item = NoticeItem(id: data.id ?? 0,
+                                          imageUrl: data.itemImages?.first?.itemImageUrl ?? "",
+                                          notiType: data.itemNotificationType ?? "",
+                                          name: data.itemName ?? "",
+                                          readState: data.readState ?? false,
+                                          notiDate: data.itemNotificationDate ?? "",
+                                          link: data.itemUrl)
                     
                     items.append(item)
                 }
