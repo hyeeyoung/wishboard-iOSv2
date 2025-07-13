@@ -46,7 +46,7 @@ extension VersionAPI: TargetType {
     }
 
     public var headers: [String : String]? {
-        return NetworkMacro.AgentHeader
+        return NetworkMacro.DefaultHeader
     }
     
     public var validationType: ValidationType {

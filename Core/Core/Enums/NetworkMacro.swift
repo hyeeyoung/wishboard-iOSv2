@@ -17,7 +17,20 @@ public enum NetworkMacro {
         #endif
     }
     
-    public static var AgentHeader: [String: String] {
+    public static var DefaultHeader: [String: String] {
+        var header = [
+            "User-Agent": "wishboard-ios/dev",
+            "Content-Type": "application/json"
+        ]
+        
+        #if DEBUG
+        return header
+        #else
+        return header
+        #endif
+    }
+    
+    public static var DeviceInfoHeader: [String: String] {
         var header = [
             "User-Agent": "wishboard-ios/dev",
             "Content-Type": "application/json"

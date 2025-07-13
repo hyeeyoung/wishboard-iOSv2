@@ -81,7 +81,7 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
     }
 
     public var headers: [String : String]? {
-        return NetworkMacro.AgentHeader
+        return NetworkMacro.DefaultHeader
     }
     
     public var authorizationType: Moya.AuthorizationType? {

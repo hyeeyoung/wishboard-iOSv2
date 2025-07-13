@@ -97,7 +97,7 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
     }
 
     public var headers: [String : String]? {
-        return NetworkMacro.AgentHeader
+        return NetworkMacro.DeviceInfoHeader
     }
     
     public var authorizationType: Moya.AuthorizationType? {
