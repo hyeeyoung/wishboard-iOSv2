@@ -98,7 +98,7 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
 
         // JSON 직렬화 → MultipartFormData
         if let jsonData = try? JSONSerialization.data(withJSONObject: requestBody, options: []) {
-            let requestPart = MultipartFormData(provider: .data(jsonData), name: "request")
+            let requestPart = MultipartFormData(provider: .data(jsonData), name: "request", mimeType: "application/json")
             formData.append(requestPart)
         }
 

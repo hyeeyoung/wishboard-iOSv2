@@ -173,7 +173,7 @@ public final class FormatManager {
     }
     /// 문자열을 숫자문자열로     // ₩ 1,000 -> 1000
     public func priceToStr(price: String) -> String {
-        let priceStr = price.replacingOccurrences(of: "[₩,\\s]", with: "", options: .regularExpression)
+        let priceStr = price.replacingOccurrences(of: "[₩,\\s]", with: "", options: .regularExpression).filter { $0.isNumber }
         return priceStr
     }
 }
