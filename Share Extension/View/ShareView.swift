@@ -277,9 +277,10 @@ final class ShareView: UIView {
         viewModel.$item
             .receive(on: RunLoop.main)
             .sink { [weak self] item in
-                self?.configureItemImg(item?.item_img)
-                self?.configureItemName(item?.item_name)
-                self?.configureItemPrice(item?.item_price)
+                // TODO: 이미지 응답구조 확인
+//                self?.configureItemImg(item?.itemImages)
+                self?.configureItemName(item?.itemName)
+                self?.configureItemPrice(item?.itemPrice)
                 
                 self?.updateCompleteButtonState()
             }

@@ -191,7 +191,7 @@ final class ItemDetailView: UIView {
     }
     
     @objc private func actionButtonTapped() {
-        guard let item = self.item, let url = item.item_url else { return }
+        guard let item = self.item, let url = item.itemUrl else { return }
         UIDevice.vibrate()
         self.linkButtonAction?(url)
     }
@@ -207,10 +207,11 @@ final class ItemDetailView: UIView {
         self.item = item
 
         // item info
-        configureItemImg(item.item_img_url)
-        configureItemName(with: item.item_name)
-        configureItemPrice(with: item.item_price)
-        configureTimeLabel(item.create_at)
+        // TODO: 아이템 이미지 응답 구조 확인
+//        configureItemImg(item.item_img_url)
+        configureItemName(with: item.itemName)
+        configureItemPrice(with: item.itemPrice)
+        configureTimeLabel(item.createdAt)
         configureNotiTags(item)
         configureFolderBtn(item)
 
@@ -238,7 +239,7 @@ final class ItemDetailView: UIView {
     }
     
     private func configureNotiTags(_ item: WishListResponse) {
-        if let notiType = item.item_notification_type, let notiDate = item.item_notification_date {
+        if let notiType = item.itemNotificationType, let notiDate = item.itemNotificationDate {
             notiTypetag.isHidden = false
             notiDatetag.isHidden = false
             
@@ -275,7 +276,7 @@ final class ItemDetailView: UIView {
     private func configureFolderBtn(_ item: WishListResponse) {
         var attributedText: NSMutableAttributedString
         
-        if let _ = item.folder_id, let folderName = item.folder_name {
+        if let _ = item.folderId, let folderName = item.folderName {
             attributedText = NSMutableAttributedString(string: folderName + " >")
         } else {
             attributedText = NSMutableAttributedString(string: "폴더를 지정해주세요! >")
@@ -295,7 +296,7 @@ final class ItemDetailView: UIView {
     }
     
     private func configureItemLink(_ item: WishListResponse) {
-        if let link = item.item_url, !link.isEmpty {
+        if let link = item.itemUrl, !link.isEmpty {
             let linkView = createLinkInfoView(url: link)
             linkView.snp.makeConstraints { make in
                 make.height.equalTo(46)
@@ -305,14 +306,14 @@ final class ItemDetailView: UIView {
     }
     
     private func configureItemMemo(_ item: WishListResponse) {
-        if let memo = item.item_memo, !memo.isEmpty {
+        if let memo = item.itemMemo, !memo.isEmpty {
             let memoView = createMemoInfoView(memo: memo)
             stackView.addArrangedSubview(memoView)
         }
     }
     
     private func configureBottomBtn(_ item: WishListResponse) {
-        if let link = item.item_url, !link.isEmpty {
+        if let link = item.itemUrl, !link.isEmpty {
             actionButton.titleLabel?.font = TypoStyle.SuitH3.font
             actionButton.setTitleColor(.white, for: .normal)
             actionButton.backgroundColor = .gray_700

@@ -86,18 +86,19 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     // MARK: - Public Methods
     func configure(with item: WishListResponse) {
         // item image
-        if let imgUrl = item.item_img_url {
+        if let itemImages = item.itemImages, !itemImages.isEmpty, let imgUrl = itemImages[0].itemImageUrl {
+            // 응답받은 이미지 배열 중 0번째 값 이미지 로드
             self.imageView.loadImage(from: imgUrl, placeholder: Image.emptyView)
         } else {
             self.imageView.image = Image.emptyView
         }
         // item name
-        if let item_name = item.item_name {
-            self.configureItemName(with: item_name)
+        if let itemName = item.itemName {
+            self.configureItemName(with: itemName)
         }
         // item price
-        if let item_price = item.item_price {
-            self.configurePriceLabel(with: item_price)
+        if let itemPrice = item.itemPrice {
+            self.configurePriceLabel(with: itemPrice)
         }
     }
     

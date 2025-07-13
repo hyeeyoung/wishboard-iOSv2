@@ -8,17 +8,22 @@
 import Foundation
 
 public struct WishListResponse: Decodable {
-    public var folder_id: Int?
-    public var folder_name: String?
-    public var item_id: Int?
-    public var item_img_url: String?
-    public var item_img: String?
-    public var item_name: String?
-    public var item_price: String?
-    public var item_url: String?
-    public var item_memo: String?
-    public var create_at: String?
-    public var item_notification_type: String?
-    public var item_notification_date: String?
-    public var cart_state: Int?
+    public var id: Int?
+    public var userId: Int?
+    public var folderId: Int?
+    public var folderName: String?
+    public var itemImages: [ItemImageResponse]?
+    public var itemName: String?
+    public var itemPrice: String?
+    public var itemUrl: String?
+    public var itemMemo: String?
+    public var itemNotificationType: String?
+    public var itemNotificationDate: String?
+    public var createdAt: String?
+    public var updatedAt: String?
+}
+
+public struct ItemImageResponse: Decodable {
+    public var itemImg: String?
+    public var itemImageUrl: String?
 }

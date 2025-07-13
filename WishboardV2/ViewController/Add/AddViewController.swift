@@ -71,25 +71,25 @@ final class AddViewController: UIViewController {
     private func setModifyItemData() {
         self.addView.toolBar.configure(title: Title.modifyItem)
         
-        self.addView.itemNameSection.text = self.item?.item_name ?? ""
-        let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.item_price ?? "0")
+        self.addView.itemNameSection.text = self.item?.itemName ?? ""
+        let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.itemPrice ?? "0")
         self.addView.itemPriceSection.text = "\(formattedText ?? "")원"
         
-        if let item_name = self.item?.item_name, !item_name.isEmpty {
-            self.viewModel.itemName = item_name
+        if let itemName = self.item?.itemName, !itemName.isEmpty {
+            self.viewModel.itemName = itemName
         }
-        if let item_price = self.item?.item_price, !item_price.isEmpty {
-            self.viewModel.itemPrice = item_price
+        if let itemPrice = self.item?.itemPrice, !itemPrice.isEmpty {
+            self.viewModel.itemPrice = itemPrice
         }
-        self.viewModel.selectedFolderId = self.item?.folder_id
-        if let item_url = self.item?.item_url, !item_url.isEmpty {
-            self.viewModel.selectedLink = item_url
+        self.viewModel.selectedFolderId = self.item?.folderId
+        if let itemUrl = self.item?.itemUrl, !itemUrl.isEmpty {
+            self.viewModel.selectedLink = itemUrl
         }
-        if let item_memo = self.item?.item_memo, !item_memo.isEmpty {
-            self.viewModel.memo = item_memo
+        if let itemMemo = self.item?.itemMemo, !itemMemo.isEmpty {
+            self.viewModel.memo = itemMemo
         }
-        self.viewModel.selectedAlarmType = self.item?.item_notification_type
-        self.viewModel.selectedAlarmDate = self.item?.item_notification_date
+        self.viewModel.selectedAlarmType = self.item?.itemNotificationType
+        self.viewModel.selectedAlarmDate = self.item?.itemNotificationDate
         if let selectedAlarmType = viewModel.selectedAlarmType, let selectedAlarmDate = viewModel.selectedAlarmDate {
             self.viewModel.selectedAlarm = "\(selectedAlarmDate) \(selectedAlarmType)"
         }
@@ -614,7 +614,7 @@ extension AddViewController: AddToolBarDelegate {
                 if self.type == .manual {
                     try await self.viewModel.addItem()
                 } else if self.type == .modify {
-                    guard let itemIdx = self.item?.item_id else {return}
+                    guard let itemIdx = self.item?.id else {return}
                     try await self.viewModel.modifyItem(idx: itemIdx)
                 }
                 

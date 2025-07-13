@@ -11,7 +11,7 @@ public final class ItemManager {
     public static let shared = ItemManager()
     
     public func getWishItems() async throws -> [WishListResponse] {
-        return try await API.Item.requestRaw(.getWishItems)
+        return try await API.Item.requestPaging(.getWishItems)
     }
     
     public func getItemDetail(id: Int) async throws -> [WishListResponse] {
