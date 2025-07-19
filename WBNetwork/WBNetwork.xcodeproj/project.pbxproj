@@ -52,6 +52,7 @@
 		2354AE132D75F805008A62FA /* VersionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2354AE122D75F805008A62FA /* VersionRepository.swift */; };
 		2354AE162D75F861008A62FA /* GetVersionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2354AE152D75F861008A62FA /* GetVersionUseCase.swift */; };
 		2357E55F2C7B09E600CC9509 /* ParseItemUrlUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */; };
+		2367FEA22E2B784F0095E309 /* ItemParseResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367FEA12E2B784F0095E309 /* ItemParseResponse.swift */; };
 		23798B752C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B742C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift */; };
 		238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595172C71BFC000B85CBC /* FolderListResponse.swift */; };
 		2385951C2C71C67A00B85CBC /* FolderAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385951B2C71C67A00B85CBC /* FolderAPI.swift */; };
@@ -138,6 +139,7 @@
 		2354AE122D75F805008A62FA /* VersionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionRepository.swift; sourceTree = "<group>"; };
 		2354AE152D75F861008A62FA /* GetVersionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetVersionUseCase.swift; sourceTree = "<group>"; };
 		2357E55E2C7B09E600CC9509 /* ParseItemUrlUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseItemUrlUseCase.swift; sourceTree = "<group>"; };
+		2367FEA12E2B784F0095E309 /* ItemParseResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemParseResponse.swift; sourceTree = "<group>"; };
 		23798B742C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordUseCase.swift; sourceTree = "<group>"; };
 		238595172C71BFC000B85CBC /* FolderListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderListResponse.swift; sourceTree = "<group>"; };
 		2385951B2C71C67A00B85CBC /* FolderAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderAPI.swift; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 				23AD9D762C80A8FF007AB8D1 /* NoticeResponse.swift */,
 				2354AE102D75F792008A62FA /* VersionResponse.swift */,
 				23BD37722D79B68E00D39D0F /* EmailLoginResponse.swift */,
+				2367FEA12E2B784F0095E309 /* ItemParseResponse.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -588,6 +591,7 @@
 				23AD9D752C80A8DA007AB8D1 /* NoticeRepository.swift in Sources */,
 				23AD9D792C80A94F007AB8D1 /* NoticeManager.swift in Sources */,
 				232185F42C70B568008BD81B /* WishListResponse.swift in Sources */,
+				2367FEA22E2B784F0095E309 /* ItemParseResponse.swift in Sources */,
 				2325525F2C838C28001FC96D /* AddItemUseCase.swift in Sources */,
 				232185FD2C70B57F008BD81B /* API.swift in Sources */,
 				23AD9D622C80985C007AB8D1 /* GetCartsUseCase.swift in Sources */,

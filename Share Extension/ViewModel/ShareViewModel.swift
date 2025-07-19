@@ -15,7 +15,7 @@ import MobileCoreServices
 
 final class ShareViewModel {
     @Published var isLogined: Bool = true
-    @Published var item: WishListResponse?
+    @Published var item: ItemParseResponse?
     @Published var folders: [FolderListResponse] = []
     @Published var selectedAlarmType: String? = nil
     @Published var selectedAlarmDate: String? = nil

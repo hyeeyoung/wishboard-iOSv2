@@ -266,8 +266,7 @@ class ShareViewController: UIViewController {
         let selectedFolderId = shareView.selectedFolderId
         
         var itemImage: [Data]?
-        if let _ = viewModel.item?.itemImages, 
-            let imageToData = shareView.itemImage.image?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) {
+        if let imageToData = shareView.itemImage.image?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) {
             itemImage = [imageToData]
         }
         

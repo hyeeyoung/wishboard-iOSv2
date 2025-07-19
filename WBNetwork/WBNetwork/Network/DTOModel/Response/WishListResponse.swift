@@ -26,4 +26,9 @@ public struct WishListResponse: Decodable {
 public struct ItemImageResponse: Decodable {
     public var itemImg: String?
     public var itemImageUrl: String?
+    
+    public init(itemImg: String? = nil, itemImageUrl: String? = nil) {
+        self.itemImg = itemImg
+        self.itemImageUrl = itemImageUrl
+    }
 }

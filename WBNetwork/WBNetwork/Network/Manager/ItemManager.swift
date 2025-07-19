@@ -26,7 +26,7 @@ public final class ItemManager {
         return try await API.Item.request(.modifyItemFolder(itemId: itemId, folderId: folderId))
     }
     
-    public func parseItemUrl(link: String) async throws -> WishListResponse {
+    public func parseItemUrl(link: String) async throws -> ItemParseResponse {
         return try await API.Item.request(.parseItemUrl(link: link))
     }
     
