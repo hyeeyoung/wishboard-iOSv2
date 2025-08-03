@@ -96,9 +96,8 @@ final class ItemDetailView: UIView {
         $0.titleLabel?.font = TypoStyle.SuitH3.font
         $0.setTitleColor(.white, for: .normal)
         $0.backgroundColor = .gray_700
-    }
-    private let bottomView = UIView().then {
-        $0.backgroundColor = .gray_700
+        $0.layer.cornerRadius = 12
+        $0.clipsToBounds = true
     }
 
     private let stackView = UIStackView().then {
@@ -140,7 +139,6 @@ final class ItemDetailView: UIView {
         contentView.addSubview(priceLabel)
         contentView.addSubview(stackView)
         addSubview(actionButton)
-        addSubview(bottomView)
     }
     
     private func setupConstraints() {
@@ -214,14 +212,9 @@ final class ItemDetailView: UIView {
         }
 
         actionButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(50)
-            make.bottom.equalTo(self.safeAreaLayoutGuide)
-        }
-        
-        bottomView.snp.makeConstraints { make in
-            make.leading.trailing.bottom.equalToSuperview()
-            make.top.equalTo(actionButton.snp.bottom)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
         }
     }
     
@@ -370,13 +363,11 @@ final class ItemDetailView: UIView {
             actionButton.setTitleColor(.white, for: .normal)
             actionButton.backgroundColor = .gray_700
             actionButton.isEnabled = true
-            bottomView.backgroundColor = .gray_700
         } else {
             actionButton.titleLabel?.font = TypoStyle.SuitH3.font
             actionButton.setTitleColor(.gray_300, for: .normal)
             actionButton.backgroundColor = .gray_100
             actionButton.isEnabled = false
-            bottomView.backgroundColor = .gray_100
         }
     }
     
