@@ -57,10 +57,6 @@ final class AddViewController: UIViewController {
         self.type = type
         self.item = item
         super.init(nibName: nil, bundle: nil)
-        
-        if type == .modify {
-            setModifyItemData()
-        }
     }
     
     required init?(coder: NSCoder) {
@@ -144,6 +140,14 @@ final class AddViewController: UIViewController {
         
         setupBackgroundDimView()
         setupBottomSheet()
+        
+        // data - fetch FolderList
+        _Concurrency.Task {
+            try await self.viewModel.fetchFolders()
+            if type == .modify {
+                setModifyItemData()
+            }
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -378,9 +382,6 @@ final class AddViewController: UIViewController {
             SnackBar(in: self).show(type: .selectPastTime)
             #endif
         }
-        
-        // data - fetch FolderList
-        self.viewModel.fetchFolders()
     }
     
     /// 폴더 선택 시트 노출

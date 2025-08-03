@@ -122,18 +122,16 @@ final class AddViewModel {
     }
     
     // 폴더 데이터 가져오기
-    func fetchFolders() {
-        _Concurrency.Task {
-            do {
-                let usecase = GetFolderListUseCase()
-                let data = try await usecase.execute()
-                
-                DispatchQueue.main.async {
-                    self.folders = data
-                }
-            } catch {
-                throw error
+    func fetchFolders() async throws {
+        do {
+            let usecase = GetFolderListUseCase()
+            let data = try await usecase.execute()
+            
+            DispatchQueue.main.async {
+                self.folders = data
             }
+        } catch {
+            throw error
         }
     }
     
@@ -143,7 +141,7 @@ final class AddViewModel {
             let usecase = AddFolderNameUseCase()
             let _ = try await usecase.execute(folderName: name)
             
-            self.fetchFolders()
+            try await self.fetchFolders()
             
             DispatchQueue.main.async {
                 SnackBar.shared.show(type: .addFolder)
