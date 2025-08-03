@@ -20,13 +20,37 @@ final class ItemDetailView: UIView {
         $0.isScrollEnabled = true
     }
     private let contentView = UIView()
+    
+    private let placeholderImageView = UIImageView().then {
+        $0.image = Image.emptyView
+        $0.layer.cornerRadius = 32
+        $0.backgroundColor = .black_5
+        $0.clipsToBounds = true
+        $0.isHidden = true
+    }
 
-    private let imageView = UIImageView().then {
+    private let imageCarousel = UICollectionView(frame: .zero, collectionViewLayout: {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0
+        layout.itemSize = UIScreen.main.bounds.size // 너비를 뷰에 맞게 설정
+        layout.sectionInset = .zero
+        return layout
+    }()).then {
+        $0.isPagingEnabled = true
+        $0.showsHorizontalScrollIndicator = false
         $0.backgroundColor = .black_5
         $0.layer.cornerRadius = 32
-        $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
     }
+
+    private let pageControl = UIPageControl().then {
+        $0.currentPage = 0
+        $0.pageIndicatorTintColor = .gray_200
+        $0.currentPageIndicatorTintColor = .gray_700
+        $0.hidesForSinglePage = true
+    }
+    
     private let notiTypetag = PaddedLabel().then {
         $0.text = "알람 종류"
         $0.font = TypoStyle.SuitB5.font
@@ -92,6 +116,7 @@ final class ItemDetailView: UIView {
         setupViews()
         setupConstraints()
         addTargets()
+        setDelegates()
     }
     
     required init?(coder: NSCoder) {
@@ -104,9 +129,11 @@ final class ItemDetailView: UIView {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         
-        contentView.addSubview(imageView)
-        imageView.addSubview(notiTypetag)
-        imageView.addSubview(notiDatetag)
+        contentView.addSubview(placeholderImageView)
+        contentView.addSubview(imageCarousel)
+        contentView.addSubview(pageControl)
+        imageCarousel.addSubview(notiTypetag)
+        imageCarousel.addSubview(notiDatetag)
         contentView.addSubview(folderLabelButton)
         contentView.addSubview(timeLabel)
         contentView.addSubview(nameLabel)
@@ -130,29 +157,40 @@ final class ItemDetailView: UIView {
             make.width.equalTo(scrollView.snp.width)
         }
         
-        imageView.snp.makeConstraints { make in
+        placeholderImageView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalToSuperview()
-            make.height.equalTo(imageView.snp.width).multipliedBy(1.154)
+            make.height.equalTo(imageCarousel.snp.width).multipliedBy(1.154)
+        }
+
+        imageCarousel.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.top.equalToSuperview()
+            make.height.equalTo(imageCarousel.snp.width).multipliedBy(1.154)
+        }
+
+        pageControl.snp.makeConstraints { make in
+            make.centerX.equalTo(imageCarousel)
+            make.top.equalTo(imageCarousel.snp.bottom).offset(20)
         }
         
         notiTypetag.snp.makeConstraints { make in
-            make.leading.equalTo(imageView).offset(16)
-            make.bottom.equalTo(imageView).offset(-16)
+            make.leading.equalTo(imageCarousel).offset(16)
+            make.bottom.equalTo(imageCarousel).offset(-16)
         }
         
         notiDatetag.snp.makeConstraints { make in
             make.leading.equalTo(notiTypetag.snp.trailing).offset(8)
-            make.bottom.equalTo(imageView).offset(-16)
+            make.bottom.equalTo(imageCarousel).offset(-16)
         }
 
         folderLabelButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
-            make.top.equalTo(imageView.snp.bottom).offset(20)
+            make.top.equalTo(pageControl.snp.bottom).offset(20)
         }
         
         timeLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(imageView)
+            make.trailing.equalTo(imageCarousel)
             make.centerY.equalTo(folderLabelButton)
         }
         
@@ -190,6 +228,12 @@ final class ItemDetailView: UIView {
         self.folderLabelButton.addGestureRecognizer(tapGesture)
     }
     
+    private func setDelegates() {
+        imageCarousel.register(ImageCollectionCell.self, forCellWithReuseIdentifier: "ImageCollectionCell")
+        imageCarousel.dataSource = self
+        imageCarousel.delegate = self
+    }
+    
     @objc private func actionButtonTapped() {
         guard let item = self.item, let url = item.itemUrl else { return }
         UIDevice.vibrate()
@@ -207,8 +251,7 @@ final class ItemDetailView: UIView {
         self.item = item
 
         // item info
-        // TODO: 아이템 이미지 응답 구조 확인
-//        configureItemImg(item.item_img_url)
+        configureImages(item.itemImages)
         configureItemName(with: item.itemName)
         configureItemPrice(with: item.itemPrice)
         configureTimeLabel(item.createdAt)
@@ -224,12 +267,18 @@ final class ItemDetailView: UIView {
         configureBottomBtn(item)
     }
     
-    private func configureItemImg(_ url: String?) {
-        if let imgUrl = url {
-            self.imageView.loadImage(from: imgUrl, placeholder: Image.emptyView)
-        } else {
-            self.imageView.image = Image.emptyView
-        }
+    private var imageUrls: [String?] = []
+
+    func configureImages(_ data: [ItemImageResponse]?) {
+        guard let data = data else { return }
+        let urls = data.map{ $0.itemImageUrl }
+        
+        self.placeholderImageView.isHidden = !urls.isEmpty
+        self.imageCarousel.isHidden = urls.isEmpty
+        
+        self.imageUrls = urls
+        pageControl.numberOfPages = urls.count
+        imageCarousel.reloadData()
     }
     
     private func configureTimeLabel(_ time: String?) {
@@ -347,8 +396,8 @@ final class ItemDetailView: UIView {
             make.leading.trailing.equalToSuperview().inset(16)
         }
         
-        var link = URL(string: url)
-        var domain = link?.host
+        let link = URL(string: url)
+        let domain = link?.host
         linkLabel.text = domain
         return view
     }
@@ -405,5 +454,32 @@ final class ItemDetailView: UIView {
         }
 
         return view
+    }
+}
+
+// MARK: - Image CollectionView Delegates
+extension ItemDetailView: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return imageUrls.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionCell", for: indexPath) as? ImageCollectionCell else {
+            return UICollectionViewCell()
+        }
+        cell.configure(imageUrls[indexPath.item])
+        return cell
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let page = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
+        pageControl.currentPage = page
+    }
+}
+extension ItemDetailView: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return collectionView.bounds.size
     }
 }
