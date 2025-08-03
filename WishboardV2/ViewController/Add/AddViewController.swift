@@ -236,23 +236,28 @@ final class AddViewController: UIViewController {
     // MARK: - Actions
     private func setupActions() {
         addView.folderSection.onNewFolderTap = {
+            self.view.endEditing(true)
             self.showAddFolderBottomSheet()
         }
         
         addView.folderSection.onFolderSelected = { [weak self] folderId in
+            self?.view.endEditing(true)
             self?.viewModel.selectedFolderId = folderId
         }
 
         addView.folderSection.onArrowTap = { [weak self] in
+            self?.view.endEditing(true)
             guard let folders = self?.viewModel.folders else {return}
             self?.showSelectFolderBottomSheet(for: folders)
         }
         
         addView.alarmSection.onTap = { [weak self] in
+            self?.view.endEditing(true)
             self?.showDateBottomSheet()
         }
         
         addView.itemLinkSection.onTap = { [weak self] in
+            self?.view.endEditing(true)
             self?.showLinkBottomSheet(with: self?.viewModel.selectedLink)
         }
         

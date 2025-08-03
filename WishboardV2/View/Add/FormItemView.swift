@@ -27,7 +27,15 @@ class FormItemView: UIView {
         get { textField?.text ?? textView?.text ?? "" }
         set {
             textField?.text = newValue
-            textView?.text = newValue
+            if let tv = textView {
+                if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    tv.text = Placeholder.uploadItemMemo
+                    tv.textColor = .gray_200
+                } else {
+                    tv.text = newValue
+                    tv.textColor = .gray_700
+                }
+            }
             textSubject.send(newValue)      // 초기값 세팅 시에도 발행
             placeholderLabel?.isHidden = !(newValue.isEmpty)
         }
@@ -158,43 +166,29 @@ class FormItemView: UIView {
             }
 
         case .textView:
+            let placeholderText = Placeholder.uploadItemMemo
+
             let tv = UITextView().then {
                 $0.font = TypoStyle.SuitD1.font
-                $0.textColor = .gray_700
+                $0.textColor = .gray_200  // 초기 색상: 플레이스홀더 색
+                $0.text = placeholderText // 초기 텍스트: 플레이스홀더
                 $0.isScrollEnabled = false
                 $0.textContainerInset = .zero
                 $0.textContainer.lineFragmentPadding = 0
+                $0.isUserInteractionEnabled = true
+                $0.isEditable = true
+                $0.autocorrectionType = .no
+                $0.autocapitalizationType = .none
             }
+            tv.delegate = self
             self.textView = tv
             mainContainer.addSubview(tv)
             tv.snp.makeConstraints { make in
                 make.height.greaterThanOrEqualTo(120)
-                make.leading.bottom.equalToSuperview()
-                make.top.equalTo(titleLabel.snp.bottom).offset(14)
-            }
-
-            // placeholder label
-            let placeholder = UILabel().then {
-                $0.text = Placeholder.uploadItemMemo
-                $0.textColor = .gray_200
-                $0.font = TypoStyle.SuitD1.font
-                $0.numberOfLines = 0
-                $0.lineBreakMode = .byCharWrapping
-            }
-            placeholderLabel = placeholder
-            mainContainer.addSubview(placeholder)
-            placeholder.snp.makeConstraints { make in
                 make.leading.trailing.equalToSuperview()
+                make.bottom.lessThanOrEqualToSuperview()
                 make.top.equalTo(titleLabel.snp.bottom).offset(14)
             }
-
-            // textView text change 감지
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(textViewDidChange),
-                name: UITextView.textDidChangeNotification,
-                object: tv
-            )
         case .folder:
             // TODO: 상속 받아서 구현 or delegate 활용해 외부 구성
             break
@@ -211,10 +205,34 @@ class FormItemView: UIView {
     @objc private func handleTap() {
         self.onTap?()
     }
-    
-    @objc private func textViewDidChange(_ notification: Foundation.Notification) {
-        guard let textView = self.textView else { return }
-        placeholderLabel?.isHidden = !textView.text.isEmpty
+}
+
+// MARK: - UITextView Delegate
+extension FormItemView: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == Placeholder.uploadItemMemo {
+            textView.text = ""
+            textView.textColor = .gray_700 // 실제 입력 텍스트 색상
+        }
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = Placeholder.uploadItemMemo
+            textView.textColor = .gray_200
+        }
+    }
+
+    func textViewDidChange(_ textView: UITextView) {
+        if textView.text == Placeholder.uploadItemMemo {
+            textView.textColor = .gray_200
+        } else {
+            textView.textColor = .gray_700 // 실제 입력 텍스트 색상
+        }
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = Placeholder.uploadItemMemo
+            textView.textColor = .gray_200
+        }
         textSubject.send(textView.text ?? "")
     }
 }
