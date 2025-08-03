@@ -6,9 +6,15 @@
 //
 
 import Foundation
+import Core
 
 struct SetNotificationDate {
-    static let notificationData = ["재입고", "오픈", "프리오더", "세일 시작", "세일 마감", "리마인드"]
+    static let notificationData: [String] = [Alarm.restock.rawValue,
+                                             Alarm.open.rawValue,
+                                             Alarm.preorder.rawValue,
+                                             Alarm.saleStart.rawValue,
+                                             Alarm.saleEnd.rawValue,
+                                             Alarm.reminder.rawValue]
     
     static let dateData: [String] = generateDateData()
     static let hourData: [String] = (0...23).map { String(format: "%02d", $0) }

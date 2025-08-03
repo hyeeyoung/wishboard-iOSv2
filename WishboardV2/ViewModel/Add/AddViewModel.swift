@@ -64,8 +64,10 @@ final class AddViewModel {
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
             let itemMemo = self.memo
-            let notiType = self.selectedAlarmType
-            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
+            let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
+            let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
+            
+            print("notiType: \(notiType) \nnotiDate: \(notiDate)")
             
             let item = RequestItemDTO(folderId: selectedFolderId,
                                       photos: itemImages,
@@ -97,8 +99,8 @@ final class AddViewModel {
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
             let itemMemo = self.memo
-            let notiType = self.selectedAlarmType
-            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
+            let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
+            let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
             
             let item = RequestItemDTO(folderId: selectedFolderId,
                                       photos: itemImages,
@@ -112,7 +114,6 @@ final class AddViewModel {
             let usecase = ModifyItemUseCase()
             _ = try await usecase.execute(idx: idx, item: item)
         } catch {
-//            SnackBar.shared.show(type: .errorMessage)
             if let moyaError = error as? MoyaError, let response = moyaError.response {
                 if response.statusCode == 400 {
 //                    SnackBar.shared.show(type: .errorMessage)
@@ -154,21 +155,16 @@ final class AddViewModel {
         }
     }
     
-    private func convertDateFormat(input: String) -> String? {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yy년 MM월 dd일 HH:mm"
-        inputFormatter.locale = Locale(identifier: "ko_KR") // 한글 형식 대응
-
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
-        if let date = inputFormatter.date(from: input) {
-            return outputFormatter.string(from: date)
+    /// 선택된 알림 종류를 Enum으로 변환
+    private func convertNotiTypeToEnum(input: String?) -> String? {
+        if let input = input, let apiValue = Alarm.apiString(from: input) {
+            return apiValue
         } else {
             return nil
         }
     }
     
+    /// 선택된 알림 날짜 스트링을 포맷팅
     func convertKoreanShortDateTimeToFullFormat(_ input: String) -> String? {
         // 예: "26.7.14 오후 3시 30분"
         let pattern = #"(\d{2})\.(\d{1,2})\.(\d{1,2})\s+(오전|오후)\s+(\d{1,2})시(?:\s+(\d{1,2})분)?"#

@@ -158,9 +158,41 @@ public enum Item {
     public static let count = "개"
 }
 
-public enum Notification {
-    public static let restock = "재입고"
-    public static let notification = " 알림"
+public enum Alarm: String {
+    case restock = "재입고"
+    case open = "오픈"
+    case preorder = "프리오더"
+    case saleStart = "세일 시작"
+    case saleEnd = "세일 마감"
+    case reminder = "리마인드"
+    case notification = " 알림"
+    
+    public var apiString: String {
+        switch self {
+        case .restock:
+            return "RESTOCK"
+        case .open:
+            return "OPEN"
+        case .preorder:
+            return "PRE_ORDER"
+        case .saleStart:
+            return "SALE_START"
+        case .saleEnd:
+            return "SALE_END"
+        case .reminder:
+            return "REMINDER"
+        default: return ""
+        }
+    }
+    
+    /// 한글 스트링을 ApiString으로 변환
+    /// 예) "재입고" → "RESTOCK"
+    public static func apiString(from label: String) -> String? {
+        guard let notification = Alarm(rawValue: label) else {
+            return nil
+        }
+        return notification.apiString
+    }
 }
 
 public enum BottomSheetTitle {
