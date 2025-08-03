@@ -13,7 +13,7 @@ import Then
 import Core
 
 enum FormItemType {
-    case textField(placeholder: String, isEditable: Bool, showsArrow: Bool)
+    case textField(placeholder: String, isEditable: Bool, showsArrow: Bool, showsNumberPad: Bool)
     case textView
     case folder  // 별도로 상속해서 처리 가능
 }
@@ -108,7 +108,7 @@ class FormItemView: UIView {
         requiredStar.isHidden = !isRequired
         
         switch type {
-        case .textField(let placeholder, let isEditable, let showsArrow):
+        case .textField(let placeholder, let isEditable, let showsArrow, let showsNumberPad):
             let tf = UITextField().then {
                 $0.placeholder = placeholder
                 $0.borderStyle = .none
@@ -117,6 +117,7 @@ class FormItemView: UIView {
                 $0.autocapitalizationType = .none
                 $0.autocorrectionType = .no
                 $0.spellCheckingType = .no
+                $0.keyboardType = showsNumberPad ? .numberPad : .default
                 $0.addTarget(self, action: #selector(textDidChange(_:)), for: .allEvents)
             }
             tf.attributedPlaceholder = NSAttributedString(

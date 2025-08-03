@@ -74,13 +74,15 @@ final class AddView: UIView {
                                        isRequired: true,
                                        type: .textField(placeholder: Placeholder.uploadItemName,
                                                         isEditable: true,
-                                                        showsArrow: false))
+                                                        showsArrow: false,
+                                                        showsNumberPad: false))
     
     let itemPriceSection = FormItemView(title: Title.price,
                                        isRequired: true,
                                        type: .textField(placeholder: Placeholder.uploadItemPrice,
                                                         isEditable: true,
-                                                        showsArrow: false))
+                                                        showsArrow: false,
+                                                        showsNumberPad: true))
     
     let folderSection = FolderFormItemView(title: Title.folder, isRequired: false)
     
@@ -88,13 +90,15 @@ final class AddView: UIView {
                                     isRequired: false,
                                     type: .textField(placeholder: Placeholder.uploadItemNoti,
                                                      isEditable: false,
-                                                     showsArrow: true))
+                                                     showsArrow: true,
+                                                     showsNumberPad: false))
      
     let itemLinkSection = FormItemView(title: Title.shoppingMallLink,
                                        isRequired: false,
                                        type: .textField(placeholder: Placeholder.uploadItemLink,
                                                         isEditable: false,
-                                                        showsArrow: true))
+                                                        showsArrow: true,
+                                                        showsNumberPad: false))
     
     let memoSection = FormItemView(title: Title.memo, isRequired: false, type: .textView)
     
@@ -220,15 +224,32 @@ final class AddView: UIView {
         }
     }
     
+    // TODO: 가격 입력 > 불안정...
     private func priceTextChanged(_ textField: UITextField) {
-        guard let currentText = textField.text as String? else { return }
+        // 현재 커서 위치를 가져오기
+        guard let selectedRange = textField.selectedTextRange else { return }
+        let cursorOffset = textField.offset(from: textField.beginningOfDocument, to: selectedRange.start)
+
+        // 숫자만 필터링
+        let currentText = textField.text ?? ""
         let filteredText = currentText.filter { $0.isNumber }
+
+        // 빈 문자열일 경우 초기화
         if filteredText.isEmpty {
             textField.text = nil
             return
         }
-        let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
-        textField.text = "\(formattedText ?? "")원"
+
+        // 포맷팅
+        let formatted = FormatManager.shared.strToPrice(numStr: filteredText) ?? ""
+
+        // 업데이트
+        textField.text = "\(formatted)원"
+
+        // 새 텍스트 길이에 맞춰 커서 위치 조정
+        if let newPosition = textField.position(from: textField.beginningOfDocument, offset: cursorOffset) {
+            textField.selectedTextRange = textField.textRange(from: newPosition, to: newPosition)
+        }
     }
     
     public func updateImages(_ images: [UIImage]) {
