@@ -14,8 +14,8 @@
             filePath = "WishboardV2/View/Item/ItemDetailView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "279"
-            endingLineNumber = "279"
+            startingLineNumber = "282"
+            endingLineNumber = "282"
             landmarkName = "configureImages(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "WishboardV2/View/Item/ItemDetailView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "274"
-            endingLineNumber = "274"
+            startingLineNumber = "277"
+            endingLineNumber = "277"
             landmarkName = "configureImages(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "WishboardV2/View/Item/ItemDetailView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "273"
-            endingLineNumber = "273"
+            startingLineNumber = "276"
+            endingLineNumber = "276"
             landmarkName = "configureImages(_:)"
             landmarkType = "7">
             <Locations>

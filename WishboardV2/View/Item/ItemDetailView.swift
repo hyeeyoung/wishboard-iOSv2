@@ -46,9 +46,9 @@ final class ItemDetailView: UIView {
 
     private let pageControl = UIPageControl().then {
         $0.currentPage = 0
-        $0.pageIndicatorTintColor = .gray_200
+        $0.pageIndicatorTintColor = .gray_100
         $0.currentPageIndicatorTintColor = .gray_700
-        $0.hidesForSinglePage = true
+        $0.hidesForSinglePage = false
     }
     
     private let notiTypetag = PaddedLabel().then {
@@ -145,6 +145,7 @@ final class ItemDetailView: UIView {
     
     private func setupConstraints() {
         toolbar.configure()
+        pageControl.transform = CGAffineTransform(scaleX: 0.857, y: 0.857)
         
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(toolbar.snp.bottom)
@@ -172,6 +173,8 @@ final class ItemDetailView: UIView {
         pageControl.snp.makeConstraints { make in
             make.centerX.equalTo(imageCarousel)
             make.top.equalTo(imageCarousel.snp.bottom).offset(20)
+            make.height.equalTo(6)
+            make.leading.trailing.lessThanOrEqualToSuperview().inset(16)
         }
         
         notiTypetag.snp.makeConstraints { make in
