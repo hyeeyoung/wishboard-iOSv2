@@ -15,6 +15,7 @@ public final class FormatManager {
     // 서버에서 받은 created_at을 "YY년 MM월 dd일 HH:mm"로 변환
     // '0일 전', '0주전' 으로 변환
     public func createdDateToKoreanStr(_ date: String) -> String? {
+        let date = date.replacingOccurrences(of: "T", with: " ")
         let format = DateFormatter()
         format.dateFormat = "yyyy-MM-dd HH:mm:ss"
         format.locale = Locale(identifier: "ko_KR")
