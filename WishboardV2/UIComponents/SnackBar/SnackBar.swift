@@ -14,7 +14,7 @@ final class SnackBar {
     static var shared = SnackBar()
     
     let SNACKBAR_HEIGHT = 48
-    let SNACKBAR_INTERVAL_APP = 106
+    let SNACKBAR_INTERVAL_APP = 72
     let SNACKBAR_INTERVAL_EXTENSION = 34
     let TRANSLATION_Y: CGFloat
     
@@ -23,7 +23,7 @@ final class SnackBar {
     
     // MARK: Views
     private let backgroundView = UIView().then {
-        $0.backgroundColor = .gray_700
+        $0.backgroundColor = .gray_600
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 24
         $0.alpha = 0.0 // 처음엔 보이지 않도록 설정
