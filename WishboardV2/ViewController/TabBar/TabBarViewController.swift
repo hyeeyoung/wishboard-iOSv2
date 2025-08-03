@@ -52,6 +52,18 @@ class TabBarViewController: UITabBarController {
         let nav3 = UINavigationController(rootViewController: myPageVC)
     
         setViewControllers([nav1, nav2, addVC, nav3], animated: false)
+        
+        setDelegates()
+    }
+    
+    private func setDelegates() {
+        self.delegate = self
+        
+        self.viewControllers?.forEach { vc in
+            if let nav = vc as? UINavigationController {
+                nav.delegate = self
+            }
+        }
     }
 }
 
@@ -86,5 +98,13 @@ extension TabBarViewController: UITabBarControllerDelegate {
         }
         
         return true
+    }
+}
+
+extension TabBarViewController: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        // 루트 VC라면 탭바를 보여주고, 아니라면 숨긴다
+        let isRoot = navigationController.viewControllers.first == viewController
+        self.tabBar.isHidden = !isRoot
     }
 }

@@ -271,6 +271,7 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         let folderTitle = item.folderName ?? ""
         let folderDetailVC = FolderDetailViewController(folderId: String(folderId), folderTitle: folderTitle)
+        folderDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(folderDetailVC, animated: true)
     }
 }

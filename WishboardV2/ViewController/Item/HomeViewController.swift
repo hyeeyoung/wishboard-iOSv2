@@ -119,6 +119,7 @@ extension HomeViewController: UICollectionViewDelegate {
         if let itemIdx = item.id {
             UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
+            detailViewController.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(detailViewController, animated: true)
         }
     }
