@@ -140,23 +140,11 @@ class ShareViewController: UIViewController {
         alarmSheetView.onActionButtonTap = { [weak self] data in
             self?.hideDateBottomSheet()
             guard let type = data.0, let date = data.1, let hour = data.2, let minute = data.3 else {return}
+            
             self?.viewModel.selectedAlarmType = type
-            self?.viewModel.selectedAlarmDate = "\(date) \(hour):\(minute)"
-            
-            // 1. date의 앞자리 0 제거 -> 0이 붙은 숫자는 한자리수로만 노출하는 요구사항
-            let convertedDate = date
-                .replacingOccurrences(of: "0([1-9])일", with: "$1일", options: .regularExpression)
-                .replacingOccurrences(of: "0([1-9])월", with: "$1월", options: .regularExpression)
-            // 2. hour/minute 처리 (앞자리 0 제거) -> 동일 요구사항
-            let hourInt = Int(hour) ?? 0
-            let minuteInt = Int(minute) ?? 0
-            let hourStr = "\(hourInt)시"
-            // 3. minute이 00이라면 노출하지 않는 요구사항 추가
-            let minuteStr = minuteInt == 0 ? "" : " \(minuteInt)분"
-            // 4. 완성된 date 문자열
-            let dateText = "\(convertedDate) \(hourStr)\(minuteStr)"
-            
-            self?.viewModel.selectedAlarm = "[\(type)] \(dateText)"
+            let time = FormatManager.shared.convertTimeToKoreanFormat(hour: hour, minute: minute)
+            self?.viewModel.selectedAlarmDate = "\(date) \(time)"
+            self?.viewModel.selectedAlarm = "\(self?.viewModel.selectedAlarmDate ?? "") \(type)"
         }
         
         alarmSheetView.selectErrorAction = { [weak self] in
@@ -276,8 +264,8 @@ class ShareViewController: UIViewController {
                                      itemPrice: itemPrice,
                                      itemURL: self.link,
                                      itemMemo: nil,
-                                     itemNotificationType: viewModel.selectedAlarmType,
-                                     itemNotificationDate: convertDateFormat(input: viewModel.selectedAlarmDate ?? ""))
+                                     itemNotificationType: viewModel.convertNotiTypeToEnum(),
+                                     itemNotificationDate: viewModel.convertKoreanShortDateTimeToFullFormat())
         
         Task {
             do {
@@ -301,22 +289,6 @@ class ShareViewController: UIViewController {
             }
         }
         
-    }
-    
-    /// 서버에 전송하기 위해 날짜 포맷팅
-    private func convertDateFormat(input: String) -> String? {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yy년 MM월 dd일 HH:mm"
-        inputFormatter.locale = Locale(identifier: "ko_KR") // 한글 형식 대응
-
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
-        if let date = inputFormatter.date(from: input) {
-            return outputFormatter.string(from: date)
-        } else {
-            return nil
-        }
     }
 
 }

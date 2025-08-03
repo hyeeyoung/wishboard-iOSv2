@@ -167,6 +167,8 @@ public enum Alarm: String {
     case reminder = "리마인드"
     case notification = " 알림"
     
+    // TODO: 프리오더 API STRING 확인해야함
+    
     public var apiString: String {
         switch self {
         case .restock:
