@@ -88,10 +88,23 @@ final class AddViewController: UIViewController {
         if let itemMemo = self.item?.itemMemo, !itemMemo.isEmpty {
             self.viewModel.memo = itemMemo
         }
-        self.viewModel.selectedAlarmType = self.item?.itemNotificationType
-        self.viewModel.selectedAlarmDate = self.item?.itemNotificationDate
+        self.viewModel.selectedAlarmType =  Alarm.from(apiString: self.item?.itemNotificationType ?? "")?.rawValue
+        self.viewModel.selectedAlarmDate = self.item?.itemNotificationDate?.replacingOccurrences(of: "T", with: " ")
         if let selectedAlarmType = viewModel.selectedAlarmType, let selectedAlarmDate = viewModel.selectedAlarmDate {
-            self.viewModel.selectedAlarm = "\(selectedAlarmDate) \(selectedAlarmType)"
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "ko_KR")
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+            if let date = formatter.date(from: selectedAlarmDate) {
+                let calendar = Calendar.current
+                let hour = calendar.component(.hour, from: date)
+                let minute = calendar.component(.minute, from: date)
+                
+                let formattedDate = viewModel.formatToShortDate(selectedAlarmDate)
+                let time = FormatManager.shared.convertTimeToKoreanFormat(hour: String(hour), minute: String(minute))
+                self.viewModel.selectedAlarmDate = "\(formattedDate) \(time)"
+                self.viewModel.selectedAlarm = "\(self.viewModel.selectedAlarmDate ?? "") \(selectedAlarmType)"
+            }
         }
         
         // 서버에서 받은 이미지 배열 전환

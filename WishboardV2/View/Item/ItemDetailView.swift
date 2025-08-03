@@ -131,14 +131,17 @@ final class ItemDetailView: UIView {
         contentView.addSubview(placeholderImageView)
         contentView.addSubview(imageCarousel)
         contentView.addSubview(pageControl)
-        imageCarousel.addSubview(notiTypetag)
-        imageCarousel.addSubview(notiDatetag)
+        contentView.addSubview(notiTypetag)
+        contentView.addSubview(notiDatetag)
         contentView.addSubview(folderLabelButton)
         contentView.addSubview(timeLabel)
         contentView.addSubview(nameLabel)
         contentView.addSubview(priceLabel)
         contentView.addSubview(stackView)
         addSubview(actionButton)
+        
+        imageCarousel.bringSubviewToFront(notiTypetag)
+        imageCarousel.bringSubviewToFront(notiDatetag)
     }
     
     private func setupConstraints() {
@@ -285,11 +288,18 @@ final class ItemDetailView: UIView {
     
     private func configureNotiTags(_ item: WishListResponse) {
         if let notiType = item.itemNotificationType, let notiDate = item.itemNotificationDate {
-            notiTypetag.isHidden = false
-            notiDatetag.isHidden = false
-            
-            notiTypetag.text = notiType
-            notiDatetag.text = FormatManager.shared.showNotificationDateInItemDetail(notiDate)
+            if let notiTypeKor = Alarm.from(apiString: notiType) {
+                notiTypetag.isHidden = false
+                notiTypetag.text = notiTypeKor.rawValue
+            } else {
+                notiTypetag.isHidden = true
+            }
+            if let notiDateStr = FormatManager.shared.showNotificationDateInItemDetail(notiDate) {
+                notiDatetag.isHidden = false
+                notiDatetag.text = notiDateStr
+            } else {
+                notiDatetag.isHidden = true
+            }
         } else {
             notiTypetag.isHidden = true
             notiDatetag.isHidden = true

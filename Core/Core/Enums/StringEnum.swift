@@ -158,7 +158,7 @@ public enum Item {
     public static let count = "개"
 }
 
-public enum Alarm: String {
+public enum Alarm: String, CaseIterable {
     case restock = "재입고"
     case open = "오픈"
     case preorder = "프리오더"
@@ -194,6 +194,10 @@ public enum Alarm: String {
             return nil
         }
         return notification.apiString
+    }
+    
+    public static func from(apiString: String) -> Alarm? {
+        return Self.allCases.first { $0.apiString == apiString }
     }
 }
 

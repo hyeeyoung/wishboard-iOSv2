@@ -67,8 +67,6 @@ final class AddViewModel {
             let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
             let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
             
-            print("notiType: \(notiType) \nnotiDate: \(notiDate)")
-            
             let item = RequestItemDTO(folderId: selectedFolderId,
                                       photos: itemImages,
                                       itemName: itemName,
@@ -221,5 +219,21 @@ final class AddViewModel {
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         formatter.locale = Locale(identifier: "ko_KR")
         return formatter.string(from: date)
+    }
+    
+    func formatToShortDate(_ input: String) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        guard let date = formatter.date(from: input) else {
+            return input
+        }
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.locale = Locale(identifier: "ko_KR")
+        outputFormatter.dateFormat = "yy.M.d"  // ✨ 앞자리 0 생략
+        
+        return outputFormatter.string(from: date)
     }
 }

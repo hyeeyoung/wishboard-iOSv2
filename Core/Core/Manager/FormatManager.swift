@@ -68,8 +68,9 @@ public final class FormatManager {
          - a, b 모두 1-9는 한자리 수로 표기해 주세요!
      */
     public func showNotificationDateInItemDetail(_ date: String) -> String? {
+        let date = date.replacingOccurrences(of: "T", with: " ")
         let format = DateFormatter()
-        format.dateFormat = "yyyy-MM-dd HH:mm"
+        format.dateFormat = "yyyy-MM-dd HH:mm:ss"
         format.locale = Locale(identifier: "ko_KR")
 
         guard let targetDate = format.date(from: date) else { return "?" }
