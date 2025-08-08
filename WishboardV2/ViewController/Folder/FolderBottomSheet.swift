@@ -210,7 +210,7 @@ final class FolderBottomSheet: UIView {
         self.folder = folder
         if let folder = folder {
             titleLabel.text = "폴더명 수정"
-            textField.text = folder.folder_name
+            textField.text = folder.folderName
             actionButton.setTitle("수정", for: .normal)
         } else {
             titleLabel.text = "새 폴더 추가"

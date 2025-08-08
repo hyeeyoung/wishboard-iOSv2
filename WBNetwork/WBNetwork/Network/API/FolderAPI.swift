@@ -69,9 +69,9 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
         
         switch self {
         case .addFolder(let folderName):
-            parameters = ["folder_name": folderName]
+            parameters = ["folderName": folderName]
         case .modifyFolderName(_, let folderName):
-            parameters = ["folder_name": folderName]
+            parameters = ["folderName": folderName]
         default:
             parameters = [:]
         }
@@ -81,7 +81,7 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
     }
 
     public var headers: [String : String]? {
-        return NetworkMacro.AgentHeader
+        return NetworkMacro.DefaultHeader
     }
     
     public var authorizationType: Moya.AuthorizationType? {

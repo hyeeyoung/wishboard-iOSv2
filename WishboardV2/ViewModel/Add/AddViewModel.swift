@@ -14,7 +14,7 @@ import Core
 
 final class AddViewModel {
     // 입력 데이터
-    @Published var selectedImage: [UIImage] = []
+    @Published var selectedImages: [UIImage] = []
     @Published var itemName: String = ""
     @Published var itemPrice: String = ""
     @Published var selectedFolderId: Int? = nil
@@ -24,13 +24,12 @@ final class AddViewModel {
     @Published var memo: String? = nil
     
     @Published var selectedAlarm: String? = nil
-    @Published var selectedFolder: String? = nil
     @Published var folders: [FolderListResponse] = []
     
     // 저장 버튼 활성화 여부
     var isSaveEnabled: AnyPublisher<Bool, Never> {
         return Publishers.CombineLatest3(itemNamePublisher, itemPricePublisher, selectedImagePublisher)
-            .map { !$0.isEmpty && !$1.isEmpty && $2 != nil }
+            .map { !$0.isEmpty && !$1.isEmpty && !$2.isEmpty }
             .eraseToAnyPublisher()
     }
     
@@ -44,7 +43,7 @@ final class AddViewModel {
     }
     
     private var selectedImagePublisher: AnyPublisher<[UIImage], Never> {
-        $selectedImage.eraseToAnyPublisher()
+        $selectedImages.eraseToAnyPublisher()
     }
     
     // 가격 포맷 (콤마 추가)
@@ -59,26 +58,26 @@ final class AddViewModel {
     // API 호출
     func addItem() async throws {
         do {
-            // TODO: 상품 등록 다중이미지로 로직 변경
-//            let itemName = self.itemName
-//            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
-//            let selectedFolderId = self.selectedFolderId
-//            let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
-//            let itemURL = self.selectedLink
-//            let itemMemo = self.memo
-//            let notiType = self.selectedAlarmType
-//            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
-//            
-//            let item = RequestItemDTO(folderId: selectedFolderId,
-//                                         photo: itemImage,
-//                                         itemName: itemName,
-//                                         itemPrice: itemPrice,
-//                                         itemURL: itemURL,
-//                                         itemMemo: itemMemo,
-//                                         itemNotificationType: notiType, itemNotificationDate: notiDate)
-//            
-//            let usecase = AddItemUseCase()
-//            _ = try await usecase.execute(type: .manual, item: item)
+            let itemName = self.itemName
+            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            let selectedFolderId = self.selectedFolderId
+            let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
+            let itemURL = self.selectedLink
+            let itemMemo = self.memo
+            let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
+            let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
+            
+            let item = RequestItemDTO(folderId: selectedFolderId,
+                                      photos: itemImages,
+                                      itemName: itemName,
+                                      itemPrice: itemPrice,
+                                      itemURL: itemURL,
+                                      itemMemo: itemMemo,
+                                      itemNotificationType: notiType,
+                                      itemNotificationDate: notiDate)
+            
+            let usecase = AddItemUseCase()
+            _ = try await usecase.execute(type: .manual, item: item)
         } catch {
             if let moyaError = error as? MoyaError, let response = moyaError.response {
                 if response.statusCode == 400 {
@@ -92,28 +91,27 @@ final class AddViewModel {
     
     func modifyItem(idx: Int) async throws {
         do {
-            // TODO: 상품 등록 다중이미지로 로직 변경
-//            let itemName = self.itemName
-//            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
-//            let selectedFolderId = self.selectedFolderId
-//            let itemImage = self.selectedImage?.resizeImageIfNeeded().jpegData(compressionQuality: 1.0)
-//            let itemURL = self.selectedLink
-//            let itemMemo = self.memo
-//            let notiType = self.selectedAlarmType
-//            let notiDate = self.convertDateFormat(input: self.selectedAlarmDate ?? "")
-//            
-//            let item = RequestItemDTO(folderId: selectedFolderId,
-//                                         photo: itemImage,
-//                                         itemName: itemName,
-//                                         itemPrice: itemPrice,
-//                                         itemURL: itemURL,
-//                                         itemMemo: itemMemo,
-//                                         itemNotificationType: notiType, itemNotificationDate: notiDate)
-//            
-//            let usecase = ModifyItemUseCase()
-//            _ = try await usecase.execute(idx: idx, item: item)
+            let itemName = self.itemName
+            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            let selectedFolderId = self.selectedFolderId
+            let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
+            let itemURL = self.selectedLink
+            let itemMemo = self.memo
+            let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
+            let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
+            
+            let item = RequestItemDTO(folderId: selectedFolderId,
+                                      photos: itemImages,
+                                      itemName: itemName,
+                                      itemPrice: itemPrice,
+                                      itemURL: itemURL,
+                                      itemMemo: itemMemo,
+                                      itemNotificationType: notiType,
+                                      itemNotificationDate: notiDate)
+            
+            let usecase = ModifyItemUseCase()
+            _ = try await usecase.execute(idx: idx, item: item)
         } catch {
-//            SnackBar.shared.show(type: .errorMessage)
             if let moyaError = error as? MoyaError, let response = moyaError.response {
                 if response.statusCode == 400 {
 //                    SnackBar.shared.show(type: .errorMessage)
@@ -124,36 +122,45 @@ final class AddViewModel {
     }
     
     // 폴더 데이터 가져오기
-    func fetchFolders() {
-        _Concurrency.Task {
-            do {
-                let usecase = GetFolderListUseCase()
-                let data = try await usecase.execute()
-                
-                DispatchQueue.main.async {
-                    self.folders = data
-                }
-            } catch {
-                throw error
+    func fetchFolders() async throws {
+        do {
+            let usecase = GetFolderListUseCase()
+            let data = try await usecase.execute()
+            
+            DispatchQueue.main.async {
+                self.folders = data
             }
+        } catch {
+            throw error
         }
     }
     
-    private func convertDateFormat(input: String) -> String {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yy년 MM월 dd일 HH:mm"
-        inputFormatter.locale = Locale(identifier: "ko_KR") // 한글 형식 대응
-
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
-        if let date = inputFormatter.date(from: input) {
-            return outputFormatter.string(from: date)
+    // 새 폴더 추가
+    func addFolder(name: String) async throws {
+        do {
+            let usecase = AddFolderNameUseCase()
+            let _ = try await usecase.execute(folderName: name)
+            
+            try await self.fetchFolders()
+            
+            DispatchQueue.main.async {
+                SnackBar.shared.show(type: .addFolder)
+            }
+        } catch {
+            throw error
+        }
+    }
+    
+    /// 선택된 알림 종류를 Enum으로 변환
+    private func convertNotiTypeToEnum(input: String?) -> String? {
+        if let input = input, let apiValue = Alarm.apiString(from: input) {
+            return apiValue
         } else {
-            return input
+            return nil
         }
     }
     
+    /// 선택된 알림 날짜 스트링을 포맷팅
     func convertKoreanShortDateTimeToFullFormat(_ input: String) -> String? {
         // 예: "26.7.14 오후 3시 30분"
         let pattern = #"(\d{2})\.(\d{1,2})\.(\d{1,2})\s+(오전|오후)\s+(\d{1,2})시(?:\s+(\d{1,2})분)?"#
@@ -210,5 +217,21 @@ final class AddViewModel {
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         formatter.locale = Locale(identifier: "ko_KR")
         return formatter.string(from: date)
+    }
+    
+    func formatToShortDate(_ input: String) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        guard let date = formatter.date(from: input) else {
+            return input
+        }
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.locale = Locale(identifier: "ko_KR")
+        outputFormatter.dateFormat = "yy.M.d"  // ✨ 앞자리 0 생략
+        
+        return outputFormatter.string(from: date)
     }
 }

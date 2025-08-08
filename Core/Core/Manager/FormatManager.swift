@@ -15,6 +15,7 @@ public final class FormatManager {
     // 서버에서 받은 created_at을 "YY년 MM월 dd일 HH:mm"로 변환
     // '0일 전', '0주전' 으로 변환
     public func createdDateToKoreanStr(_ date: String) -> String? {
+        let date = date.replacingOccurrences(of: "T", with: " ")
         let format = DateFormatter()
         format.dateFormat = "yyyy-MM-dd HH:mm:ss"
         format.locale = Locale(identifier: "ko_KR")
@@ -68,8 +69,9 @@ public final class FormatManager {
          - a, b 모두 1-9는 한자리 수로 표기해 주세요!
      */
     public func showNotificationDateInItemDetail(_ date: String) -> String? {
+        let date = date.replacingOccurrences(of: "T", with: " ")
         let format = DateFormatter()
-        format.dateFormat = "yyyy-MM-dd HH:mm"
+        format.dateFormat = "yyyy-MM-dd HH:mm:ss"
         format.locale = Locale(identifier: "ko_KR")
 
         guard let targetDate = format.date(from: date) else { return "?" }
@@ -173,7 +175,7 @@ public final class FormatManager {
     }
     /// 문자열을 숫자문자열로     // ₩ 1,000 -> 1000
     public func priceToStr(price: String) -> String {
-        let priceStr = price.replacingOccurrences(of: "[₩,\\s]", with: "", options: .regularExpression)
+        let priceStr = price.replacingOccurrences(of: "[₩,\\s]", with: "", options: .regularExpression).filter { $0.isNumber }
         return priceStr
     }
 }

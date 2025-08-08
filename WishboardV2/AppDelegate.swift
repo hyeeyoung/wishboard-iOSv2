@@ -28,6 +28,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         application.registerForRemoteNotifications()
         
+        // Device-Info 설정
+        guard let deviceInfo = UserManager.deviceInfo else {
+            let uuid = UUID().uuidString
+            UserManager.deviceInfo = uuid
+            return true
+        }
+        
         // 네트워크 모니터링 시작
         NetworkMonitor.shared.startMonitoring()
         // 네트워크 체킹 감지

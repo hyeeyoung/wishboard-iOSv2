@@ -112,7 +112,7 @@ final class ItemDetailViewController: UIViewController {
             self?.dismissKeyboard()
             self?.hideBottomSheet()
             
-            if let folderId = folderId, let itemId = self?.viewModel.item?.item_id {
+            if let folderId = folderId, let itemId = self?.viewModel.item?.id {
                 Task {
                     try await self?.viewModel.modifyItemFolder(itemId: itemId, folderId: folderId)
 //                    NotificationCenter.default.post(name: .ItemUpdated, object: nil)
@@ -134,7 +134,7 @@ final class ItemDetailViewController: UIViewController {
             self.bottomSheetView.configure(with: folders)
             
             // 이미 지정된 폴더 정보 넘기기
-            let folderId = self.viewModel.item?.folder_id
+            let folderId = self.viewModel.item?.folderId
             self.bottomSheetView.selectedFolderId = folderId
             
             UIView.animate(withDuration: 0.3) {
@@ -183,7 +183,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
                 print("아이템 삭제")
                 Task {
                     do {
-                        if let id = self.viewModel.item?.item_id {
+                        if let id = self.viewModel.item?.id {
                             // delete item
                             try await self.viewModel.deleteItem(id: id)
                             // TODO: 진입 화면의 refreshItems
@@ -211,7 +211,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
         
         // 새로고침
         addViewController.confirmAction = { [weak self] in
-            if let idx = self?.viewModel.item?.item_id {
+            if let idx = self?.viewModel.item?.id {
                 self?.viewModel.fetchItemDetail(id: idx)
 //                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
             }

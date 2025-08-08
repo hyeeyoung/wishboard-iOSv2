@@ -16,23 +16,23 @@ public enum AddItemType: String {
 
 public struct RequestItemDTO {
     public let folderId: Int?
-    public let photo: Data?
-    public let itemName: String?
-    public let itemPrice: String?
+    public let photos: [Data]?
+    public let itemName: String
+    public let itemPrice: String
     public let itemURL: String?
     public let itemMemo: String?
     public let itemNotificationType: String?
     public var itemNotificationDate: String?
     
     public init(folderId: Int?, 
-                photo: Data?,
-                itemName: String?,
-                itemPrice: String?,
+                photos: [Data]?,
+                itemName: String,
+                itemPrice: String,
                 itemURL: String?,
                 itemMemo: String?,
                 itemNotificationType: String?, itemNotificationDate: String?) {
         self.folderId = folderId
-        self.photo = photo
+        self.photos = photos
         self.itemName = itemName
         self.itemPrice = itemPrice
         self.itemURL = itemURL
@@ -122,7 +122,7 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
     }
 
     public var headers: [String : String]? {
-        return NetworkMacro.AgentHeader
+        return NetworkMacro.DefaultHeader
     }
     
     public var authorizationType: Moya.AuthorizationType? {
@@ -134,47 +134,51 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
     }
     
     func makeMultipartFormData(param: RequestItemDTO) -> [Moya.MultipartFormData] {
-       let itemNameData = MultipartFormData(provider: .data(param.itemName?.data(using: String.Encoding.utf8) ?? Data()), name: "item_name")
-        let itemPriceData = MultipartFormData(provider: .data(param.itemPrice?.data(using: String.Encoding.utf8) ?? Data()), name: "item_price")
-       let itemURLData = MultipartFormData(provider: .data(param.itemURL?.data(using: String.Encoding.utf8) ?? Data()), name: "item_url")
-       let itemMemoData = MultipartFormData(provider: .data(param.itemMemo?.data(using: String.Encoding.utf8) ?? Data()), name: "item_memo")
-       
-       var folderIdData: MultipartFormData?
-       var itemNotificationTypeData: MultipartFormData?
-       var itemNotificationDateData: MultipartFormData?
-       
-       if let folderId = param.folderId {
-           folderIdData = MultipartFormData(provider: .data(String(folderId).data(using: String.Encoding.utf8) ?? Data()), name: "folder_id")
-       }
-       if let notificationType = param.itemNotificationType {
-           itemNotificationTypeData = MultipartFormData(provider: .data(notificationType.data(using: String.Encoding.utf8) ?? Data()), name: "item_notification_type")
-       }
-       if let notificationDate = param.itemNotificationDate {
-           let itemNotificationDate = notificationDate /*+ ":00"*/
-           itemNotificationDateData = MultipartFormData(provider: .data(itemNotificationDate.data(using: String.Encoding.utf8) ?? Data()), name: "item_notification_date")
-       }
-
         var formData: [Moya.MultipartFormData] = []
-        // 이미지 데이터가 있다면 폼데이터에 추가
-        if let imageData = param.photo {
-            let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "item_img", fileName: "item.jpeg", mimeType: "image/jpeg")
-            formData = [imageMultipartFormData]
+
+        // Required Datas - itemName, itemPrice
+        var requestBody: [String: Any] = [
+            "itemName": param.itemName,
+            "itemPrice": param.itemPrice
+        ]
+
+        if let folderId = param.folderId {
+            requestBody["folderId"] = folderId
         }
-       
-       formData.append(itemNameData)
-       formData.append(itemPriceData)
-       formData.append(itemURLData)
-       formData.append(itemMemoData)
-       if let folderIdData = folderIdData {
-           formData.append(folderIdData)
-       }
-       if let itemNotificationTypeData = itemNotificationTypeData {
-           formData.append(itemNotificationTypeData)
-       }
-       if let itemNotificationDateData = itemNotificationDateData {
-           formData.append(itemNotificationDateData)
-       }
-       
-       return formData
-   }
+        if let itemURL = param.itemURL {
+            requestBody["itemUrl"] = itemURL
+        }
+        if let itemMemo = param.itemMemo {
+            requestBody["itemMemo"] = itemMemo
+        }
+        if let notificationType = param.itemNotificationType {
+            requestBody["itemNotificationType"] = notificationType
+        }
+        if let notificationDate = param.itemNotificationDate {
+            requestBody["itemNotificationDate"] = notificationDate
+        }
+
+        // JSON 직렬화 → MultipartFormData
+        if let jsonData = try? JSONSerialization.data(withJSONObject: requestBody, options: []) {
+            let requestPart = MultipartFormData(provider: .data(jsonData), name: "request", mimeType: "application/json")
+            formData.append(requestPart)
+        }
+
+        // MANUAL - itemImages required
+        // PARSING - itemImages optional
+        // 이미지들
+        if let photos = param.photos {
+            for photo in photos {
+                let imageData = MultipartFormData(
+                    provider: .data(photo),
+                    name: "itemImages",
+                    fileName: "item.jpeg",
+                    mimeType: "image/jpeg"
+                )
+                formData.append(imageData)
+            }
+        }
+
+        return formData
+    }
 }

@@ -13,7 +13,7 @@ import Then
 import Core
 
 enum FormItemType {
-    case textField(placeholder: String, isEditable: Bool, showsArrow: Bool)
+    case textField(placeholder: String, isEditable: Bool, showsArrow: Bool, showsNumberPad: Bool)
     case textView
     case folder  // 별도로 상속해서 처리 가능
 }
@@ -27,8 +27,17 @@ class FormItemView: UIView {
         get { textField?.text ?? textView?.text ?? "" }
         set {
             textField?.text = newValue
-            textView?.text = newValue
+            if let tv = textView {
+                if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    tv.text = Placeholder.uploadItemMemo
+                    tv.textColor = .gray_200
+                } else {
+                    tv.text = newValue
+                    tv.textColor = .gray_700
+                }
+            }
             textSubject.send(newValue)      // 초기값 세팅 시에도 발행
+            placeholderLabel?.isHidden = !(newValue.isEmpty)
         }
     }
 
@@ -43,7 +52,7 @@ class FormItemView: UIView {
     
     let mainContainer = UIView()
     
-    private let titleLabel = UILabel().then {
+    public let titleLabel = UILabel().then {
         $0.font = TypoStyle.SuitB2.font
         $0.textColor = .gray_700
     }
@@ -52,8 +61,9 @@ class FormItemView: UIView {
         $0.text = "*"
         $0.textColor = .green_700
     }
-    private var textField: UITextField?
-    private var textView: UITextView?
+    public private(set) var textView: UITextView?
+    public private(set) var textField: UITextField?
+    private var placeholderLabel: UILabel?
     private var arrowImageView: UIImageView?
 
     // MARK: - Init
@@ -62,11 +72,18 @@ class FormItemView: UIView {
         
         addSubViews()
         setupUI(title: title, isRequired: isRequired, type: type)
-        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
+        
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        gesture.cancelsTouchesInView = false
+        self.addGestureRecognizer(gesture)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - UI Setup
@@ -99,7 +116,7 @@ class FormItemView: UIView {
         requiredStar.isHidden = !isRequired
         
         switch type {
-        case .textField(let placeholder, let isEditable, let showsArrow):
+        case .textField(let placeholder, let isEditable, let showsArrow, let showsNumberPad):
             let tf = UITextField().then {
                 $0.placeholder = placeholder
                 $0.borderStyle = .none
@@ -108,6 +125,7 @@ class FormItemView: UIView {
                 $0.autocapitalizationType = .none
                 $0.autocorrectionType = .no
                 $0.spellCheckingType = .no
+                $0.keyboardType = showsNumberPad ? .numberPad : .default
                 $0.addTarget(self, action: #selector(textDidChange(_:)), for: .allEvents)
             }
             tf.attributedPlaceholder = NSAttributedString(
@@ -148,31 +166,32 @@ class FormItemView: UIView {
             }
 
         case .textView:
+            let placeholderText = Placeholder.uploadItemMemo
+
             let tv = UITextView().then {
                 $0.font = TypoStyle.SuitD1.font
-                $0.textColor = .gray_700
+                $0.textColor = .gray_200  // 초기 색상: 플레이스홀더 색
+                $0.text = placeholderText // 초기 텍스트: 플레이스홀더
                 $0.isScrollEnabled = false
+                $0.textContainerInset = .zero
+                $0.textContainer.lineFragmentPadding = 0
+                $0.isUserInteractionEnabled = true
+                $0.isEditable = true
+                $0.autocorrectionType = .no
+                $0.autocapitalizationType = .none
             }
+            tv.delegate = self
             self.textView = tv
             mainContainer.addSubview(tv)
             tv.snp.makeConstraints { make in
-                make.height.greaterThanOrEqualTo(120) // 최소 높이
-                make.leading.trailing.bottom.equalToSuperview()
+                make.height.greaterThanOrEqualTo(120)
+                make.leading.trailing.equalToSuperview()
+                make.bottom.lessThanOrEqualToSuperview()
                 make.top.equalTo(titleLabel.snp.bottom).offset(14)
             }
-
         case .folder:
             // TODO: 상속 받아서 구현 or delegate 활용해 외부 구성
-            // 간단한 placeholder – 실제 구현은 `FolderItemView`에서 처리 권장
-            let placeholder = UILabel().then {
-                $0.text = "+ 새 폴더"
-                $0.font = .systemFont(ofSize: 14)
-                $0.textColor = .secondaryLabel
-            }
-            mainContainer.addSubview(placeholder)
-            placeholder.snp.makeConstraints { make in
-                make.height.equalTo(44)
-            }
+            break
         }
     }
     
@@ -180,9 +199,40 @@ class FormItemView: UIView {
     @objc
     private func textDidChange(_ sender: UITextField) {
         onTextChanged?(sender)
+        textSubject.send(sender.text ?? "")
     }
     
     @objc private func handleTap() {
         self.onTap?()
+    }
+}
+
+// MARK: - UITextView Delegate
+extension FormItemView: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == Placeholder.uploadItemMemo {
+            textView.text = ""
+            textView.textColor = .gray_700 // 실제 입력 텍스트 색상
+        }
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = Placeholder.uploadItemMemo
+            textView.textColor = .gray_200
+        }
+    }
+
+    func textViewDidChange(_ textView: UITextView) {
+        if textView.text == Placeholder.uploadItemMemo {
+            textView.textColor = .gray_200
+        } else {
+            textView.textColor = .gray_700 // 실제 입력 텍스트 색상
+        }
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = Placeholder.uploadItemMemo
+            textView.textColor = .gray_200
+        }
+        textSubject.send(textView.text ?? "")
     }
 }

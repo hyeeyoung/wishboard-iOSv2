@@ -11,7 +11,7 @@ public final class NoticeManager {
     public static let shared = NoticeManager()
     
     public func getNotices() async throws -> [NoticeResponse] {
-        return try await API.Notice.requestRaw(.getNotices)
+        return try await API.Notice.request(.getNotices)
     }
     
     public func updateState(itemId: String) async throws -> EmptyResponse {
@@ -19,6 +19,6 @@ public final class NoticeManager {
     }
     
     public func getCalendarNotices() async throws -> [NoticeResponse] {
-        return try await API.Notice.requestRaw(.getCalendar)
+        return try await API.Notice.request(.getCalendar)
     }
 }

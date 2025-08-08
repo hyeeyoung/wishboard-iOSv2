@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol UserRepositoryInterface {
-    func getUserInfo() async throws -> [UserInfoResponse]
+    func getUserInfo() async throws -> UserInfoResponse
     func updatePushState(state: Bool) async throws -> EmptyResponse
     func deleteUser() async throws -> EmptyResponse
     func modifyProfile(profileImg: Data?, nickname: String?) async throws -> EmptyResponse
@@ -18,7 +18,7 @@ public protocol UserRepositoryInterface {
 public final class UserRepository: UserRepositoryInterface {
     public init() { }
     
-    public func getUserInfo() async throws -> [UserInfoResponse] {
+    public func getUserInfo() async throws -> UserInfoResponse {
         return try await UserAPIManager.shared.getUserInfo()
     }
     

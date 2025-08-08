@@ -43,24 +43,23 @@ class MypageViewModel {
                 let data = try await usecase.execute()
                 
                 DispatchQueue.main.async {
-                    let userinfoResponse = data[0]
                     
-                    let nickname = userinfoResponse.nickname
+                    let nickname = data.nickname
                     // 닉네임이 있다면 기기에 저장된 임시닉네임 삭제
                     if nickname != nil {
                         UserManager.tempNickname = ""
                     }
                     
-                    self.user = User(profileImageUrl: userinfoResponse.profile_img_url,
+                    self.user = User(profileImageUrl: data.profileImgUrl,
                                      nickname: nickname ?? "",
-                                     email: userinfoResponse.email,
-                                     pushState: userinfoResponse.push_state != 0)
+                                     email: data.email,
+                                     pushState: data.pushState ?? false)
                     
                     // pushState 업데이트
-                    self.updatePushStateSetting(isOn: userinfoResponse.push_state != 0)
+                    self.updatePushStateSetting(isOn: data.pushState ?? false)
                     
                     // email 저장
-                    UserManager.email = userinfoResponse.email
+                    UserManager.email = data.email
                 }
             } catch {
                 throw error

@@ -80,8 +80,8 @@ final class FolderSelectTableViewCell: UITableViewCell {
     }
     
     func configure(with folder: FolderListResponse) {
-        folderImg.loadImage(from: folder.folder_thumbnail ?? "")
-        titleLabel.text = folder.folder_name ?? ""
+        folderImg.loadImage(from: folder.folderThumbnail ?? "")
+        titleLabel.text = folder.folderName ?? ""
     }
     
     func configureCheckButton(isSelected: Bool) {

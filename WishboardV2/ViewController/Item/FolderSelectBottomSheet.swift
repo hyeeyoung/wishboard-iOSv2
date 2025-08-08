@@ -136,7 +136,7 @@ extension FolderSelectBottomSheet: UITableViewDelegate, UITableViewDataSource {
         let folder = folders[indexPath.item]
         cell.configure(with: folder)
         
-        if let selectedFolderId = selectedFolderId, let folderId = folder.folder_id, selectedFolderId == folderId {
+        if let selectedFolderId = selectedFolderId, let folderId = folder.id, selectedFolderId == folderId {
             cell.configureCheckButton(isSelected: true)
         } else {
             cell.configureCheckButton(isSelected: false)
@@ -154,7 +154,7 @@ extension FolderSelectBottomSheet: UITableViewDelegate, UITableViewDataSource {
         UIDevice.vibrate()
         
         let folderItem = folders[indexPath.item]
-        guard let folderId = folderItem.folder_id, let folderName = folderItem.folder_name else {return}
+        guard let folderId = folderItem.id, let folderName = folderItem.folderName else {return}
         self.selectedFolderId = folderId
         self.selectedFolder = folderName
         selectAction?(folderId, folderName)

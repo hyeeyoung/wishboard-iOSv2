@@ -77,12 +77,12 @@ class ProfileHeaderView: UIView {
         userNameLabel.snp.makeConstraints { make in
             make.leading.equalTo(profileImage.snp.trailing).offset(16)
             make.top.equalToSuperview().offset(45)
-            make.trailing.equalTo(modifyButton.snp.leading).offset(-8)
+            make.trailing.equalTo(modifyButton.snp.leading).offset(-18)
         }
         emailLabel.snp.makeConstraints { make in
             make.top.equalTo(userNameLabel.snp.bottom).offset(8)
             make.leading.equalTo(userNameLabel)
-            make.trailing.equalTo(modifyButton.snp.leading).offset(-8)
+            make.trailing.equalTo(modifyButton.snp.leading).offset(-18)
         }
         modifyButton.snp.makeConstraints { make in
             make.width.equalTo(45)

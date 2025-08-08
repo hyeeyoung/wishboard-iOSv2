@@ -78,7 +78,7 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
     }
 
     public var headers: [String : String]? {
-        return NetworkMacro.AgentHeader
+        return NetworkMacro.DefaultHeader
     }
     
     public var authorizationType: Moya.AuthorizationType? {
@@ -92,16 +92,27 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
     func makeMultipartFormData(profileImg: Data?, nickname: String?) -> [Moya.MultipartFormData] {
         var formData: [Moya.MultipartFormData] = []
         
-        if let imageData = profileImg {
-            let imageMultipartFormData = MultipartFormData(provider: .data(imageData), name: "profile_img", fileName: "profile.jpeg", mimeType: "image/jpeg")
-            formData.append(imageMultipartFormData)
-        }
-        
-        if let nickname = nickname {
-            let nameData = MultipartFormData(provider: .data(nickname.data(using: String.Encoding.utf8) ?? Data()), name: "nickname")
-            formData.append(nameData)
+        var requestBody: [String: Any] = [
+            "nickname": nickname
+        ]
+
+        // JSON 직렬화 → MultipartFormData
+        if let jsonData = try? JSONSerialization.data(withJSONObject: requestBody, options: []) {
+            let requestPart = MultipartFormData(provider: .data(jsonData), name: "request", mimeType: "application/json")
+            formData.append(requestPart)
         }
 
-       return formData
+        // 이미지
+        if let image = profileImg {
+            let imageData = MultipartFormData(
+                provider: .data(image),
+                name: "profileImage",
+                fileName: "profile.jpeg",
+                mimeType: "image/jpeg"
+            )
+            formData.append(imageData)
+        }
+
+        return formData
    }
 }

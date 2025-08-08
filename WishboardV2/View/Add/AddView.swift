@@ -74,55 +74,33 @@ final class AddView: UIView {
                                        isRequired: true,
                                        type: .textField(placeholder: Placeholder.uploadItemName,
                                                         isEditable: true,
-                                                        showsArrow: false))
+                                                        showsArrow: false,
+                                                        showsNumberPad: false))
     
     let itemPriceSection = FormItemView(title: Title.price,
                                        isRequired: true,
                                        type: .textField(placeholder: Placeholder.uploadItemPrice,
                                                         isEditable: true,
-                                                        showsArrow: false))
+                                                        showsArrow: false,
+                                                        showsNumberPad: true))
     
-    let folderSection = FormItemView(title: Title.folder,
-                                       isRequired: false,
-                                       type: .textField(placeholder: Placeholder.uploadItemPrice,
-                                                        isEditable: false,
-                                                        showsArrow: false))
+    let folderSection = FolderFormItemView(title: Title.folder, isRequired: false)
     
     let alarmSection = FormItemView(title: Title.notificationItem,
                                     isRequired: false,
                                     type: .textField(placeholder: Placeholder.uploadItemNoti,
                                                      isEditable: false,
-                                                     showsArrow: true))
+                                                     showsArrow: true,
+                                                     showsNumberPad: false))
      
     let itemLinkSection = FormItemView(title: Title.shoppingMallLink,
                                        isRequired: false,
                                        type: .textField(placeholder: Placeholder.uploadItemLink,
                                                         isEditable: false,
-                                                        showsArrow: true))
+                                                        showsArrow: true,
+                                                        showsNumberPad: false))
     
-    let memoContainer = UIView()
-    let memoTitleLabel = UILabel().then {
-        $0.font = TypoStyle.SuitB2.font
-        $0.textColor = .gray_700
-        $0.text = Title.memo
-    }
-    let memoTextView = UITextView().then {
-        $0.font = TypoStyle.SuitD1.font
-        $0.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        $0.textContainer.lineFragmentPadding = 0
-        $0.autocorrectionType = .no
-        $0.autocapitalizationType = .none
-        $0.isSelectable = true
-        $0.dataDetectorTypes = [.all]
-    }
-    
-    let memoPlaceholder = UILabel().then {
-        $0.text = Placeholder.uploadItemMemo
-        $0.textColor = .gray_200
-        $0.font = TypoStyle.SuitD1.font
-        $0.numberOfLines = 0
-        $0.lineBreakMode = .byCharWrapping
-    }
+    let memoSection = FormItemView(title: Title.memo, isRequired: false, type: .textView)
     
     let separatorViews: [UIView] = Array(repeating: UIView().then {
         $0.backgroundColor = .gray_100
@@ -160,10 +138,6 @@ final class AddView: UIView {
         imagePickerContainer.addSubview(cameraContainer)
         cameraContainer.addSubview(cameraIcon)
         cameraContainer.addSubview(imageCountLabel)
-        
-        memoContainer.addSubview(memoTitleLabel)
-        memoContainer.addSubview(memoTextView)
-        memoContainer.addSubview(memoPlaceholder)
         
         toolBar.configure(title: Title.addItem)
         
@@ -211,23 +185,9 @@ final class AddView: UIView {
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().offset(-16)
         }
-        
-        memoTitleLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(16)
-        }
-        
-        memoTextView.snp.makeConstraints { make in
-            make.top.equalTo(memoTitleLabel.snp.bottom).offset(14)
-            make.leading.trailing.bottom.equalToSuperview().inset(16)
-            make.height.equalTo(300)
-        }
-        
-        memoPlaceholder.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(memoTextView)
-        }
 
         let fields: [UIView] = [
-            itemNameSection, itemPriceSection, folderSection, alarmSection, itemLinkSection, memoContainer
+            itemNameSection, itemPriceSection, folderSection, alarmSection, itemLinkSection, memoSection
         ]
         
         for (index, field) in fields.enumerated() {
@@ -235,7 +195,7 @@ final class AddView: UIView {
             
             stackView.addArrangedSubview(field)
             
-            if field == memoContainer {
+            if field == memoSection {
                 field.snp.makeConstraints { make in
                     make.height.equalTo(362)
                 }
@@ -264,15 +224,32 @@ final class AddView: UIView {
         }
     }
     
+    // TODO: 가격 입력 > 불안정...
     private func priceTextChanged(_ textField: UITextField) {
-        guard let currentText = textField.text as String? else { return }
+        // 현재 커서 위치를 가져오기
+        guard let selectedRange = textField.selectedTextRange else { return }
+        let cursorOffset = textField.offset(from: textField.beginningOfDocument, to: selectedRange.start)
+
+        // 숫자만 필터링
+        let currentText = textField.text ?? ""
         let filteredText = currentText.filter { $0.isNumber }
+
+        // 빈 문자열일 경우 초기화
         if filteredText.isEmpty {
             textField.text = nil
             return
         }
-        let formattedText = FormatManager.shared.strToPrice(numStr: filteredText)
-        textField.text = "\(formattedText ?? "")원"
+
+        // 포맷팅
+        let formatted = FormatManager.shared.strToPrice(numStr: filteredText) ?? ""
+
+        // 업데이트
+        textField.text = "\(formatted)원"
+
+        // 새 텍스트 길이에 맞춰 커서 위치 조정
+        if let newPosition = textField.position(from: textField.beginningOfDocument, offset: cursorOffset) {
+            textField.selectedTextRange = textField.textRange(from: newPosition, to: newPosition)
+        }
     }
     
     public func updateImages(_ images: [UIImage]) {

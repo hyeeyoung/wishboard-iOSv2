@@ -95,9 +95,9 @@ final class FolderCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(with folder: FolderListResponse) {
-        configureFolderThumbnail(folder.folder_thumbnail)
-        configureFolderName(folder.folder_name)
-        configureItemCount(folder.item_count)
+        configureFolderThumbnail(folder.folderThumbnail)
+        configureFolderName(folder.folderName)
+        configureItemCount(folder.itemCount)
     }
     
     private func configureFolderThumbnail(_ url: String?) {

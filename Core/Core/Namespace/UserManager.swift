@@ -35,6 +35,9 @@ public class UserManager {
     @UserDefault(key: UserDefaultKey.refreshToken, defaultValue: nil, storage: sharedDefaults)
     public static var refreshToken: String?
     
+    @UserDefault(key: UserDefaultKey.deviceInfo, defaultValue: nil, storage: sharedDefaults)
+    public static var deviceInfo: String?
+    
     @UserDefault(key: UserDefaultKey.url, defaultValue: nil, storage: sharedDefaults)
     public static var url: String?
     
@@ -79,6 +82,7 @@ public class UserManager {
 public struct UserDefaultKey {
     public static let accessToken = "accessToken"
     public static let refreshToken = "refreshToken"
+    public static let deviceInfo = "deviceInfo"
     
     public static let url = "url"
     

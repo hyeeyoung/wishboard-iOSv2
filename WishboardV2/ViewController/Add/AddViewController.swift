@@ -11,6 +11,7 @@ import Combine
 import Lottie
 import Then
 import PhotosUI
+import Moya
 import Core
 import WBNetwork
 
@@ -35,6 +36,7 @@ final class AddViewController: UIViewController {
     // Bottom Sheets
     private let backgroundDimView = UIView()
     private let folderSelectBottomSheet = FolderSelectBottomSheet()
+    private let addFolderBottomSheet = FolderBottomSheet()
     private let shoppingLinkBottomSheet = ShoppingLinkBottomSheet()
     private let selectDateBottomSheet = SelectDateBottomSheet()
     
@@ -55,10 +57,6 @@ final class AddViewController: UIViewController {
         self.type = type
         self.item = item
         super.init(nibName: nil, bundle: nil)
-        
-        if type == .modify {
-            setModifyItemData()
-        }
     }
     
     required init?(coder: NSCoder) {
@@ -69,45 +67,58 @@ final class AddViewController: UIViewController {
     private func setModifyItemData() {
         self.addView.toolBar.configure(title: Title.modifyItem)
         
-        self.addView.itemNameSection.text = self.item?.item_name ?? ""
-        let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.item_price ?? "0")
+        self.addView.itemNameSection.text = self.item?.itemName ?? ""
+        let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.itemPrice ?? "0")
         self.addView.itemPriceSection.text = "\(formattedText ?? "")원"
         
-        if let item_name = self.item?.item_name, !item_name.isEmpty {
-            self.viewModel.itemName = item_name
+        if let itemName = self.item?.itemName, !itemName.isEmpty {
+            self.viewModel.itemName = itemName
         }
-        if let item_price = self.item?.item_price, !item_price.isEmpty {
-            self.viewModel.itemPrice = item_price
+        if let itemPrice = self.item?.itemPrice, !itemPrice.isEmpty {
+            self.viewModel.itemPrice = itemPrice
         }
-        self.viewModel.selectedFolderId = self.item?.folder_id
-        if let folder_name = self.item?.folder_name, !folder_name.isEmpty {
-            self.viewModel.selectedFolder = folder_name
+        self.viewModel.selectedFolderId = self.item?.folderId
+        if let itemUrl = self.item?.itemUrl, !itemUrl.isEmpty {
+            self.viewModel.selectedLink = itemUrl
         }
-        if let item_url = self.item?.item_url, !item_url.isEmpty {
-            self.viewModel.selectedLink = item_url
+        if let itemMemo = self.item?.itemMemo, !itemMemo.isEmpty {
+            self.viewModel.memo = itemMemo
         }
-        if let item_memo = self.item?.item_memo, !item_memo.isEmpty {
-            self.viewModel.memo = item_memo
-        }
-        self.viewModel.selectedAlarmType = self.item?.item_notification_type
-        self.viewModel.selectedAlarmDate = self.item?.item_notification_date
+        self.viewModel.selectedAlarmType =  Alarm.from(apiString: self.item?.itemNotificationType ?? "")?.rawValue
+        self.viewModel.selectedAlarmDate = self.item?.itemNotificationDate?.replacingOccurrences(of: "T", with: " ")
         if let selectedAlarmType = viewModel.selectedAlarmType, let selectedAlarmDate = viewModel.selectedAlarmDate {
-            self.viewModel.selectedAlarm = "\(selectedAlarmDate) \(selectedAlarmType)"
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "ko_KR")
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+            if let date = formatter.date(from: selectedAlarmDate) {
+                let calendar = Calendar.current
+                let hour = calendar.component(.hour, from: date)
+                let minute = calendar.component(.minute, from: date)
+                
+                let formattedDate = viewModel.formatToShortDate(selectedAlarmDate)
+                let time = FormatManager.shared.convertTimeToKoreanFormat(hour: String(hour), minute: String(minute))
+                self.viewModel.selectedAlarmDate = "\(formattedDate) \(time)"
+                self.viewModel.selectedAlarm = "\(self.viewModel.selectedAlarmDate ?? "") \(selectedAlarmType)"
+            }
         }
         
-        // TODO: 서버에서 받은 이미지 배열을 ... 변환해야함
-        // 이미지
-//        if let imageUrl = self.item?.item_img_url {
-//            fetchImage(from: imageUrl) { image in
-//                if let image = image {
-//                    DispatchQueue.main.async {
-//                        self.viewModel.selectedImage = image
-//                    }
-//                } else {
-//                    print("❌ 이미지 변환 실패")
-//                }
-//            }
-//        }
+        // 서버에서 받은 이미지 배열 전환
+        if let itemImages = self.item?.itemImages {
+            for image in itemImages {
+                if let imageUrl = image.itemImageUrl {
+                    fetchImage(from: imageUrl) { image in
+                        if let image = image {
+                            DispatchQueue.main.async {
+                                self.viewModel.selectedImages.append(image)
+                            }
+                        } else {
+                            print("❌ 이미지 변환 실패")
+                        }
+                    }
+                }
+            }
+        }
     }
     
     // MARK: - Life Cycles
@@ -129,6 +140,14 @@ final class AddViewController: UIViewController {
         
         setupBackgroundDimView()
         setupBottomSheet()
+        
+        // data - fetch FolderList
+        _Concurrency.Task {
+            try await self.viewModel.fetchFolders()
+            if type == .modify {
+                setModifyItemData()
+            }
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -148,17 +167,26 @@ final class AddViewController: UIViewController {
             .assign(to: \.itemPrice, on: viewModel)
             .store(in: &cancellables)
         
-        addView.memoTextView.textPublisher
+        addView.memoSection.textPublisher
+            .map { Optional($0) }
+            .removeDuplicates()
+            .debounce(for: .milliseconds(100), scheduler: RunLoop.main)
+            .assign(to: \.memo, on: viewModel)
+            .store(in: &cancellables)
+        
+        viewModel.$folders
             .receive(on: RunLoop.main)
-            .sink { [weak viewModel] text in
-                viewModel?.memo = text
+            .sink { [weak self] folders in
+                self?.addView.folderSection.folders = folders
             }
             .store(in: &cancellables)
         
-        viewModel.$selectedFolder
+        viewModel.$selectedFolderId
             .receive(on: RunLoop.main)
-            .sink { [weak self] text in
-//                self?.addView.folderView.updateText(text ?? Title.folder)
+            .sink { [weak self] folderId in
+                guard let folderId = folderId else { return }
+                self?.addView.folderSection.selectFolder(with: folderId)
+                self?.folderSelectBottomSheet.selectedFolderId = folderId
             }
             .store(in: &cancellables)
         
@@ -180,7 +208,7 @@ final class AddViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.$selectedImage
+        viewModel.$selectedImages
             .receive(on: RunLoop.main)
             .sink { [weak self] images in
                 self?.addView.updateImages(images)
@@ -188,10 +216,12 @@ final class AddViewController: UIViewController {
             .store(in: &cancellables)
         
         viewModel.$memo
-            .receive(on: RunLoop.main)
+            .dropFirst()
+            .removeDuplicates()
             .sink { [weak self] text in
-                self?.addView.memoPlaceholder.isHidden = !(text?.isEmpty ?? true)
-                self?.addView.memoTextView.text = text
+                guard self?.addView.memoSection.textView?.isFirstResponder == false else { return }
+                guard let text = text else { return }
+                self?.addView.memoSection.text = text
             }
             .store(in: &cancellables)
         
@@ -205,16 +235,29 @@ final class AddViewController: UIViewController {
     
     // MARK: - Actions
     private func setupActions() {
-//        addView.folderView.onTap = { [weak self] in
-//            guard let folders = self?.viewModel.folders else {return}
-//            self?.showFolderBottomSheet(for: folders)
-//        }
+        addView.folderSection.onNewFolderTap = {
+            self.view.endEditing(true)
+            self.showAddFolderBottomSheet()
+        }
+        
+        addView.folderSection.onFolderSelected = { [weak self] folderId in
+            self?.view.endEditing(true)
+            self?.viewModel.selectedFolderId = folderId
+        }
+
+        addView.folderSection.onArrowTap = { [weak self] in
+            self?.view.endEditing(true)
+            guard let folders = self?.viewModel.folders else {return}
+            self?.showSelectFolderBottomSheet(for: folders)
+        }
         
         addView.alarmSection.onTap = { [weak self] in
+            self?.view.endEditing(true)
             self?.showDateBottomSheet()
         }
         
         addView.itemLinkSection.onTap = { [weak self] in
+            self?.view.endEditing(true)
             self?.showLinkBottomSheet(with: self?.viewModel.selectedLink)
         }
         
@@ -226,7 +269,6 @@ final class AddViewController: UIViewController {
     private func setupDelegates() {
         addView.delegate = self
         addView.toolBar.delegate = self
-        addView.memoTextView.delegate = self
     }
     
     // MARK: Alert Helper
@@ -252,7 +294,8 @@ final class AddViewController: UIViewController {
     }
     
     @objc private func dismissModal() {
-        self.hideFolderBottomSheet()
+        self.hideSelectFolderBottomSheet()
+        self.hideAddFolerBottomSheet()
         self.hideDateBottomSheet()
         self.hideLinkBottomSheet()
     }
@@ -260,10 +303,15 @@ final class AddViewController: UIViewController {
     /// 시트 설정
     private func setupBottomSheet() {
         view.addSubview(folderSelectBottomSheet)
+        view.addSubview(addFolderBottomSheet)
         view.addSubview(shoppingLinkBottomSheet)
         view.addSubview(selectDateBottomSheet)
         
         folderSelectBottomSheet.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+        }
+        addFolderBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
         }
@@ -276,14 +324,39 @@ final class AddViewController: UIViewController {
             make.bottom.equalToSuperview().offset(340)
         }
         // Folder Binding
-        folderSelectBottomSheet.selectAction = { [weak self] folderId, folderName in
-            self?.hideFolderBottomSheet()
+        folderSelectBottomSheet.selectAction = { [weak self] folderId, _ in
+            self?.hideSelectFolderBottomSheet()
             self?.viewModel.selectedFolderId = folderId
-            self?.viewModel.selectedFolder = folderName
         }
         folderSelectBottomSheet.onClose = { [weak self] in
-            self?.hideFolderBottomSheet()
+            self?.hideSelectFolderBottomSheet()
         }
+        // Add Folder
+        addFolderBottomSheet.onClose = { [weak self] in
+            self?.view.endEditing(true)
+            self?.hideAddFolerBottomSheet()
+        }
+        addFolderBottomSheet.onActionButtonTap = { [weak self] folderName, folderId in
+            // 새 폴더 추가
+            _Concurrency.Task {
+                do {
+                    self?.addFolderBottomSheet.actionButton.startAnimation()
+                    try await self?.viewModel.addFolder(name: folderName)
+                    self?.view.endEditing(true)
+                    self?.addFolderBottomSheet.actionButton.stopAnimation()
+                    self?.hideAddFolerBottomSheet()
+                } catch {
+                    if let moyaError = error as? MoyaError, let response = moyaError.response {
+                        if response.statusCode == 409 {
+                            self?.addFolderBottomSheet.actionButton.stopAnimation()
+                            self?.addFolderBottomSheet.displayErrorMessage("동일 이름의 폴더가 있어요!")
+                        }
+                    }
+                    throw error
+                }
+            }
+        }
+        
         // Shopping Link Binding
         shoppingLinkBottomSheet.onClose = { [weak self] in
             self?.hideLinkBottomSheet()
@@ -314,14 +387,10 @@ final class AddViewController: UIViewController {
             SnackBar(in: self).show(type: .selectPastTime)
             #endif
         }
-        
-        // data - fetch FolderList
-        // TODO: 요거 주석
-//        self.viewModel.fetchFolders()
     }
     
     /// 폴더 선택 시트 노출
-    private func showFolderBottomSheet(for folders: [FolderListResponse]) {
+    private func showSelectFolderBottomSheet(for folders: [FolderListResponse]) {
         DispatchQueue.main.async {
             self.view.endEditing(true)
             self.folderSelectBottomSheet.configure(with: folders)
@@ -337,11 +406,43 @@ final class AddViewController: UIViewController {
     }
     
     /// 폴더 선택 시트 미노출
-    private func hideFolderBottomSheet() {
+    private func hideSelectFolderBottomSheet() {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.folderSelectBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    /// 새 폴더 추가 시트 노출
+    private func showAddFolderBottomSheet(for folder: FolderListResponse? = nil) {
+        DispatchQueue.main.async {
+            self.tabBarController?.tabBar.isHidden = true
+            self.addFolderBottomSheet.initView()
+            
+            self.addFolderBottomSheet.configure(with: folder)
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 1.0
+                self.addFolderBottomSheet.snp.updateConstraints { make in
+                    make.bottom.equalToSuperview()
+                }
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    /// 새 폴더 추가 시트 숨김
+    private func hideAddFolerBottomSheet() {
+        DispatchQueue.main.async {
+            self.tabBarController?.tabBar.isHidden = false
+            self.addFolderBottomSheet.resetView()
+            
+            UIView.animate(withDuration: 0.3) {
+                self.backgroundDimView.alpha = 0.0
+                self.addFolderBottomSheet.snp.updateConstraints { make in
                     make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
                 }
                 self.view.layoutIfNeeded()
@@ -469,9 +570,9 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
     /// UIImagePickerControllerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editedImage = info[.editedImage] as? UIImage {
-            viewModel.selectedImage.append(editedImage)
+            viewModel.selectedImages.append(editedImage)
         } else if let originalImage = info[.originalImage] as? UIImage {
-            viewModel.selectedImage.append(originalImage)
+            viewModel.selectedImages.append(originalImage)
         }
         picker.dismiss(animated: true)
     }
@@ -512,26 +613,9 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         dispatchGroup.notify(queue: .main) {
             // compactMap으로 nil 제거 후 순서 보존
             let finalImages = selectedImages.compactMap { $0 }
-            self.viewModel.selectedImage = finalImages
+            self.viewModel.selectedImages = finalImages
             self.addView.updateImages(finalImages)
         }
-    }
-}
-
-// MARK: - UITextView Delegates
-extension AddViewController: UITextViewDelegate {
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        activeField = textView
-    }
-    
-    func textViewDidChange(_ textView: UITextView) {
-        addView.memoPlaceholder.isHidden = !textView.text.isEmpty
-        activeField = textView
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        textView.resignFirstResponder()
     }
 }
 
@@ -545,7 +629,7 @@ extension AddViewController: AddToolBarDelegate {
     func rightItemTap() {
         UIDevice.vibrate()
         let lottie = SpinningLottie()
-        Task {
+        _Concurrency.Task {
             do {
                 self.view.endEditing(true)
                 lottie.startAnimation()
@@ -553,7 +637,7 @@ extension AddViewController: AddToolBarDelegate {
                 if self.type == .manual {
                     try await self.viewModel.addItem()
                 } else if self.type == .modify {
-                    guard let itemIdx = self.item?.item_id else {return}
+                    guard let itemIdx = self.item?.id else {return}
                     try await self.viewModel.modifyItem(idx: itemIdx)
                 }
                 

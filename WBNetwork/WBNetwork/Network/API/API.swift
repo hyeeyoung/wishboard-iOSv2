@@ -107,6 +107,37 @@ public class WBProvider<Target: TargetType> {
         }
     }
     
+    /// request 메서드 - 페이징이 있는 응답값일 때
+    public func requestPaging<T: Decodable>(_ target: Target) async throws -> T {
+        print(target.task)
+        
+        do {
+            let response = try await provider.request(target)
+            let responseData = try response.get()
+            dto_print(data: responseData)
+            
+            let data = try JSONDecoder().decode(CommonPaginationResponse<T>.self, from: response.get())
+            if let result = data.data?.content {
+                print(result)
+                return result
+            } else if T.self == EmptyResponse.self {
+                return EmptyResponse() as! T
+            } else {
+                let decodingError = DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "디코딩 에러"))
+                let error = AFError.responseSerializationFailed(reason: .decodingFailed(error: decodingError))
+                throw error
+            }
+        } catch {
+            // 실패 응답 출력
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                dto_print(data: response.data, error: error)
+            } else {
+                dto_print(data: nil, error: error)
+            }
+            throw error
+        }
+    }
+    
     /// request 메서드 - CommonResponse에 감싸져 있지 않는 응답값일 때
     public func requestRaw<T: Decodable>(_ target: Target) async throws -> T {
         print(target.task)

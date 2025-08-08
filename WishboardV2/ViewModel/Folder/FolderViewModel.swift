@@ -42,8 +42,8 @@ final class FolderViewModel {
             let _ = try await usecase.execute(folderId: String(id), folderName: newName)
             
             DispatchQueue.main.async {
-                if let index = self.folders.firstIndex(where: { $0.folder_id == id }) {
-                    self.folders[index].folder_name = newName
+                if let index = self.folders.firstIndex(where: { $0.id == id }) {
+                    self.folders[index].folderName = newName
                     SnackBar.shared.show(type: .modifyFolder)
                 }
             }
@@ -81,7 +81,7 @@ final class FolderViewModel {
                 let _ = try await usecase.execute(folderId: String(id))
                 
                 DispatchQueue.main.async {
-                    self.folders.removeAll { $0.folder_id == id }
+                    self.folders.removeAll { $0.id == id }
                     SnackBar.shared.show(type: .deleteFolder)
                 }
             } catch {

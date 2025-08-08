@@ -28,20 +28,20 @@ class CalendarViewModel: ObservableObject {
 //        fetchAlarms()
     }
     
-    // 🛠 API 호출 (모든 알람 가져오기)
+    // API 호출 (모든 알람 가져오기)
     func fetchAlarms() async throws {
         do {
             let usecase = GetCalendarNoticesUseCase(repository: NoticeRepository())
             let response = try await usecase.execute()
             
             let items = response.map {
-                return NoticeItem(id: $0.item_id ?? 0,
-                                  imageUrl: $0.item_img_url,
-                                  notiType: $0.item_notification_type ?? "",
-                                  name: $0.item_name ?? "",
-                                  readState: $0.read_state == 1,
-                                  notiDate: $0.item_notification_date ?? "",
-                                  link: $0.item_url)
+                return NoticeItem(id: $0.id ?? 0,
+                                  imageUrl: $0.itemImages?.first?.itemImageUrl ?? "",
+                                  notiType: $0.itemNotificationType ?? "",
+                                  name: $0.itemName ?? "",
+                                  readState: $0.readState ?? false,
+                                  notiDate: $0.itemNotificationDate ?? "",
+                                  link: $0.itemUrl)
             }
             
             DispatchQueue.main.async {

@@ -17,17 +17,33 @@ public enum NetworkMacro {
         #endif
     }
     
-    public static var AgentHeader: [String: String] {
-        #if DEBUG
-        return [
+    public static var DefaultHeader: [String: String] {
+        var header = [
             "User-Agent": "wishboard-ios/dev",
             "Content-Type": "application/json"
         ]
+        
+        #if DEBUG
+        return header
         #else
-        return [
-            "User-Agent": "wishboard-ios/prod",
+        return header
+        #endif
+    }
+    
+    public static var DeviceInfoHeader: [String: String] {
+        var header = [
+            "User-Agent": "wishboard-ios/dev",
             "Content-Type": "application/json"
         ]
+        
+        if let deviceInfo = UserManager.deviceInfo {
+            header["Device-Info"] = deviceInfo
+        }
+        
+        #if DEBUG
+        return header
+        #else
+        return header
         #endif
     }
     
