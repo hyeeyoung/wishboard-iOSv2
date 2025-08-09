@@ -167,8 +167,6 @@ public enum Alarm: String, CaseIterable {
     case reminder = "리마인드"
     case notification = " 알림"
     
-    // TODO: 프리오더 API STRING 확인해야함
-    
     public var apiString: String {
         switch self {
         case .restock:
@@ -176,7 +174,7 @@ public enum Alarm: String, CaseIterable {
         case .open:
             return "OPEN"
         case .preorder:
-            return "PRE_ORDER"
+            return "PREORDER"
         case .saleStart:
             return "SALE_START"
         case .saleEnd:
