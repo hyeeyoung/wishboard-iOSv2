@@ -129,6 +129,7 @@ extension HomeViewController: HomeToolBarDelegate {
     func alarmNaviItemTap() {
         UIDevice.vibrate()
         let nextVC = AlarmListViewController()
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }

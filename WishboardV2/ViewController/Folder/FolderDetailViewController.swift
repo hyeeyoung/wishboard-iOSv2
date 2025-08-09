@@ -48,7 +48,6 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.tabBarController?.tabBar.isHidden = false
         self.refreshItems()
     }
     

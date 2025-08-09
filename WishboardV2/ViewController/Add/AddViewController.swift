@@ -427,7 +427,6 @@ final class AddViewController: UIViewController {
     /// 새 폴더 추가 시트 숨김
     private func hideAddFolerBottomSheet() {
         DispatchQueue.main.async {
-            self.tabBarController?.tabBar.isHidden = false
             self.addFolderBottomSheet.resetView()
             
             UIView.animate(withDuration: 0.3) {
