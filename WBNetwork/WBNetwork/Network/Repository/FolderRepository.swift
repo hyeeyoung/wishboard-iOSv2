@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol FolderRepositoryInterface {
-    func getFolders() async throws -> [FolderListResponse]
+    func getFolders(page: Int, size: Int) async throws -> CommonPaginationResponse<[FolderListResponse]>
     func addFolder(folderName: String) async throws -> EmptyResponse
     func modifyFolderName(folderId: String, folderName: String) async throws -> EmptyResponse
     func deleteFolder(folderId: String) async throws -> EmptyResponse
@@ -19,8 +19,8 @@ public protocol FolderRepositoryInterface {
 public final class FolderRepository: FolderRepositoryInterface {
     public init() { }
     
-    public func getFolders() async throws -> [FolderListResponse] {
-        return try await FolderManager.shared.getFolders()
+    public func getFolders(page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[FolderListResponse]> {
+        return try await FolderManager.shared.getFolders(page: page, size: size)
     }
     public func addFolder(folderName: String) async throws -> EmptyResponse {
         return try await FolderManager.shared.addFolder(folderName: folderName)

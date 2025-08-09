@@ -228,7 +228,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
     }
     
     @objc func refreshItems() {
-        viewModel.fetchFolders()
+        viewModel.fetchFolders(reset: true)
     }
     
     func scrollToTop() {
@@ -273,6 +273,12 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
         let folderDetailVC = FolderDetailViewController(folderId: String(folderId), folderTitle: folderTitle)
         folderDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(folderDetailVC, animated: true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        viewModel.loadNextIfNeeded(currentIndex: indexPath.item)
     }
 }
 

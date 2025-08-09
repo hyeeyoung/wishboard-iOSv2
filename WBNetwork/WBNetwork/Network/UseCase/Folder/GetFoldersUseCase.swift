@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol GetFoldersUseCaseInterface {
-    func execute() async throws -> [FolderListResponse]
+    func execute(page: Int, size: Int) async throws -> CommonPaginationResponse<[FolderListResponse]>
 }
 
 public class GetFoldersUseCase: GetFoldersUseCaseInterface {
@@ -18,7 +18,7 @@ public class GetFoldersUseCase: GetFoldersUseCaseInterface {
         self.repository = repository
     }
     
-    public func execute() async throws -> [FolderListResponse] {
-        return try await self.repository.getFolders()
+    public func execute(page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[FolderListResponse]> {
+        return try await self.repository.getFolders(page: page, size: size)
     }
 }

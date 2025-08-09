@@ -11,7 +11,7 @@ import Core
 
 public enum FolderAPI {
     /// 폴더리스트 조회
-    case getFolders
+    case getFolders(page: Int, size: Int)
     /// 새 폴더 추가
     case addFolder(folderName: String)
     /// 폴더명 수정
@@ -68,6 +68,8 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
         var parameters: [String: Any] = [:]
         
         switch self {
+        case .getFolders(let page, let size):
+            parameters = ["page": page, "size": size]
         case .addFolder(let folderName):
             parameters = ["folderName": folderName]
         case .modifyFolderName(_, let folderName):
