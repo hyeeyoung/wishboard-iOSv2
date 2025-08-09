@@ -10,8 +10,8 @@ import Foundation
 public final class ItemManager {
     public static let shared = ItemManager()
     
-    public func getWishItems() async throws -> [WishListResponse] {
-        return try await API.Item.requestPaging(.getWishItems)
+    public func getWishItems(page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[WishListResponse]> {
+        return try await API.Item.requestRaw(.getWishItems(page: page, size: size))
     }
     
     public func getItemDetail(id: Int) async throws -> WishListResponse {

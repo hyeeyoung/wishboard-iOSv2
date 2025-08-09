@@ -44,7 +44,7 @@ public struct RequestItemDTO {
 
 public enum ItemAPI {
     /// 위시리스트 조회
-    case getWishItems
+    case getWishItems(page: Int, size: Int)
     /// 위시아이템 삭제
     case deleteItem(id: Int)
     /// 아이템 디테일 조회
@@ -103,8 +103,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         var parameters: [String: Any] = [:]
         
         switch self {
-        case .getWishItems:
-            parameters = [:]
+        case .getWishItems(let page, let size):
+            parameters = ["page": page, "size": size]
         case .parseItemUrl(let link):
             parameters = ["site": link]
         case .addItem(let type, let item):

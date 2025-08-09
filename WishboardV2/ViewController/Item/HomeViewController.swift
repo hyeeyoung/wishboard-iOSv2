@@ -75,7 +75,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
     
     @objc func refreshItems() {
-        viewModel.fetchItems()
+        viewModel.fetchItems(reset: true)
     }
     
     func scrollToTop() {
@@ -122,6 +122,12 @@ extension HomeViewController: UICollectionViewDelegate {
             detailViewController.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(detailViewController, animated: true)
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        viewModel.loadNextIfNeeded(currentIndex: indexPath.item)
     }
 }
 
