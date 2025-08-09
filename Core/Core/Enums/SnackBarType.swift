@@ -25,6 +25,7 @@ public enum SnackBarType {
     case emptyItemContent
     case selectPastTime
     case errorMessage
+    case imageLimit
     case test
     
     public var message: String {
@@ -46,6 +47,7 @@ public enum SnackBarType {
         case .emptyItemContent: return "앗, 상품명과 가격을 입력해 주세요😁"
         case .selectPastTime: return "현재 시간 이후로만 선택할 수 있어요"
         case .errorMessage: return "예상하지 못한 오류가 발생했어요!\n잠시후 다시 시도해주세요."
+        case .imageLimit: return "앗, 이미지는 최대 10장까지만 등록할 수 있어요!"
             
         case .test: return "로그아웃"
         }

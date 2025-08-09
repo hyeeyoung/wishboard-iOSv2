@@ -509,7 +509,7 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         self.view.endEditing(true)
         
         if self.viewModel.selectedImages.count >= 10 {
-            self.showAlert(title: "", message: "사진은 최대 10장까지 선택할 수 있습니다.")
+            SnackBar.shared.show(type: .imageLimit)
             return
         }
         
@@ -582,7 +582,7 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
 
         // ✅ 10장 초과 체크
         if results.count > 10 {
-            self.showAlert(title: "", message: "사진은 최대 10장까지 선택할 수 있습니다.")
+            SnackBar.shared.show(type: .imageLimit)
             return
         }
 
@@ -603,7 +603,7 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         group.notify(queue: .main) {
             let finalImages = images.compactMap { $0 }
             if self.viewModel.selectedImages.count + finalImages.count > 10 {
-                self.showAlert(title: "", message: "사진은 최대 10장까지 선택할 수 있습니다.")
+                SnackBar.shared.show(type: .imageLimit)
                 return
             }
             self.viewModel.selectedImages.append(contentsOf: finalImages)
