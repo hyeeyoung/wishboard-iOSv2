@@ -20,7 +20,10 @@ public final class API {
     }
     
     public static let authPlugin = AccessTokenPlugin(tokenClosure: tokenClosure)
-    public static let networkLoggerPlugin = NetworkLoggerPlugin()
+//    public static let networkLoggerPlugin = NetworkLoggerPlugin()
+    public static let networkLoggerPlugin = NetworkLoggerPlugin(configuration: .init(
+        logOptions: [.formatRequestAscURL, .requestHeaders, .requestBody, .successResponseBody, .errorResponseBody]
+    ))
     public static let interceptor = TokenInterceptor.shared
     public static let errorPlugin = ErrorPlugin()
     public static let loadingPlugin = LoadingPlugin()
@@ -77,7 +80,7 @@ public class WBProvider<Target: TargetType> {
     
     /// Server API 호출 시 사용하는 request 메서드
     public func request<T: Decodable>(_ target: Target) async throws -> T {
-        print(target.task)
+        logTask(target)
         
         do {
             let response = try await provider.request(target)
@@ -109,7 +112,7 @@ public class WBProvider<Target: TargetType> {
     
     /// request 메서드 - 페이징이 있는 응답값일 때
     public func requestPaging<T: Decodable>(_ target: Target) async throws -> T {
-        print(target.task)
+        logTask(target)
         
         do {
             let response = try await provider.request(target)
@@ -140,7 +143,7 @@ public class WBProvider<Target: TargetType> {
     
     /// request 메서드 - CommonResponse에 감싸져 있지 않는 응답값일 때
     public func requestRaw<T: Decodable>(_ target: Target) async throws -> T {
-        print(target.task)
+        logTask(target)
         
         do {
             let response = try await provider.request(target)

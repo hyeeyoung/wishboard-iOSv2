@@ -145,16 +145,16 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         if let folderId = param.folderId {
             requestBody["folderId"] = folderId
         }
-        if let itemURL = param.itemURL {
+        if let itemURL = param.itemURL, !itemURL.isEmpty {
             requestBody["itemUrl"] = itemURL
         }
-        if let itemMemo = param.itemMemo {
+        if let itemMemo = param.itemMemo, !itemMemo.isEmpty {
             requestBody["itemMemo"] = itemMemo
         }
-        if let notificationType = param.itemNotificationType {
+        if let notificationType = param.itemNotificationType, !notificationType.isEmpty {
             requestBody["itemNotificationType"] = notificationType
         }
-        if let notificationDate = param.itemNotificationDate {
+        if let notificationDate = param.itemNotificationDate, !notificationDate.isEmpty {
             requestBody["itemNotificationDate"] = notificationDate
         }
 
