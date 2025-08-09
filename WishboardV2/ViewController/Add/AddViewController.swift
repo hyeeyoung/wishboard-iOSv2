@@ -28,7 +28,7 @@ final class AddViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let addView = AddView()
+    private let addView: AddView
     private let viewModel = AddViewModel()
     private var cancellables = Set<AnyCancellable>()
     public var confirmAction: (() -> Void)?
@@ -47,13 +47,10 @@ final class AddViewController: UIViewController {
     // Keyboard
     private weak var activeField: UIView?
     
-    // PH Picker
-    private var selections = [String : PHPickerResult]()
-    private var selectedAssetIdentifiers = [String]()
-    
     // MARK: - Initializers
     
     init(type: AddItemType, item: WishListResponse? = nil) {
+        self.addView = AddView(viewModel: self.viewModel)
         self.type = type
         self.item = item
         super.init(nibName: nil, bundle: nil)
@@ -177,7 +174,11 @@ final class AddViewController: UIViewController {
         viewModel.$folders
             .receive(on: RunLoop.main)
             .sink { [weak self] folders in
-                self?.addView.folderSection.folders = folders
+                guard let self = self else { return }
+                self.addView.folderSection.folders = folders
+                guard let selectedFolderId = self.viewModel.selectedFolderId else { return }
+                self.addView.folderSection.selectFolder(with: selectedFolderId)
+                self.folderSelectBottomSheet.selectedFolderId = selectedFolderId
             }
             .store(in: &cancellables)
         
@@ -205,13 +206,6 @@ final class AddViewController: UIViewController {
                 if let text = text {
                     self?.addView.itemLinkSection.text = text
                 }
-            }
-            .store(in: &cancellables)
-        
-        viewModel.$selectedImages
-            .receive(on: RunLoop.main)
-            .sink { [weak self] images in
-                self?.addView.updateImages(images)
             }
             .store(in: &cancellables)
         
@@ -437,7 +431,6 @@ final class AddViewController: UIViewController {
     /// 새 폴더 추가 시트 숨김
     private func hideAddFolerBottomSheet() {
         DispatchQueue.main.async {
-            self.tabBarController?.tabBar.isHidden = false
             self.addFolderBottomSheet.resetView()
             
             UIView.animate(withDuration: 0.3) {
@@ -515,6 +508,11 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
     @objc private func selectImage() {
         self.view.endEditing(true)
         
+        if self.viewModel.selectedImages.count >= 10 {
+            self.showAlert(title: "", message: "사진은 최대 10장까지 선택할 수 있습니다.")
+            return
+        }
+        
         let actionSheet = UIAlertController(title: "사진 선택", message: nil, preferredStyle: .actionSheet)
         
         let action = UIAlertAction(title: "사진 찍기", style: .default) { _ in
@@ -549,18 +547,16 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
     }
     
     private func openPhotoLibrary() {
-        // 이미지의 Identifier를 사용하기 위해서는 초기화를 shared로 해줘야 합니다.
+        // 이미지의 Identifier를 사용하기 위해서는 초기화를 shared로
         var config = PHPickerConfiguration(photoLibrary: .shared())
-        // 라이브러리에서 보여줄 Assets을 필터를 한다. (기본값: 이미지, 비디오, 라이브포토)
+        // 라이브러리에서 보여줄 Assets을 필터 (기본값: 이미지, 비디오, 라이브포토)
         config.filter = PHPickerFilter.any(of: [.images])
         // 다중 선택 갯수 설정 (0 = 무제한)
         config.selectionLimit = 10
         // 선택 동작을 나타냄 (default: 기본 틱 모양, ordered: 선택한 순서대로 숫자로 표현, people: 뭔지 모르겠게요)
         config.selection = .ordered
-        // 잘은 모르겠지만, current로 설정하면 트랜스 코딩을 방지한다고 하네요!?
+        // 트랜스 코딩을 방지
         config.preferredAssetRepresentationMode = .current
-        // 이 동작이 있어야 PHPicker를 실행 시, 선택했던 이미지를 기억해 표시할 수 있다. (델리게이트 코드 참고)
-        config.preselectedAssetIdentifiers = selectedAssetIdentifiers
 
         let picker = PHPickerViewController(configuration: config)
         picker.delegate = self
@@ -584,37 +580,33 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true)
 
-        let updatedIdentifiers = results.compactMap { $0.assetIdentifier }
-        selectedAssetIdentifiers = updatedIdentifiers
-
-        var newSelections: [String: PHPickerResult] = [:]
-        results.forEach {
-            if let id = $0.assetIdentifier {
-                newSelections[id] = selections[id] ?? $0
-            }
+        // ✅ 10장 초과 체크
+        if results.count > 10 {
+            self.showAlert(title: "", message: "사진은 최대 10장까지 선택할 수 있습니다.")
+            return
         }
-        selections = newSelections
 
-        var selectedImages: [UIImage?] = Array(repeating: nil, count: updatedIdentifiers.count)
-        let dispatchGroup = DispatchGroup()
+        // ✅ 단순 로딩 (id/기억 로직 없이)
+        var images: [UIImage?] = Array(repeating: nil, count: results.count)
+        let group = DispatchGroup()
 
-        for (index, id) in updatedIdentifiers.enumerated() {
-            guard let result = selections[id] else { continue }
-
-            dispatchGroup.enter()
-            result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
-                defer { dispatchGroup.leave() }
+        for (index, result) in results.enumerated() {
+            group.enter()
+            result.itemProvider.loadObject(ofClass: UIImage.self) { object, _ in
+                defer { group.leave() }
                 if let image = object as? UIImage {
-                    selectedImages[index] = image
+                    images[index] = image
                 }
             }
         }
 
-        dispatchGroup.notify(queue: .main) {
-            // compactMap으로 nil 제거 후 순서 보존
-            let finalImages = selectedImages.compactMap { $0 }
-            self.viewModel.selectedImages = finalImages
-            self.addView.updateImages(finalImages)
+        group.notify(queue: .main) {
+            let finalImages = images.compactMap { $0 }
+            if self.viewModel.selectedImages.count + finalImages.count > 10 {
+                self.showAlert(title: "", message: "사진은 최대 10장까지 선택할 수 있습니다.")
+                return
+            }
+            self.viewModel.selectedImages.append(contentsOf: finalImages)
         }
     }
 }

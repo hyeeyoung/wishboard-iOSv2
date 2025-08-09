@@ -21,6 +21,16 @@ final class ItemDetailView: UIView {
     }
     private let contentView = UIView()
     
+    // 이미지와 페이지컨트롤
+    private let imageStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 20
+    }
+    
+    // 엠티뷰 이미지 혹은 아이템 이미지 컬렉션뷰
+    private let imageContainer = UIView()
+    
+    // 엠티뷰 이미지
     private let placeholderImageView = UIImageView().then {
         $0.image = Image.emptyView
         $0.layer.cornerRadius = 32
@@ -29,6 +39,7 @@ final class ItemDetailView: UIView {
         $0.isHidden = true
     }
 
+    // 아이템 이미지 컬렉션뷰
     private let imageCarousel = UICollectionView(frame: .zero, collectionViewLayout: {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -100,7 +111,7 @@ final class ItemDetailView: UIView {
         $0.clipsToBounds = true
     }
 
-    private let stackView = UIStackView().then {
+    private let contentStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 0
     }
@@ -128,20 +139,22 @@ final class ItemDetailView: UIView {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         
-        contentView.addSubview(placeholderImageView)
-        contentView.addSubview(imageCarousel)
-        contentView.addSubview(pageControl)
-        contentView.addSubview(notiTypetag)
-        contentView.addSubview(notiDatetag)
+        contentView.addSubview(imageStackView)
+        imageStackView.addArrangedSubview(imageContainer)
+        imageStackView.addArrangedSubview(pageControl)
+        imageContainer.addSubview(placeholderImageView)
+        imageContainer.addSubview(imageCarousel)
+        imageContainer.addSubview(notiTypetag)
+        imageContainer.addSubview(notiDatetag)
         contentView.addSubview(folderLabelButton)
         contentView.addSubview(timeLabel)
         contentView.addSubview(nameLabel)
         contentView.addSubview(priceLabel)
-        contentView.addSubview(stackView)
+        contentView.addSubview(contentStackView)
         addSubview(actionButton)
         
-        imageCarousel.bringSubviewToFront(notiTypetag)
-        imageCarousel.bringSubviewToFront(notiDatetag)
+        imageContainer.bringSubviewToFront(notiTypetag)
+        imageContainer.bringSubviewToFront(notiDatetag)
     }
     
     private func setupConstraints() {
@@ -159,33 +172,34 @@ final class ItemDetailView: UIView {
             make.width.equalTo(scrollView.snp.width)
         }
         
-        placeholderImageView.snp.makeConstraints { make in
+        imageStackView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalToSuperview()
+        }
+        
+        placeholderImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
             make.height.equalTo(imageCarousel.snp.width).multipliedBy(1.154)
         }
 
         imageCarousel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.top.equalToSuperview()
+            make.edges.equalToSuperview()
             make.height.equalTo(imageCarousel.snp.width).multipliedBy(1.154)
         }
 
         pageControl.snp.makeConstraints { make in
-            make.centerX.equalTo(imageCarousel)
-            make.top.equalTo(imageCarousel.snp.bottom).offset(20)
+            make.centerX.equalTo(imageStackView)
             make.height.equalTo(6)
-            make.leading.trailing.lessThanOrEqualToSuperview().inset(16)
         }
         
         notiTypetag.snp.makeConstraints { make in
-            make.leading.equalTo(imageCarousel).offset(16)
-            make.bottom.equalTo(imageCarousel).offset(-16)
+            make.leading.equalTo(imageContainer).offset(16)
+            make.bottom.equalTo(imageContainer).offset(-16)
         }
         
         notiDatetag.snp.makeConstraints { make in
             make.leading.equalTo(notiTypetag.snp.trailing).offset(8)
-            make.bottom.equalTo(imageCarousel).offset(-16)
+            make.bottom.equalTo(imageContainer).offset(-16)
         }
 
         folderLabelButton.snp.makeConstraints { make in
@@ -194,7 +208,7 @@ final class ItemDetailView: UIView {
         }
         
         timeLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(imageCarousel)
+            make.trailing.equalTo(imageStackView)
             make.centerY.equalTo(folderLabelButton)
         }
         
@@ -208,7 +222,7 @@ final class ItemDetailView: UIView {
             make.leading.trailing.equalToSuperview().inset(16)
         }
         
-        stackView.snp.makeConstraints { make in
+        contentStackView.snp.makeConstraints { make in
             make.top.equalTo(priceLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
@@ -258,7 +272,7 @@ final class ItemDetailView: UIView {
         configureFolderBtn(item)
 
         // 구성 요소에 따라 스택뷰에 추가
-        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() } // 기존 뷰 제거
+        contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() } // 기존 뷰 제거
         configureItemLink(item)
         configureItemMemo(item)
         
@@ -276,7 +290,10 @@ final class ItemDetailView: UIView {
         self.imageCarousel.isHidden = urls.isEmpty
         
         self.imageUrls = urls
+        // 페이지컨트롤 노출 조건 = 이미지 2개 이상
         pageControl.numberOfPages = urls.count
+        pageControl.isHidden = urls.count < 2
+        
         imageCarousel.reloadData()
     }
     
@@ -356,14 +373,14 @@ final class ItemDetailView: UIView {
             linkView.snp.makeConstraints { make in
                 make.height.equalTo(46)
             }
-            stackView.addArrangedSubview(linkView)
+            contentStackView.addArrangedSubview(linkView)
         }
     }
     
     private func configureItemMemo(_ item: WishListResponse) {
         if let memo = item.itemMemo, !memo.isEmpty {
             let memoView = createMemoInfoView(memo: memo)
-            stackView.addArrangedSubview(memoView)
+            contentStackView.addArrangedSubview(memoView)
         }
     }
     

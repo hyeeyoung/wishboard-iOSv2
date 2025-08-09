@@ -108,16 +108,18 @@ final class AddView: UIView {
     
     // MARK: - Properties
     public var selectedImages: [UIImage] = []
+    public weak var delegate: ActiveFieldDelegate?
+    private let viewModel: AddViewModel
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init
-    
-    public weak var delegate: ActiveFieldDelegate?
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: AddViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         
         setupUI()
         setupDelegates()
+        setupBindings()
     }
     
     required init?(coder: NSCoder) {
@@ -224,6 +226,19 @@ final class AddView: UIView {
         }
     }
     
+    private func setupBindings() {
+        viewModel.$selectedImages
+            .receive(on: RunLoop.main)
+            .sink { [weak self] images in
+                self?.updateImages(images)
+            }
+            .store(in: &cancellables)
+        
+        folderSection.loadNextPageAction = { [weak self] index in
+            self?.viewModel.loadNextIfNeeded(currentIndex: index)
+        }
+    }
+    
     // TODO: 가격 입력 > 불안정...
     private func priceTextChanged(_ textField: UITextField) {
         // 현재 커서 위치를 가져오기
@@ -277,8 +292,9 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
         cell.configure(with: image)
 
         cell.onDelete = { [weak self] in
-            self?.selectedImages.remove(at: indexPath.item)
-            self?.updateImages(self?.selectedImages ?? [])
+            guard let self = self else { return }
+            self.selectedImages.remove(at: indexPath.item)
+            self.viewModel.selectedImages = self.selectedImages
         }
 
         return cell

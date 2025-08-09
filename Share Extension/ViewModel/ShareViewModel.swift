@@ -22,6 +22,13 @@ final class ShareViewModel {
     @Published var selectedAlarm: String? = nil
     private var cancellables = Set<AnyCancellable>()
     
+    // Paging
+    @Published var isLoading: Bool = false
+    @Published var isRefreshing: Bool = false
+    @Published var hasMore: Bool = true
+    private var page: Int = 0          // 서버의 data.number (0-based)
+    private let pageSize: Int = 10     // 서버의 data.size와 일치
+    
     /// 웹url로 아이템 파싱하기
     func fetchItem(link: String) async throws {
         do {
@@ -37,27 +44,48 @@ final class ShareViewModel {
         }
     }
     
-    /// 폴더 데이터 가져오기
-    func fetchFolders() {
-        Task {
+    /// 폴더 가져오기
+    func fetchFolders(reset: Bool = false) {
+        guard !isLoading, hasMore || reset else { return }
+        isLoading = true
+
+        if reset {
+            page = 0
+            hasMore = true
+        }
+
+        _Concurrency.Task {
             do {
-                // 로그인 상태가 아닐 때
-                if UserManager.accessToken == nil || UserManager.refreshToken == nil {
-                    self.isLogined = false
-                    return
-                }
-                
-                self.isLogined = true
                 let usecase = GetFoldersUseCase()
-                let data = try await usecase.execute()
-                
-                DispatchQueue.main.async {
-                    self.folders = data
+                let response = try await usecase.execute(page: page, size: pageSize)
+
+                if reset { folders.removeAll() }
+
+                if let itemDatas = response.data?.content {
+                    folders.append(contentsOf: itemDatas)
                 }
+
+                // 다음 페이지 여부 및 page 증가
+                hasMore = !(response.data?.last ?? true)
+                if hasMore {
+                    page += 1
+                }
+
+                isLoading = false
+                isRefreshing = false
             } catch {
-                throw error
+                if reset { folders = [] }
+                isLoading = false
+                isRefreshing = false
+                // 필요하면 에러 상태 @Published 추가해서 바인딩
             }
         }
+    }
+
+    /// UICollectionView 스크롤 하단 근처에서 호출해 다음 페이지 로드
+    func loadNextIfNeeded(currentIndex: Int, threshold: Int = 2) {
+        guard currentIndex >= folders.count - threshold else { return }
+        fetchFolders()
     }
     
     /// 폴더 추가
@@ -67,7 +95,7 @@ final class ShareViewModel {
                 let usecase = AddFolderNameUseCase()
                 let _ = try await usecase.execute(folderName: name)
                 
-                self.fetchFolders()
+                self.fetchFolders(reset: true)
             } catch {
                 throw error
             }

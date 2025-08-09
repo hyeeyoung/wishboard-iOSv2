@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol GetWishItemsUseCaseInterface {
-    func execute() async throws -> [WishListResponse]
+    func execute(page: Int, size: Int) async throws -> CommonPaginationResponse<[WishListResponse]>
 }
 
 public class GetWishItemsUseCase: GetWishItemsUseCaseInterface {
@@ -18,7 +18,7 @@ public class GetWishItemsUseCase: GetWishItemsUseCaseInterface {
         self.repository = repository
     }
     
-    public func execute() async throws -> [WishListResponse] {
-        return try await self.repository.getWishItems()
+    public func execute(page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[WishListResponse]> {
+        return try await self.repository.getWishItems(page: page, size: size)
     }
 }
