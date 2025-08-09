@@ -73,20 +73,7 @@ final class AddViewModel {
             let itemMemo = self.memo
             let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
             let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
-            
-//            if let itemImages = itemImages {
-//                for itemimage in itemImages {
-//                    let sizeInBytes = itemimage.count
-//                    let sizeInMB = Double(sizeInBytes) / 1_000_000.0  // 1MB = 1,000,000 bytes 기준
-//                    
-//                    if sizeInBytes > 1_000_000 {
-//                        print("❌ 용량 초과: \(String(format: "%.2f", sizeInMB))MB")
-//                    } else {
-//                        print("✅ 용량 OK: \(String(format: "%.2f", sizeInMB))MB")
-//                    }
-//                }
-//            }
-//            
+              
             let item = RequestItemDTO(folderId: selectedFolderId,
                                       photos: itemImages,
                                       itemName: itemName,
