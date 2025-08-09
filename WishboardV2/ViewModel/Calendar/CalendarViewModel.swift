@@ -40,7 +40,7 @@ class CalendarViewModel: ObservableObject {
                                   notiType: $0.itemNotificationType ?? "",
                                   name: $0.itemName ?? "",
                                   readState: $0.readState ?? false,
-                                  notiDate: $0.itemNotificationDate ?? "",
+                                  notiDate: ($0.itemNotificationDate ?? "").replacingOccurrences(of: "T", with: " "),
                                   link: $0.itemUrl)
             }
             
