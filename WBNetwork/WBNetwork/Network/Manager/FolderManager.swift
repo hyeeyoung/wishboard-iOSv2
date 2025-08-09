@@ -22,8 +22,8 @@ public final class FolderManager {
     public func deleteFolder(folderId: String) async throws -> EmptyResponse {
         return try await API.Folder.request(.deleteFolder(folderId: folderId))
     }
-    public func getFolderItemList(folderId: String) async throws -> [WishListResponse] {
-        return try await API.Folder.requestPaging(.getFolderItemList(folderId: folderId))
+    public func getFolderItemList(folderId: String, page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[WishListResponse]>{
+        return try await API.Folder.requestRaw(.getFolderItemList(folderId: folderId, page: page, size: size))
     }
     public func getFolderList() async throws -> [FolderListResponse] {
         return try await API.Folder.request(.getFolderList)

@@ -40,7 +40,7 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
         folderView.configure(with: viewModel)
         folderView.collectionView.delegate = self
         folderView.toolbar.delegate = self
-        viewModel.fetchItems()
+        viewModel.fetchItems(reset: true)
         
         folderView.refreshAction = { [weak self] in
             self?.refreshItems()
@@ -57,7 +57,7 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
     }
     
     func refreshItems() {
-        viewModel.fetchItems()
+        viewModel.fetchItems(reset: true)
     }
 }
 
@@ -69,5 +69,11 @@ extension FolderDetailViewController: UICollectionViewDelegate {
             let detailViewController = ItemDetailViewController(id: itemIdx)
             navigationController?.pushViewController(detailViewController, animated: true)
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        viewModel.loadNextIfNeeded(currentIndex: indexPath.item)
     }
 }

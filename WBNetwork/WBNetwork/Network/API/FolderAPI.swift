@@ -19,7 +19,7 @@ public enum FolderAPI {
     /// 폴더 삭제
     case deleteFolder(folderId: String)
     /// 폴더 내 아이템 리스트 조회
-    case getFolderItemList(folderId: String)
+    case getFolderItemList(folderId: String, page: Int, size: Int)
     /// 폴더리스트 조회 - 아이템 디테일
     case getFolderList
 }
@@ -39,7 +39,7 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             return "/\(folderId)"
         case .deleteFolder(let folderId):
             return "/\(folderId)"
-        case .getFolderItemList(let folderId):
+        case .getFolderItemList(let folderId, _, _):
             return "/item/\(folderId)"
         case .getFolderList:
             return "/list"
@@ -74,6 +74,8 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             parameters = ["folderName": folderName]
         case .modifyFolderName(_, let folderName):
             parameters = ["folderName": folderName]
+        case .getFolderItemList(_, let page, let size):
+            parameters = ["page": page, "size": size]
         default:
             parameters = [:]
         }
