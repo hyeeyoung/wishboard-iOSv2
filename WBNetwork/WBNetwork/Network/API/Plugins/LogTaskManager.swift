@@ -74,13 +74,17 @@ func logTask<T: TargetType>(_ target: T) {
     case let .uploadCompositeMultipart(multipart, urlParameters):
         print("\(prefix): composite multipart")
         // 멀티파트 파트들
-        logTask(T.self as! T) // 사용 불가 트릭이니 아래처럼 분리해서 출력
-        print("  URL parameters:")
-        if let data = try? JSONSerialization.data(withJSONObject: urlParameters, options: .prettyPrinted),
-           let str = String(data: data, encoding: .utf8) {
-            print(str)
+        if let target = T.self as? T {
+            logTask(target) // 사용 불가 트릭이니 아래처럼 분리해서 출력
+            print("  URL parameters:")
+            if let data = try? JSONSerialization.data(withJSONObject: urlParameters, options: .prettyPrinted),
+               let str = String(data: data, encoding: .utf8) {
+                print(str)
+            } else {
+                print(urlParameters)
+            }
         } else {
-            print(urlParameters)
+            print(target.task)
         }
 
     case let .requestCompositeData(bodyData, urlParameters):
