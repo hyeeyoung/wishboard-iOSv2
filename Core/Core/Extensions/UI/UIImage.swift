@@ -67,9 +67,11 @@ extension UIImage {
         context?.draw(cgImage, in: CGRect(origin: .zero, size: newSize))
         
         if let resizedImage = context?.makeImage().flatMap({ UIImage(cgImage: $0) }) {
-            return resizedImage
+            // ✅ 여기서 용량 체크 + 필요 시 추가 리사이즈
+            return resizedImage.ensureUnder1MBAfterResize(limitBytes: 1_000_000, quality: 0.9)
         } else {
-            return self
+            // 원본도 체크해서 넘으면 줄이기
+            return self.ensureUnder1MBAfterResize(limitBytes: 1_000_000, quality: 0.9)
         }
     }
     
@@ -109,4 +111,49 @@ extension UIImage {
         return context?.makeImage()
     }
 
+    /// JPEG(기본 q=0.9)로 1MB 이하가 될 때까지 긴 변을 shrinkStep 비율로 줄여가며 리사이즈
+    /// - limitBytes: 바이트 한도 (기본 1MB)
+    /// - quality: JPEG 품질 (리사이즈만 반복하고 싶다 해서 고정)
+    /// - minDimension: 너무 작아지지 않도록 하한(긴 변)
+    /// - shrinkStep: 한 번 실패할 때마다 긴 변을 줄이는 비율
+    func ensureUnder1MBAfterResize(limitBytes: Int = 1_000_000,
+                                   quality: CGFloat = 0.9,
+                                   minDimension: CGFloat = 320,
+                                   shrinkStep: CGFloat = 0.9) -> UIImage {
+        var img = self
+        var maxDim = max(img.size.width, img.size.height)
+
+        // 현재 용량이 이미 제한 이하면 바로 반환
+        if let bytes = img.jpegData(compressionQuality: quality)?.count, bytes <= limitBytes {
+            return img
+        }
+
+        // 제한 넘으면 단계적으로 더 축소
+        while maxDim > minDimension {
+            maxDim = floor(maxDim * shrinkStep)
+            img = img._resizedKeepingAspect(maxDimension: maxDim)
+
+            if let bytes = img.jpegData(compressionQuality: quality)?.count, bytes <= limitBytes {
+                return img
+            }
+        }
+        // 하한까지 줄였는데도 초과면 마지막 결과 반환
+        return img
+    }
+
+    /// 긴 변 = maxDimension 으로 비율 유지 리사이즈 (추가 리사이징용)
+    fileprivate func _resizedKeepingAspect(maxDimension: CGFloat) -> UIImage {
+        let maxSide = max(size.width, size.height)
+        guard maxSide > maxDimension else { return self }
+
+        let scale = maxDimension / maxSide
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1   // 픽셀 단위 정확히
+        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: newSize))
+        }
+    }
 }

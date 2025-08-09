@@ -60,6 +60,7 @@
 		238595202C71C6E400B85CBC /* FolderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385951F2C71C6E400B85CBC /* FolderManager.swift */; };
 		238595232C71C71300B85CBC /* GetFoldersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595222C71C71300B85CBC /* GetFoldersUseCase.swift */; };
 		2395DFF12D8AEF94005489FD /* GetCalenderNoticesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2395DFF02D8AEF94005489FD /* GetCalenderNoticesUseCase.swift */; };
+		23A3612A2E47896F001A3393 /* LogTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A361292E478969001A3393 /* LogTaskManager.swift */; };
 		23AD9D602C8097A0007AB8D1 /* CartResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */; };
 		23AD9D622C80985C007AB8D1 /* GetCartsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D612C80985C007AB8D1 /* GetCartsUseCase.swift */; };
 		23AD9D642C809892007AB8D1 /* ModifyCartQuantityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D632C809892007AB8D1 /* ModifyCartQuantityUseCase.swift */; };
@@ -147,6 +148,7 @@
 		2385951F2C71C6E400B85CBC /* FolderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderManager.swift; sourceTree = "<group>"; };
 		238595222C71C71300B85CBC /* GetFoldersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFoldersUseCase.swift; sourceTree = "<group>"; };
 		2395DFF02D8AEF94005489FD /* GetCalenderNoticesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCalenderNoticesUseCase.swift; sourceTree = "<group>"; };
+		23A361292E478969001A3393 /* LogTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTaskManager.swift; sourceTree = "<group>"; };
 		23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartResponse.swift; sourceTree = "<group>"; };
 		23AD9D612C80985C007AB8D1 /* GetCartsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCartsUseCase.swift; sourceTree = "<group>"; };
 		23AD9D632C809892007AB8D1 /* ModifyCartQuantityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyCartQuantityUseCase.swift; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 		232185E12C70B447008BD81B /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				23A361292E478969001A3393 /* LogTaskManager.swift */,
 				232185DF2C70B447008BD81B /* ErrorPlugin.swift */,
 				232185E02C70B447008BD81B /* LoadingPlugin.swift */,
 			);
@@ -539,6 +542,7 @@
 				232186002C70B586008BD81B /* ItemAPI.swift in Sources */,
 				230EDC3D2C821CDF00FC35F2 /* DeleteUserUseCase.swift in Sources */,
 				238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */,
+				23A3612A2E47896F001A3393 /* LogTaskManager.swift in Sources */,
 				2395DFF12D8AEF94005489FD /* GetCalenderNoticesUseCase.swift in Sources */,
 				2347A90A2C7AC0AD009F9480 /* AddFolderUseCase.swift in Sources */,
 				238595202C71C6E400B85CBC /* FolderManager.swift in Sources */,

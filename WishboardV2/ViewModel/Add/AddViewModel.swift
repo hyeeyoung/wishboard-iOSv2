@@ -73,7 +73,7 @@ final class AddViewModel {
             let itemMemo = self.memo
             let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
             let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
-            
+              
             let item = RequestItemDTO(folderId: selectedFolderId,
                                       photos: itemImages,
                                       itemName: itemName,
