@@ -103,27 +103,46 @@ final class NoticeTableViewCell: UITableViewCell {
     }
     
     public func configure(with item: NoticeItem) {
+        // item name
         itemNameLabel.text = item.name
-        notiTypeLabel.text = "\(item.notiType) 알림"
+        // noti type
+        if let alarmType = Alarm.from(apiString: item.notiType) {
+            notiTypeLabel.text = "\(alarmType.rawValue) 알림"
+        } else {
+            notiTypeLabel.text = "알림"
+        }
+        // image
         if let imageUrl = item.imageUrl {
             self.itemImageView.loadImage(from: imageUrl, placeholder: Image.emptyView)
         } else {
             self.itemImageView.image = Image.emptyView
         }
+        // noti date
         self.notiDateLabel.text = FormatManager.shared.createdDateToKoreanStr(item.notiDate)
+        // read state
         self.readStateView.isHidden = item.readState
     }
     
     public func configureCalendarAlarm(with item: NoticeItem) {
+        // item name
         itemNameLabel.text = item.name
-        notiTypeLabel.text = "\(item.notiType) 알림"
+        // noti type
+        if let alarmType = Alarm.from(apiString: item.notiType) {
+            notiTypeLabel.text = "\(alarmType.rawValue) 알림"
+        } else {
+            notiTypeLabel.text = "알림"
+        }
+        // image
         if let imageUrl = item.imageUrl {
             self.itemImageView.loadImage(from: imageUrl, placeholder: Image.emptyView)
         } else {
             self.itemImageView.image = Image.emptyView
         }
+        // noti date
         self.notiDateLabel.text = createdDateToKoreanStr(item.notiDate)
+        // read state
         self.readStateView.isHidden = true
+        // background
         self.background.isHidden = false
     }
     

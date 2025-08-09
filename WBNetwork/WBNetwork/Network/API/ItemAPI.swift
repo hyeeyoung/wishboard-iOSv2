@@ -172,7 +172,7 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
                 let imageData = MultipartFormData(
                     provider: .data(photo),
                     name: "itemImages",
-                    fileName: "item.jpeg",
+                    fileName: "item_\(UUID()).jpeg",
                     mimeType: "image/jpeg"
                 )
                 formData.append(imageData)
