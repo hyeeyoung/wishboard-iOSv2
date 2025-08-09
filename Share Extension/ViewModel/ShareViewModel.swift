@@ -95,7 +95,7 @@ final class ShareViewModel {
                 let usecase = AddFolderNameUseCase()
                 let _ = try await usecase.execute(folderName: name)
                 
-                self.fetchFolders()
+                self.fetchFolders(reset: true)
             } catch {
                 throw error
             }

@@ -174,7 +174,11 @@ final class AddViewController: UIViewController {
         viewModel.$folders
             .receive(on: RunLoop.main)
             .sink { [weak self] folders in
-                self?.addView.folderSection.folders = folders
+                guard let self = self else { return }
+                self.addView.folderSection.folders = folders
+                guard let selectedFolderId = self.viewModel.selectedFolderId else { return }
+                self.addView.folderSection.selectFolder(with: selectedFolderId)
+                self.folderSelectBottomSheet.selectedFolderId = selectedFolderId
             }
             .store(in: &cancellables)
         

@@ -233,6 +233,10 @@ final class AddView: UIView {
                 self?.updateImages(images)
             }
             .store(in: &cancellables)
+        
+        folderSection.loadNextPageAction = { [weak self] index in
+            self?.viewModel.loadNextIfNeeded(currentIndex: index)
+        }
     }
     
     // TODO: 가격 입력 > 불안정...
