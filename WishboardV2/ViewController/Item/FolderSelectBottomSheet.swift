@@ -58,7 +58,8 @@ final class FolderSelectBottomSheet: UIView {
         folderTableView.register(FolderSelectTableViewCell.self, forCellReuseIdentifier: FolderSelectTableViewCell.identifier)
         folderTableView.dataSource = self
         folderTableView.delegate = self
-        folderTableView.separatorStyle = .none
+        folderTableView.separatorInset = .zero
+        folderTableView.separatorColor = .gray_100
         folderTableView.backgroundColor = .white
         
         setupView()

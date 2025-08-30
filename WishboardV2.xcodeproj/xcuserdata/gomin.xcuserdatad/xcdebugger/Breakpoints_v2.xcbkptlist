@@ -114,36 +114,6 @@
             endingLineNumber = "114"
             landmarkName = "retry(_:for:dueTo:completion:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "2C3F3075-6BCD-4999-AF6E-083A1219D252 - 4da835adedceadc7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for closure #1 () async throws -&gt; () in WBNetwork.TokenInterceptor.retry(_: Alamofire.Request, for: Alamofire.Session, dueTo: Swift.Error, completion: (Alamofire.RetryResult) -&gt; ()) -&gt; ()"
-                  moduleName = "WBNetwork"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/gomin/Desktop/XcodeProjects/WishboardV2/WBNetwork/WBNetwork/Network/API/TokenInterceptor.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "115"
-                  endingLineNumber = "115">
-               </Location>
-               <Location
-                  uuid = "2C3F3075-6BCD-4999-AF6E-083A1219D252 - 577642bfd8d94fc6"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for closure #1 () async throws -&gt; () in WBNetwork.TokenInterceptor.retry(_: Alamofire.Request, for: Alamofire.Session, dueTo: Swift.Error, completion: (Alamofire.RetryResult) -&gt; ()) -&gt; ()"
-                  moduleName = "WBNetwork"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/gomin/Desktop/XcodeProjects/WishboardV2/WBNetwork/WBNetwork/Network/API/TokenInterceptor.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "115"
-                  endingLineNumber = "115">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
