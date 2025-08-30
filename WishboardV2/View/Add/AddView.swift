@@ -25,25 +25,6 @@ final class AddView: UIView {
     
     let contentView = UIView()
     
-    // Image Pick View
-    let imagePickerContainer = UIView().then {
-        $0.backgroundColor = .f3f3f3
-        $0.layer.cornerRadius = 10
-        $0.clipsToBounds = true
-    }
-    
-    let cameraContainer = UIView()
-    let cameraIcon = UIImageView().then {
-        $0.tintColor = .gray_200
-        $0.image = Image.cameraGray
-    }
-    
-    let imageCountLabel = UILabel().then {
-        $0.text = "0/10"
-        $0.font = TypoStyle.SuitD3.font
-        $0.textColor = .gray_200
-    }
-    
     // Image CollectionView
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -57,6 +38,7 @@ final class AddView: UIView {
         cv.delegate = self
         cv.isScrollEnabled = true
         cv.showsHorizontalScrollIndicator = false
+        cv.register(NewCameraCell.self, forCellWithReuseIdentifier: NewCameraCell.identifier)
         cv.register(SelectedImageCell.self, forCellWithReuseIdentifier: SelectedImageCell.identifier)
         return cv
     }()
@@ -108,6 +90,7 @@ final class AddView: UIView {
     
     // MARK: - Properties
     public var selectedImages: [UIImage] = []
+    public var selectNewImageAction: (() -> Void)?
     public weak var delegate: ActiveFieldDelegate?
     private let viewModel: AddViewModel
     private var cancellables = Set<AnyCancellable>()
@@ -130,16 +113,9 @@ final class AddView: UIView {
     private func setupUI() {
         addSubview(toolBar)
         addSubview(scrollView)
-        
         scrollView.addSubview(contentView)
-        
-        contentView.addSubview(imagePickerContainer)
         contentView.addSubview(collectionView)
         contentView.addSubview(stackView)
-        
-        imagePickerContainer.addSubview(cameraContainer)
-        cameraContainer.addSubview(cameraIcon)
-        cameraContainer.addSubview(imageCountLabel)
         
         toolBar.configure(title: Title.addItem)
         
@@ -154,36 +130,15 @@ final class AddView: UIView {
             make.width.equalToSuperview()
         }
         
-        imagePickerContainer.snp.makeConstraints { make in
+        collectionView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(18)
             make.leading.equalToSuperview().offset(16)
-            make.width.height.equalTo(100)
-        }
-        
-        cameraContainer.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-        
-        cameraIcon.snp.makeConstraints { make in
-            make.width.height.equalTo(26)
-            make.top.equalToSuperview()
-            make.centerX.equalToSuperview()
-        }
-        
-        imageCountLabel.snp.makeConstraints { make in
-            make.top.equalTo(cameraIcon.snp.bottom).offset(6)
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
-        
-        collectionView.snp.makeConstraints { make in
-            make.leading.equalTo(imagePickerContainer.snp.trailing).offset(8)
-            make.top.bottom.equalTo(imagePickerContainer)
+            make.height.equalTo(100)
             make.trailing.equalToSuperview()
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(imagePickerContainer.snp.bottom).offset(12)
+            make.top.equalTo(collectionView.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().offset(-16)
         }
@@ -266,7 +221,6 @@ final class AddView: UIView {
     
     public func updateImages(_ images: [UIImage]) {
         selectedImages = images
-        imageCountLabel.text = "\(images.count)/10"
         collectionView.reloadData()
     }
     
@@ -277,23 +231,46 @@ final class AddView: UIView {
 
 extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        selectedImages.count
+        selectedImages.count + 1
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectedImageCell.identifier, for: indexPath) as? SelectedImageCell else {
-            return UICollectionViewCell()
+        
+        if indexPath.item == 0 {
+            // 카메라 버튼 셀
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewCameraCell.identifier, for: indexPath) as! NewCameraCell
+            cell.configure(self.selectedImages.count)
+            return cell
+        } else {
+            // 기존 폴더 셀
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectedImageCell.identifier, for: indexPath) as! SelectedImageCell
+            let image = selectedImages[indexPath.item - 1]
+            cell.configure(with: image)
+            
+            cell.onDelete = { [weak self] in
+                guard let self = self else { return }
+                self.selectedImages.remove(at: indexPath.item - 1)
+                self.viewModel.selectedImages = self.selectedImages
+            }
+            return cell
         }
-
-        let image = selectedImages[indexPath.item]
-        cell.configure(with: image)
-
-        cell.onDelete = { [weak self] in
-            guard let self = self else { return }
-            self.selectedImages.remove(at: indexPath.item)
-            self.viewModel.selectedImages = self.selectedImages
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.item == 0 {
+            self.selectNewImageAction?()
+            return
         }
-
-        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 100, height: 100)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 8
     }
 }

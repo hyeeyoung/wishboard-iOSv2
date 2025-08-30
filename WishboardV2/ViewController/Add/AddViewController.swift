@@ -256,9 +256,9 @@ final class AddViewController: UIViewController {
             self?.showLinkBottomSheet(with: self?.viewModel.selectedLink)
         }
         
-        let imageTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectImage))
-        addView.imagePickerContainer.isUserInteractionEnabled = true
-        addView.imagePickerContainer.addGestureRecognizer(imageTapGesture)
+        addView.selectNewImageAction = { [weak self] in
+            self?.selectImage()
+        }
     }
     
     private func setupDelegates() {
