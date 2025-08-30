@@ -92,8 +92,11 @@ final class EmailInputViewController: UIViewController {
     private func callEmailLoginAPI() {
         Task {
             do {
+                emailInputView.actionButton.startAnimation()
                 let codeData = try await self.viewModel.getVerificationCode()
-                if !codeData.0 { 
+                emailInputView.actionButton.stopAnimation()
+                
+                if !codeData.0 {
                     self.viewModel.isButtonEnabled = false
                     self.emailInputView.showInvalidUser()
                     return
@@ -105,6 +108,7 @@ final class EmailInputViewController: UIViewController {
                 let nextVC = PasswordInputViewController(type: self.type, email: self.viewModel.email, code: code)
                 self.navigationController?.pushViewController(nextVC, animated: true)
             } catch {
+                emailInputView.actionButton.stopAnimation()
                 throw error
             }
         }
@@ -114,7 +118,9 @@ final class EmailInputViewController: UIViewController {
     private func callCheckEmailValidationAPI() {
         Task {
             do {
+                emailInputView.actionButton.startAnimation()
                 let success = try await self.viewModel.checkEmailValidation()
+                emailInputView.actionButton.stopAnimation()
                 if !success {
                     self.viewModel.isButtonEnabled = false
                     self.emailInputView.showDuplicateUser()
@@ -123,6 +129,7 @@ final class EmailInputViewController: UIViewController {
                 let nextVC = PasswordInputViewController(type: self.type, email: self.viewModel.email)
                 self.navigationController?.pushViewController(nextVC, animated: true)
             } catch {
+                emailInputView.actionButton.stopAnimation()
                 throw error
             }
         }
