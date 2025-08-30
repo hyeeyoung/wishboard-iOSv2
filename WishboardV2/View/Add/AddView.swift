@@ -239,17 +239,12 @@ final class AddView: UIView {
         }
     }
     
-    // TODO: 가격 입력 > 불안정...
     private func priceTextChanged(_ textField: UITextField) {
-        // 현재 커서 위치를 가져오기
-        guard let selectedRange = textField.selectedTextRange else { return }
-        let cursorOffset = textField.offset(from: textField.beginningOfDocument, to: selectedRange.start)
-
         // 숫자만 필터링
         let currentText = textField.text ?? ""
         let filteredText = currentText.filter { $0.isNumber }
 
-        // 빈 문자열일 경우 초기화
+        // 숫자가 하나도 없으면 전체 텍스트 지우기
         if filteredText.isEmpty {
             textField.text = nil
             return
@@ -258,12 +253,14 @@ final class AddView: UIView {
         // 포맷팅
         let formatted = FormatManager.shared.strToPrice(numStr: filteredText) ?? ""
 
-        // 업데이트
+        // 업데이트 (항상 "원" 붙임)
         textField.text = "\(formatted)원"
 
-        // 새 텍스트 길이에 맞춰 커서 위치 조정
-        if let newPosition = textField.position(from: textField.beginningOfDocument, offset: cursorOffset) {
-            textField.selectedTextRange = textField.textRange(from: newPosition, to: newPosition)
+        // "원" 직전 위치로 커서 이동
+        DispatchQueue.main.async {
+            if let endPosition = textField.position(from: textField.beginningOfDocument, offset: formatted.count) {
+                textField.selectedTextRange = textField.textRange(from: endPosition, to: endPosition)
+            }
         }
     }
     
