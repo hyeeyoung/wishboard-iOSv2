@@ -111,7 +111,9 @@ final class AddViewController: UIViewController {
                             }
                         } else {
                             print("❌ 이미지 변환 실패")
-                            SnackBar.shared.show(type: .errorMessage)
+                            DispatchQueue.main.async {
+                                SnackBar.shared.show(type: .errorMessage)
+                            }
                         }
                     }
                 }
