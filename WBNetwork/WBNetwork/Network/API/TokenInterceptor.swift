@@ -35,6 +35,12 @@ public final class TokenInterceptor: RequestInterceptor {
     
     public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         // 401 - 유효하지 않은 토큰일 때
+        
+        // TODO: 다른 기기에서 탈퇴한 회원일 때: 401에러 + 별도 에러 코드 제공해준다고 함.
+        // 그때 아래 코드 추가
+        // NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+        // 위 코드 줄 추가하면 온보딩 화면으로 이동하고 유저데이터 삭제 처리
+        
         print("\((request.task?.response as? HTTPURLResponse)?.statusCode)")
         guard let response = request.task?.response as? HTTPURLResponse, response.statusCode == 401 else {
             let desc = error.asAFError?.errorDescription?.description
@@ -42,6 +48,7 @@ public final class TokenInterceptor: RequestInterceptor {
             print("\(desc)")
             
             let err = NSError(domain: desc ?? "", code: code ?? 500)
+            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
             completion(.doNotRetryWithError(err))
             
             return
