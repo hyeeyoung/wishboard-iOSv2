@@ -24,7 +24,7 @@ final class ModifyProfileView: UIView {
         $0.isUserInteractionEnabled = true
     }
     public let icon = UIButton().then {
-        $0.setImage(Image.cameraGray, for: .normal)
+        $0.setImage(.cameraBackgroundWhite, for: .normal)
     }
     private let nicknameLabel = UILabel().then {
         $0.text = "닉네임"
@@ -136,8 +136,7 @@ final class ModifyProfileView: UIView {
         }
         
         icon.snp.makeConstraints { make in
-            make.width.equalTo(30)
-            make.height.equalTo(25)
+            make.width.height.equalTo(32)
             make.trailing.equalTo(profileImgView.snp.trailing).offset(6)
             make.bottom.equalTo(profileImgView.snp.bottom).offset(-5)
         }
