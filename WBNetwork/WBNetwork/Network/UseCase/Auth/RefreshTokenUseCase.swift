@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol RefreshTokenUseCaseInterface {
-    func execute(token: String) async throws -> LoginResponse
+    func execute(accessToken: String, refreshToken: String) async throws -> LoginResponse
 }
 
 public class RefreshTokenUseCase: RefreshTokenUseCaseInterface {
@@ -18,7 +18,7 @@ public class RefreshTokenUseCase: RefreshTokenUseCaseInterface {
         self.repository = repository
     }
     
-    public func execute(token: String) async throws -> LoginResponse {
-        return try await self.repository.requestRefreshToken(token: token)
+    public func execute(accessToken: String, refreshToken: String) async throws -> LoginResponse {
+        return try await self.repository.requestRefreshToken(accessToken: accessToken, refreshToken: refreshToken)
     }
 }
