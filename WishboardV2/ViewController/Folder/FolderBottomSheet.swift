@@ -212,10 +212,12 @@ final class FolderBottomSheet: UIView {
             titleLabel.text = Title.modifyFolder
             textField.text = folder.folderName
             actionButton.setTitle(Button.modify, for: .normal)
+            self.updateActionButtonState(isEnabled: true)
         } else {
             titleLabel.text = Title.addFolder
             textField.text = ""
             actionButton.setTitle(Button.add, for: .normal)
+            self.updateActionButtonState(isEnabled: false)
         }
         textCountLabel.text = "(\(textField.text?.count ?? 0)/\(maxTextLength))자"
         errorMessageLabel.isHidden = true
