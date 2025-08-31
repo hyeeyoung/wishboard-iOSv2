@@ -69,8 +69,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     /// 스낵바 출력
     @objc private func showSnackBar(_ notification: Foundation.Notification) {
-        if let snackBarType = notification.userInfo?["SnackBarType"] as? SnackBarType {
-            SnackBar.shared.show(type: snackBarType)
+        DispatchQueue.main.async {
+            if let snackBarType = notification.userInfo?["SnackBarType"] as? SnackBarType {
+                SnackBar.shared.show(type: snackBarType)
+            }
         }
     }
     
