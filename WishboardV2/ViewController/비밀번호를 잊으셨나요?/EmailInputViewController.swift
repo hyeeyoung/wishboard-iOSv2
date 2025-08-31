@@ -79,12 +79,24 @@ final class EmailInputViewController: UIViewController {
         
         // 이메일 로그인
         emailInputView.emailLoginNextAction = { [weak self] email in
-            self?.callEmailLoginAPI()
+            let isValidInput = self?.viewModel.isValidEmail ?? false
+            if !isValidInput {
+                self?.emailInputView.showInvalidEmail()
+            } else {
+                self?.emailInputView.errorLabel.isHidden = isValidInput
+                self?.callEmailLoginAPI()
+            }
         }
         
         // 회원가입
         emailInputView.registerNextAction = { [weak self] email in
-            self?.callCheckEmailValidationAPI()
+            let isValidInput = self?.viewModel.isValidEmail ?? false
+            if !isValidInput {
+                self?.emailInputView.showInvalidEmail()
+            } else {
+                self?.emailInputView.errorLabel.isHidden = isValidInput
+                self?.callCheckEmailValidationAPI()
+            }
         }
     }
     
@@ -139,16 +151,6 @@ final class EmailInputViewController: UIViewController {
     private func bindViewModel() {
         emailInputView.emailTextField.textPublisher
             .assign(to: \.email, on: viewModel)
-            .store(in: &cancellables)
-        
-        viewModel.$isValidEmail.dropFirst()
-            .sink { [weak self] isValid in
-                if !isValid {
-                    self?.emailInputView.showInvalidEmail()
-                } else {
-                    self?.emailInputView.errorLabel.isHidden = isValid
-                }
-            }
             .store(in: &cancellables)
         
         viewModel.$isButtonEnabled

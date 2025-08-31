@@ -25,9 +25,9 @@ class EmailInputViewModel {
     init() {
         // 이메일 유효성 검사 로직
         $email
-            .map { self.validateEmail($0) }
+            .map { !$0.isEmpty }
             .sink { [weak self] isValid in
-                self?.isValidEmail = isValid
+                self?.isValidEmail = self?.validateEmail(self?.email ?? "") ?? false
                 self?.isButtonEnabled = isValid
             }
             .store(in: &cancellables)
