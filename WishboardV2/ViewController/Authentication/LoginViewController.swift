@@ -99,9 +99,11 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
                         self.loginView.updateLoginButtonState(isEnabled: true)
                         
                         // 로그인 에러
-                        if response.statusCode == 400 {
+                        switch response.statusCode {
+                        case 400, 401:
+                            // 400, 401 에러일 땐 '아이디/비번 확인' 토스트 노출 (v1.4.0 QA)
                             SnackBar.shared.show(type: .login)
-                        } else {
+                        default:
                             SnackBar.shared.show(type: .errorMessage)
                         }
                     }
