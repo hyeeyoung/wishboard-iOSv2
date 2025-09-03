@@ -18,21 +18,28 @@ public enum NetworkMacro {
     }
     
     public static var DefaultHeader: [String: String] {
-        var header = [
-            "User-Agent": "wishboard-ios/dev",
+        #if DEBUG
+        let userAgentInfo =  "wishboard-ios/dev"
+        #else
+        let userAgentInfo =  "wishboard-ios/prod"
+        #endif
+        
+        let header = [
+            "User-Agent": userAgentInfo,
             "Content-Type": "application/json"
         ]
-        
-        #if DEBUG
         return header
-        #else
-        return header
-        #endif
     }
     
     public static var DeviceInfoHeader: [String: String] {
+        #if DEBUG
+        let userAgentInfo =  "wishboard-ios/dev"
+        #else
+        let userAgentInfo =  "wishboard-ios/prod"
+        #endif
+
         var header = [
-            "User-Agent": "wishboard-ios/dev",
+            "User-Agent": userAgentInfo,
             "Content-Type": "application/json"
         ]
         
@@ -40,11 +47,7 @@ public enum NetworkMacro {
             header["Device-Info"] = deviceInfo
         }
         
-        #if DEBUG
         return header
-        #else
-        return header
-        #endif
     }
     
 }
