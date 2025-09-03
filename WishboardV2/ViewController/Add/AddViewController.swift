@@ -33,6 +33,9 @@ final class AddViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     public var confirmAction: (() -> Void)?
     
+    // Album
+    private let MAX_IMAGE_COUNT: Int = 10
+    
     // Bottom Sheets
     private let backgroundDimView = UIView()
     private let folderSelectBottomSheet = FolderSelectBottomSheet()
@@ -554,8 +557,9 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         var config = PHPickerConfiguration(photoLibrary: .shared())
         // 라이브러리에서 보여줄 Assets을 필터 (기본값: 이미지, 비디오, 라이브포토)
         config.filter = PHPickerFilter.any(of: [.images])
-        // 다중 선택 갯수 설정 (0 = 무제한)
-        config.selectionLimit = 10
+        // 다중 선택 갯수 설정 (이미 선택된 사진 갯수 기반으로 최대 10장 로직 정의)
+        let selectedImageCount = self.viewModel.selectedImages.count
+        config.selectionLimit = MAX_IMAGE_COUNT - selectedImageCount
         // 선택 동작을 나타냄 (default: 기본 틱 모양, ordered: 선택한 순서대로 숫자로 표현, people: 뭔지 모르겠게요)
         config.selection = .ordered
         // 트랜스 코딩을 방지
