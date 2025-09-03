@@ -54,7 +54,7 @@ extension NotiAPI: TargetType, AccessTokenAuthorizable {
     }
 
     public var headers: [String : String]? {
-        return NetworkMacro.DefaultHeader
+        return NetworkMacro.DeviceInfoHeader
     }
     
     public var authorizationType: Moya.AuthorizationType? {
