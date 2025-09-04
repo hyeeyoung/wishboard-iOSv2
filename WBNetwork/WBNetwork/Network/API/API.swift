@@ -173,8 +173,6 @@ public class WBProvider<Target: TargetType> {
                 NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.invalidUser])
             case "LOGOUT_BY_DEVICE_OVERFLOW":
                 NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
-            case "TOKEN_EXPIRED":
-                NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.invalidUser])
             default:
                 return
             }

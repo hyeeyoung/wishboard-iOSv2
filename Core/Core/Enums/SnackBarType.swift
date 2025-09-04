@@ -50,8 +50,8 @@ public enum SnackBarType {
         case .selectPastTime: return "현재 시간 이후로만 선택할 수 있어요"
         case .errorMessage: return "예상하지 못한 오류가 발생했어요!\n잠시후 다시 시도해주세요."
         case .imageLimit: return "앗, 이미지는 최대 10장까지만 등록할 수 있어요!"
-        case .invalidUser: return "이용할 수 없는 계정입니다. 다시 로그인해 주세요."
-        case .logoutByDeviceOverflow: return "4대 이상의 기기로 로그인되어 로그아웃이 되었습니다."
+        case .invalidUser: return "앗, 이용할 수 없는 계정입니다!\n다시 로그인해 주세요."
+        case .logoutByDeviceOverflow: return "최대 3대 기기에서만 로그인할 수 있어\n현재 기기에서 로그아웃되었어요."
             
         case .test: return "로그아웃"
         }
