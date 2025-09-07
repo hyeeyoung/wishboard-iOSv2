@@ -220,6 +220,7 @@ final class FolderBottomSheet: UIView {
         }
         textCountLabel.text = "(\(textField.text?.count ?? 0)/\(maxTextLength))자"
         errorMessageLabel.isHidden = true
+        actionButton.stopAnimation()
     }
 }
 

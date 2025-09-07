@@ -31,11 +31,20 @@ class AnimatedButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupAnimation()
+        self.originalTitle = self.title(for: .normal)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupAnimation()
+        self.originalTitle = self.title(for: .normal)
+    }
+    
+    override func setTitle(_ title: String?, for state: UIControl.State) {
+        super.setTitle(title, for: state)
+        if state == .normal, let title = title {
+            self.originalTitle = title
+        }
     }
     
     private func setupAnimation() {
@@ -57,7 +66,9 @@ class AnimatedButton: UIButton {
     
     func startAnimation() {
         DispatchQueue.main.async {
-            self.originalTitle = self.title(for: .normal) // 현재 타이틀을 저장
+            if self.originalTitle == nil { // 현재 타이틀을 저장
+                self.originalTitle = self.title(for: .normal)
+            }
             self.setTitle(nil, for: .normal) // 타이틀을 제거하여 숨김 처리
             
             self.animationView.isHidden = false
