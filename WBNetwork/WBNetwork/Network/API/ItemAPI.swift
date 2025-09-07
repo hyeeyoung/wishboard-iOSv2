@@ -23,6 +23,8 @@ public struct RequestItemDTO {
     public let itemMemo: String?
     public let itemNotificationType: String?
     public var itemNotificationDate: String?
+    public var version: Int?
+    public var imageChanged: Bool?
     
     public init(folderId: Int?, 
                 photos: [Data]?,
@@ -30,7 +32,9 @@ public struct RequestItemDTO {
                 itemPrice: String,
                 itemURL: String?,
                 itemMemo: String?,
-                itemNotificationType: String?, itemNotificationDate: String?) {
+                itemNotificationType: String?, itemNotificationDate: String?,
+                version: Int? = nil,
+                imageChanged: Bool? = nil) {
         self.folderId = folderId
         self.photos = photos
         self.itemName = itemName
@@ -39,6 +43,8 @@ public struct RequestItemDTO {
         self.itemMemo = itemMemo
         self.itemNotificationType = itemNotificationType
         self.itemNotificationDate = itemNotificationDate
+        self.version = version
+        self.imageChanged = imageChanged
     }
 }
 
@@ -156,6 +162,12 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         }
         if let notificationDate = param.itemNotificationDate, !notificationDate.isEmpty {
             requestBody["itemNotificationDate"] = notificationDate
+        }
+        if let version = param.version {
+            requestBody["version"] = version
+        }
+        if let imageChanged = param.imageChanged {
+            requestBody["imageChanged"] = imageChanged
         }
 
         // JSON 직렬화 → MultipartFormData

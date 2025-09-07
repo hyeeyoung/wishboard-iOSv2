@@ -67,6 +67,10 @@ final class AddViewController: UIViewController {
     private func setModifyItemData() {
         self.addView.toolBar.configure(title: Title.modifyItem)
         
+        // version , imageChanged 필드 추가
+        self.viewModel.version = item?.version
+        self.viewModel.imageChanged = false
+        
         self.addView.itemNameSection.text = self.item?.itemName ?? ""
         let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.itemPrice ?? "0")
         self.addView.itemPriceSection.text = "\(formattedText ?? "")원"
@@ -577,6 +581,7 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         } else if let originalImage = info[.originalImage] as? UIImage {
             viewModel.selectedImages.append(originalImage)
         }
+        viewModel.imageChanged = true
         picker.dismiss(animated: true)
     }
     
@@ -614,6 +619,7 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
                 return
             }
             self.viewModel.selectedImages.append(contentsOf: finalImages)
+            self.viewModel.imageChanged = true
         }
     }
 }

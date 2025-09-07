@@ -22,6 +22,8 @@ final class AddViewModel {
     @Published var selectedAlarmDate: String? = nil
     @Published var selectedLink: String? = nil
     @Published var memo: String? = nil
+    @Published var version: Int? = nil
+    @Published var imageChanged: Bool? = false
     
     @Published var selectedAlarm: String? = nil
     @Published var folders: [FolderListResponse] = []
@@ -100,6 +102,7 @@ final class AddViewModel {
             let itemMemo = self.memo
             let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
             let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
+            guard let version = self.version, let imageChanged = self.imageChanged else { return }
             
             let item = RequestItemDTO(folderId: selectedFolderId,
                                       photos: itemImages,
@@ -108,7 +111,9 @@ final class AddViewModel {
                                       itemURL: itemURL,
                                       itemMemo: itemMemo,
                                       itemNotificationType: notiType,
-                                      itemNotificationDate: notiDate)
+                                      itemNotificationDate: notiDate,
+                                      version: version,
+                                      imageChanged: imageChanged)
             
             let usecase = ModifyItemUseCase()
             _ = try await usecase.execute(idx: idx, item: item)

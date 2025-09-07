@@ -251,6 +251,7 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
                 guard let self = self else { return }
                 self.selectedImages.remove(at: indexPath.item - 1)
                 self.viewModel.selectedImages = self.selectedImages
+                self.viewModel.imageChanged = true
             }
             return cell
         }
