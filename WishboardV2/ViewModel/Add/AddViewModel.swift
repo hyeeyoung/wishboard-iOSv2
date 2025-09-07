@@ -170,9 +170,14 @@ final class AddViewModel {
     func addFolder(name: String) async throws {
         do {
             let usecase = AddFolderNameUseCase()
-            let _ = try await usecase.execute(folderName: name)
+            let newFolder = try await usecase.execute(folderName: name)
             
             try await self.fetchFolders(reset: true)
+            
+            // 요구사항: 새 폴더 추가 후 해당 폴더를 선택시킨다.
+            if let newFolderId = newFolder.id {
+                self.selectedFolderId = newFolderId
+            }
             
             DispatchQueue.main.async {
                 SnackBar.shared.show(type: .addFolder)

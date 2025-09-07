@@ -120,7 +120,7 @@ final class FolderFormItemView: FormItemView {
         selectedFolderId = id
         guard let index = folders.firstIndex(where: { $0.id == id }) else { return }
 
-        let indexPath = IndexPath(item: index, section: 0)
+        let indexPath = IndexPath(item: index + 1, section: 0)
         folderCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
     }
 }
@@ -151,8 +151,8 @@ extension FolderFormItemView: UICollectionViewDataSource, UICollectionViewDelega
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedId = folders[indexPath.item].id else { return }
-        if indexPath.item == 0 { return }
+        if indexPath.item <= 1 { return }
+        guard let selectedId = folders[indexPath.item - 1].id else { return }
         print("✅ 선택된 폴더: \(selectedId)")
         onFolderSelected?(selectedId)
     }
