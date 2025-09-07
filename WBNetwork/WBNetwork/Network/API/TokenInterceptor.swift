@@ -36,79 +36,77 @@ public final class TokenInterceptor: RequestInterceptor {
     
     public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         
-        // 401 - 유효하지 않은 토큰일 때
-        guard let response = request.task?.response as? HTTPURLResponse, response.statusCode == 401 else {
-            let desc = error.asAFError?.errorDescription?.description
-            let code = error.asAFError?.responseCode
-            print("\(desc)")
-            
-            let err = NSError(domain: desc ?? "", code: code ?? 500)
-            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
-            completion(.doNotRetryWithError(err))
-            
+        guard let response = request.task?.response as? HTTPURLResponse else {
+            completion(.doNotRetryWithError(error))
             return
         }
         
-        // 로그인 상태가 아닐 때
-        if UserManager.accessToken == nil || UserManager.refreshToken == nil {
-            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
-            return
-        }
-
-        DispatchQueue.global().async {
-            // 토큰 갱신시 동시 실행 제한
-            self.sema.wait()
+        // 401일 때만 토큰 갱신 로직
+        if response.statusCode == 401 {
+            // 로그인 상태가 아닐 때
+            if UserManager.accessToken == nil || UserManager.refreshToken == nil {
+                NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+                return
+            }
             
-            Task {
-                defer { self.sema.signal() }
-                do {
-                    guard let accessToken = UserManager.accessToken, let refreshToken = UserManager.refreshToken else {
-                        print("기기에 저장된 refreshToken 정보 없음")
-                        return
-                    }
-                    
-                    // call Refresh token API
-                    let usecase = RefreshTokenUseCase(repository: AuthRepository())
-                    let data = try await usecase.execute(accessToken: accessToken, refreshToken: refreshToken)
-                    
-                    guard let accessToken = data.accessToken else {
-                        self.sema.signal()
-                        completion(.doNotRetryWithError(error))
+            DispatchQueue.global().async {
+                // 토큰 갱신시 동시 실행 제한
+                self.sema.wait()
+                
+                Task {
+                    defer { self.sema.signal() }
+                    do {
+                        guard let accessToken = UserManager.accessToken, let refreshToken = UserManager.refreshToken else {
+                            print("기기에 저장된 refreshToken 정보 없음")
+                            return
+                        }
                         
+                        // call Refresh token API
+                        let usecase = RefreshTokenUseCase(repository: AuthRepository())
+                        let data = try await usecase.execute(accessToken: accessToken, refreshToken: refreshToken)
+                        
+                        guard let accessToken = data.accessToken else {
+                            self.sema.signal()
+                            completion(.doNotRetryWithError(error))
+                            
+                            // 토큰 재발급 실패 시 Notification 이벤트 전송
+                            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+                            
+                            throw error
+                        }
+                        
+                        guard let refreshToken = data.refreshToken else {
+                            self.sema.signal()
+                            completion(.doNotRetryWithError(error))
+                            
+                            // 토큰 재발급 실패 시 Notification 이벤트 전송
+                            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+                            
+                            throw error
+                        }
+                        
+                        // save tokens from response
+                        UserManager.accessToken = accessToken
+                        UserManager.refreshToken = refreshToken
+                        
+                        // retry
+                        completion(.retry)
+                        
+                    } catch {
+                        print("refresh token failed.")
+                        UserManager.removeUserData()
+                        completion(.doNotRetryWithError(error))
+                        self.sema.signal()
                         // 토큰 재발급 실패 시 Notification 이벤트 전송
                         NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
                         
                         throw error
                     }
-                    
-                    guard let refreshToken = data.refreshToken else {
-                        self.sema.signal()
-                        completion(.doNotRetryWithError(error))
-                        
-                        // 토큰 재발급 실패 시 Notification 이벤트 전송
-                        NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
-                        
-                        throw error
-                    }
-                    
-                    // save tokens from response
-                    UserManager.accessToken = accessToken
-                    UserManager.refreshToken = refreshToken
-                    
-                    // retry
-                    completion(.retry)
-                    
-                } catch {
-                    print("refresh token failed.")
-                    UserManager.removeUserData()
-                    completion(.doNotRetryWithError(error))
-                    self.sema.signal()
-                    // 토큰 재발급 실패 시 Notification 이벤트 전송
-                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
-                    
-                    throw error
                 }
             }
+        } else {
+            completion(.doNotRetryWithError(error))
+            return
         }
     }
 }

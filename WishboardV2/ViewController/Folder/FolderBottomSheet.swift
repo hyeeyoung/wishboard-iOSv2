@@ -202,7 +202,6 @@ final class FolderBottomSheet: UIView {
     }
     
     func configure(with folder: FolderListResponse?) {
-        
         self.snp.makeConstraints { make in
             make.height.equalToSuperview().multipliedBy(0.4)
         }
