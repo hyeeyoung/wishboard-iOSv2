@@ -655,7 +655,14 @@ extension AddViewController: AddToolBarDelegate {
             } catch {
                 lottie.stopAnimation()
                 
-                SnackBar.shared.show(type: .errorMessage)
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    switch response.statusCode {
+                    case 409:
+                        SnackBar.shared.show(type: .otherUserModifying)
+                    default:
+                        SnackBar.shared.show(type: .errorMessage)
+                    }
+                }
                 
                 throw error
             }

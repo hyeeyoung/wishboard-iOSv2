@@ -86,12 +86,6 @@ final class AddViewModel {
             let usecase = AddItemUseCase()
             _ = try await usecase.execute(type: .manual, item: item)
         } catch {
-            if let moyaError = error as? MoyaError, let response = moyaError.response {
-                if response.statusCode == 400 {
-                    print("400 error")
-//                    SnackBar.shared.show(type: .errorMessage)
-                }
-            }
             throw error
         }
     }
@@ -119,11 +113,6 @@ final class AddViewModel {
             let usecase = ModifyItemUseCase()
             _ = try await usecase.execute(idx: idx, item: item)
         } catch {
-            if let moyaError = error as? MoyaError, let response = moyaError.response {
-                if response.statusCode == 400 {
-//                    SnackBar.shared.show(type: .errorMessage)
-                }
-            }
             throw error
         }
     }
