@@ -19,18 +19,6 @@ public final class TokenInterceptor: RequestInterceptor {
     private init() { }
 
     public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
-        print("url: \(String(describing: urlRequest.url))")
-
-        var urlRequest = urlRequest
-        
-        if let WishBorad_App_Version = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-            urlRequest.setValue("iOS v\(WishBorad_App_Version)", forHTTPHeaderField: "X-WishBoard-App-Version")
-        }
-        
-        if let accessToken = UserManager.accessToken {
-            urlRequest.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
-        }
-        
         completion(.success(urlRequest))
     }
     
@@ -39,6 +27,21 @@ public final class TokenInterceptor: RequestInterceptor {
         guard let response = request.task?.response as? HTTPURLResponse else {
             completion(.doNotRetryWithError(error))
             return
+        }
+        
+        // 다중 기기 로그아웃 에러 분기처리
+        if let dataRequest = request as? DataRequest,
+           let data = dataRequest.data {
+            if let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
+                switch apiError.code {
+                case "LOGOUT_BY_DEVICE_OVERFLOW":
+                    NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                    object: nil,
+                                                    userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
+                default:
+                    break
+                }
+            }
         }
         
         // 401일 때만 토큰 갱신 로직
@@ -70,7 +73,9 @@ public final class TokenInterceptor: RequestInterceptor {
                             completion(.doNotRetryWithError(error))
                             
                             // 토큰 재발급 실패 시 Notification 이벤트 전송
-                            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+                            NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                            object: nil,
+                                                            userInfo: ["SnackBarType": SnackBarType.refreshTokenFailed])
                             
                             throw error
                         }
@@ -80,7 +85,9 @@ public final class TokenInterceptor: RequestInterceptor {
                             completion(.doNotRetryWithError(error))
                             
                             // 토큰 재발급 실패 시 Notification 이벤트 전송
-                            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+                            NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                            object: nil,
+                                                            userInfo: ["SnackBarType": SnackBarType.refreshTokenFailed])
                             
                             throw error
                         }
@@ -98,7 +105,9 @@ public final class TokenInterceptor: RequestInterceptor {
                         completion(.doNotRetryWithError(error))
                         self.sema.signal()
                         // 토큰 재발급 실패 시 Notification 이벤트 전송
-                        NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+                        NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                        object: nil,
+                                                        userInfo: ["SnackBarType": SnackBarType.refreshTokenFailed])
                         
                         throw error
                     }

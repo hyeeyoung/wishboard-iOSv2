@@ -28,6 +28,10 @@ public class ErrorPlugin: PluginType {
                 // 업데이트 관련
                 case 426:
                     break
+                // 유저 상태 관련
+                case 401:
+                    self.on401Error(error)
+                    break
                 default:
                     break
                 }
@@ -60,14 +64,22 @@ public class ErrorPlugin: PluginType {
         }
     }
     
-    public func on400Error(_ error: MoyaError) {
+    public func on401Error(_ error: MoyaError) {
         switch error {
         case .underlying(_, let response):
-            if let responseData = response?.data {
-                do {
-                    
-                } catch {
-                    print("Error decoding error response: \(error)")
+            if let data = response?.data,
+               let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
+                switch apiError.code {
+                case "NOT_FOUND_USER":
+                    NotificationCenter.default.post(name: .ShowSnackBar,
+                                                    object: nil,
+                                                    userInfo: ["SnackBarType": SnackBarType.invalidUser])
+                case "LOGOUT_BY_DEVICE_OVERFLOW":
+                    NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                    object: nil,
+                                                    userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
+                default:
+                    break
                 }
             }
         default:

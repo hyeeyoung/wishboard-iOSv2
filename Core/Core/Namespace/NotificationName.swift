@@ -13,4 +13,7 @@ extension Foundation.Notification.Name {
     public static let ShowSnackBar = Foundation.Notification.Name("ShowSnackBar")
     public static let ItemUpdated = Foundation.Notification.Name("ItemUpdated")
     public static let NetworkStatusChanged = Foundation.Notification.Name("NetworkStatusChanged")
+    public static let SignOutAndShowToast = Foundation.Notification.Name("SignOutAndShowToast")
+    public static let RefreshTokenFailed = Foundation.Notification.Name("RefreshTokenFailed")
+    public static let LogoutByDeviceOverFlow = Foundation.Notification.Name("LogoutByDeviceOverFlow")
 }

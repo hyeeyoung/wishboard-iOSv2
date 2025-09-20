@@ -22,6 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(signOutEvent), name: .SignOut, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(NetworkErrorEvent), name: .ReceivedNetworkError, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showSnackBar), name: .ShowSnackBar, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(signOutAndShowToast), name: .SignOutAndShowToast, object: nil)
         
         // MARK: Navigation controller
         let splashVC = SplashViewController()
@@ -64,6 +65,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             UserManager.removeUserData()
             // 온보딩 화면으로 이동하는 로직
             self.setRootOnboarding()
+        }
+    }
+    
+    /// 자동 로그인 만료 (토큰 재발급 실패) 시 온보딩으로 이동 및 토스트 노출
+    @objc private func signOutAndShowToast(_ notification: Foundation.Notification) {
+        DispatchQueue.main.async {
+            // 기존 유저 데이터 삭제
+            UserManager.removeUserData()
+            // 온보딩 화면으로 이동하는 로직
+            self.setRootOnboarding()
+            // 토스트 노출
+            if let snackBarType = notification.userInfo?["SnackBarType"] as? SnackBarType {
+                SnackBar.shared.show(type: snackBarType)
+            } else {
+                SnackBar.shared.show(type: .refreshTokenFailed)
+            }
         }
     }
     

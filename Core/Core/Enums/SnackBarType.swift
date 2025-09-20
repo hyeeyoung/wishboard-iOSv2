@@ -29,6 +29,7 @@ public enum SnackBarType {
     case invalidUser
     case logoutByDeviceOverflow
     case otherUserModifying
+    case refreshTokenFailed
     case test
     
     public var message: String {
@@ -54,6 +55,7 @@ public enum SnackBarType {
         case .invalidUser: return "앗, 이용할 수 없는 계정입니다!\n다시 로그인해 주세요."
         case .logoutByDeviceOverflow: return "최대 3대 기기에서만 로그인할 수 있어\n현재 기기에서 로그아웃되었어요."
         case .otherUserModifying: return "변경사항을 저장하지 못했어요!\n잠시 후 다시 시도해주세요."
+        case .refreshTokenFailed: return "자동 로그인이 만료되었습니다."
             
         case .test: return "로그아웃"
         }
