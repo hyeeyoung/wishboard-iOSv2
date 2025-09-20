@@ -17,6 +17,7 @@ final class FolderFormItemView: FormItemView {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 6
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         
         return UICollectionView(frame: .zero, collectionViewLayout: layout).then {
             $0.showsHorizontalScrollIndicator = false
@@ -69,7 +70,7 @@ final class FolderFormItemView: FormItemView {
         
         arrowImageView.snp.makeConstraints { make in
             make.centerY.equalTo(folderCollectionView)
-            make.trailing.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-16)
             make.width.height.equalTo(24)
         }
         

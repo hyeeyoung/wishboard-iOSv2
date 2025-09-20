@@ -93,7 +93,7 @@ class FormItemView: UIView {
         mainContainer.addSubview(requiredStar)
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
+            make.leading.equalToSuperview().offset(16)
             make.top.equalToSuperview()
         }
         
@@ -103,7 +103,7 @@ class FormItemView: UIView {
         }
 
         mainContainer.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview().inset(16)
+            make.horizontalEdges.equalToSuperview()
             make.verticalEdges.equalToSuperview().inset(16)
         }
     }
@@ -139,7 +139,7 @@ class FormItemView: UIView {
             mainContainer.addSubview(tv)
             tv.snp.makeConstraints { make in
                 make.height.greaterThanOrEqualTo(120)
-                make.leading.trailing.equalToSuperview()
+                make.leading.trailing.equalToSuperview().inset(16)
                 make.bottom.lessThanOrEqualToSuperview()
                 make.top.equalTo(titleLabel.snp.bottom).offset(14)
             }
@@ -197,7 +197,8 @@ class FormItemView: UIView {
         
         mainContainer.addSubview(textFieldContainer)
         textFieldContainer.snp.makeConstraints { make in
-            make.leading.trailing.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(14)
         }
     }
