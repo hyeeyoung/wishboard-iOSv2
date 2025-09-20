@@ -117,53 +117,7 @@ class FormItemView: UIView {
         
         switch type {
         case .textField(let placeholder, let isEditable, let showsArrow, let showsNumberPad):
-            let tf = UITextField().then {
-                $0.placeholder = placeholder
-                $0.borderStyle = .none
-                $0.isEnabled = isEditable
-                $0.font = TypoStyle.SuitD1.font
-                $0.autocapitalizationType = .none
-                $0.autocorrectionType = .no
-                $0.spellCheckingType = .no
-                $0.keyboardType = showsNumberPad ? .numberPad : .default
-                $0.addTarget(self, action: #selector(textDidChange(_:)), for: .allEvents)
-            }
-            tf.attributedPlaceholder = NSAttributedString(
-                string: placeholder,
-                attributes: [
-                    .foregroundColor: UIColor.gray_200
-                ]
-            )
-            tf.snp.makeConstraints { make in
-                make.height.equalTo(22)
-            }
-            self.textField = tf
-
-            let textFieldContainer = UIStackView(arrangedSubviews: [tf]).then {
-                $0.axis = .horizontal
-                $0.spacing = 8
-                $0.alignment = .fill
-            }
-
-            if showsArrow {
-                let arrow = UIImageView(image: .arrowRight).then {
-                    $0.contentMode = .scaleAspectFit
-                }
-                arrowImageView = arrow
-                textFieldContainer.addArrangedSubview(arrow)
-                arrow.snp.makeConstraints { make in
-                    make.width.height.equalTo(24)
-                }
-                self.textField?.snp.updateConstraints({ make in
-                    make.height.equalTo(24)
-                })
-            }
-            
-            mainContainer.addSubview(textFieldContainer)
-            textFieldContainer.snp.makeConstraints { make in
-                make.leading.trailing.bottom.equalToSuperview()
-                make.top.equalTo(titleLabel.snp.bottom).offset(14)
-            }
+            self.setUpTextFieldUI(placeholder: placeholder, isEditable: isEditable, showsArrow: showsArrow, showsNumberPad: showsNumberPad)
 
         case .textView:
             let placeholderText = Placeholder.uploadItemMemo
@@ -195,9 +149,61 @@ class FormItemView: UIView {
         }
     }
     
+    private func setUpTextFieldUI(placeholder: String, isEditable: Bool, showsArrow: Bool, showsNumberPad: Bool) {
+        let tf = UITextField().then {
+            $0.placeholder = placeholder
+            $0.borderStyle = .none
+            $0.isEnabled = isEditable
+            $0.font = TypoStyle.SuitD1.font
+            $0.autocapitalizationType = .none
+            $0.autocorrectionType = .no
+            $0.spellCheckingType = .no
+            $0.keyboardType = showsNumberPad ? .numberPad : .default
+            $0.addTarget(self, action: #selector(textDidChange(_:)), for: .allEvents)
+        }
+        tf.attributedPlaceholder = NSAttributedString(
+            string: placeholder,
+            attributes: [
+                .foregroundColor: UIColor.gray_200
+            ]
+        )
+        tf.snp.makeConstraints { make in
+            make.height.equalTo(22)
+        }
+        self.textField = tf
+        if showsNumberPad {
+            self.textField?.delegate = self
+        }
+
+        let textFieldContainer = UIStackView(arrangedSubviews: [tf]).then {
+            $0.axis = .horizontal
+            $0.spacing = 8
+            $0.alignment = .fill
+        }
+
+        if showsArrow {
+            let arrow = UIImageView(image: .arrowRight).then {
+                $0.contentMode = .scaleAspectFit
+            }
+            arrowImageView = arrow
+            textFieldContainer.addArrangedSubview(arrow)
+            arrow.snp.makeConstraints { make in
+                make.width.height.equalTo(24)
+            }
+            self.textField?.snp.updateConstraints({ make in
+                make.height.equalTo(24)
+            })
+        }
+        
+        mainContainer.addSubview(textFieldContainer)
+        textFieldContainer.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(titleLabel.snp.bottom).offset(14)
+        }
+    }
+    
     // MARK: - 액션 메서드
-    @objc
-    private func textDidChange(_ sender: UITextField) {
+    @objc private func textDidChange(_ sender: UITextField) {
         onTextChanged?(sender)
         textSubject.send(sender.text ?? "")
     }
@@ -234,5 +240,35 @@ extension FormItemView: UITextViewDelegate {
             textView.textColor = .gray_200
         }
         textSubject.send(textView.text ?? "")
+    }
+}
+
+extension FormItemView: UITextFieldDelegate {
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        
+        // 백스페이스 허용
+        if string.isEmpty {
+            return true
+        }
+        
+        // 현재 텍스트
+        let currentText = textField.text ?? ""
+        
+        // 입력 적용 후의 텍스트 시뮬레이션
+        if let textRange = Range(range, in: currentText) {
+            let updatedText = currentText.replacingCharacters(in: textRange, with: string)
+            
+            // 숫자만 추출
+            let filtered = updatedText.filter { $0.isNumber }
+            
+            // 최대값 체크
+            if let number = Int(filtered), number > 999_999_999 {
+                return false // → 입력 차단
+            }
+        }
+        
+        return true
     }
 }

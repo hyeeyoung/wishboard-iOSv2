@@ -204,19 +204,19 @@ final class AddView: UIView {
             textField.text = nil
             return
         }
+        
+        // Int로 변환해서 최대값 체크
+        if let number = Int(filteredText), number > 999_999_999 {
+            // 최대값 초과 → 입력 무효화 (기존 텍스트 유지)
+            // 즉, 직전 상태 그대로 두기 위해 return
+            return
+        }
 
         // 포맷팅
         let formatted = FormatManager.shared.strToPrice(numStr: filteredText) ?? ""
 
         // 업데이트 (항상 "원" 붙임)
-        textField.text = "\(formatted)원"
-
-        // "원" 직전 위치로 커서 이동
-        DispatchQueue.main.async {
-            if let endPosition = textField.position(from: textField.beginningOfDocument, offset: formatted.count) {
-                textField.selectedTextRange = textField.textRange(from: endPosition, to: endPosition)
-            }
-        }
+        textField.text = "₩ \(formatted)"
     }
     
     public func updateImages(_ images: [UIImage]) {
