@@ -31,7 +31,7 @@ final class AddView: UIView {
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 100, height: 100)
         layout.minimumInteritemSpacing = 8
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.dataSource = self
@@ -132,7 +132,7 @@ final class AddView: UIView {
         
         collectionView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(18)
-            make.leading.equalToSuperview().offset(16)
+            make.leading.equalToSuperview()
             make.height.equalTo(100)
             make.trailing.equalToSuperview()
         }
