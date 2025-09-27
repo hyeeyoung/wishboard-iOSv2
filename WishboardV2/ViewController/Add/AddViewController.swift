@@ -73,7 +73,7 @@ final class AddViewController: UIViewController {
         
         self.addView.itemNameSection.text = self.item?.itemName ?? ""
         let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.itemPrice ?? "0")
-        self.addView.itemPriceSection.text = "\(formattedText ?? "")원"
+        self.addView.itemPriceSection.text = "₩ \(formattedText ?? "")"
         
         if let itemName = self.item?.itemName, !itemName.isEmpty {
             self.viewModel.itemName = itemName

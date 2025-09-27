@@ -215,7 +215,7 @@ final class AddView: UIView {
         // 포맷팅
         let formatted = FormatManager.shared.strToPrice(numStr: filteredText) ?? ""
 
-        // 업데이트 (항상 "원" 붙임)
+        // 업데이트
         textField.text = "₩ \(formatted)"
     }
     
