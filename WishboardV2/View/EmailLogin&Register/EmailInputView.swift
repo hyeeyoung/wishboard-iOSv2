@@ -43,6 +43,7 @@ final class EmailInputView: UIView {
         textField.autocapitalizationType = .none
         textField.spellCheckingType = .no
         textField.clearButtonMode = .always
+        textField.font = TypoStyle.SuitD1.font
         return textField
     }()
     
