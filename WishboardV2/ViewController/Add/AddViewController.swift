@@ -668,6 +668,8 @@ extension AddViewController: AddToolBarDelegate {
                     default:
                         SnackBar.shared.show(type: .errorMessage)
                     }
+                } else {
+                    SnackBar.shared.show(type: .errorMessage)
                 }
                 
                 throw error

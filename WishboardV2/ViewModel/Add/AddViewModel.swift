@@ -12,6 +12,12 @@ import WBNetwork
 import Moya
 import Core
 
+enum UploadItemError: Error {
+    case invalidVersion
+    case invalidPrice
+    case invalidIfImageChanged
+}
+
 final class AddViewModel {
     // 입력 데이터
     @Published var selectedImages: [UIImage] = []
@@ -69,7 +75,9 @@ final class AddViewModel {
         do {
             let itemName = self.itemName
             let originPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
-            guard let itemPrice = Int(originPrice) else { return }
+            guard let itemPrice = Int(originPrice) else {
+                throw UploadItemError.invalidPrice
+            }
             let selectedFolderId = self.selectedFolderId
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
@@ -97,14 +105,19 @@ final class AddViewModel {
         do {
             let itemName = self.itemName
             let originPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
-            guard let itemPrice = Int(originPrice) else { return }
+            guard let itemPrice = Int(originPrice) else {
+                throw UploadItemError.invalidPrice
+            }
             let selectedFolderId = self.selectedFolderId
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
             let itemMemo = self.memo
             let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
             let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
-            guard let version = self.version, let imageChanged = self.imageChanged else { return }
+            let version = self.version ?? 0     // version이 없다면 0으로 보내기
+            guard let imageChanged = self.imageChanged else {
+                throw UploadItemError.invalidIfImageChanged
+            }
             
             let item = RequestItemDTO(folderId: selectedFolderId,
                                       photos: itemImages,
