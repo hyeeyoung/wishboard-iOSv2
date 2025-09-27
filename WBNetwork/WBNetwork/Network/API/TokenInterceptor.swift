@@ -29,15 +29,21 @@ public final class TokenInterceptor: RequestInterceptor {
             return
         }
         
-        // 다중 기기 로그아웃 에러 분기처리
+        // 유저 인증상태 에러 분기처리
         if let dataRequest = request as? DataRequest,
            let data = dataRequest.data {
             if let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
                 switch apiError.code {
+                case "NOT_FOUND_USER":
+                    NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                    object: nil,
+                                                    userInfo: ["SnackBarType": SnackBarType.invalidUser])
+                    return
                 case "LOGOUT_BY_DEVICE_OVERFLOW":
                     NotificationCenter.default.post(name: .SignOutAndShowToast,
                                                     object: nil,
                                                     userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
+                    return
                 default:
                     break
                 }

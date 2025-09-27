@@ -71,7 +71,7 @@ public class ErrorPlugin: PluginType {
                let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
                 switch apiError.code {
                 case "NOT_FOUND_USER":
-                    NotificationCenter.default.post(name: .ShowSnackBar,
+                    NotificationCenter.default.post(name: .SignOutAndShowToast,
                                                     object: nil,
                                                     userInfo: ["SnackBarType": SnackBarType.invalidUser])
                 case "LOGOUT_BY_DEVICE_OVERFLOW":

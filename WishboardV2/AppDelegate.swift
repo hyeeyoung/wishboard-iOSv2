@@ -81,22 +81,7 @@ extension AppDelegate {
         if let fcmToken = fcmToken {
             UserDefaults.standard.set(fcmToken, forKey: "fcmToken")
         }
-        
-//        // 디바이스가 변경되었을 때에만 (기존의 디바이스 토큰과 지금 얻은 디바이스 토큰값이 다를 때에만)
-//        let preDeviceToken = UserManager.deviceToken
-//        if preDeviceToken != fcmToken {
-//            // 디바이스 토큰 변경 시
-//            DispatchQueue.main.async {
-//                UserManager.deviceToken = fcmToken
-//            }
-//        } else {
-//            // 디바이스 토큰 그대로일 때
-//        }
-        
     }
-//    func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
-//        print("Received data message: \(remoteMessage.appData)")
-//    }
 }
 // MARK: - Notification
 extension AppDelegate {
