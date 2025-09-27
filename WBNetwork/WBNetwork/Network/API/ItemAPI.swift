@@ -18,7 +18,7 @@ public struct RequestItemDTO {
     public let folderId: Int?
     public let photos: [Data]?
     public let itemName: String
-    public let itemPrice: String
+    public let itemPrice: Int
     public let itemURL: String?
     public let itemMemo: String?
     public let itemNotificationType: String?
@@ -29,7 +29,7 @@ public struct RequestItemDTO {
     public init(folderId: Int?, 
                 photos: [Data]?,
                 itemName: String,
-                itemPrice: String,
+                itemPrice: Int,
                 itemURL: String?,
                 itemMemo: String?,
                 itemNotificationType: String?, itemNotificationDate: String?,

@@ -68,7 +68,8 @@ final class AddViewModel {
     func addItem() async throws {
         do {
             let itemName = self.itemName
-            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            let originPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            guard let itemPrice = Int(originPrice) else { return }
             let selectedFolderId = self.selectedFolderId
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
@@ -95,7 +96,8 @@ final class AddViewModel {
     func modifyItem(idx: Int) async throws {
         do {
             let itemName = self.itemName
-            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            let originPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            guard let itemPrice = Int(originPrice) else { return }
             let selectedFolderId = self.selectedFolderId
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
