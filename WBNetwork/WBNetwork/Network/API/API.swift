@@ -36,7 +36,7 @@ public final class API {
     }
     
     public static let Auth = WBProvider<AuthAPI>(
-        session: Session(configuration: configuration),
+        session: Session(configuration: configuration, interceptor: interceptor),
         plugins: [errorPlugin, networkLoggerPlugin, authPlugin]
     )
     
