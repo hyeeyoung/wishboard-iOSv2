@@ -26,6 +26,9 @@ final class ItemDetailViewController: UIViewController {
     private let backgroundDimView = UIView()
     private let id: Int
     
+    public var editAction: ((WishListResponse?) -> Void)?
+    public var deleteAction: ((Int) -> Void)?
+    
     init(id: Int) {
         self.id = id
         super.init(nibName: nil, bundle: nil)
@@ -45,7 +48,8 @@ final class ItemDetailViewController: UIViewController {
         setupBackgroundDimView()
         setupBottomSheet()
         
-        self.viewModel.fetchItemDetail(id: self.id)
+        // Data
+        self.fetchData()
         
         viewModel.$item
             .receive(on: RunLoop.main)
@@ -55,6 +59,16 @@ final class ItemDetailViewController: UIViewController {
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    private func fetchData() {
+        Task {
+            do {
+                try await self.viewModel.fetchItemDetail(id: self.id)
+            } catch {
+                throw error
+            }
+        }
     }
     
     private func setupDetailView() {
@@ -115,7 +129,6 @@ final class ItemDetailViewController: UIViewController {
             if let folderId = folderId, let itemId = self?.viewModel.item?.id {
                 Task {
                     try await self?.viewModel.modifyItemFolder(itemId: itemId, folderId: folderId)
-//                    NotificationCenter.default.post(name: .ItemUpdated, object: nil)
                 }
             }
         }
@@ -186,7 +199,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
                         if let id = self.viewModel.item?.id {
                             // delete item
                             try await self.viewModel.deleteItem(id: id)
-                            // TODO: 진입 화면의 refreshItems
+                            self.deleteAction?(id)
                             
                             // 뒤로가기
                             self.leftNaviItemTap()
@@ -211,9 +224,11 @@ extension ItemDetailViewController: DetailToolBarDelegate {
         
         // 새로고침
         addViewController.confirmAction = { [weak self] in
-            if let idx = self?.viewModel.item?.id {
-                self?.viewModel.fetchItemDetail(id: idx)
-//                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
+            Task {
+                if let idx = self?.viewModel.item?.id {
+                    try await self?.viewModel.fetchItemDetail(id: idx)
+                    self?.editAction?(self?.viewModel.item)
+                }
             }
         }
         

@@ -19,8 +19,8 @@ final class ItemDetailViewModel {
     }
     
     // 아이템 상세 데이터 가져오기
-    func fetchItemDetail(id: Int) {
-        Task {
+    func fetchItemDetail(id: Int) async throws {
+//        Task {
             do {
                 let usecase = GetItemDetailUseCase()
                 let data = try await usecase.execute(id: id)
@@ -31,7 +31,7 @@ final class ItemDetailViewModel {
             } catch {
                 throw error
             }
-        }
+//        }
     }
     
     // 폴더 데이터 가져오기
@@ -56,7 +56,7 @@ final class ItemDetailViewModel {
             let usecase = ModifyItemFolderUseCase()
             let _ = try await usecase.execute(itemId: itemId, folderId: folderId)
             
-            self.fetchItemDetail(id: itemId)
+            try await self.fetchItemDetail(id: itemId)
             self.fetchFolders()
         } catch {
             throw error

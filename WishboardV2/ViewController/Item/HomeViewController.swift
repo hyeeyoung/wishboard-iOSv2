@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 import Core
+import WBNetwork
 
 final class HomeViewController: UIViewController, ItemDetailDelegate {
     
@@ -29,6 +30,8 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         setupBottomSheet()
         setupBindings()
         
+        self.refreshItems()
+        
         // 앱 이용방법
         guard let isFirstLogin = UserManager.isFirstLogin else { return }
         if isFirstLogin {
@@ -43,10 +46,6 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = false
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        self.refreshItems()
     }
     
     private func setupNotifications() {
@@ -65,6 +64,9 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     
     private func setupDelegates() {
         homeView.collectionView.delegate = self
+        homeView.collectionView.dragInteractionEnabled = true
+        homeView.collectionView.dragDelegate = self
+        homeView.collectionView.dropDelegate = self
         homeView.toolbar.delegate = self
     }
     
@@ -120,6 +122,16 @@ extension HomeViewController: UICollectionViewDelegate {
             UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
             detailViewController.hidesBottomBarWhenPushed = true
+            
+            detailViewController.editAction = { [weak self] item in
+                guard let item = item else { return }
+                self?.viewModel.items[indexPath.item] = item
+            }
+            
+            detailViewController.deleteAction = { [weak self] id in
+                self?.viewModel.items.removeAll { $0.id == item.id }
+            }
+            
             navigationController?.pushViewController(detailViewController, animated: true)
         }
     }
@@ -139,3 +151,48 @@ extension HomeViewController: HomeToolBarDelegate {
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }
+
+extension HomeViewController: UICollectionViewDragDelegate {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        itemsForBeginning session: UIDragSession,
+                        at indexPath: IndexPath) -> [UIDragItem] {
+
+        let item = viewModel.items[indexPath.item]
+
+        // 1) NSItemProvider는 의미 없는 provider로 생성
+        let itemProvider = NSItemProvider()
+
+        // 2) 실제 데이터는 localObject에 저장 (앱 내부 전용)
+        let dragItem = UIDragItem(itemProvider: itemProvider)
+        dragItem.localObject = item
+
+        return [dragItem]
+    }
+}
+
+extension HomeViewController: UICollectionViewDropDelegate {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        performDropWith coordinator: UICollectionViewDropCoordinator) {
+
+        guard let destination = coordinator.destinationIndexPath else { return }
+
+        for item in coordinator.items {
+            if let sourceIndexPath = item.sourceIndexPath,
+               let movedItem = item.dragItem.localObject as? WishListResponse {
+
+                // 데이터 이동
+                viewModel.items.remove(at: sourceIndexPath.item)
+                viewModel.items.insert(movedItem, at: destination.item)
+
+                // UI 이동
+                collectionView.performBatchUpdates {
+                    collectionView.deleteItems(at: [sourceIndexPath])
+                    collectionView.insertItems(at: [destination])
+                }
+            }
+        }
+    }
+}
+
