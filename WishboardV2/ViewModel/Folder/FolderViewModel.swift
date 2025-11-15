@@ -23,6 +23,9 @@ final class FolderViewModel {
     private var page: Int = 0          // 서버의 data.number (0-based)
     private let pageSize: Int = 10     // 서버의 data.size와 일치
     
+    // 순서
+    private let orderKey = "folderlist_order"
+    
     // MARK: - Init
     init() { }
     

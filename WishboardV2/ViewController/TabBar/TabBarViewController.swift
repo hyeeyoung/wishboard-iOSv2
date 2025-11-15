@@ -91,6 +91,8 @@ extension TabBarViewController: UITabBarControllerDelegate {
             
             addViewController.confirmAction = { [weak self] in
                 self?.selectedIndex = 0
+                // Noti
+                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
             }
             
             present(addViewController, animated: true)
