@@ -32,7 +32,7 @@ class ShareViewController: UIViewController {
         setupBindings()
         
         // fetch datas
-        viewModel.fetchFolders(reset: true)
+        viewModel.fetchFolders()
         viewModel.getSharedUrl(self) { [weak self] url in
             Task {
                 do {

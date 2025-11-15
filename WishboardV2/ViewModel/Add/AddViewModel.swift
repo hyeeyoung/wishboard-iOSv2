@@ -132,7 +132,7 @@ final class AddViewModel {
     
     // 폴더 데이터 가져오기
     /// 폴더 가져오기
-    func fetchFolders(reset: Bool = false) async throws {
+    func fetchFolders() async throws {
         do {
             let usecase = GetFolderListUseCase()
             let response = try await usecase.execute()
@@ -142,14 +142,6 @@ final class AddViewModel {
             throw error
         }
     }
-
-    /// UICollectionView 스크롤 하단 근처에서 호출해 다음 페이지 로드
-    func loadNextIfNeeded(currentIndex: Int, threshold: Int = 2) {
-        guard currentIndex >= folders.count - threshold else { return }
-        _Concurrency.Task { [weak self] in
-            try await self?.fetchFolders()
-        }
-    }
     
     // 새 폴더 추가
     func addFolder(name: String) async throws {
@@ -157,7 +149,7 @@ final class AddViewModel {
             let usecase = AddFolderNameUseCase()
             let newFolder = try await usecase.execute(folderName: name)
             
-            try await self.fetchFolders(reset: true)
+            try await self.fetchFolders()
             
             // 요구사항: 새 폴더 추가 후 해당 폴더를 선택시킨다.
             if let newFolderId = newFolder.id {

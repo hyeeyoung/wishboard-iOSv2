@@ -188,10 +188,6 @@ final class AddView: UIView {
                 self?.updateImages(images)
             }
             .store(in: &cancellables)
-        
-        folderSection.loadNextPageAction = { [weak self] index in
-            self?.viewModel.loadNextIfNeeded(currentIndex: index)
-        }
     }
     
     private func priceTextChanged(_ textField: UITextField) {
