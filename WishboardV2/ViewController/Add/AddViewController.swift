@@ -12,6 +12,8 @@ import Lottie
 import Then
 import PhotosUI
 import Moya
+import Mantis
+
 import Core
 import WBNetwork
 
@@ -49,6 +51,10 @@ final class AddViewController: UIViewController {
     
     // Keyboard
     private weak var activeField: UIView?
+    
+    // 이미지 편집
+    private var imagesToEdit: [UIImage] = []
+    private var cropQueue: [UIImage] = []
     
     // MARK: - Initializers
     
@@ -574,15 +580,20 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         present(picker, animated: true)
     }
     
-    /// UIImagePickerControllerDelegate
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let editedImage = info[.editedImage] as? UIImage {
-            viewModel.selectedImages.append(editedImage)
-        } else if let originalImage = info[.originalImage] as? UIImage {
-            viewModel.selectedImages.append(originalImage)
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+        guard let image = info[.originalImage] as? UIImage else {
+            picker.dismiss(animated: true)
+            return
         }
-        viewModel.imageChanged = true
-        picker.dismiss(animated: true)
+
+        // 카메라 촬영 이미지도 편집 큐로 추가
+        self.cropQueue = [image]
+
+        picker.dismiss(animated: true) {
+            self.presentNextCropIfNeeded()
+        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -618,9 +629,57 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
                 SnackBar.shared.show(type: .imageLimit)
                 return
             }
-            self.viewModel.selectedImages.append(contentsOf: finalImages)
-            self.viewModel.imageChanged = true
+            
+            // 유저가 선택한 최종 이미지들
+            self.imagesToEdit = finalImages
+
+            // 기존 이미지 뒤에 순서대로 들어가므로 인덱스 맞춰줌
+            self.cropQueue = finalImages
+
+            // 편집 시작
+            self.presentNextCropIfNeeded()
         }
+    }
+}
+
+// MARK: - 사진 편집 기능
+
+extension AddViewController: CropViewControllerDelegate {
+    func cropViewControllerDidCrop(
+        _ cropViewController: CropViewController,
+        cropped: UIImage,
+        transformation: Transformation,
+        cropInfo: CropInfo
+    ) {
+        dismiss(animated: true)
+
+        // 1) 편집 완료된 이미지를 selectedImages에 넣고
+        viewModel.selectedImages.append(cropped)
+
+        // 다음 이미지 크롭 진행
+        presentNextCropIfNeeded()
+    }
+
+    func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {
+        dismiss(animated: true)
+        
+        // 취소하면 원본으로 유지하고 다음 이미지로 넘어감
+        viewModel.selectedImages.append(original)
+        presentNextCropIfNeeded()
+    }
+    
+    private func presentNextCropIfNeeded() {
+        guard cropQueue.isEmpty == false else {
+            // 모든 작업 완료
+            viewModel.imageChanged = true
+            return
+        }
+
+        // queue에서 맨 앞 이미지 하나 꺼내서 크롭
+        let next = cropQueue.removeFirst()
+        let cropVC = Mantis.cropViewController(image: next)
+        cropVC.delegate = self
+        present(cropVC, animated: true)
     }
 }
 
