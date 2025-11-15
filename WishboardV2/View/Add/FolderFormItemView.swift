@@ -50,7 +50,6 @@ final class FolderFormItemView: FormItemView {
     var onFolderSelected: ((Int) -> Void)?
     var onNewFolderTap: (() -> Void)?
     var onArrowTap: (() -> Void)?
-    var loadNextPageAction: ((Int) -> Void)?
     
     override init(title: String, isRequired: Bool, type: FormItemType = .folder) {
         super.init(title: title, isRequired: isRequired, type: type)
@@ -183,11 +182,5 @@ extension FolderFormItemView: UICollectionViewDataSource, UICollectionViewDelega
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let maxOffset = scrollView.contentSize.width - scrollView.bounds.width
         fadeView.isHidden = scrollView.contentOffset.x >= maxOffset - 5
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        willDisplay cell: UICollectionViewCell,
-                        forItemAt indexPath: IndexPath) {
-        self.loadNextPageAction?(indexPath.item)
     }
 }
