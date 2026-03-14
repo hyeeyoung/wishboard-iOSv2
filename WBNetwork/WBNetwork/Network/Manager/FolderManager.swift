@@ -25,8 +25,8 @@ public final class FolderManager {
     public func getFolderItemList(folderId: String, page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[WishListResponse]>{
         return try await API.Folder.requestRaw(.getFolderItemList(folderId: folderId, page: page, size: size))
     }
-    public func getFolderList() async throws -> [FolderListResponse] {
-        return try await API.Folder.request(.getFolderList)
+    public func getFolderList(order: FolderOrder?) async throws -> [FolderListResponse] {
+        return try await API.Folder.request(.getFolderList(order: order))
     }
     public func reorderFolders(ids: [Int]) async throws -> EmptyResponse {
         return try await API.Folder.request(.reorderFolders(ids: ids))

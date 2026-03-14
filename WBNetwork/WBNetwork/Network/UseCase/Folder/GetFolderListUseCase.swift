@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol GetFolderListUseCaseInterface {
-    func execute() async throws -> [FolderListResponse]
+    func execute(order: FolderOrder?) async throws -> [FolderListResponse]
 }
 
 public class GetFolderListUseCase: GetFolderListUseCaseInterface {
@@ -18,7 +18,7 @@ public class GetFolderListUseCase: GetFolderListUseCaseInterface {
         self.repository = repository
     }
     
-    public func execute() async throws -> [FolderListResponse] {
-        return try await self.repository.getFolderList()
+    public func execute(order: FolderOrder? = nil) async throws -> [FolderListResponse] {
+        return try await self.repository.getFolderList(order: order)
     }
 }

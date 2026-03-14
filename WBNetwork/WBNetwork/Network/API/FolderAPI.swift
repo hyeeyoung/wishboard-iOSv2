@@ -9,8 +9,14 @@ import Foundation
 import Moya
 import Core
 
+public enum FolderOrder: String {
+    case latest = "LATEST"                 // 폴더 생성 최신순
+    case custom = "CUSTOM"                 // 커스텀
+    case recent_item = "RECENT_ITEM"       // 최근에 저장한 순서
+}
+
 public enum FolderAPI {
-    /// 폴더리스트 조회
+    /// 폴더리스트 조회 (사용화면: 폴더 탭)
     case getFolders(page: Int, size: Int)
     /// 새 폴더 추가
     case addFolder(folderName: String)
@@ -21,8 +27,8 @@ public enum FolderAPI {
     /// 폴더 내 아이템 리스트 조회
     case getFolderItemList(folderId: String, page: Int, size: Int)
     /// 폴더리스트 조회 - 페이징X
-    /// 폴더 탭 화면을 제외한 폴더 리스트 조회 시 사용된다.
-    case getFolderList
+    /// (사용화면: 폴더 상세뷰, 수동 등록, 링크 공유 뷰)
+    case getFolderList(order: FolderOrder?)
     /// 폴더 목록 재정렬
     case reorderFolders(ids: [Int])
 }
@@ -83,6 +89,10 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             parameters = ["folderName": folderName]
         case .getFolderItemList(_, let page, let size):
             parameters = ["page": page, "size": size]
+        case .getFolderList(let order):
+            if let order = order {
+                parameters = ["order": order.rawValue]
+            }
         case .reorderFolders(let ids):
             parameters = ["folderIds": ids]
         default:
