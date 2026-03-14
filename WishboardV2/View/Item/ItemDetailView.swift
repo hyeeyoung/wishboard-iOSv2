@@ -102,7 +102,24 @@ final class ItemDetailView: UIView {
         $0.font = TypoStyle.SuitD3.font
         $0.textColor = .gray_300
     }
-    private let actionButton = UIButton(type: .system).then {
+    
+    private let buttonStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 15
+        $0.distribution = .fillEqually
+    }
+    
+    private let collectedItemButton = UIButton(type: .custom).then {
+        $0.setTitle("소장템으로 바꾸기", for: .normal)
+        $0.setTitle("소장템에서 제거", for: .selected)
+        $0.titleLabel?.font = TypoStyle.SuitH3.font
+        $0.setTitleColor(.gray_700, for: .normal)
+        $0.setTitleColor(.gray_300, for: .selected)
+        $0.layer.cornerRadius = 12
+        $0.clipsToBounds = true
+    }
+    
+    private let moveToLinkButton = UIButton(type: .custom).then {
         $0.setTitle("쇼핑몰로 이동하기", for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitH3.font
         $0.setTitleColor(.white, for: .normal)
@@ -118,6 +135,7 @@ final class ItemDetailView: UIView {
     
     private var item: WishListResponse?
     public var folderListButtonAction: (() -> Void)?
+    public var collectButtonAction: ((Bool) -> Void)?
     public var linkButtonAction: ((String) -> Void)?
 
     // MARK: - Initializer
@@ -151,7 +169,9 @@ final class ItemDetailView: UIView {
         contentView.addSubview(nameLabel)
         contentView.addSubview(priceLabel)
         contentView.addSubview(contentStackView)
-        addSubview(actionButton)
+        addSubview(buttonStackView)
+        buttonStackView.addArrangedSubview(collectedItemButton)
+        buttonStackView.addArrangedSubview(moveToLinkButton)
         
         imageContainer.bringSubviewToFront(notiTypetag)
         imageContainer.bringSubviewToFront(notiDatetag)
@@ -164,7 +184,7 @@ final class ItemDetailView: UIView {
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(toolbar.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(actionButton.snp.top)
+            make.bottom.equalTo(buttonStackView.snp.top)
         }
         
         contentView.snp.makeConstraints { make in
@@ -228,15 +248,23 @@ final class ItemDetailView: UIView {
             make.bottom.equalToSuperview()
         }
 
-        actionButton.snp.makeConstraints { make in
+        buttonStackView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(50)
             make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
+        }
+        
+        collectedItemButton.snp.makeConstraints { make in
+            make.height.equalTo(50)
+        }
+        
+        moveToLinkButton.snp.makeConstraints { make in
+            make.height.equalTo(50)
         }
     }
     
     private func addTargets() {
-        self.actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
+        self.collectedItemButton.addTarget(self, action: #selector(collectButtonTapped(_:)), for: .touchUpInside)
+        self.moveToLinkButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(folderListButtonTapped))
         self.folderLabelButton.addGestureRecognizer(tapGesture)
     }
@@ -245,6 +273,14 @@ final class ItemDetailView: UIView {
         imageCarousel.register(ImageCollectionCell.self, forCellWithReuseIdentifier: "ImageCollectionCell")
         imageCarousel.dataSource = self
         imageCarousel.delegate = self
+    }
+    
+    @objc private func collectButtonTapped(_ button: UIButton) {
+        button.isSelected.toggle()
+        let isCollected = button.isSelected
+        button.backgroundColor = isCollected ? .gray_100 : .gray_50
+        UIDevice.vibrate()
+        self.collectButtonAction?(isCollected)
     }
     
     @objc private func actionButtonTapped() {
@@ -276,8 +312,9 @@ final class ItemDetailView: UIView {
         configureItemLink(item)
         configureItemMemo(item)
         
-        // Action Button 상태 업데이트
-        configureBottomBtn(item)
+        // Action Buttons 상태 업데이트
+        configureCollectBtn(item)
+        configureLinkBtn(item)
     }
     
     private var imageUrls: [String?] = []
@@ -384,17 +421,21 @@ final class ItemDetailView: UIView {
         }
     }
     
-    private func configureBottomBtn(_ item: WishListResponse) {
+    private func configureLinkBtn(_ item: WishListResponse) {
         if let link = item.itemUrl, !link.isEmpty {
-            actionButton.titleLabel?.font = TypoStyle.SuitH3.font
-            actionButton.setTitleColor(.white, for: .normal)
-            actionButton.backgroundColor = .gray_700
-            actionButton.isEnabled = true
+            moveToLinkButton.isHidden = false
         } else {
-            actionButton.titleLabel?.font = TypoStyle.SuitH3.font
-            actionButton.setTitleColor(.gray_300, for: .normal)
-            actionButton.backgroundColor = .gray_100
-            actionButton.isEnabled = false
+            moveToLinkButton.isHidden = true
+        }
+    }
+    
+    private func configureCollectBtn(_ item: WishListResponse) {
+        if let isCollected = item.isCollected {
+            collectedItemButton.backgroundColor = .gray_100
+            collectedItemButton.isSelected = true
+        } else {
+            collectedItemButton.backgroundColor = .gray_50
+            collectedItemButton.isSelected = false
         }
     }
     

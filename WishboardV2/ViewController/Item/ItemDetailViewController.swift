@@ -28,6 +28,7 @@ final class ItemDetailViewController: UIViewController {
     
     public var editAction: ((WishListResponse?) -> Void)?
     public var deleteAction: ((Int) -> Void)?
+    public var collectionChangeAction: ((Bool) -> Void)?
     
     init(id: Int) {
         self.id = id
@@ -89,6 +90,12 @@ final class ItemDetailViewController: UIViewController {
 
             let linkView = SFSafariViewController(url: url)
             self?.present(linkView, animated: true)
+        }
+        
+        detailView.collectButtonAction = { [weak self] isCollected in
+            SnackBar.shared.show(type: isCollected ? .collectItem : .removeCollectItem)
+            // TODO: 서버 연결
+            self?.collectionChangeAction?(isCollected)
         }
         
         detailView.folderListButtonAction = { [weak self] in

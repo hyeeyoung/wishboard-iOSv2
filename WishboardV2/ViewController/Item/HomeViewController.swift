@@ -114,7 +114,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = viewModel.items[indexPath.row]
+        var item = viewModel.items[indexPath.row]
         if let itemIdx = item.id {
             UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
@@ -127,6 +127,10 @@ extension HomeViewController: UICollectionViewDelegate {
             
             detailViewController.deleteAction = { [weak self] id in
                 self?.viewModel.items.removeAll { $0.id == item.id }
+            }
+            
+            detailViewController.collectionChangeAction = { [weak self] isCollected in
+                item.isCollected = isCollected
             }
             
             navigationController?.pushViewController(detailViewController, animated: true)

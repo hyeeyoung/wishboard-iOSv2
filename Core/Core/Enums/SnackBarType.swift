@@ -18,6 +18,8 @@ public enum SnackBarType {
     case addItem
     case modifyItem
     case deleteItem
+    case collectItem
+    case removeCollectItem
     case modifyProfile
     case modifyPassword
     case deleteUser
@@ -45,6 +47,8 @@ public enum SnackBarType {
         case .addItem: return "아이템을 위시리스트에 추가했어요!👜"
         case .modifyItem: return "아이템을 수정했어요!✍️️"
         case .deleteItem: return "아이템을 위시리스트에서 삭제했어요!🗑"
+        case .collectItem: return "소장템으로 바꿨어요! 👜"
+        case .removeCollectItem: return "소장템에서 제거했어요!"
         case .modifyProfile: return "프로필이 수정되었어요!👩‍🎤"
         case .modifyPassword: return "비밀번호가 변경되었어요!👩‍🎤"
         case .deleteUser: return "탈퇴 완료되었어요. 이용해주셔서 감사합니다!☺️"
