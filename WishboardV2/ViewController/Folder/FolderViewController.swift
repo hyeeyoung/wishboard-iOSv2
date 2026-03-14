@@ -63,9 +63,9 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         
         folderView.collectionView.delegate = self
         folderView.collectionView.dataSource = self
-        folderView.collectionView.dragInteractionEnabled = true
-        folderView.collectionView.dragDelegate = self
-        folderView.collectionView.dropDelegate = self
+//        folderView.collectionView.dragInteractionEnabled = true
+//        folderView.collectionView.dragDelegate = self
+//        folderView.collectionView.dropDelegate = self
         folderView.toolBar.delegate = self
         
         viewModel.$folders
@@ -296,14 +296,11 @@ extension FolderViewController: FolderToolBarDelegate {
     func reorderFolderNaviItemTap() {
         UIDevice.vibrate()
         
-        let vc = FolderReorderViewController(
-            folders: viewModel.folders
-        )
+        let vc = FolderReorderViewController(folders: viewModel.folders)
         vc.modalPresentationStyle = .fullScreen
         // 폴더 순서 재정렬
-        vc.saveAction = { [weak self] in
+        vc.saveAction = {
             SnackBar.shared.show(type: .reorderFolder)
-            self?.refreshItems()
         }
         present(vc, animated: true)
     }
@@ -316,6 +313,7 @@ extension FolderViewController: UIGestureRecognizerDelegate {
     }
 }
 
+/*
 // MARK: - 순서 이동
 extension FolderViewController: UICollectionViewDropDelegate, UICollectionViewDragDelegate {
     
@@ -366,7 +364,7 @@ extension FolderViewController: UICollectionViewDropDelegate, UICollectionViewDr
                 collectionView.moveItem(at: sourceIndexPath, to: destinationIndexPath)
             }
             
-            // TODO: 서버 > 순서 변경하는 PATCH API 호출
+            // 서버 > 순서 변경하는 PATCH API 호출
             
             coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
         }
@@ -375,3 +373,4 @@ extension FolderViewController: UICollectionViewDropDelegate, UICollectionViewDr
     }
 }
 
+*/

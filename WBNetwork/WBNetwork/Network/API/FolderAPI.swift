@@ -23,6 +23,8 @@ public enum FolderAPI {
     /// 폴더리스트 조회 - 페이징X
     /// 폴더 탭 화면을 제외한 폴더 리스트 조회 시 사용된다.
     case getFolderList
+    /// 폴더 목록 재정렬
+    case reorderFolders(ids: [Int])
 }
 
 extension FolderAPI: TargetType, AccessTokenAuthorizable {
@@ -44,6 +46,8 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             return "/item/\(folderId)"
         case .getFolderList:
             return "/list"
+        case .reorderFolders:
+            return "/order"
             
         }
     }
@@ -62,6 +66,8 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             return .get
         case .getFolderList:
             return .get
+        case .reorderFolders:
+            return .put
         }
     }
 
@@ -77,6 +83,8 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             parameters = ["folderName": folderName]
         case .getFolderItemList(_, let page, let size):
             parameters = ["page": page, "size": size]
+        case .reorderFolders(let ids):
+            parameters = ["folderIds": ids]
         default:
             parameters = [:]
         }

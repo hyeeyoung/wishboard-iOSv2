@@ -28,4 +28,7 @@ public final class FolderManager {
     public func getFolderList() async throws -> [FolderListResponse] {
         return try await API.Folder.request(.getFolderList)
     }
+    public func reorderFolders(ids: [Int]) async throws -> EmptyResponse {
+        return try await API.Folder.request(.reorderFolders(ids: ids))
+    }
 }

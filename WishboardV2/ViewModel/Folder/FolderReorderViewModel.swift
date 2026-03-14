@@ -37,10 +37,21 @@ final class FolderReorderViewModel {
         folders.sort { ($0.id ?? 0) > ($1.id ?? 0) }
         evaluateState()
     }
-
-    // 저장용 순서
-    func folderIds() -> [Int] {
-        folders.compactMap { $0.id }
+    
+    // 폴더 재정렬
+    func updateFolderOrders() async throws {
+        do {
+            let repo = FolderRepository()
+            let updateFolderOrdersUseCase = ReorderFoldersUseCase(repository: repo)
+            
+            let ids = folders.compactMap { $0.id }
+            _ = try await updateFolderOrdersUseCase.execute(ids: ids)
+            
+            self.saveCompleted()
+            
+        } catch {
+            throw error
+        }
     }
 
     private func evaluateState() {
@@ -54,7 +65,7 @@ final class FolderReorderViewModel {
         showRecentSortButton = current != recentIds
     }
 
-    func saveCompleted() {
+    private func saveCompleted() {
         originalOrder = folders.compactMap { $0.id }
         evaluateState()
     }

@@ -92,15 +92,20 @@ final class FolderReorderViewController: UIViewController {
     }
 
     @objc private func saveTap() {
-
-        let order = viewModel.folderIds()
-
-        // TODO: 서버 PATCH API
-        print("save order", order)
-
-        viewModel.saveCompleted()
-        saveAction?()
-        dismiss(animated: true)
+        updateFoldersAndDismiss()
+    }
+    
+    private func updateFoldersAndDismiss() {
+        Task {
+            do {
+                // 폴더 목록 재정렬 API 호출
+                try await viewModel.updateFolderOrders()
+                saveAction?()
+                dismiss(animated: true)
+            } catch {
+                throw error
+            }
+        }
     }
 }
 
