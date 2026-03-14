@@ -38,11 +38,13 @@ public final class TokenInterceptor: RequestInterceptor {
                     NotificationCenter.default.post(name: .SignOutAndShowToast,
                                                     object: nil,
                                                     userInfo: ["SnackBarType": SnackBarType.invalidUser])
+                    completion(.doNotRetry)
                     return
                 case "LOGOUT_BY_DEVICE_OVERFLOW":
                     NotificationCenter.default.post(name: .SignOutAndShowToast,
                                                     object: nil,
                                                     userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
+                    completion(.doNotRetry)
                     return
                 default:
                     break
@@ -55,6 +57,7 @@ public final class TokenInterceptor: RequestInterceptor {
             // 로그인 상태가 아닐 때
             if UserManager.accessToken == nil || UserManager.refreshToken == nil {
                 NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+                completion(.doNotRetry)
                 return
             }
             
@@ -68,6 +71,7 @@ public final class TokenInterceptor: RequestInterceptor {
                         print("401 에러 발생 - 토큰 재발급 수행")
                         guard let accessToken = UserManager.accessToken, let refreshToken = UserManager.refreshToken else {
                             print("기기에 저장된 refreshToken 정보 없음")
+                            completion(.doNotRetry)
                             return
                         }
                         
@@ -76,7 +80,7 @@ public final class TokenInterceptor: RequestInterceptor {
                         let data = try await usecase.execute(accessToken: accessToken, refreshToken: refreshToken)
                         
                         guard let accessToken = data.accessToken else {
-                            self.sema.signal()
+//                            self.sema.signal()
                             completion(.doNotRetryWithError(error))
                             
                             // 토큰 재발급 실패 시 Notification 이벤트 전송
@@ -88,7 +92,7 @@ public final class TokenInterceptor: RequestInterceptor {
                         }
                         
                         guard let refreshToken = data.refreshToken else {
-                            self.sema.signal()
+//                            self.sema.signal()
                             completion(.doNotRetryWithError(error))
                             
                             // 토큰 재발급 실패 시 Notification 이벤트 전송
@@ -110,7 +114,7 @@ public final class TokenInterceptor: RequestInterceptor {
                         print("refresh token failed.")
                         UserManager.removeUserData()
                         completion(.doNotRetryWithError(error))
-                        self.sema.signal()
+//                        self.sema.signal()
                         // 토큰 재발급 실패 시 Notification 이벤트 전송
                         NotificationCenter.default.post(name: .SignOutAndShowToast,
                                                         object: nil,
