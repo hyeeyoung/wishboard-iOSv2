@@ -26,11 +26,12 @@ final class FolderReorderView: UIView {
     let tableView = UITableView().then {
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
+        $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 36, right: 0)
     }
     
     let buttonStackView = UIStackView().then {
         $0.axis = .vertical
-        $0.spacing = 14
+        $0.spacing = 8
     }
 
     let saveButton = UIButton().then {
@@ -49,7 +50,7 @@ final class FolderReorderView: UIView {
         $0.setTitleColor(.gray_600, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitD2.font
 
-        $0.setImage(Image.arrowRetry, for: .normal)
+        $0.setImage(Image.arrowRetry.resized(to: CGSize(width: 20, height: 20)), for: .normal)
         $0.tintColor = .gray_600
 
         $0.semanticContentAttribute = .forceLeftToRight
@@ -120,10 +121,9 @@ final class FolderReorderView: UIView {
             $0.height.equalTo(50)
         }
 
-//        recentSortButton.snp.makeConstraints {
-//            $0.centerX.equalToSuperview()
-//            $0.bottom.equalTo(saveButton.snp.top).offset(-10)
-//        }
+        recentSortButton.snp.makeConstraints {
+            $0.height.equalTo(28)
+        }
     }
 
     private func setupGradient() {
@@ -143,7 +143,6 @@ final class FolderReorderView: UIView {
     }
 
     func updateSaveButton(enabled: Bool) {
-
         saveButton.isEnabled = enabled
         saveButton.backgroundColor = enabled ? .green_500 : .gray_100
     }

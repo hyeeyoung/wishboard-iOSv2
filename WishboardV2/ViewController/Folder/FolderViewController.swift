@@ -299,8 +299,12 @@ extension FolderViewController: FolderToolBarDelegate {
         let vc = FolderReorderViewController(
             folders: viewModel.folders
         )
-
         vc.modalPresentationStyle = .fullScreen
+        // 폴더 순서 재정렬
+        vc.saveAction = { [weak self] in
+            SnackBar.shared.show(type: .reorderFolder)
+            self?.refreshItems()
+        }
         present(vc, animated: true)
     }
 }

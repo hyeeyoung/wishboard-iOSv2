@@ -14,8 +14,8 @@ final class FolderReorderViewController: UIViewController {
 
     private let reorderView = FolderReorderView()
     private let viewModel = FolderReorderViewModel()
-
     private var cancellables = Set<AnyCancellable>()
+    public var saveAction: (() -> Void)?
 
     init(folders: [FolderListResponse]) {
         super.init(nibName: nil, bundle: nil)
@@ -99,6 +99,7 @@ final class FolderReorderViewController: UIViewController {
         print("save order", order)
 
         viewModel.saveCompleted()
+        saveAction?()
         dismiss(animated: true)
     }
 }

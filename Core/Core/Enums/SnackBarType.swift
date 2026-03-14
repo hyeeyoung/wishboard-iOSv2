@@ -13,6 +13,7 @@ public enum SnackBarType {
     case addFolder
     case modifyFolder
     case deleteFolder
+    case reorderFolder
     case deleteCartItem
     case addItem
     case modifyItem
@@ -39,6 +40,7 @@ public enum SnackBarType {
         case .addFolder: return "폴더를 추가했어요!😉"
         case .modifyFolder: return "폴더명을 수정했어요!📁"
         case .deleteFolder: return "폴더를 삭제했어요!🗑"
+        case .reorderFolder: return "폴더 정렬 방식을 변경했어요 📁"
         case .deleteCartItem: return "장바구니에서 아이템을 삭제했어요! 🗑"
         case .addItem: return "아이템을 위시리스트에 추가했어요!👜"
         case .modifyItem: return "아이템을 수정했어요!✍️️"
