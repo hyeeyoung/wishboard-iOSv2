@@ -12,7 +12,7 @@ import Then
 import Core
 
 public protocol FolderToolBarDelegate: AnyObject {
-    func replaceFolderNaviItemTap()
+    func reorderFolderNaviItemTap()
     func addFolderNaviItemTap()
 }
 
@@ -22,11 +22,11 @@ final public class BaseToolBar: UIView {
         didSet {
             if let _ = self.delegate {
                 plusButton.isHidden = false
-                replaceButton.isHidden = false
+                reorderButton.isHidden = false
                 setupActions()
             } else {
                 plusButton.isHidden = true
-                replaceButton.isHidden = true
+                reorderButton.isHidden = true
             }
         }
     }
@@ -43,8 +43,8 @@ final public class BaseToolBar: UIView {
         $0.isHidden = true
     }
     
-    private let replaceButton = UIButton().then {
-        $0.setImage(Image.replaceFolder, for: .normal)
+    private let reorderButton = UIButton().then {
+        $0.setImage(Image.reorderFolder, for: .normal)
         $0.isHidden = true
     }
     
@@ -65,7 +65,7 @@ final public class BaseToolBar: UIView {
     private func setupViews() {
         addSubview(titleLabel)
         addSubview(plusButton)
-        addSubview(replaceButton)
+        addSubview(reorderButton)
     }
     
     private func setupConstraints() {
@@ -80,7 +80,7 @@ final public class BaseToolBar: UIView {
             make.centerY.equalToSuperview()
         }
         
-        replaceButton.snp.makeConstraints { make in
+        reorderButton.snp.makeConstraints { make in
             make.width.height.equalTo(24)
             make.trailing.equalTo(plusButton.snp.leading).offset(-8)
             make.centerY.equalToSuperview()
@@ -90,7 +90,7 @@ final public class BaseToolBar: UIView {
     // MARK: - Setup Actions
     private func setupActions() {
         plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
-        replaceButton.addTarget(self, action: #selector(replaceButtonTapped), for: .touchUpInside)
+        reorderButton.addTarget(self, action: #selector(reorderButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - Button Actions
@@ -98,8 +98,8 @@ final public class BaseToolBar: UIView {
         delegate?.addFolderNaviItemTap()
     }
     
-    @objc private func replaceButtonTapped() {
-        delegate?.replaceFolderNaviItemTap()
+    @objc private func reorderButtonTapped() {
+        delegate?.reorderFolderNaviItemTap()
     }
     
     public func configure(title: String) {
