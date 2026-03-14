@@ -46,7 +46,7 @@ final class ShoppingLinkBottomSheet: UIView {
         $0.isHidden = true
     }
     private let actionButton = AnimatedButton().then {
-        $0.setTitle("완료", for: .normal)
+        $0.setTitle("추가", for: .normal)
         $0.backgroundColor = .gray_100
         $0.setTitleColor(.gray_300, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitH3.font

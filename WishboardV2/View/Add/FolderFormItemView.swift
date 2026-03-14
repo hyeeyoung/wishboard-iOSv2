@@ -12,27 +12,18 @@ import WBNetwork
 
 final class FolderFormItemView: FormItemView {
     // UI 요소
-    private let newFolderButton = UIButton(type: .system).then {
-        $0.setTitle(Button.addFolder, for: .normal)
-        $0.setTitleColor(.gray_600, for: .normal)
-        $0.titleLabel?.font = TypoStyle.SuitH5.font
-        $0.backgroundColor = .clear
-        $0.layer.cornerRadius = 13
-        $0.layer.borderColor = UIColor.gray_100.cgColor
-        $0.layer.borderWidth = 1
-        $0.contentEdgeInsets = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
-    }
-
     private let folderCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 6
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         
         return UICollectionView(frame: .zero, collectionViewLayout: layout).then {
             $0.showsHorizontalScrollIndicator = false
             $0.backgroundColor = .clear
             $0.register(FolderCell.self, forCellWithReuseIdentifier: FolderCell.identifier)
+            $0.register(NewFolderCell.self, forCellWithReuseIdentifier: NewFolderCell.identifier)
             $0.allowsSelection = true
         }
     }()
@@ -59,7 +50,6 @@ final class FolderFormItemView: FormItemView {
     var onFolderSelected: ((Int) -> Void)?
     var onNewFolderTap: (() -> Void)?
     var onArrowTap: (() -> Void)?
-    var loadNextPageAction: ((Int) -> Void)?
     
     override init(title: String, isRequired: Bool, type: FormItemType = .folder) {
         super.init(title: title, isRequired: isRequired, type: type)
@@ -74,26 +64,19 @@ final class FolderFormItemView: FormItemView {
     }
 
     private func setupUI() {
-        mainContainer.addSubview(newFolderButton)
         mainContainer.addSubview(folderCollectionView)
         mainContainer.addSubview(arrowImageView)
         
-        newFolderButton.snp.makeConstraints { make in
-            make.leading.bottom.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(14)
-            make.height.equalTo(26)
-        }
-        
         arrowImageView.snp.makeConstraints { make in
-            make.centerY.equalTo(newFolderButton)
-            make.trailing.equalToSuperview()
+            make.centerY.equalTo(folderCollectionView)
+            make.trailing.equalToSuperview().offset(-16)
             make.width.height.equalTo(24)
         }
         
         folderCollectionView.snp.makeConstraints { make in
-            make.leading.equalTo(newFolderButton.snp.trailing).offset(6)
+            make.leading.bottom.equalToSuperview()
+            make.top.equalTo(titleLabel.snp.bottom).offset(14)
             make.trailing.equalTo(arrowImageView.snp.leading)
-            make.centerY.equalTo(newFolderButton)
             make.height.equalTo(26)
         }
         
@@ -102,7 +85,6 @@ final class FolderFormItemView: FormItemView {
     }
 
     private func setupActions() {
-        newFolderButton.addTarget(self, action: #selector(didTapNewFolder), for: .touchUpInside)
         arrowImageView.isUserInteractionEnabled = true
         arrowImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapArrow)))
     }
@@ -130,10 +112,6 @@ final class FolderFormItemView: FormItemView {
         fadeView.layer.addSublayer(gradient)
     }
 
-    @objc private func didTapNewFolder() {
-        onNewFolderTap?()
-    }
-
     @objc private func didTapArrow() {
         onArrowTap?()
     }
@@ -142,33 +120,39 @@ final class FolderFormItemView: FormItemView {
         selectedFolderId = id
         guard let index = folders.firstIndex(where: { $0.id == id }) else { return }
 
-        let indexPath = IndexPath(item: index, section: 0)
+        let indexPath = IndexPath(item: index + 1, section: 0)
         folderCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
     }
 }
 
 // MARK: - UICollectionView Delegates
-
 extension FolderFormItemView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return folders.count
+        return folders.count + 1 // 새 폴더 버튼 1개 + 폴더 목록
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FolderCell.identifier, for: indexPath) as? FolderCell else {
-            return UICollectionViewCell()
+        if indexPath.item == 0 {
+            // 새폴더 버튼 셀
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewFolderCell.identifier, for: indexPath) as! NewFolderCell
+            cell.onTap = { [weak self] in
+                self?.onNewFolderTap?()
+            }
+            return cell
+        } else {
+            // 기존 폴더 셀
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FolderCell.identifier, for: indexPath) as! FolderCell
+            let item = folders[indexPath.item - 1]   // 첫 인덱스에 있는 버튼 때문에 -1 해줘야 함
+            if let cellTitle = item.folderName {
+                cell.configure(with: cellTitle)
+            }
+            return cell
         }
-
-        let item = folders[indexPath.item]
-        if let cellTitle = item.folderName {
-            cell.configure(with: cellTitle)
-        }
-        
-        return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedId = folders[indexPath.item].id else { return }
+        if indexPath.item <= 1 { return }
+        guard let selectedId = folders[indexPath.item - 1].id else { return }
         print("✅ 선택된 폴더: \(selectedId)")
         onFolderSelected?(selectedId)
     }
@@ -176,7 +160,12 @@ extension FolderFormItemView: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let folderName = folders[indexPath.item].folderName ?? ""
+        
+        if indexPath.item == 0 {
+            return CGSize(width: 66 + 20, height: 26) // 새폴더 버튼 크기
+        }
+        
+        let folderName = folders[indexPath.item - 1].folderName ?? ""
         let font = TypoStyle.SuitB5.font
         let padding: CGFloat = 20  // inset
         let height: CGFloat = 26
@@ -193,11 +182,5 @@ extension FolderFormItemView: UICollectionViewDataSource, UICollectionViewDelega
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let maxOffset = scrollView.contentSize.width - scrollView.bounds.width
         fadeView.isHidden = scrollView.contentOffset.x >= maxOffset - 5
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        willDisplay cell: UICollectionViewCell,
-                        forItemAt indexPath: IndexPath) {
-        self.loadNextPageAction?(indexPath.item)
     }
 }

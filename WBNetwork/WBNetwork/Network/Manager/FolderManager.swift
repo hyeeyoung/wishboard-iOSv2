@@ -13,7 +13,7 @@ public final class FolderManager {
     public func getFolders(page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[FolderListResponse]> {
         return try await API.Folder.requestRaw(.getFolders(page: page, size: size))
     }
-    public func addFolder(folderName: String) async throws -> EmptyResponse {
+    public func addFolder(folderName: String) async throws -> FolderListResponse {
         return try await API.Folder.request(.addFolder(folderName: folderName))
     }
     public func modifyFolderName(folderId: String, folderName: String) async throws -> EmptyResponse {

@@ -12,101 +12,116 @@ import Core
 public final class TokenInterceptor: RequestInterceptor {
     
     static let shared = TokenInterceptor()
-    private init() { }
     
     /// access token 이 갱신되는 동안 엑세스 되는걸 방지하기 위한 세마포어
     public let sema = DispatchSemaphore(value: 1)
 
-    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
-        print("url: \(String(describing: urlRequest.url))")
+    private init() { }
 
-        var urlRequest = urlRequest
-        
-        if let WishBorad_App_Version = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-            urlRequest.setValue("iOS v\(WishBorad_App_Version)", forHTTPHeaderField: "X-WishBoard-App-Version")
-        }
-        
-        if let accessToken = UserManager.accessToken {
-            urlRequest.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
-        }
-        
+    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
         completion(.success(urlRequest))
     }
     
     public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        // 401 - 유효하지 않은 토큰일 때
-        print("\((request.task?.response as? HTTPURLResponse)?.statusCode)")
-        guard let response = request.task?.response as? HTTPURLResponse, response.statusCode == 401 else {
-            let desc = error.asAFError?.errorDescription?.description
-            let code = error.asAFError?.responseCode
-            print("\(desc)")
-            
-            let err = NSError(domain: desc ?? "", code: code ?? 500)
-            completion(.doNotRetryWithError(err))
-            
+        
+        guard let response = request.task?.response as? HTTPURLResponse else {
+            completion(.doNotRetryWithError(error))
             return
         }
         
-        // 로그인 상태가 아닐 때
-        if UserManager.accessToken == nil || UserManager.refreshToken == nil {
-            NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
-            return
-        }
-
-        // 토큰 갱신시 동시 실행 제한
-        sema.wait()
-        
-        Task {
-            do {
-                
-                guard let refreshToken = UserManager.refreshToken else {
-                    print("기기에 저장된 refreshToken 정보 없음")
+        // 유저 인증상태 에러 분기처리
+        if let dataRequest = request as? DataRequest,
+           let data = dataRequest.data {
+            if let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
+                switch apiError.code {
+                case "NOT_FOUND_USER":
+                    NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                    object: nil,
+                                                    userInfo: ["SnackBarType": SnackBarType.invalidUser])
                     return
+                case "LOGOUT_BY_DEVICE_OVERFLOW":
+                    NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                    object: nil,
+                                                    userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
+                    return
+                default:
+                    break
                 }
-                
-                // call Refresh token API
-                let usecase = RefreshTokenUseCase(repository: AuthRepository())
-                let data = try await usecase.execute(token: refreshToken)
-                
-                guard let accessToken = data.token?.accessToken else {
-                    sema.signal()
-                    completion(.doNotRetryWithError(error))
-                    
-                    // 토큰 재발급 실패 시 Notification 이벤트 전송
-                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
-                    
-                    throw error
-                }
-                
-                guard let refreshToken = data.token?.refreshToken else {
-                    sema.signal()
-                    completion(.doNotRetryWithError(error))
-                    
-                    // 토큰 재발급 실패 시 Notification 이벤트 전송
-                    NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
-                    
-                    throw error
-                }
-                
-                // save tokens from response
-                UserManager.accessToken = accessToken
-                UserManager.refreshToken = refreshToken
-                
-                sema.signal()
-                
-                // retry
-                completion(.retry)
-                
-            } catch {
-                print("refresh token failed.")
-                UserManager.removeUserData()
-                completion(.doNotRetryWithError(error))
-                sema.signal()
-                // 토큰 재발급 실패 시 Notification 이벤트 전송
-                NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
-                
-                throw error
             }
+        }
+        
+        // 401일 때만 토큰 갱신 로직
+        if response.statusCode == 401 {
+            // 로그인 상태가 아닐 때
+            if UserManager.accessToken == nil || UserManager.refreshToken == nil {
+                NotificationCenter.default.post(name: .ReceivedNetworkError, object: nil)
+                return
+            }
+            
+            DispatchQueue.global().async {
+                // 토큰 갱신시 동시 실행 제한
+                self.sema.wait()
+                
+                Task {
+                    defer { self.sema.signal() }
+                    do {
+                        guard let accessToken = UserManager.accessToken, let refreshToken = UserManager.refreshToken else {
+                            print("기기에 저장된 refreshToken 정보 없음")
+                            return
+                        }
+                        
+                        // call Refresh token API
+                        let usecase = RefreshTokenUseCase(repository: AuthRepository())
+                        let data = try await usecase.execute(accessToken: accessToken, refreshToken: refreshToken)
+                        
+                        guard let accessToken = data.accessToken else {
+                            self.sema.signal()
+                            completion(.doNotRetryWithError(error))
+                            
+                            // 토큰 재발급 실패 시 Notification 이벤트 전송
+                            NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                            object: nil,
+                                                            userInfo: ["SnackBarType": SnackBarType.refreshTokenFailed])
+                            
+                            throw error
+                        }
+                        
+                        guard let refreshToken = data.refreshToken else {
+                            self.sema.signal()
+                            completion(.doNotRetryWithError(error))
+                            
+                            // 토큰 재발급 실패 시 Notification 이벤트 전송
+                            NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                            object: nil,
+                                                            userInfo: ["SnackBarType": SnackBarType.refreshTokenFailed])
+                            
+                            throw error
+                        }
+                        
+                        // save tokens from response
+                        UserManager.accessToken = accessToken
+                        UserManager.refreshToken = refreshToken
+                        
+                        // retry
+                        completion(.retry)
+                        
+                    } catch {
+                        print("refresh token failed.")
+                        UserManager.removeUserData()
+                        completion(.doNotRetryWithError(error))
+                        self.sema.signal()
+                        // 토큰 재발급 실패 시 Notification 이벤트 전송
+                        NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                        object: nil,
+                                                        userInfo: ["SnackBarType": SnackBarType.refreshTokenFailed])
+                        
+                        throw error
+                    }
+                }
+            }
+        } else {
+            completion(.doNotRetryWithError(error))
+            return
         }
     }
 }

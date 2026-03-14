@@ -43,6 +43,7 @@ final class EmailInputView: UIView {
         textField.autocapitalizationType = .none
         textField.spellCheckingType = .no
         textField.clearButtonMode = .always
+        textField.font = TypoStyle.SuitD1.font
         return textField
     }()
     
@@ -55,16 +56,13 @@ final class EmailInputView: UIView {
         return label
     }()
     
-    public let actionButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.titleLabel?.font = TypoStyle.SuitH3.font
-        button.setTitleColor(.gray_200, for: .disabled)
-        button.setTitleColor(.gray_700, for: .normal)
-        button.backgroundColor = .gray_100
-        button.layer.cornerRadius = 12
-        button.isEnabled = false
-        return button
-    }()
+    public lazy var actionButton = AnimatedButton().then {
+        $0.layer.cornerRadius = 12
+        $0.setTitleColor(.gray_300, for: .normal)
+        $0.titleLabel?.font = TypoStyle.SuitH3.font
+        $0.backgroundColor = .gray_100
+        $0.isEnabled = false
+    }
     
     // MARK: - Properties
     private var type: InputType?

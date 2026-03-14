@@ -36,7 +36,7 @@ public final class API {
     }
     
     public static let Auth = WBProvider<AuthAPI>(
-        session: Session(configuration: configuration),
+        session: Session(configuration: configuration, interceptor: interceptor),
         plugins: [errorPlugin, networkLoggerPlugin, authPlugin]
     )
     
@@ -133,6 +133,7 @@ public class WBProvider<Target: TargetType> {
         } catch {
             // 실패 응답 출력
             if let moyaError = error as? MoyaError, let response = moyaError.response {
+                self.handleError(response.data)
                 dto_print(data: response.data, error: error)
             } else {
                 dto_print(data: nil, error: error)
@@ -155,11 +156,26 @@ public class WBProvider<Target: TargetType> {
         } catch {
             // 실패 응답 출력
             if let moyaError = error as? MoyaError, let response = moyaError.response {
+                self.handleError(response.data)
                 dto_print(data: response.data, error: error)
             } else {
                 dto_print(data: nil, error: error)
             }
             throw error
+        }
+    }
+    
+    /// 공통 에러 핸들링
+    private func handleError(_ errorData: Data) {
+        if let apiError = try? JSONDecoder().decode(APIError.self, from: errorData) {
+            switch apiError.code {
+            case "NOT_FOUND_USER":
+                NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.invalidUser])
+            case "LOGOUT_BY_DEVICE_OVERFLOW":
+                NotificationCenter.default.post(name: .ShowSnackBar, object: nil, userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
+            default:
+                return
+            }
         }
     }
     

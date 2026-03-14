@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol AddFolderNameUseCaseInterface {
-    func execute(folderName: String) async throws -> EmptyResponse
+    func execute(folderName: String) async throws -> FolderListResponse
 }
 
 public class AddFolderNameUseCase: AddFolderNameUseCaseInterface {
@@ -18,7 +18,7 @@ public class AddFolderNameUseCase: AddFolderNameUseCaseInterface {
         self.repository = repository
     }
     
-    public func execute(folderName: String) async throws -> EmptyResponse {
+    public func execute(folderName: String) async throws -> FolderListResponse {
         return try await self.repository.addFolder(folderName: folderName)
     }
 }

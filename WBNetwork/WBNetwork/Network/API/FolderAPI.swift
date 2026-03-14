@@ -20,7 +20,8 @@ public enum FolderAPI {
     case deleteFolder(folderId: String)
     /// 폴더 내 아이템 리스트 조회
     case getFolderItemList(folderId: String, page: Int, size: Int)
-    /// 폴더리스트 조회 - 아이템 디테일
+    /// 폴더리스트 조회 - 페이징X
+    /// 폴더 탭 화면을 제외한 폴더 리스트 조회 시 사용된다.
     case getFolderList
 }
 
@@ -85,7 +86,7 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
     }
 
     public var headers: [String : String]? {
-        return NetworkMacro.DefaultHeader
+        return NetworkMacro.DeviceInfoHeader
     }
     
     public var authorizationType: Moya.AuthorizationType? {

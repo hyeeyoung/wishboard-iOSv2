@@ -12,6 +12,12 @@ import WBNetwork
 import Moya
 import Core
 
+enum UploadItemError: Error {
+    case invalidVersion
+    case invalidPrice
+    case invalidIfImageChanged
+}
+
 final class AddViewModel {
     // 입력 데이터
     @Published var selectedImages: [UIImage] = []
@@ -22,16 +28,11 @@ final class AddViewModel {
     @Published var selectedAlarmDate: String? = nil
     @Published var selectedLink: String? = nil
     @Published var memo: String? = nil
+    @Published var version: Int? = nil
+    @Published var imageChanged: Bool? = false
     
     @Published var selectedAlarm: String? = nil
     @Published var folders: [FolderListResponse] = []
-    
-    // Paging
-    @Published var isLoading: Bool = false
-    @Published var isRefreshing: Bool = false
-    @Published var hasMore: Bool = true
-    private var page: Int = 0          // 서버의 data.number (0-based)
-    private let pageSize: Int = 10     // 서버의 data.size와 일치
     
     // 저장 버튼 활성화 여부
     var isSaveEnabled: AnyPublisher<Bool, Never> {
@@ -66,7 +67,10 @@ final class AddViewModel {
     func addItem() async throws {
         do {
             let itemName = self.itemName
-            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            let originPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            guard let itemPrice = Int(originPrice) else {
+                throw UploadItemError.invalidPrice
+            }
             let selectedFolderId = self.selectedFolderId
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
@@ -86,12 +90,6 @@ final class AddViewModel {
             let usecase = AddItemUseCase()
             _ = try await usecase.execute(type: .manual, item: item)
         } catch {
-            if let moyaError = error as? MoyaError, let response = moyaError.response {
-                if response.statusCode == 400 {
-                    print("400 error")
-//                    SnackBar.shared.show(type: .errorMessage)
-                }
-            }
             throw error
         }
     }
@@ -99,13 +97,20 @@ final class AddViewModel {
     func modifyItem(idx: Int) async throws {
         do {
             let itemName = self.itemName
-            let itemPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            let originPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
+            guard let itemPrice = Int(originPrice) else {
+                throw UploadItemError.invalidPrice
+            }
             let selectedFolderId = self.selectedFolderId
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
             let itemMemo = self.memo
             let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
             let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
+            let version = self.version ?? 0     // version이 없다면 0으로 보내기
+            guard let imageChanged = self.imageChanged else {
+                throw UploadItemError.invalidIfImageChanged
+            }
             
             let item = RequestItemDTO(folderId: selectedFolderId,
                                       photos: itemImages,
@@ -114,61 +119,27 @@ final class AddViewModel {
                                       itemURL: itemURL,
                                       itemMemo: itemMemo,
                                       itemNotificationType: notiType,
-                                      itemNotificationDate: notiDate)
+                                      itemNotificationDate: notiDate,
+                                      version: version,
+                                      imageChanged: imageChanged)
             
             let usecase = ModifyItemUseCase()
             _ = try await usecase.execute(idx: idx, item: item)
         } catch {
-            if let moyaError = error as? MoyaError, let response = moyaError.response {
-                if response.statusCode == 400 {
-//                    SnackBar.shared.show(type: .errorMessage)
-                }
-            }
             throw error
         }
     }
     
     // 폴더 데이터 가져오기
     /// 폴더 가져오기
-    func fetchFolders(reset: Bool = false) async throws {
-        guard !isLoading, hasMore || reset else { return }
-        isLoading = true
-
-        if reset {
-            page = 0
-            hasMore = true
-        }
+    func fetchFolders() async throws {
         do {
-            let usecase = GetFoldersUseCase()
-            let response = try await usecase.execute(page: page, size: pageSize)
-
-            if reset { folders.removeAll() }
-
-            if let itemDatas = response.data?.content {
-                folders.append(contentsOf: itemDatas)
-            }
-
-            // 다음 페이지 여부 및 page 증가
-            hasMore = !(response.data?.last ?? true)
-            if hasMore {
-                page += 1
-            }
-
-            isLoading = false
-            isRefreshing = false
+            let usecase = GetFolderListUseCase()
+            let response = try await usecase.execute()
+            folders = response
         } catch {
-            if reset { folders = [] }
-            isLoading = false
-            isRefreshing = false
-            // 필요하면 에러 상태 @Published 추가해서 바인딩
-        }
-    }
-
-    /// UICollectionView 스크롤 하단 근처에서 호출해 다음 페이지 로드
-    func loadNextIfNeeded(currentIndex: Int, threshold: Int = 2) {
-        guard currentIndex >= folders.count - threshold else { return }
-        _Concurrency.Task { [weak self] in
-            try await self?.fetchFolders()
+            folders = []
+            throw error
         }
     }
     
@@ -176,9 +147,14 @@ final class AddViewModel {
     func addFolder(name: String) async throws {
         do {
             let usecase = AddFolderNameUseCase()
-            let _ = try await usecase.execute(folderName: name)
+            let newFolder = try await usecase.execute(folderName: name)
             
-            try await self.fetchFolders(reset: true)
+            try await self.fetchFolders()
+            
+            // 요구사항: 새 폴더 추가 후 해당 폴더를 선택시킨다.
+            if let newFolderId = newFolder.id {
+                self.selectedFolderId = newFolderId
+            }
             
             DispatchQueue.main.async {
                 SnackBar.shared.show(type: .addFolder)

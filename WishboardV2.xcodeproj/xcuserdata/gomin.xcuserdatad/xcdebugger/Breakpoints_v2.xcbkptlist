@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "25FABF05-3238-4BA2-94AE-874F6E9DCD83"
+            uuid = "C75AFD11-D16C-4D47-9932-5DA5627507FC"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WishboardV2/ViewController/Add/AddViewController.swift"
+            filePath = "WishboardV2/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "745"
-            endingLineNumber = "745"
-            landmarkName = "fetchImage(from:completion:)"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "messaging(_:didReceiveRegistrationToken:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

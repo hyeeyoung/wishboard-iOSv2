@@ -23,13 +23,8 @@ final class ModifyProfileView: UIView {
         $0.clipsToBounds = true
         $0.isUserInteractionEnabled = true
     }
-    private let dimmedView = UIView().then {
-        $0.backgroundColor = .black_5
-        $0.layer.cornerRadius = 53
-        $0.clipsToBounds = true
-    }
     public let icon = UIButton().then {
-        $0.setImage(Image.cameraGray, for: .normal)
+        $0.setImage(.cameraBackgroundWhite, for: .normal)
     }
     private let nicknameLabel = UILabel().then {
         $0.text = "닉네임"
@@ -48,6 +43,11 @@ final class ModifyProfileView: UIView {
         $0.clearButtonMode = .whileEditing
         $0.becomeFirstResponder()
         $0.spellCheckingType = .no
+    }
+    
+    private let textFieldCountLabel = UILabel().then {
+        $0.font = TypoStyle.SuitD3.font
+        $0.textColor = .gray_200
     }
     
     public let errorMessageLabel = UILabel().then {
@@ -82,6 +82,7 @@ final class ModifyProfileView: UIView {
         
         nameTextField.addTarget(self, action: #selector(textFieldEditingChanged(_:)), for: .editingChanged)
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
+        nameTextField.delegate = self
         
         nameTextField.attributedPlaceholder = NSAttributedString(
             string: "닉네임을 입력해 주세요.",
@@ -101,6 +102,7 @@ final class ModifyProfileView: UIView {
             self.nameTextField.text = currentNickname
             self.actionButton.isEnabled = false
             self.prevNameInput = currentNickname
+            self.updateCountLabel(currentNickname)
         }
     }
     
@@ -116,10 +118,10 @@ final class ModifyProfileView: UIView {
     private func setupViews() {
         addSubview(toolbar)
         addSubview(profileImgView)
-        profileImgView.addSubview(dimmedView)
         addSubview(icon)
         addSubview(nicknameLabel)
         addSubview(nameTextField)
+        addSubview(textFieldCountLabel)
         addSubview(errorMessageLabel)
         addSubview(actionButton)
     }
@@ -133,13 +135,8 @@ final class ModifyProfileView: UIView {
             make.centerX.equalToSuperview()
         }
         
-        dimmedView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
         icon.snp.makeConstraints { make in
-            make.width.equalTo(30)
-            make.height.equalTo(25)
+            make.width.height.equalTo(32)
             make.trailing.equalTo(profileImgView.snp.trailing).offset(6)
             make.bottom.equalTo(profileImgView.snp.bottom).offset(-5)
         }
@@ -155,10 +152,15 @@ final class ModifyProfileView: UIView {
             make.height.equalTo(42)
         }
         
+        textFieldCountLabel.snp.makeConstraints { make in
+            make.top.equalTo(nameTextField.snp.bottom).offset(2)
+            make.trailing.equalTo(nameTextField)
+        }
+        
         errorMessageLabel.snp.makeConstraints { make in
             make.top.equalTo(nameTextField.snp.bottom).offset(6)
             make.leading.equalTo(nameTextField)
-            make.trailing.lessThanOrEqualTo(nameTextField)
+            make.trailing.lessThanOrEqualTo(textFieldCountLabel.snp.leading)
         }
         
         actionButton.snp.makeConstraints { make in
@@ -206,6 +208,11 @@ final class ModifyProfileView: UIView {
         }
     }
     
+    private func updateCountLabel(_ text: String) {
+        let nicknameTextCount = text.count
+        textFieldCountLabel.text = "(\(nicknameTextCount)/10)자"
+    }
+    
     // MARK: - Keyboard
     private func setupNotificationObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -232,6 +239,28 @@ final class ModifyProfileView: UIView {
         }
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
+        }
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension ModifyProfileView: UITextFieldDelegate {
+    public func textField(_ textField: UITextField,
+                          shouldChangeCharactersIn range: NSRange,
+                          replacementString string: String) -> Bool {
+        // 현재 텍스트
+        let currentText = textField.text ?? ""
+        // 바뀔 텍스트
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        
+        // 10자 초과 불가
+        if updatedText.count > 10 {
+            return false
+        } else {
+            // 카운트 라벨 업데이트
+            updateCountLabel(updatedText)
+            return true
         }
     }
 }

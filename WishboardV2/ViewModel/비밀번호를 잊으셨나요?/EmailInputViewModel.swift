@@ -27,7 +27,7 @@ class EmailInputViewModel {
         $email
             .map { self.validateEmail($0) }
             .sink { [weak self] isValid in
-                self?.isValidEmail = isValid
+                self?.isValidEmail = self?.validateEmail(self?.email ?? "") ?? false
                 self?.isButtonEnabled = isValid
             }
             .store(in: &cancellables)

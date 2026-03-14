@@ -12,6 +12,8 @@ import Lottie
 import Then
 import PhotosUI
 import Moya
+import Mantis
+
 import Core
 import WBNetwork
 
@@ -33,6 +35,9 @@ final class AddViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     public var confirmAction: (() -> Void)?
     
+    // Album
+    private let MAX_IMAGE_COUNT: Int = 10
+    
     // Bottom Sheets
     private let backgroundDimView = UIView()
     private let folderSelectBottomSheet = FolderSelectBottomSheet()
@@ -46,6 +51,10 @@ final class AddViewController: UIViewController {
     
     // Keyboard
     private weak var activeField: UIView?
+    
+    // 이미지 편집
+    private var imagesToEdit: [UIImage] = []
+    private var cropQueue: [UIImage] = []
     
     // MARK: - Initializers
     
@@ -64,9 +73,13 @@ final class AddViewController: UIViewController {
     private func setModifyItemData() {
         self.addView.toolBar.configure(title: Title.modifyItem)
         
+        // version , imageChanged 필드 추가
+        self.viewModel.version = item?.version
+        self.viewModel.imageChanged = false
+        
         self.addView.itemNameSection.text = self.item?.itemName ?? ""
         let formattedText = FormatManager.shared.strToPrice(numStr: self.item?.itemPrice ?? "0")
-        self.addView.itemPriceSection.text = "\(formattedText ?? "")원"
+        self.addView.itemPriceSection.text = "₩ \(formattedText ?? "")"
         
         if let itemName = self.item?.itemName, !itemName.isEmpty {
             self.viewModel.itemName = itemName
@@ -111,7 +124,9 @@ final class AddViewController: UIViewController {
                             }
                         } else {
                             print("❌ 이미지 변환 실패")
-                            SnackBar.shared.show(type: .errorMessage)
+                            DispatchQueue.main.async {
+                                SnackBar.shared.show(type: .errorMessage)
+                            }
                         }
                     }
                 }
@@ -256,9 +271,9 @@ final class AddViewController: UIViewController {
             self?.showLinkBottomSheet(with: self?.viewModel.selectedLink)
         }
         
-        let imageTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectImage))
-        addView.imagePickerContainer.isUserInteractionEnabled = true
-        addView.imagePickerContainer.addGestureRecognizer(imageTapGesture)
+        addView.selectNewImageAction = { [weak self] in
+            self?.selectImage()
+        }
     }
     
     private func setupDelegates() {
@@ -552,8 +567,9 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         var config = PHPickerConfiguration(photoLibrary: .shared())
         // 라이브러리에서 보여줄 Assets을 필터 (기본값: 이미지, 비디오, 라이브포토)
         config.filter = PHPickerFilter.any(of: [.images])
-        // 다중 선택 갯수 설정 (0 = 무제한)
-        config.selectionLimit = 10
+        // 다중 선택 갯수 설정 (이미 선택된 사진 갯수 기반으로 최대 10장 로직 정의)
+        let selectedImageCount = self.viewModel.selectedImages.count
+        config.selectionLimit = MAX_IMAGE_COUNT - selectedImageCount
         // 선택 동작을 나타냄 (default: 기본 틱 모양, ordered: 선택한 순서대로 숫자로 표현, people: 뭔지 모르겠게요)
         config.selection = .ordered
         // 트랜스 코딩을 방지
@@ -564,14 +580,20 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
         present(picker, animated: true)
     }
     
-    /// UIImagePickerControllerDelegate
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let editedImage = info[.editedImage] as? UIImage {
-            viewModel.selectedImages.append(editedImage)
-        } else if let originalImage = info[.originalImage] as? UIImage {
-            viewModel.selectedImages.append(originalImage)
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+        guard let image = info[.originalImage] as? UIImage else {
+            picker.dismiss(animated: true)
+            return
         }
-        picker.dismiss(animated: true)
+
+        // 카메라 촬영 이미지도 편집 큐로 추가
+        self.cropQueue = [image]
+
+        picker.dismiss(animated: true) {
+            self.presentNextCropIfNeeded()
+        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -607,8 +629,57 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
                 SnackBar.shared.show(type: .imageLimit)
                 return
             }
-            self.viewModel.selectedImages.append(contentsOf: finalImages)
+            
+            // 유저가 선택한 최종 이미지들
+            self.imagesToEdit = finalImages
+
+            // 기존 이미지 뒤에 순서대로 들어가므로 인덱스 맞춰줌
+            self.cropQueue = finalImages
+
+            // 편집 시작
+            self.presentNextCropIfNeeded()
         }
+    }
+}
+
+// MARK: - 사진 편집 기능
+
+extension AddViewController: CropViewControllerDelegate {
+    func cropViewControllerDidCrop(
+        _ cropViewController: CropViewController,
+        cropped: UIImage,
+        transformation: Transformation,
+        cropInfo: CropInfo
+    ) {
+        dismiss(animated: true)
+
+        // 1) 편집 완료된 이미지를 selectedImages에 넣고
+        viewModel.selectedImages.append(cropped)
+
+        // 다음 이미지 크롭 진행
+        presentNextCropIfNeeded()
+    }
+
+    func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {
+        dismiss(animated: true)
+        
+        // 취소하면 원본으로 유지하고 다음 이미지로 넘어감
+        viewModel.selectedImages.append(original)
+        presentNextCropIfNeeded()
+    }
+    
+    private func presentNextCropIfNeeded() {
+        guard cropQueue.isEmpty == false else {
+            // 모든 작업 완료
+            viewModel.imageChanged = true
+            return
+        }
+
+        // queue에서 맨 앞 이미지 하나 꺼내서 크롭
+        let next = cropQueue.removeFirst()
+        let cropVC = Mantis.cropViewController(image: next)
+        cropVC.delegate = self
+        present(cropVC, animated: true)
     }
 }
 
@@ -649,7 +720,16 @@ extension AddViewController: AddToolBarDelegate {
             } catch {
                 lottie.stopAnimation()
                 
-                SnackBar.shared.show(type: .errorMessage)
+                if let moyaError = error as? MoyaError, let response = moyaError.response {
+                    switch response.statusCode {
+                    case 409:
+                        SnackBar.shared.show(type: .otherUserModifying)
+                    default:
+                        SnackBar.shared.show(type: .errorMessage)
+                    }
+                } else {
+                    SnackBar.shared.show(type: .errorMessage)
+                }
                 
                 throw error
             }

@@ -124,6 +124,7 @@ final class ShareView: UIView {
             flowLayout.minimumLineSpacing = 10
             flowLayout.itemSize = CGSize(width: 80, height: 80)
             flowLayout.scrollDirection = .horizontal
+            flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
             
             $0.collectionViewLayout = flowLayout
             $0.dataSource = dataSourceDelegate
@@ -364,12 +365,6 @@ extension ShareView: UICollectionViewDataSource, UICollectionViewDelegate {
         } else {
             self.selectedFolderId = folderId
         }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        willDisplay cell: UICollectionViewCell,
-                        forItemAt indexPath: IndexPath) {
-        viewModel?.loadNextIfNeeded(currentIndex: indexPath.item)
     }
 }
 

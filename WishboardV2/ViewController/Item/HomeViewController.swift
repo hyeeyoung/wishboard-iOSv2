@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 import Core
+import WBNetwork
 
 final class HomeViewController: UIViewController, ItemDetailDelegate {
     
@@ -29,6 +30,8 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         setupBottomSheet()
         setupBindings()
         
+        self.refreshItems()
+        
         // 앱 이용방법
         guard let isFirstLogin = UserManager.isFirstLogin else { return }
         if isFirstLogin {
@@ -43,10 +46,6 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = false
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        self.refreshItems()
     }
     
     private func setupNotifications() {
@@ -120,6 +119,16 @@ extension HomeViewController: UICollectionViewDelegate {
             UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
             detailViewController.hidesBottomBarWhenPushed = true
+            
+            detailViewController.editAction = { [weak self] item in
+                guard let item = item else { return }
+                self?.viewModel.items[indexPath.item] = item
+            }
+            
+            detailViewController.deleteAction = { [weak self] id in
+                self?.viewModel.items.removeAll { $0.id == item.id }
+            }
+            
             navigationController?.pushViewController(detailViewController, animated: true)
         }
     }

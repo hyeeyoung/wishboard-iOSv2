@@ -63,6 +63,9 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         
         folderView.collectionView.delegate = self
         folderView.collectionView.dataSource = self
+        folderView.collectionView.dragInteractionEnabled = true
+        folderView.collectionView.dragDelegate = self
+        folderView.collectionView.dropDelegate = self
         folderView.toolBar.delegate = self
         
         viewModel.$folders
@@ -295,3 +298,63 @@ extension FolderViewController: UIGestureRecognizerDelegate {
         return true // 무조건 받도록
     }
 }
+
+// MARK: - 순서 이동
+extension FolderViewController: UICollectionViewDropDelegate, UICollectionViewDragDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        itemsForBeginning session: UIDragSession,
+                        at indexPath: IndexPath) -> [UIDragItem] {
+
+        let item = viewModel.folders[indexPath.item]
+
+        // 1) NSItemProvider는 의미 없는 provider로 생성
+        let itemProvider = NSItemProvider()
+
+        // 2) 실제 데이터는 localObject에 저장 (앱 내부 전용)
+        let dragItem = UIDragItem(itemProvider: itemProvider)
+        dragItem.localObject = item
+
+        UIDevice.vibrate()
+        return [dragItem]
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        dropSessionDidUpdate session: UIDropSession,
+                        withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        
+        if collectionView.hasActiveDrag {
+            return UICollectionViewDropProposal(operation: .move,
+                                                intent: .insertAtDestinationIndexPath)
+        } else {
+            return UICollectionViewDropProposal(operation: .forbidden)
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        performDropWith coordinator: UICollectionViewDropCoordinator) {
+
+        guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
+
+        for item in coordinator.items {
+            guard let sourceIndexPath = item.sourceIndexPath,
+                  let movedItem = item.dragItem.localObject as? FolderListResponse else { continue }
+
+            // 데이터 이동
+            viewModel.folders.remove(at: sourceIndexPath.item)
+            viewModel.folders.insert(movedItem, at: destinationIndexPath.item)
+
+            // UI 이동
+            collectionView.performBatchUpdates {
+                collectionView.moveItem(at: sourceIndexPath, to: destinationIndexPath)
+            }
+            
+            // TODO: 서버 > 순서 변경하는 PATCH API 호출
+            
+            coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
+        }
+        
+        UIDevice.vibrate()
+    }
+}
+

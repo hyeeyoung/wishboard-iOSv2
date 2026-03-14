@@ -50,7 +50,7 @@ final class FolderBottomSheet: UIView {
         $0.isHidden = true
     }
     public let actionButton = AnimatedButton().then {
-        $0.setTitle("추가", for: .normal)
+        $0.setTitle(Button.add, for: .normal)
         $0.backgroundColor = .gray_100
         $0.setTitleColor(.gray_300, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitH3.font
@@ -194,7 +194,7 @@ final class FolderBottomSheet: UIView {
     
     func resetView() {
         textField.text = ""
-        textCountLabel.text = "0/\(maxTextLength) 자"
+        textCountLabel.text = "(0/\(maxTextLength))자"
         errorMessageLabel.isHidden = true
         self.updateActionButtonState(isEnabled: false)
         self.removeObservers()
@@ -202,23 +202,25 @@ final class FolderBottomSheet: UIView {
     }
     
     func configure(with folder: FolderListResponse?) {
-        
         self.snp.makeConstraints { make in
             make.height.equalToSuperview().multipliedBy(0.4)
         }
         
         self.folder = folder
         if let folder = folder {
-            titleLabel.text = "폴더명 수정"
+            titleLabel.text = Title.modifyFolder
             textField.text = folder.folderName
-            actionButton.setTitle("수정", for: .normal)
+            actionButton.setTitle(Button.modify, for: .normal)
+            self.updateActionButtonState(isEnabled: true)
         } else {
-            titleLabel.text = "새 폴더 추가"
+            titleLabel.text = Title.addFolder
             textField.text = ""
-            actionButton.setTitle("추가", for: .normal)
+            actionButton.setTitle(Button.add, for: .normal)
+            self.updateActionButtonState(isEnabled: false)
         }
-        textCountLabel.text = "\(textField.text?.count ?? 0)/\(maxTextLength) 자"
+        textCountLabel.text = "(\(textField.text?.count ?? 0)/\(maxTextLength))자"
         errorMessageLabel.isHidden = true
+        actionButton.stopAnimation()
     }
 }
 

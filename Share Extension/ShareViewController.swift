@@ -32,7 +32,7 @@ class ShareViewController: UIViewController {
         setupBindings()
         
         // fetch datas
-        viewModel.fetchFolders(reset: true)
+        viewModel.fetchFolders()
         viewModel.getSharedUrl(self) { [weak self] url in
             Task {
                 do {
@@ -250,7 +250,8 @@ class ShareViewController: UIViewController {
         shareView.completeButton.startAnimation()
         
         guard let itemName = shareView.itemNameTextField.text else { return }
-        let itemPrice = FormatManager.shared.priceToStr(price: shareView.itemPriceTextField.text ?? "")
+        let originPrice = FormatManager.shared.priceToStr(price: shareView.itemPriceTextField.text ?? "")
+        guard let itemPrice = Int(originPrice) else { return }
         let selectedFolderId = shareView.selectedFolderId
         
         var itemImage: [Data]?

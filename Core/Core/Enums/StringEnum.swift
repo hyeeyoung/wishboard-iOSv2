@@ -27,7 +27,7 @@ public enum Placeholder {
     public static let rewritePassword = "새 비밀번호를 다시 입력해 주세요."
     
     public static let uploadItemName = "상품명을 입력해 주세요."
-    public static let uploadItemPrice = "가격을 입력해 주세요."
+    public static let uploadItemPrice = "₩ 가격을 입력해 주세요."
     public static let uploadItemNoti = "재입고, 세일 시작 등 일정 알림을 받아보세요."
     public static let uploadItemLink = "쇼핑몰 링크를 추가해 보세요."
     public static let uploadItemMemo = "브랜드, 사이즈, 컬러 등 아이템 정보를 메모로 남겨보세요!😉"
@@ -104,7 +104,7 @@ public enum Title {
     public static let addItem = "아이템 추가"
     public static let modifyItem = "아이템 수정"
     public static let memo = "메모"
-    public static let shoppingLinkBottomSheet = "쇼핑몰 링크 추가"
+    public static let shoppingLinkBottomSheet = "쇼핑몰 링크"
     
     // MARK: Folder
     public static let folder = "폴더"

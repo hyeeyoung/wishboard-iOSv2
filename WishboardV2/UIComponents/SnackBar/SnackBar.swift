@@ -85,16 +85,17 @@ final class SnackBar {
     private func addSubviewsAndConstraints() {
         
         #if WISHBOARD_APP
-        
-        backgroundView.removeFromSuperview()
-        title.removeFromSuperview()
-        
-        let window = UIApplication.shared.keyWindow
-        window?.addSubview(self.backgroundView)
-        backgroundView.addSubview(title)
-        setConstraints()
-        
-        window?.layoutIfNeeded()
+        DispatchQueue.main.async {
+            self.backgroundView.removeFromSuperview()
+            self.title.removeFromSuperview()
+            
+            let window = UIApplication.shared.keyWindow
+            window?.addSubview(self.backgroundView)
+            self.backgroundView.addSubview(self.title)
+            self.setConstraints()
+            
+            window?.layoutIfNeeded()
+        }
         
         #else
         DispatchQueue.main.async {

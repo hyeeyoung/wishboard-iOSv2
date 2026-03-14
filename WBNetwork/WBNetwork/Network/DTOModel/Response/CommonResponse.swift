@@ -7,12 +7,21 @@
 
 import Foundation
 
+/// 공통 에러 처리
+public struct APIError: Error, Decodable {
+    public var status: Int?
+    public var success: Bool?
+    public var message: String?
+    public var code: String?
+}
+
 /// 응답구조 통일
 /// General 처리
 public struct CommonResponse<T: Decodable>: Decodable {
     public var status: Int?
     public var success: Bool?
     public var message: String?
+    public var code: String?
     public var data: T?
 }
 
@@ -21,6 +30,7 @@ public struct CommonPaginationResponse<T: Decodable>: Decodable {
     public var status: Int?
     public var success: Bool?
     public var message: String?
+    public var code: String?
     public var data: PaginationResponse<T>?
 }
 

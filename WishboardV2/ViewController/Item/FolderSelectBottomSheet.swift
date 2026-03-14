@@ -18,7 +18,7 @@ final class FolderSelectBottomSheet: UIView {
     
     // MARK: - UI Components
     private let titleLabel = UILabel().then {
-        $0.text = "폴더 선택"
+        $0.text = Title.folder
         $0.font = TypoStyle.SuitH3.font
         $0.textAlignment = .center
     }
@@ -58,7 +58,8 @@ final class FolderSelectBottomSheet: UIView {
         folderTableView.register(FolderSelectTableViewCell.self, forCellReuseIdentifier: FolderSelectTableViewCell.identifier)
         folderTableView.dataSource = self
         folderTableView.delegate = self
-        folderTableView.separatorStyle = .none
+        folderTableView.separatorInset = .zero
+        folderTableView.separatorColor = .gray_100
         folderTableView.backgroundColor = .white
         
         setupView()
