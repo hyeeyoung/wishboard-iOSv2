@@ -65,6 +65,7 @@ public final class TokenInterceptor: RequestInterceptor {
                 Task {
                     defer { self.sema.signal() }
                     do {
+                        print("401 에러 발생 - 토큰 재발급 수행")
                         guard let accessToken = UserManager.accessToken, let refreshToken = UserManager.refreshToken else {
                             print("기기에 저장된 refreshToken 정보 없음")
                             return

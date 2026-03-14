@@ -12,7 +12,8 @@ import Then
 import Core
 
 public protocol FolderToolBarDelegate: AnyObject {
-    func rightNaviItemTap()
+    func replaceFolderNaviItemTap()
+    func addFolderNaviItemTap()
 }
 
 final public class BaseToolBar: UIView {
@@ -21,9 +22,11 @@ final public class BaseToolBar: UIView {
         didSet {
             if let _ = self.delegate {
                 plusButton.isHidden = false
+                replaceButton.isHidden = false
                 setupActions()
             } else {
                 plusButton.isHidden = true
+                replaceButton.isHidden = true
             }
         }
     }
@@ -37,6 +40,11 @@ final public class BaseToolBar: UIView {
     
     private let plusButton = UIButton().then {
         $0.setImage(Image.newFolder, for: .normal)
+        $0.isHidden = true
+    }
+    
+    private let replaceButton = UIButton().then {
+        $0.setImage(Image.replaceFolder, for: .normal)
         $0.isHidden = true
     }
     
@@ -57,6 +65,7 @@ final public class BaseToolBar: UIView {
     private func setupViews() {
         addSubview(titleLabel)
         addSubview(plusButton)
+        addSubview(replaceButton)
     }
     
     private func setupConstraints() {
@@ -70,16 +79,27 @@ final public class BaseToolBar: UIView {
             make.trailing.equalToSuperview().offset(-16)
             make.centerY.equalToSuperview()
         }
+        
+        replaceButton.snp.makeConstraints { make in
+            make.width.height.equalTo(24)
+            make.trailing.equalTo(plusButton.snp.leading).offset(-8)
+            make.centerY.equalToSuperview()
+        }
     }
     
     // MARK: - Setup Actions
     private func setupActions() {
         plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
+        replaceButton.addTarget(self, action: #selector(replaceButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - Button Actions
     @objc private func plusButtonTapped() {
-        delegate?.rightNaviItemTap()
+        delegate?.addFolderNaviItemTap()
+    }
+    
+    @objc private func replaceButtonTapped() {
+        delegate?.replaceFolderNaviItemTap()
     }
     
     public func configure(title: String) {

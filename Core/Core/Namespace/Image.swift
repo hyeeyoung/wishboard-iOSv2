@@ -14,6 +14,7 @@ public enum Image{
     // folder
     public static let addFolder = UIImage(named: "addFolder")!  // at Share Extension
     public static let newFolder = UIImage(named: "ic_new_folder")!  // at app
+    public static let replaceFolder = UIImage(named: "folder_replace")!
     
     // arrow
     public static let arrowRight = UIImage(named: "arrow_right")!

@@ -286,9 +286,16 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
 }
 
 extension FolderViewController: FolderToolBarDelegate {
-    func rightNaviItemTap() {
+    /// 폴더 추가
+    func addFolderNaviItemTap() {
         UIDevice.vibrate()
         showBottomSheet()
+    }
+    
+    /// 폴더 재정렬
+    func replaceFolderNaviItemTap() {
+        UIDevice.vibrate()
+        print("폴더 재정렬 버튼 탭")
     }
 }
 
