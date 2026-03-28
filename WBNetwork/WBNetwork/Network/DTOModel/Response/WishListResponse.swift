@@ -22,7 +22,7 @@ public struct WishListResponse: Decodable {
     public var createdAt: String?
     public var updatedAt: String?
     public var version: Int?
-    public var isCollected: Bool?       // TODO: 서버로부터 소장 여부를 받아오기
+    public var itemStatus: ItemStatusType?
 }
 
 public struct ItemImageResponse: Decodable {

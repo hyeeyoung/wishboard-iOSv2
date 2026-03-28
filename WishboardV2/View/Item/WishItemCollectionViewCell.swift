@@ -119,11 +119,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         if let itemPrice = item.itemPrice {
             self.configurePriceLabel(with: itemPrice)
         }
-        // item collection
-        // TODO: 서버 값 확인
-        if let isCollected = item.isCollected {
-            self.configureCollection(with: isCollected)
-        }
+        // item status
+        let isCollected = (item.itemStatus == .owned)
+        self.configureCollection(with: isCollected)
     }
     
     // MARK: - Private Methods

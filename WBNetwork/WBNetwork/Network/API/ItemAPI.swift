@@ -9,6 +9,11 @@ import Foundation
 import Moya
 import Core
 
+public enum ItemStatusType: String, Decodable {
+    case owned = "OWNED"
+    case wish = "WISH"
+}
+
 public enum AddItemType: String {
     case parsing = "PARSING"        // 파싱 PARSING
     case manual = "MANUAL"          // 수동 MANUAL
@@ -63,6 +68,8 @@ public enum ItemAPI {
     case addItem(type: AddItemType, item: RequestItemDTO)
     /// 아이템 수정
     case modifyItem(idx: Int, item: RequestItemDTO)
+    /// 아이템 상태 변경 (소장템)
+    case updateItemStatus(idx: Int, status: ItemStatusType)
 }
 
 extension ItemAPI: TargetType, AccessTokenAuthorizable {
@@ -87,6 +94,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             return ""
         case .modifyItem(let idx, _):
             return "/\(idx)"
+        case.updateItemStatus(let idx, _):
+            return "/\(idx)/status"
         }
     }
 
@@ -101,6 +110,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         case .addItem:
             return .post
         case .modifyItem:
+            return .put
+        case .updateItemStatus:
             return .put
         }
     }
@@ -119,6 +130,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         case .modifyItem(_, let item):
             let data = makeMultipartFormData(param: item)
             return .uploadMultipart(data)
+        case .updateItemStatus(_, let status):
+            parameters = ["status": status.rawValue]
         default:
             parameters = [:]
         }

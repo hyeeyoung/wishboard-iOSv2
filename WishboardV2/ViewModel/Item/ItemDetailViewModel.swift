@@ -10,6 +10,7 @@ import Combine
 import WBNetwork
 
 final class ItemDetailViewModel {
+    var itemId: Int?
     // Published properties to bind with the view
     @Published var item: WishListResponse?
     @Published var folders: [FolderListResponse] = []
@@ -19,19 +20,18 @@ final class ItemDetailViewModel {
     }
     
     // 아이템 상세 데이터 가져오기
-    func fetchItemDetail(id: Int) async throws {
-//        Task {
-            do {
-                let usecase = GetItemDetailUseCase()
-                let data = try await usecase.execute(id: id)
-                
-                DispatchQueue.main.async {
-                    self.item = data
-                }
-            } catch {
-                throw error
+    func fetchItemDetail() async throws {
+        do {
+            guard let itemId = self.itemId else { return }
+            let usecase = GetItemDetailUseCase()
+            let data = try await usecase.execute(id: itemId)
+            
+            DispatchQueue.main.async {
+                self.item = data
             }
-//        }
+        } catch {
+            throw error
+        }
     }
     
     // 폴더 데이터 가져오기
@@ -51,12 +51,13 @@ final class ItemDetailViewModel {
     }
     
     // 아이템의 폴더 지정하기
-    func modifyItemFolder(itemId: Int, folderId: Int) async throws {
+    func modifyItemFolder(folderId: Int) async throws {
         do {
+            guard let itemId = self.itemId else { return }
             let usecase = ModifyItemFolderUseCase()
             let _ = try await usecase.execute(itemId: itemId, folderId: folderId)
             
-            try await self.fetchItemDetail(id: itemId)
+            try await self.fetchItemDetail()
             self.fetchFolders()
         } catch {
             throw error
@@ -64,10 +65,27 @@ final class ItemDetailViewModel {
     }
     
     // 아이템 삭제
-    func deleteItem(id: Int) async throws {
+    func deleteItem() async throws {
         do {
+            guard let id = self.itemId else { return }
             let usecase = DeleteItemUseCase()
             let _ = try await usecase.execute(id: id)
+            
+            DispatchQueue.main.async {
+                SnackBar.shared.show(type: .deleteItem)
+            }
+        } catch {
+            throw error
+        }
+    }
+    
+    // 아이템 상태 변경
+    func updateItemStatus(status: ItemStatusType) async throws {
+        do {
+            guard let itemId = self.itemId else { return }
+            
+            let usecase = UpdateItemStatusUseCase()
+            let _ = try await usecase.execute(idx: itemId, status: status)
             
             DispatchQueue.main.async {
                 SnackBar.shared.show(type: .deleteItem)

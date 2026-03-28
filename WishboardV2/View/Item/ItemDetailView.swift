@@ -276,9 +276,9 @@ final class ItemDetailView: UIView {
     }
     
     @objc private func collectButtonTapped(_ button: UIButton) {
-        button.isSelected.toggle()
+//        button.isSelected.toggle()
         let isCollected = button.isSelected
-        button.backgroundColor = isCollected ? .gray_100 : .gray_50
+//        button.backgroundColor = isCollected ? .gray_100 : .gray_50
         UIDevice.vibrate()
         self.collectButtonAction?(isCollected)
     }
@@ -430,13 +430,9 @@ final class ItemDetailView: UIView {
     }
     
     private func configureCollectBtn(_ item: WishListResponse) {
-        if let isCollected = item.isCollected {
-            collectedItemButton.backgroundColor = .gray_100
-            collectedItemButton.isSelected = true
-        } else {
-            collectedItemButton.backgroundColor = .gray_50
-            collectedItemButton.isSelected = false
-        }
+        let isCollected = item.itemStatus == .owned
+        collectedItemButton.backgroundColor = isCollected ? .gray_100 : .gray_50
+        collectedItemButton.isSelected = isCollected
     }
     
     private func createLinkInfoView(url: String) -> UIView {

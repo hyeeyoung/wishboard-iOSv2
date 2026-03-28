@@ -130,7 +130,7 @@ extension HomeViewController: UICollectionViewDelegate {
             }
             
             detailViewController.collectionChangeAction = { [weak self] isCollected in
-                item.isCollected = isCollected
+                item.itemStatus = isCollected ? .owned : .wish
             }
             
             navigationController?.pushViewController(detailViewController, animated: true)

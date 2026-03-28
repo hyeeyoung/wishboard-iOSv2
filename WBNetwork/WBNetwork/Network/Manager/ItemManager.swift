@@ -37,4 +37,8 @@ public final class ItemManager {
     public func modifyItem(idx: Int, item: RequestItemDTO) async throws -> EmptyResponse {
         return try await API.Item.request(.modifyItem(idx: idx, item: item))
     }
+    
+    public func updateItemStatus(idx: Int, status: ItemStatusType) async throws -> EmptyResponse {
+        return try await API.Item.request(.updateItemStatus(idx: idx, status: status))
+    }
 }
