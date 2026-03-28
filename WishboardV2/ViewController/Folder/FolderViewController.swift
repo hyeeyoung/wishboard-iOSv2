@@ -294,7 +294,7 @@ extension FolderViewController: FolderToolBarDelegate {
     func reorderFolderNaviItemTap() {
         UIDevice.vibrate()
         
-        let vc = FolderReorderViewController(folders: viewModel.folders)
+        let vc = FolderReorderViewController()
         vc.modalPresentationStyle = .fullScreen
         // 폴더 순서 재정렬
         vc.saveAction = {

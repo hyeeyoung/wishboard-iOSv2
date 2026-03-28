@@ -17,10 +17,9 @@ final class FolderReorderViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     public var saveAction: (() -> Void)?
 
-    init(folders: [FolderListResponse]) {
+    init() {
         super.init(nibName: nil, bundle: nil)
-        // TODO: 폴더 리스트가 페이지 1만 보이는 이슈 (전체 폴더를 불러와야함)
-        viewModel.configure(with: folders)
+        viewModel.fetchFolders()
     }
 
     required init?(coder: NSCoder) { fatalError() }

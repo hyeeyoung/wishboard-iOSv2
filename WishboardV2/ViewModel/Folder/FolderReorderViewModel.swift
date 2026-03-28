@@ -16,12 +16,22 @@ final class FolderReorderViewModel {
     @Published var showRecentSortButton: Bool = true
 
     private var originalOrder: [Int] = []
-
-    // 초기 데이터
-    func configure(with folders: [FolderListResponse]) {
-        self.folders = folders
-        self.originalOrder = folders.compactMap { $0.id }
-        evaluateState()
+    
+    /// 폴더 가져오기 (초기 데이터)
+    func fetchFolders() {
+        Task {
+            do {
+                let usecase = GetFolderListUseCase()
+                let response = try await usecase.execute(order: .recent_item)
+                
+                self.folders = response
+                self.originalOrder = folders.compactMap { $0.id }
+                evaluateState()
+            } catch {
+                folders = []
+                throw error
+            }
+        }
     }
 
     // drag reorder
