@@ -46,7 +46,7 @@ final class FolderReorderView: UIView {
     let gradientView = UIView()
     
     let recentSortButton = UIButton().then {
-        $0.setTitle("최근 등록 순으로 재설정하기", for: .normal)
+        $0.setTitle("이전 상태로 되돌리기", for: .normal)
         $0.setTitleColor(.gray_600, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitD2.font
 

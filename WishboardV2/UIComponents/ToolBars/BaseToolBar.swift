@@ -18,18 +18,19 @@ public protocol FolderToolBarDelegate: AnyObject {
 
 final public class BaseToolBar: UIView {
     
-    weak public var delegate: FolderToolBarDelegate? {
-        didSet {
-            if let _ = self.delegate {
-                plusButton.isHidden = false
-                reorderButton.isHidden = false
-                setupActions()
-            } else {
-                plusButton.isHidden = true
-                reorderButton.isHidden = true
-            }
-        }
-    }
+    weak public var delegate: FolderToolBarDelegate?
+//    {
+//        didSet {
+//            if let _ = self.delegate {
+//                plusButton.isHidden = false
+//                reorderButton.isHidden = false
+//                setupActions()
+//            } else {
+//                plusButton.isHidden = true
+//                reorderButton.isHidden = true
+//            }
+//        }
+//    }
     
     // MARK: - Views
     private let titleLabel = UILabel().then {
@@ -107,6 +108,19 @@ final public class BaseToolBar: UIView {
         self.snp.makeConstraints { make in
             make.height.equalTo(50)
             make.top.leading.trailing.equalToSuperview()
+        }
+    }
+    
+    public func configureFolderToolBar(delegate: FolderToolBarDelegate?, with count: Int) {
+        if let delegate = delegate {
+            self.delegate = delegate
+            
+            plusButton.isHidden = false
+            reorderButton.isHidden = count < 2
+            setupActions()
+        } else {
+            plusButton.isHidden = true
+            reorderButton.isHidden = true
         }
     }
 }
