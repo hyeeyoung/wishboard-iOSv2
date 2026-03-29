@@ -114,7 +114,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        var item = viewModel.items[indexPath.row]
+        let item = viewModel.items[indexPath.row]
         if let itemIdx = item.id {
             UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
@@ -130,7 +130,9 @@ extension HomeViewController: UICollectionViewDelegate {
             }
             
             detailViewController.collectionChangeAction = { [weak self] isCollected in
-                item.itemStatus = isCollected ? .owned : .wish
+                guard let self = self else { return }
+                self.viewModel.items[indexPath.item].itemStatus = isCollected ? .owned : .wish
+                self.homeView.collectionView.reloadItems(at: [indexPath])
             }
             
             navigationController?.pushViewController(detailViewController, animated: true)

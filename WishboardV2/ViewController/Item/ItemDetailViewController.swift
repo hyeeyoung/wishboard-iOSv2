@@ -247,10 +247,8 @@ extension ItemDetailViewController: DetailToolBarDelegate {
         // 새로고침
         addViewController.confirmAction = { [weak self] in
             Task {
-                if let idx = self?.viewModel.item?.id {
-                    try await self?.viewModel.fetchItemDetail()
-                    self?.editAction?(self?.viewModel.item)
-                }
+                try await self?.viewModel.fetchItemDetail()
+                self?.editAction?(self?.viewModel.item)
             }
         }
         

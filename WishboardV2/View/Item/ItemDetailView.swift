@@ -276,9 +276,7 @@ final class ItemDetailView: UIView {
     }
     
     @objc private func collectButtonTapped(_ button: UIButton) {
-//        button.isSelected.toggle()
-        let isCollected = button.isSelected
-//        button.backgroundColor = isCollected ? .gray_100 : .gray_50
+        let isCollected = !(button.isSelected)
         UIDevice.vibrate()
         self.collectButtonAction?(isCollected)
     }

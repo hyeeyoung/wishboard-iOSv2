@@ -7,7 +7,7 @@
 
 import Foundation
 import Combine
-import WBNetwork
+@preconcurrency import WBNetwork
 
 final class ItemDetailViewModel {
     var itemId: Int?
@@ -87,9 +87,6 @@ final class ItemDetailViewModel {
             let usecase = UpdateItemStatusUseCase()
             let _ = try await usecase.execute(idx: itemId, status: status)
             
-            DispatchQueue.main.async {
-                SnackBar.shared.show(type: .deleteItem)
-            }
         } catch {
             throw error
         }

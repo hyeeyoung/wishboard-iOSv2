@@ -22,7 +22,7 @@ final class FolderReorderViewModel {
         Task {
             do {
                 let usecase = GetFolderListUseCase()
-                let response = try await usecase.execute(order: .recent_item)
+                let response = try await usecase.execute()
                 
                 self.folders = response
                 self.originalOrder = folders.compactMap { $0.id }

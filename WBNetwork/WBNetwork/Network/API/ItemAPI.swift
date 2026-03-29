@@ -132,6 +132,7 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             return .uploadMultipart(data)
         case .updateItemStatus(_, let status):
             parameters = ["status": status.rawValue]
+            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
         default:
             parameters = [:]
         }

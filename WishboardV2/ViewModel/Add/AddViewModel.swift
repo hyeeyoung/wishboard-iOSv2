@@ -135,7 +135,7 @@ final class AddViewModel {
     func fetchFolders() async throws {
         do {
             let usecase = GetFolderListUseCase()
-            let response = try await usecase.execute(order: .recent_item)
+            let response = try await usecase.execute(order: .custom)
             folders = response
         } catch {
             folders = []
