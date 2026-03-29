@@ -253,6 +253,9 @@ extension FolderViewController: UICollectionViewDelegate, UICollectionViewDataSo
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FolderCollectionViewCell.reuseIdentifier, for: indexPath) as? FolderCollectionViewCell else {
             return UICollectionViewCell()
         }
+        guard indexPath.row < viewModel.folders.count else {
+            return UICollectionViewCell()
+        }
         
         let folder = viewModel.folders[indexPath.row]
         cell.configure(with: folder)

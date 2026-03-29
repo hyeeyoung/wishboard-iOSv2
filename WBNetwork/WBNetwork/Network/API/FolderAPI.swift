@@ -82,7 +82,7 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
         
         switch self {
         case .getFolders(let page, let size):
-            parameters = ["page": page, "size": size]
+            parameters = ["page": page, "size": size, "order": "CUSTOM"]
         case .addFolder(let folderName):
             parameters = ["folderName": folderName]
         case .modifyFolderName(_, let folderName):
@@ -90,8 +90,11 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
         case .getFolderItemList(_, let page, let size):
             parameters = ["page": page, "size": size]
         case .getFolderList(let order):
+            // 사실상 '링크공유'를 제외한 모든 폴더 목록은 CUSTOM으로 호출
             if let order = order {
                 parameters = ["order": order.rawValue]
+            } else {
+                parameters = ["order": "CUSTOM"]
             }
         case .reorderFolders(let ids):
             parameters = ["folderIds": ids]

@@ -22,7 +22,7 @@ public final class API {
     public static let authPlugin = AccessTokenPlugin(tokenClosure: tokenClosure)
 //    public static let networkLoggerPlugin = NetworkLoggerPlugin()
     public static let networkLoggerPlugin = NetworkLoggerPlugin(configuration: .init(
-        logOptions: [.formatRequestAscURL, .requestHeaders, .requestBody, .successResponseBody, .errorResponseBody]
+        logOptions: [.formatRequestAscURL, .requestHeaders, .requestBody, /*.successResponseBody, .errorResponseBody*/]
     ))
     public static let interceptor = TokenInterceptor.shared
     public static let errorPlugin = ErrorPlugin()

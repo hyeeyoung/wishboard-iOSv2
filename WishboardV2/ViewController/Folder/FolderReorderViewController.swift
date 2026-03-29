@@ -59,7 +59,7 @@ final class FolderReorderViewController: UIViewController {
             }
             .store(in: &cancellables)
 
-        viewModel.$showRecentSortButton
+        viewModel.$showRestoreButton
             .receive(on: RunLoop.main)
             .sink { [weak self] show in
                 self?.reorderView.recentSortButton.isHidden = !show
@@ -78,7 +78,7 @@ final class FolderReorderViewController: UIViewController {
                                          for: .touchUpInside)
 
         reorderView.recentSortButton.addTarget(self,
-                                               action: #selector(recentSortTap),
+                                               action: #selector(returnButtonTap),
                                                for: .touchUpInside)
     }
 
@@ -86,8 +86,8 @@ final class FolderReorderViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    @objc private func recentSortTap() {
-        viewModel.sortByRecent()
+    @objc private func returnButtonTap() {
+        viewModel.restoreOriginalOrder()
     }
 
     @objc private func saveTap() {

@@ -13,7 +13,7 @@ final class FolderReorderViewModel {
 
     @Published var folders: [FolderListResponse] = []
     @Published var isSaveEnabled: Bool = false
-    @Published var showRecentSortButton: Bool = true
+    @Published var showRestoreButton: Bool = true
 
     private var originalOrder: [Int] = []
     
@@ -41,12 +41,6 @@ final class FolderReorderViewModel {
 
         evaluateState()
     }
-
-    // 최근 등록순 정렬
-    func sortByRecent() {
-        folders.sort { ($0.id ?? 0) > ($1.id ?? 0) }
-        evaluateState()
-    }
     
     // 폴더 재정렬
     func updateFolderOrders() async throws {
@@ -63,16 +57,30 @@ final class FolderReorderViewModel {
             throw error
         }
     }
-
+    
     private func evaluateState() {
         let current = folders.compactMap { $0.id }
 
+        // 저장 버튼
         isSaveEnabled = current != originalOrder
 
-        let recent = folders.sorted { ($0.id ?? 0) > ($1.id ?? 0) }
-        let recentIds = recent.compactMap { $0.id }
+        // 되돌리기 버튼
+        showRestoreButton = current != originalOrder
+    }
+    
+    func restoreOriginalOrder() {
+        guard !originalOrder.isEmpty else { return }
 
-        showRecentSortButton = current != recentIds
+        let idToFolder: [Int: FolderListResponse] = Dictionary(
+            uniqueKeysWithValues: folders.compactMap {
+                guard let id = $0.id else { return nil }
+                return (id, $0)
+            }
+        )
+
+        folders = originalOrder.compactMap { idToFolder[$0] }
+
+        evaluateState()
     }
 
     private func saveCompleted() {
