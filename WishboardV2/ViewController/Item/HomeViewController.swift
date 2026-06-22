@@ -129,6 +129,12 @@ extension HomeViewController: UICollectionViewDelegate {
                 self?.viewModel.items.removeAll { $0.id == item.id }
             }
             
+            detailViewController.collectionChangeAction = { [weak self] isCollected in
+                guard let self = self else { return }
+                self.viewModel.items[indexPath.item].itemStatus = isCollected ? .owned : .wish
+                self.homeView.collectionView.reloadItems(at: [indexPath])
+            }
+            
             navigationController?.pushViewController(detailViewController, animated: true)
         }
     }

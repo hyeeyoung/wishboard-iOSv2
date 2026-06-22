@@ -7,6 +7,7 @@
 
 import UIKit
 import Core
+import EchoKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -17,6 +18,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        #if DEBUG
+        Console.start()
+        #endif
         
         // Notification 수신 등록
         NotificationCenter.default.addObserver(self, selector: #selector(signOutEvent), name: .SignOut, object: nil)

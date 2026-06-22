@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "echokit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KasRoid/EchoKit",
+      "state" : {
+        "revision" : "d5b19e55d181ffa3be9ddc98284af937cc2f1cbe",
+        "version" : "1.1.1"
+      }
+    },
+    {
       "identity" : "firebase-ios-sdk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk.git",

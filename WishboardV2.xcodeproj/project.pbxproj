@@ -37,6 +37,10 @@
 		235ABA0D2C8C70D900763900 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235ABA0C2C8C70D900763900 /* CalendarViewController.swift */; };
 		235ABA102C8C712900763900 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235ABA0F2C8C712900763900 /* CalendarView.swift */; };
 		235ABA132C8C716500763900 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235ABA122C8C716500763900 /* CalendarViewModel.swift */; };
+		235FFE2D2F653046007A77D2 /* FolderReorderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235FFE282F653041007A77D2 /* FolderReorderViewModel.swift */; };
+		235FFE2F2F653061007A77D2 /* FolderReorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235FFE2E2F65305D007A77D2 /* FolderReorderView.swift */; };
+		235FFE312F65307D007A77D2 /* FolderReorderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235FFE302F653077007A77D2 /* FolderReorderCell.swift */; };
+		235FFE332F653090007A77D2 /* FolderReorderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235FFE322F65308C007A77D2 /* FolderReorderViewController.swift */; };
 		23611C922D81AA67003606DE /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
 		23626D5B2D7B0CEC000A144A /* AppGuideSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5A2D7B0CEC000A144A /* AppGuideSheetView.swift */; };
 		23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */; };
@@ -256,6 +260,10 @@
 		235ABA0C2C8C70D900763900 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		235ABA0F2C8C712900763900 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		235ABA122C8C716500763900 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
+		235FFE282F653041007A77D2 /* FolderReorderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderReorderViewModel.swift; sourceTree = "<group>"; };
+		235FFE2E2F65305D007A77D2 /* FolderReorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderReorderView.swift; sourceTree = "<group>"; };
+		235FFE302F653077007A77D2 /* FolderReorderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderReorderCell.swift; sourceTree = "<group>"; };
+		235FFE322F65308C007A77D2 /* FolderReorderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderReorderViewController.swift; sourceTree = "<group>"; };
 		23626D5A2D7B0CEC000A144A /* AppGuideSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideSheetView.swift; sourceTree = "<group>"; };
 		23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideSheetViewController.swift; sourceTree = "<group>"; };
 		23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -537,6 +545,8 @@
 		2385950E2C71BF1600B85CBC /* Folder */ = {
 			isa = PBXGroup;
 			children = (
+				235FFE302F653077007A77D2 /* FolderReorderCell.swift */,
+				235FFE2E2F65305D007A77D2 /* FolderReorderView.swift */,
 				238595122C71BF3900B85CBC /* FolderView.swift */,
 				238595192C71C13F00B85CBC /* FolderCollectionViewCell.swift */,
 				2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */,
@@ -547,6 +557,7 @@
 		2385950F2C71BF1C00B85CBC /* Folder */ = {
 			isa = PBXGroup;
 			children = (
+				235FFE322F65308C007A77D2 /* FolderReorderViewController.swift */,
 				238595102C71BF2B00B85CBC /* FolderViewController.swift */,
 				2328C4EA2C720CFF0081A97C /* FolderBottomSheet.swift */,
 				2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */,
@@ -557,6 +568,7 @@
 		238595142C71BF4700B85CBC /* Folder */ = {
 			isa = PBXGroup;
 			children = (
+				235FFE282F653041007A77D2 /* FolderReorderViewModel.swift */,
 				238595152C71BF4F00B85CBC /* FolderViewModel.swift */,
 				2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */,
 			);
@@ -1224,6 +1236,7 @@
 			files = (
 				23B3A0D32C7F5257006D0561 /* CartView.swift in Sources */,
 				23B82A9F2D786B7400EF2194 /* PasswordInputView.swift in Sources */,
+				235FFE332F653090007A77D2 /* FolderReorderViewController.swift in Sources */,
 				23CBF49E2C5514510061D22F /* ViewController.swift in Sources */,
 				23EFA1C62D85B39F00A0EB42 /* SpinningLottie.swift in Sources */,
 				23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */,
@@ -1246,6 +1259,7 @@
 				23E476C22E633E470070E8FE /* NewCameraCell.swift in Sources */,
 				2337C86D2C710A5F00E2A67B /* DetailToolBar.swift in Sources */,
 				239540F12C6A179B003AB3D5 /* LoginView.swift in Sources */,
+				235FFE2D2F653046007A77D2 /* FolderReorderViewModel.swift in Sources */,
 				23167A032E22807A00F7D9AB /* FolderCell.swift in Sources */,
 				231F85CB2D6B38D30060F827 /* SelectDateBottomSheet.swift in Sources */,
 				239AD1DF2C6A2410002052BD /* ToolBar.swift in Sources */,
@@ -1258,6 +1272,7 @@
 				23CBF49A2C5514510061D22F /* AppDelegate.swift in Sources */,
 				23B82AA12D786C0600EF2194 /* PasswordInputViewModel.swift in Sources */,
 				23B82AA32D7870AC00EF2194 /* TermsLabel.swift in Sources */,
+				235FFE312F65307D007A77D2 /* FolderReorderCell.swift in Sources */,
 				23626D5B2D7B0CEC000A144A /* AppGuideSheetView.swift in Sources */,
 				23E476C02E6339730070E8FE /* NewFolderCell.swift in Sources */,
 				23798B712C8C253700F6DA90 /* ModifyPasswordView.swift in Sources */,
@@ -1294,6 +1309,7 @@
 				23F0F53B2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift in Sources */,
 				232466752C6F92A400979940 /* TabBarViewController.swift in Sources */,
 				230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */,
+				235FFE2F2F653061007A77D2 /* FolderReorderView.swift in Sources */,
 				23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */,
 				23F0F53D2C83FC65001ABAA9 /* ModifyProfileView.swift in Sources */,
 				23C6107E2D68D6C3003E71F4 /* AddViewModel.swift in Sources */,
@@ -1380,7 +1396,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "gomin.Wishboard.Share-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1412,7 +1428,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "gomin.Wishboard.Share-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1571,7 +1587,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gomin.Wishboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1610,7 +1626,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gomin.Wishboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

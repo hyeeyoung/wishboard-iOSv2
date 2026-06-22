@@ -22,6 +22,7 @@ public struct WishListResponse: Decodable {
     public var createdAt: String?
     public var updatedAt: String?
     public var version: Int?
+    public var itemStatus: ItemStatusType?
 }
 
 public struct ItemImageResponse: Decodable {

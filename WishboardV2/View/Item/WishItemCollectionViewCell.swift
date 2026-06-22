@@ -31,6 +31,14 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     let itemPrice = UILabel().then{
         $0.setTypoStyleWithSingleLine(typoStyle: .MontserratH3)
     }
+    let collectionTag = UIView().then {
+        $0.backgroundColor = .green_alpha_80
+    }
+    let collectionTagTitle = UILabel().then {
+        $0.text = "소장템"
+        $0.textColor = .white
+        $0.font = TypoStyle.SuitB5.font
+    }
     
     // MARK: - Properties
     
@@ -53,6 +61,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
 //        DispatchQueue.main.async {
 //            self.itemName.text = nil
 //            self.itemPrice.text = nil
+//            self.collectionTag.isHidden = true
 //        }
 //    }
     
@@ -61,6 +70,8 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(imageView)
         contentView.addSubview(itemName)
         contentView.addSubview(itemPrice)
+        contentView.addSubview(collectionTag)
+        collectionTag.addSubview(collectionTagTitle)
     }
     
     private func setupConstraints() {
@@ -76,6 +87,14 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
             make.top.equalTo(itemName.snp.bottom).offset(8)
             make.leading.equalToSuperview().offset(10)
             make.bottom.equalToSuperview().inset(20)
+        }
+        collectionTag.snp.makeConstraints { make in
+            make.bottom.leading.equalTo(imageView)
+            make.height.equalTo(22)
+        }
+        collectionTagTitle.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(6)
+            make.top.bottom.equalToSuperview().inset(4)
         }
     }
     
@@ -100,6 +119,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         if let itemPrice = item.itemPrice {
             self.configurePriceLabel(with: itemPrice)
         }
+        // item status
+        let isCollected = (item.itemStatus == .owned)
+        self.configureCollection(with: isCollected)
     }
     
     // MARK: - Private Methods
@@ -122,5 +144,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         attributedString.addAttribute(.font, value: TypoStyle.SuitD3.font, range: currencyRange)
         
         itemPrice.attributedText = attributedString
+    }
+    
+    private func configureCollection(with isCollected: Bool) {
+        self.collectionTag.isHidden = !isCollected
     }
 }

@@ -9,6 +9,15 @@ import Foundation
 import UIKit
 
 extension UIImage {
+    
+    /// 이미지를 원하는 사이즈로 리사이징
+    public func resized(to size: CGSize) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+    
     /// 가로와 세로의 비율을 유지한 채로 긴 쪽의 길이를 720으로 유지
     public func resizeImageIfNeeded() -> UIImage {
         let targetSize = CGSize(width: 720, height: 720)

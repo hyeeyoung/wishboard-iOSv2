@@ -28,9 +28,11 @@ final class ItemDetailViewController: UIViewController {
     
     public var editAction: ((WishListResponse?) -> Void)?
     public var deleteAction: ((Int) -> Void)?
+    public var collectionChangeAction: ((Bool) -> Void)?
     
     init(id: Int) {
         self.id = id
+        self.viewModel.itemId = id
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -64,7 +66,7 @@ final class ItemDetailViewController: UIViewController {
     private func fetchData() {
         Task {
             do {
-                try await self.viewModel.fetchItemDetail(id: self.id)
+                try await self.viewModel.fetchItemDetail()
             } catch {
                 throw error
             }
@@ -89,6 +91,26 @@ final class ItemDetailViewController: UIViewController {
 
             let linkView = SFSafariViewController(url: url)
             self?.present(linkView, animated: true)
+        }
+        
+        detailView.collectButtonAction = { [weak self] isCollected in
+            Task {
+                do {
+                    // API 호출
+                    let status: ItemStatusType = isCollected ? .owned : .wish
+                    try await self?.viewModel.updateItemStatus(status: status)
+                    // 아이템 정보 reload
+                    try await self?.viewModel.fetchItemDetail()
+                    // 스낵바 노출
+                    SnackBar.shared.show(type: isCollected ? .collectItem : .removeCollectItem)
+                    // Action 전달
+                    self?.collectionChangeAction?(isCollected)
+                } catch {
+                    // error snackbar
+                    SnackBar.shared.show(type: .errorMessage)
+                    throw error
+                }
+            }
         }
         
         detailView.folderListButtonAction = { [weak self] in
@@ -126,9 +148,9 @@ final class ItemDetailViewController: UIViewController {
             self?.dismissKeyboard()
             self?.hideBottomSheet()
             
-            if let folderId = folderId, let itemId = self?.viewModel.item?.id {
+            if let folderId = folderId {
                 Task {
-                    try await self?.viewModel.modifyItemFolder(itemId: itemId, folderId: folderId)
+                    try await self?.viewModel.modifyItemFolder(folderId: folderId)
                 }
             }
         }
@@ -198,7 +220,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
                     do {
                         if let id = self.viewModel.item?.id {
                             // delete item
-                            try await self.viewModel.deleteItem(id: id)
+                            try await self.viewModel.deleteItem()
                             self.deleteAction?(id)
                             
                             // 뒤로가기
@@ -225,10 +247,8 @@ extension ItemDetailViewController: DetailToolBarDelegate {
         // 새로고침
         addViewController.confirmAction = { [weak self] in
             Task {
-                if let idx = self?.viewModel.item?.id {
-                    try await self?.viewModel.fetchItemDetail(id: idx)
-                    self?.editAction?(self?.viewModel.item)
-                }
+                try await self?.viewModel.fetchItemDetail()
+                self?.editAction?(self?.viewModel.item)
             }
         }
         

@@ -76,11 +76,13 @@
 		23BD37772D79BEED00D39D0F /* RegisterEmailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BD37762D79BEED00D39D0F /* RegisterEmailUseCase.swift */; };
 		23BD37792D79C14C00D39D0F /* LoginWithoutPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BD37782D79C14C00D39D0F /* LoginWithoutPasswordUseCase.swift */; };
 		23BD377B2D79C54400D39D0F /* RegisterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BD377A2D79C54400D39D0F /* RegisterUseCase.swift */; };
+		23BF1EAA2F65CF23004784B9 /* ReorderFoldersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BF1EA92F65CF1E004784B9 /* ReorderFoldersUseCase.swift */; };
 		23CB0DDA2C79FAD70053EB40 /* UserInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */; };
 		23CB0DDC2C79FB070053EB40 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDB2C79FB070053EB40 /* UserAPI.swift */; };
 		23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */; };
 		23CB0DE02C79FBBB0053EB40 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DDF2C79FBBB0053EB40 /* UserRepository.swift */; };
 		23CB0DE32C79FBEF0053EB40 /* GetUserInfoUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */; };
+		23EF99FF2F78094A00455286 /* UpdateItemStatusUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EF99FE2F78094400455286 /* UpdateItemStatusUseCase.swift */; };
 		23EFA1C82D85B8FB00A0EB42 /* ModifyItemUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EFA1C72D85B8FB00A0EB42 /* ModifyItemUseCase.swift */; };
 		23F0F53F2C840586001ABAA9 /* ModifyProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F0F53E2C840586001ABAA9 /* ModifyProfileUseCase.swift */; };
 /* End PBXBuildFile section */
@@ -165,11 +167,13 @@
 		23BD37762D79BEED00D39D0F /* RegisterEmailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterEmailUseCase.swift; sourceTree = "<group>"; };
 		23BD37782D79C14C00D39D0F /* LoginWithoutPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWithoutPasswordUseCase.swift; sourceTree = "<group>"; };
 		23BD377A2D79C54400D39D0F /* RegisterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterUseCase.swift; sourceTree = "<group>"; };
+		23BF1EA92F65CF1E004784B9 /* ReorderFoldersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderFoldersUseCase.swift; sourceTree = "<group>"; };
 		23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoResponse.swift; sourceTree = "<group>"; };
 		23CB0DDB2C79FB070053EB40 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		23CB0DDD2C79FB570053EB40 /* UserAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIManager.swift; sourceTree = "<group>"; };
 		23CB0DDF2C79FBBB0053EB40 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserInfoUseCase.swift; sourceTree = "<group>"; };
+		23EF99FE2F78094400455286 /* UpdateItemStatusUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateItemStatusUseCase.swift; sourceTree = "<group>"; };
 		23EFA1C72D85B8FB00A0EB42 /* ModifyItemUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyItemUseCase.swift; sourceTree = "<group>"; };
 		23F0F53E2C840586001ABAA9 /* ModifyProfileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyProfileUseCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -286,6 +290,7 @@
 		232185D62C70B447008BD81B /* Item */ = {
 			isa = PBXGroup;
 			children = (
+				23EF99FE2F78094400455286 /* UpdateItemStatusUseCase.swift */,
 				232185D52C70B447008BD81B /* GetWishItemsUseCase.swift */,
 				2347A9152C7AD368009F9480 /* ModifyItemFolderUseCase.swift */,
 				2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */,
@@ -396,6 +401,7 @@
 		238595212C71C70A00B85CBC /* Folder */ = {
 			isa = PBXGroup;
 			children = (
+				23BF1EA92F65CF1E004784B9 /* ReorderFoldersUseCase.swift */,
 				238595222C71C71300B85CBC /* GetFoldersUseCase.swift */,
 				2347A8FF2C7ABADF009F9480 /* GetFolderItemListUseCase.swift */,
 				2347A9072C7ABFF6009F9480 /* ModifyFolderNameUseCase.swift */,
@@ -569,6 +575,7 @@
 				238595232C71C71300B85CBC /* GetFoldersUseCase.swift in Sources */,
 				232185FC2C70B57D008BD81B /* CartRepository.swift in Sources */,
 				23CB0DDA2C79FAD70053EB40 /* UserInfoResponse.swift in Sources */,
+				23EF99FF2F78094A00455286 /* UpdateItemStatusUseCase.swift in Sources */,
 				23AD9D642C809892007AB8D1 /* ModifyCartQuantityUseCase.swift in Sources */,
 				2354AE0F2D75F76E008A62FA /* VersionManager.swift in Sources */,
 				2354AE132D75F805008A62FA /* VersionRepository.swift in Sources */,
@@ -607,6 +614,7 @@
 				232186022C70B58C008BD81B /* ErrorPlugin.swift in Sources */,
 				232185F82C70B572008BD81B /* LoginUseCase.swift in Sources */,
 				23BD37732D79B68E00D39D0F /* EmailLoginResponse.swift in Sources */,
+				23BF1EAA2F65CF23004784B9 /* ReorderFoldersUseCase.swift in Sources */,
 				23798B752C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift in Sources */,
 				23BD37752D79B6E700D39D0F /* EmailLoginUseCase.swift in Sources */,
 				2385951C2C71C67A00B85CBC /* FolderAPI.swift in Sources */,

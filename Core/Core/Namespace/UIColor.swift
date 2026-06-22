@@ -26,7 +26,8 @@ public extension UIColor{
     public static let green_700 = UIColor(red: 104/255, green: 235/255, blue: 114/255, alpha: 1)
     public static let green_500 = UIColor(red: 149/255, green: 251/255, blue: 157/255, alpha: 1)
     public static let green_200 = UIColor(red: 229/255, green: 254/255, blue: 231/255, alpha: 1)
-    public static let green_alpha = UIColor(red: 104/255, green: 235/255, blue: 114/255, alpha: 0.15)
+    public static let green_alpha_15 = UIColor(red: 104/255, green: 235/255, blue: 114/255, alpha: 0.15)
+    public static let green_alpha_80 = UIColor(red: 104/255, green: 235/255, blue: 114/255, alpha: 0.8)
     
     // MARK: Pink
     public static let pink_700 = UIColor(red: 250/255, green: 93/255, blue: 187/255, alpha: 1)

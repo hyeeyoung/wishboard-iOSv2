@@ -42,7 +42,7 @@ final class ShareViewModel {
         _Concurrency.Task {
             do {
                 let usecase = GetFolderListUseCase()
-                let response = try await usecase.execute()
+                let response = try await usecase.execute(order: .recent_item)
                 
                 folders = response
             } catch {

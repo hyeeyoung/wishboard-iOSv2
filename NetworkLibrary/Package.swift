@@ -16,12 +16,13 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
+        .package(url: "https://github.com/KasRoid/EchoKit", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "NetworkLibrary", dependencies: ["Moya"]),
+            name: "NetworkLibrary", dependencies: ["Moya", "EchoKit"]),
         .testTarget(
             name: "NetworkLibraryTests",
             dependencies: ["NetworkLibrary"]),
