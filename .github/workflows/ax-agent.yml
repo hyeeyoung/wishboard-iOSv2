@@ -16,7 +16,7 @@ jobs:
 
       - name: Run Claude Code Agent
         run: |
-          claude -p "
+          claude --print "
             GitHub Issue #${{ github.event.issue.number }} 내용을 읽고
             다음 순서로 작업해줘:
 
