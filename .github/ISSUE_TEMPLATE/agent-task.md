@@ -1,5 +1,6 @@
 ---
 name: Agent Task
+about: AX 에이전트 작업 요청
 labels: agent-task
 ---
 
