@@ -31,6 +31,9 @@ public extension UIColor{
     
     // MARK: Pink
     public static let pink_700 = UIColor(red: 250/255, green: 93/255, blue: 187/255, alpha: 1)
+
+    // MARK: Red
+    public static let red_500 = UIColor(red: 244/255, green: 67/255, blue: 54/255, alpha: 1)
     
     // MARK: 투명도
     public static let black_3 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.3)

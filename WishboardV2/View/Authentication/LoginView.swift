@@ -155,6 +155,10 @@ final class LoginView: UIView {
     
     public func updateLoginButtonState(isEnabled: Bool) {
         loginButton.isEnabled = isEnabled
+        if isEnabled {
+            loginButton.backgroundColor = .red_500
+            loginButton.setTitleColor(.white, for: .normal)
+        }
     }
     
     // MARK: - Keyboard
