@@ -59,7 +59,7 @@ class FormItemView: UIView {
     private let requiredStar = UILabel().then {
         $0.font = TypoStyle.SuitB2.font
         $0.text = "*"
-        $0.textColor = .green_700
+        $0.textColor = .blue_700
     }
     public private(set) var textView: UITextView?
     public private(set) var textField: UITextField?

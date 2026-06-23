@@ -23,10 +23,10 @@ final class CartView: UIView {
         $0.isHidden = true
     }
     let bottomButtonBar = UIView().then {
-        $0.backgroundColor = .green_500
+        $0.backgroundColor = .blue_500
     }
     let bottomView = UIView().then {
-        $0.backgroundColor = .green_500
+        $0.backgroundColor = .blue_500
     }
     let totalQuantityLabel = UILabel().then {
         $0.textColor = .gray_700

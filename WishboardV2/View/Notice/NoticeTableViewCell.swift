@@ -35,7 +35,7 @@ final class NoticeTableViewCell: UITableViewCell {
         $0.textColor = .gray_700
     }
     let readStateView = UIView().then {
-        $0.backgroundColor = .green_500
+        $0.backgroundColor = .blue_500
         $0.layer.cornerRadius = 4
         $0.clipsToBounds = true
     }

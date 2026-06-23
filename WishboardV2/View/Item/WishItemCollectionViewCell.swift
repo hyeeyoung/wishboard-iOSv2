@@ -32,7 +32,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         $0.setTypoStyleWithSingleLine(typoStyle: .MontserratH3)
     }
     let collectionTag = UIView().then {
-        $0.backgroundColor = .green_alpha_80
+        $0.backgroundColor = .blue_alpha_80
     }
     let collectionTagTitle = UILabel().then {
         $0.text = "소장템"

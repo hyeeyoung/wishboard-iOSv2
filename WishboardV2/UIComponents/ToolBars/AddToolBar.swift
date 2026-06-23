@@ -88,7 +88,7 @@ final public class AddToolBar: UIView {
     
     public func updateButtonState(enabled: Bool) {
         if enabled {
-            saveButton.backgroundColor = .green_500
+            saveButton.backgroundColor = .blue_500
             saveButton.isEnabled = true
         } else {
             saveButton.backgroundColor = .gray_100

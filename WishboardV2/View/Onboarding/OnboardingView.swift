@@ -34,7 +34,7 @@ final class OnboardingView: UIView {
         $0.setTitle(Button.register, for: .normal)
         $0.setTitleColor(.gray_700, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitH3.font
-        $0.backgroundColor = .green_500
+        $0.backgroundColor = .blue_500
         $0.layer.cornerRadius = 12
     }
     
@@ -48,7 +48,7 @@ final class OnboardingView: UIView {
         // 로그인
         let loginAttributes: [NSAttributedString.Key: Any] = [
             .font: TypoStyle.SuitH4.font,
-            .foregroundColor: UIColor.green_700,
+            .foregroundColor: UIColor.blue_700,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
         

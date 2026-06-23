@@ -156,7 +156,7 @@ final class EmailInputViewController: UIViewController {
         viewModel.$isButtonEnabled
             .sink { [weak self] isEnabled in
                 self?.emailInputView.actionButton.isEnabled = isEnabled
-                self?.emailInputView.actionButton.backgroundColor = isEnabled ? .green_500 : .gray_100
+                self?.emailInputView.actionButton.backgroundColor = isEnabled ? .blue_500 : .gray_100
             }
             .store(in: &cancellables)
     }

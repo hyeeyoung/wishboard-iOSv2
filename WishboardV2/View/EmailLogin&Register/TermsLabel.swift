@@ -39,7 +39,7 @@ class TermsLabel: UILabel {
             let nsRange = NSRange(termsRange, in: fullText)
             attributedString.addAttributes([
                 .font: TypoStyle.SuitB4.font,
-                .foregroundColor: UIColor.green_700,
+                .foregroundColor: UIColor.blue_700,
                 .underlineStyle: NSUnderlineStyle.single.rawValue
             ], range: nsRange)
         }
@@ -49,7 +49,7 @@ class TermsLabel: UILabel {
             let nsRange = NSRange(privacyRange, in: fullText)
             attributedString.addAttributes([
                 .font: TypoStyle.SuitB4.font,
-                .foregroundColor: UIColor.green_700,
+                .foregroundColor: UIColor.blue_700,
                 .underlineStyle: NSUnderlineStyle.single.rawValue
             ], range: nsRange)
         }

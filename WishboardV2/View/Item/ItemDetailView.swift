@@ -65,7 +65,7 @@ final class ItemDetailView: UIView {
     private let notiTypetag = PaddedLabel().then {
         $0.text = "알람 종류"
         $0.font = TypoStyle.SuitB5.font
-        $0.backgroundColor = .green_500
+        $0.backgroundColor = .blue_500
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
         $0.textAlignment = .center
@@ -74,7 +74,7 @@ final class ItemDetailView: UIView {
     private let notiDatetag = PaddedLabel().then {
         $0.text = "날짜"
         $0.font = TypoStyle.SuitB5.font
-        $0.backgroundColor = .green_500
+        $0.backgroundColor = .blue_500
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
         $0.textAlignment = .center

@@ -196,7 +196,7 @@ final class PasswordInputViewController: UIViewController {
         viewModel.$isButtonEnabled
             .sink { [weak self] isEnabled in
                 self?.passwordInputView.actionButton.isEnabled = isEnabled
-                self?.passwordInputView.actionButton.backgroundColor = isEnabled ? .green_500 : .gray_100
+                self?.passwordInputView.actionButton.backgroundColor = isEnabled ? .blue_500 : .gray_100
             }
             .store(in: &cancellables)
     }

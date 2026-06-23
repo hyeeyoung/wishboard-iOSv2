@@ -94,9 +94,9 @@ public enum AlertType: Equatable {
         case .logout, .accountDeletion, .deleteItem, .deleteFolder, .deleteCart, .serviceStop:
             return [.gray_600, .pink_700]
         case .allowAlarm, .recommendUpdate:
-            return [.gray_600, .green_700]
+            return [.gray_600, .blue_700]
         case .forceUpdate:
-            return [.green_700]
+            return [.blue_700]
         case .custom(_, _, _, let buttonColors):
             return buttonColors
         }

@@ -33,7 +33,7 @@ class SettingTableViewCell: UITableViewCell {
         $0.textColor = .gray_300
     }
     private let switchControl = UISwitch().then {
-        $0.onTintColor = .green_500
+        $0.onTintColor = .blue_500
         $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.75)
         $0.backgroundColor = UIColor.gray_300
         $0.layer.cornerRadius = 16.5

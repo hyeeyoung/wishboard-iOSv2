@@ -22,12 +22,12 @@ public extension UIColor{
     public static let gray_50 = UIColor(red: 248/255, green: 248/255, blue: 248/255, alpha: 1)
     public static let f3f3f3 = UIColor(red: 243/255, green: 243/255, blue: 243/255, alpha: 1)
     
-    // MARK: Green
-    public static let green_700 = UIColor(red: 104/255, green: 235/255, blue: 114/255, alpha: 1)
-    public static let green_500 = UIColor(red: 149/255, green: 251/255, blue: 157/255, alpha: 1)
-    public static let green_200 = UIColor(red: 229/255, green: 254/255, blue: 231/255, alpha: 1)
-    public static let green_alpha_15 = UIColor(red: 104/255, green: 235/255, blue: 114/255, alpha: 0.15)
-    public static let green_alpha_80 = UIColor(red: 104/255, green: 235/255, blue: 114/255, alpha: 0.8)
+    // MARK: Blue
+    public static let blue_700 = UIColor(red: 104/255, green: 114/255, blue: 235/255, alpha: 1)
+    public static let blue_500 = UIColor(red: 149/255, green: 157/255, blue: 251/255, alpha: 1)
+    public static let blue_200 = UIColor(red: 229/255, green: 231/255, blue: 254/255, alpha: 1)
+    public static let blue_alpha_15 = UIColor(red: 104/255, green: 114/255, blue: 235/255, alpha: 0.15)
+    public static let blue_alpha_80 = UIColor(red: 104/255, green: 114/255, blue: 235/255, alpha: 0.8)
     
     // MARK: Pink
     public static let pink_700 = UIColor(red: 250/255, green: 93/255, blue: 187/255, alpha: 1)

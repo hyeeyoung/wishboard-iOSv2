@@ -144,6 +144,6 @@ final class FolderReorderView: UIView {
 
     func updateSaveButton(enabled: Bool) {
         saveButton.isEnabled = enabled
-        saveButton.backgroundColor = enabled ? .green_500 : .gray_100
+        saveButton.backgroundColor = enabled ? .blue_500 : .gray_100
     }
 }

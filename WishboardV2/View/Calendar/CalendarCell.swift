@@ -33,11 +33,11 @@ class CalendarCell: UICollectionViewCell {
         
         dayLabel.textColor = .gray_700
         
-        alarmBackgroundView.backgroundColor = .green_200
+        alarmBackgroundView.backgroundColor = .blue_200
         alarmBackgroundView.layer.cornerRadius = 16.665
         alarmBackgroundView.clipsToBounds = true
         
-        stickerView.backgroundColor = .green_500
+        stickerView.backgroundColor = .blue_500
         stickerView.layer.cornerRadius = 5
         stickerView.clipsToBounds = true
         
@@ -64,6 +64,6 @@ class CalendarCell: UICollectionViewCell {
         stickerView.isHidden = (isCurrentMonth ? (!isToday) : true)
         
         alarmBackgroundView.isHidden = !hasAlarm
-        alarmBackgroundView.backgroundColor = hasAlarm ? (isCurrentMonth ? .green_200: nil) : nil
+        alarmBackgroundView.backgroundColor = hasAlarm ? (isCurrentMonth ? .blue_200: nil) : nil
     }
 }

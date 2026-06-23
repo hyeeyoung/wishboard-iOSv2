@@ -18,7 +18,7 @@ class AnimatedButton: UIButton {
         didSet {
             if isEnabled {
                 self.setTitleColor(.gray_700, for: .normal)
-                self.backgroundColor = .green_500
+                self.backgroundColor = .blue_500
                 self.titleLabel?.font = TypoStyle.SuitH3.font
             } else {
                 self.setTitleColor(.gray_300, for: .normal)
