@@ -18,7 +18,7 @@ final class HomeView: UIView {
     public let toolbar = HomeToolBar()
     public let collectionView: UICollectionView
     private let emptyLabel = UILabel().then {
-        $0.text = "앗, 아이템이 없어요!\n갖고 싶은 아이템을 등록해 보세요!"
+        $0.text = "아직 추가된 위시가 없어요 :)"
         $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
         $0.textColor = .gray_200
         $0.numberOfLines = 0
