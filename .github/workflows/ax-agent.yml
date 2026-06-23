@@ -16,12 +16,19 @@ jobs:
 
       - name: Run Claude Code Agent
         run: |
-          claude --print "
+          claude -p "
             GitHub Issue #${{ github.event.issue.number }} 내용을 읽고
-            dev 브랜치 기반으로 feature/issue-${{ github.event.issue.number }} 브랜치를 새로 만들어서
-            요구사항에 맞게 코드를 작성한 후
-            dev 브랜치로 PR을 생성해줘.
-            PR 본문에 변경 사항을 한국어로 설명해줘.
+            다음 순서로 작업해줘:
+
+            1. dev 브랜치 기반으로 feature/issue-${{ github.event.issue.number }} 브랜치 생성
+            2. 요구사항에 맞게 코드 작업
+            3. 이슈에 '캡처할 화면' 항목이 있으면:
+               - XCTest 스냅샷 코드 임시 작성
+               - 시뮬레이터 실행 후 스크린샷 캡처
+               - 캡처 완료 후 테스트 코드 즉시 삭제
+            4. dev 브랜치로 PR 생성
+               - 스크린샷 있으면 PR 본문에 첨부
+               - 변경 사항 한국어로 설명
           " --allowedTools "Bash,Edit,Write,mcp__github__*"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
