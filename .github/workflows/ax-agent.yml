@@ -31,13 +31,15 @@ jobs:
       - name: Run Claude Code Agent
         run: |
           claude --print "
-            GitHub Issue #${{ github.event.issue.number }} 내용을 읽고
-            다음 순서로 작업해줘:
+            GitHub Issue #${{ github.event.issue.number }} 의
+            이슈 본문, 모든 코멘트 히스토리, 연결된 PR 내역을
+            전부 읽고 전체 맥락을 파악한 후 작업해줘.
+            코멘트로 재실행된 경우 가장 최근 코멘트를 추가 요구사항으로 반영해줘.
 
+            작업 순서:
             1. dev 브랜치 기반으로 feature/issue-${{ github.event.issue.number }} 브랜치 생성
                (이미 브랜치가 있으면 그 브랜치에서 이어서 작업)
             2. 요구사항에 맞게 코드 작업
-               (코멘트로 재실행된 경우 코멘트 내용을 추가 요구사항으로 반영)
             3. 이슈에 '캡처할 화면' 항목이 있으면:
                - XCTest 스냅샷 코드 임시 작성
                - 시뮬레이터 실행 후 스크린샷 캡처
