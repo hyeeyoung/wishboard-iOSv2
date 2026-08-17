@@ -75,56 +75,109 @@ final class ShareViewModel {
         }
     }
     
-    /// URL 가져오기
-    func getSharedUrl(_ context: UIViewController, completion: @escaping (String) -> Void) {
+    /// 공유된 URL 가져오기
+    func getSharedUrl(
+        _ context: UIViewController,
+        completion: @escaping (String) -> Void
+    ) {
         guard let item = context.extensionContext?.inputItems.first as? NSExtensionItem else {
+            print("❌ No NSExtensionItem found.")
             completion("")
             return
         }
 
-        guard let attachment = item.attachments?.first else {
+        guard let attachments = item.attachments, !attachments.isEmpty else {
+            print("❌ No attachments found.")
             completion("")
             return
         }
 
-        // URL 타입 먼저 시도
-        if attachment.hasItemConformingToTypeIdentifier(kUTTypeURL as String) {
-            attachment.loadItem(forTypeIdentifier: kUTTypeURL as String, options: nil) { (urlItem, error) in
-                DispatchQueue.main.async {
-                    if let url = urlItem as? URL {
-                        print("✅ Shared URL (as URL): \(url)")
+        // MARK: - 1. 모든 attachment에서 실제 URL 타입을 먼저 탐색
+        for attachment in attachments {
+            print("📦 Attachment types: \(attachment.registeredTypeIdentifiers)")
+
+            if attachment.hasItemConformingToTypeIdentifier(kUTTypeURL as String) {
+                attachment.loadItem(
+                    forTypeIdentifier: kUTTypeURL as String,
+                    options: nil
+                ) { urlItem, error in
+                    DispatchQueue.main.async {
+                        guard error == nil else {
+                            print("❌ Failed to load URL item: \(error!)")
+                            completion("")
+                            return
+                        }
+
+                        // MARK: - 2. URL 타입도 실제 HTTP/HTTPS URL인지 검증
+                        guard let url = urlItem as? URL,
+                              let scheme = url.scheme?.lowercased(),
+                              (scheme == "http" || scheme == "https"),
+                              url.host != nil
+                        else {
+                            print("❌ Invalid URL item: \(urlItem as Any)")
+                            completion("")
+                            return
+                        }
+
+                        print("✅ Shared URL (as URL): \(url.absoluteString)")
                         completion(url.absoluteString)
-                    } else {
-                        print("❌ Failed to cast as URL: \(type(of: urlItem))")
-                        completion("")
                     }
                 }
+
+                return
             }
-
-        // URL을 텍스트로 주는 경우 (YouTube 앱)
-        } else if attachment.hasItemConformingToTypeIdentifier("public.plain-text") {
-            attachment.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { (textItem, error) in
-                DispatchQueue.main.async {
-                    if let urlString = textItem as? String {
-                        print("🌀 Shared URL (as plain text): \(urlString)")
-
-                        // 인코딩된 경우도 고려
-                        let decodedOnce = urlString.removingPercentEncoding ?? urlString
-                        let decodedTwice = decodedOnce.removingPercentEncoding ?? decodedOnce
-
-                        print("🛠 Final Decoded URL: \(decodedTwice)")
-                        completion(decodedTwice)
-                    } else {
-                        print("❌ Failed to cast as String: \(type(of: textItem))")
-                        completion("")
-                    }
-                }
-            }
-
-        } else {
-            print("❌ No supported type found.")
-            completion("")
         }
+
+        // MARK: - 3. public.url이 없다면 plain-text에서 URL 탐색
+        for attachment in attachments {
+            if attachment.hasItemConformingToTypeIdentifier("public.plain-text") {
+                attachment.loadItem(
+                    forTypeIdentifier: "public.plain-text",
+                    options: nil
+                ) { textItem, error in
+                    DispatchQueue.main.async {
+                        guard error == nil else {
+                            print("❌ Failed to load plain text: \(error!)")
+                            completion("")
+                            return
+                        }
+
+                        guard let text = textItem as? String else {
+                            print("❌ Failed to cast plain text as String: \(type(of: textItem))")
+                            completion("")
+                            return
+                        }
+
+                        // Percent encoding은 한 번만 decode
+                        let decoded = text.removingPercentEncoding ?? text
+                        let trimmed = decoded.trimmingCharacters(
+                            in: .whitespacesAndNewlines
+                        )
+
+                        // plain-text가 실제 URL인지 검증
+                        guard let url = URL(string: trimmed),
+                              let scheme = url.scheme?.lowercased(),
+                              (scheme == "http" || scheme == "https"),
+                              url.host != nil
+                        else {
+                            print("❌ Plain text is not a valid URL.")
+                            print("   Raw: \(text)")
+                            print("   Decoded: \(trimmed)")
+                            completion("")
+                            return
+                        }
+
+                        print("🌀 Shared URL (as plain text): \(url.absoluteString)")
+                        completion(url.absoluteString)
+                    }
+                }
+
+                return
+            }
+        }
+
+        print("❌ No valid shared URL found.")
+        completion("")
     }
     
     /// 선택된 알림 종류를 Enum으로 변환
