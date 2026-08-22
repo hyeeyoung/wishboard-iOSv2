@@ -167,6 +167,8 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
                             if response.statusCode == 409 {
                                 self?.bottomSheetView.actionButton.stopAnimation()
                                 self?.bottomSheetView.displayErrorMessage("동일 이름의 폴더가 있어요!")
+                            } else {
+                                SnackBar.shared.show(type: .errorMessage)
                             }
                         }
                         throw error
@@ -186,6 +188,8 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
                             if response.statusCode == 409 {
                                 self?.bottomSheetView.actionButton.stopAnimation()
                                 self?.bottomSheetView.displayErrorMessage("동일 이름의 폴더가 있어요!")
+                            } else {
+                                SnackBar.shared.show(type: .errorMessage)
                             }
                         }
                         throw error
