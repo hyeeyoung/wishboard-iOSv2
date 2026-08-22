@@ -24,7 +24,7 @@ class ShareViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setUpShareView()
         setupBackgroundDimView()
         setupBottomSheet()
@@ -35,11 +35,17 @@ class ShareViewController: UIViewController {
         viewModel.fetchFolders()
         viewModel.getSharedUrl(self) { [weak self] url in
             Task {
+                // 유효한 URL을 못 뽑은 경우, 서버 호출 없이 스낵바만 노출
+                guard !url.isEmpty else {
+                    if UserManager.accessToken != nil && UserManager.refreshToken != nil {
+                        SnackBar(in: self).show(type: .failShoppingLink)
+                    }
+                    return
+                }
+
                 do {
                     // 아이템 정보 파싱
-                    if !(url.isEmpty) {
-                        self?.link = url
-                    }
+                    self?.link = url
                     try await self?.viewModel.fetchItem(link: url)
                 } catch {
                     // 파싱 실패 시 스낵바 노출
