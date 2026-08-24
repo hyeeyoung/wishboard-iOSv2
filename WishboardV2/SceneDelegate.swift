@@ -109,8 +109,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func setRootOnboarding() {
         let onboardingViewController = OnboardingViewController()
         let navigationController = UINavigationController(rootViewController: onboardingViewController)
-        self.window?.rootViewController = navigationController
-        self.window?.makeKeyAndVisible()
+        guard let window = self.window else { return }
+        window.rootViewController = navigationController
+        window.makeKeyAndVisible()
+        UIView.transition(with: window, duration: 0.3, options: [.transitionCrossDissolve], animations: nil, completion: nil)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
