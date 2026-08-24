@@ -28,6 +28,17 @@ jobs:
         with:
           ref: dev
 
+      - name: Debug runner environment
+        run: |
+          echo "USER: $USER"
+          echo "HOME: $HOME"
+          echo "PATH: $PATH"
+          echo "claude 위치: $(which claude || echo 'not found')"
+          echo "--- ~/.claude/ ---"
+          ls -la ~/.claude/ 2>&1 || echo "no such dir"
+          echo "--- claude ping ---"
+          claude --print "ping" 2>&1 | head -10 || true
+
       - name: Run Claude Code Agent
         run: |
           claude --print "
