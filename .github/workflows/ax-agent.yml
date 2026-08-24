@@ -61,5 +61,7 @@ jobs:
                - 변경 사항 한국어로 설명
           " --allowedTools "Bash,Edit,Write,mcp__github__*"
         env:
-          # ANTHROPIC_API_KEY 는 넘기지 않음 (러너의 Claude Max 플랜 OAuth 사용)
+          # LaunchAgent 컨텍스트에선 macOS Keychain 접근 불가 → CI용 장기 토큰 사용
+          # 발급: `claude setup-token` (러너 머신 터미널에서 1회)
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
