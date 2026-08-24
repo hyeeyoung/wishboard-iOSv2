@@ -168,10 +168,13 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
                                 self?.bottomSheetView.actionButton.stopAnimation()
                                 self?.bottomSheetView.displayErrorMessage("동일 이름의 폴더가 있어요!")
                             } else {
+                                self?.bottomSheetView.actionButton.stopAnimation()
                                 SnackBar.shared.show(type: .errorMessage)
                             }
+                        } else {
+                            self?.bottomSheetView.actionButton.stopAnimation()
+                            SnackBar.shared.show(type: .errorMessage)
                         }
-                        throw error
                     }
                 }
             } else {
@@ -189,10 +192,13 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
                                 self?.bottomSheetView.actionButton.stopAnimation()
                                 self?.bottomSheetView.displayErrorMessage("동일 이름의 폴더가 있어요!")
                             } else {
+                                self?.bottomSheetView.actionButton.stopAnimation()
                                 SnackBar.shared.show(type: .errorMessage)
                             }
+                        } else {
+                            self?.bottomSheetView.actionButton.stopAnimation()
+                            SnackBar.shared.show(type: .errorMessage)
                         }
-                        throw error
                     }
                 }
             }
