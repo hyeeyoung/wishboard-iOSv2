@@ -11,7 +11,11 @@ import WBNetwork
 
 final class HomeViewModel {
     @Published var items: [WishListResponse] = []
-    
+    @Published var displayedItems: [WishListResponse] = []
+    @Published var totalElements: Int = 0
+    @Published var isExcludingOwned: Bool = false
+    @Published var hasOwnedItems: Bool = false
+
     // Paging
     @Published var isLoading: Bool = false
     @Published var isRefreshing: Bool = false
@@ -19,7 +23,23 @@ final class HomeViewModel {
     private var page: Int = 0          // 서버의 data.number (0-based)
     private let pageSize: Int = 10     // 서버의 data.size와 일치
     private var cancellables = Set<AnyCancellable>()
-    
+
+    init() {
+        Publishers.CombineLatest($items, $isExcludingOwned)
+            .map { items, isExcluding in
+                isExcluding ? items.filter { $0.itemStatus != .owned } : items
+            }
+            .assign(to: &$displayedItems)
+
+        $items
+            .map { items in items.contains { $0.itemStatus == .owned } }
+            .assign(to: &$hasOwnedItems)
+    }
+
+    func toggleExcludeOwned() {
+        isExcludingOwned.toggle()
+    }
+
     /// 최초 로드 or 다음 페이지 로드
     func fetchItems(reset: Bool = false) {
         guard !isLoading, hasMore || reset else { return }
@@ -41,6 +61,10 @@ final class HomeViewModel {
                     items.append(contentsOf: itemDatas)
                 }
 
+                if reset {
+                    totalElements = response.data?.totalElements ?? 0
+                }
+
                 // 다음 페이지 여부 및 page 증가
                 hasMore = !(response.data?.last ?? true)
                 if hasMore {
@@ -53,7 +77,6 @@ final class HomeViewModel {
                 if reset { items = [] }
                 isLoading = false
                 isRefreshing = false
-                // 필요하면 에러 상태 @Published 추가해서 바인딩
             }
         }
     }
