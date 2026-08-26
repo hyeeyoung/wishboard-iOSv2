@@ -66,7 +66,7 @@ public enum Message {
     public static let item = "아이템"
     public static let folder = "폴더"
     public static let timer = "5:00"
-    public static let count = "(0/10)자"
+    public static let count = "(0/20)자"
     public static let nickName = "닉네임"
     
     // MARK: Item
