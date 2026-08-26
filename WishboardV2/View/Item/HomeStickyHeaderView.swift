@@ -13,6 +13,7 @@ import Core
 
 protocol HomeStickyHeaderDelegate: AnyObject {
     func didToggleExcludeOwned()
+    func didChangeGridColumn(_ column: GridColumnType)
 }
 
 final class HomeStickyHeaderView: UICollectionReusableView {
@@ -42,13 +43,18 @@ final class HomeStickyHeaderView: UICollectionReusableView {
     }
 
     private let gridButton = UIButton(type: .custom).then {
-        $0.setImage(UIImage(systemName: "square.grid.2x2"), for: .normal)
         $0.tintColor = .gray_700
     }
 
     private let separatorView = UIView().then {
         $0.backgroundColor = .gray_100
     }
+
+    // MARK: - Properties
+
+    private(set) var currentColumn: GridColumnType = {
+        GridColumnType(rawValue: UserManager.gridColumnType) ?? .two
+    }()
 
     // MARK: - Initializer
 
@@ -58,6 +64,7 @@ final class HomeStickyHeaderView: UICollectionReusableView {
         setupViews()
         setupConstraints()
         setupActions()
+        updateGridButtonIcon()
     }
 
     required init?(coder: NSCoder) {
@@ -105,10 +112,15 @@ final class HomeStickyHeaderView: UICollectionReusableView {
 
     private func setupActions() {
         checkboxButton.addTarget(self, action: #selector(toggleExcludeOwned), for: .touchUpInside)
+        gridButton.addTarget(self, action: #selector(gridButtonTapped), for: .touchUpInside)
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleExcludeOwned))
         excludeOwnedLabel.isUserInteractionEnabled = true
         excludeOwnedLabel.addGestureRecognizer(tapGesture)
+    }
+
+    private func updateGridButtonIcon() {
+        gridButton.setImage(UIImage(systemName: currentColumn.iconName), for: .normal)
     }
 
     // MARK: - Public Methods
@@ -130,5 +142,12 @@ final class HomeStickyHeaderView: UICollectionReusableView {
 
     @objc private func toggleExcludeOwned() {
         delegate?.didToggleExcludeOwned()
+    }
+
+    @objc private func gridButtonTapped() {
+        currentColumn = currentColumn.next
+        UserManager.gridColumnType = currentColumn.rawValue
+        updateGridButtonIcon()
+        delegate?.didChangeGridColumn(currentColumn)
     }
 }

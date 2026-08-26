@@ -11,6 +11,28 @@ import SnapKit
 import Then
 import Core
 
+public enum GridColumnType: Int {
+    case one = 1
+    case two = 2
+    case three = 3
+
+    var next: GridColumnType {
+        switch self {
+        case .one: return .two
+        case .two: return .three
+        case .three: return .one
+        }
+    }
+
+    var iconName: String {
+        switch self {
+        case .one: return "list.bullet"
+        case .two: return "square.grid.2x2"
+        case .three: return "square.grid.3x3"
+        }
+    }
+}
+
 public protocol HomeToolBarDelegate: AnyObject {
     func alarmNaviItemTap()
 }

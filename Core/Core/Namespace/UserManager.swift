@@ -67,6 +67,9 @@ public class UserManager {
     
     @UserDefault(key: UserDefaultKey.tempNickname, defaultValue: "", storage: sharedDefaults)
     public static var tempNickname: String?
+
+    @UserDefault(key: UserDefaultKey.gridColumnType, defaultValue: 2, storage: sharedDefaults)
+    public static var gridColumnType: Int
     
     /// 사용자 데이터 삭제 (로그아웃, 탈퇴)
     public static func removeUserData() {
@@ -96,5 +99,5 @@ public struct UserDefaultKey {
     public static let password = "password"
     public static let isFirstLogin = "isFirstLogin"
     public static let tempNickname = "tempNickname"
-    
+    public static let gridColumnType = "gridColumnType"
 }
