@@ -46,9 +46,7 @@ final class CalendarView: UIView {
         layout.itemSize = CGSize(width: floor(UIScreen.main.bounds.width / 7), height: 50)
 
         return UICollectionView(frame: .zero, collectionViewLayout: layout).then {
-            $0.isScrollEnabled = true
-            $0.isPagingEnabled = true
-            $0.alwaysBounceHorizontal = true
+            $0.isScrollEnabled = false
         }
     }()
 
