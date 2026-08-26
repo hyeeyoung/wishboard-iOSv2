@@ -429,7 +429,15 @@ final class ItemDetailView: UIView {
     
     private func configureCollectBtn(_ item: WishListResponse) {
         let isCollected = item.itemStatus == .owned
-        collectedItemButton.backgroundColor = isCollected ? .gray_100 : .gray_50
+        if isCollected {
+            collectedItemButton.backgroundColor = .gray_100
+            collectedItemButton.layer.borderWidth = 0
+            collectedItemButton.layer.borderColor = UIColor.clear.cgColor
+        } else {
+            collectedItemButton.backgroundColor = .white
+            collectedItemButton.layer.borderWidth = 1
+            collectedItemButton.layer.borderColor = UIColor.gray_150.cgColor
+        }
         collectedItemButton.isSelected = isCollected
     }
     
