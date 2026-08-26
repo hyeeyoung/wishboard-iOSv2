@@ -6,6 +6,7 @@ labels: agent-task
 
 ## 작업 유형
 - [ ] 신규 기능
+- [ ] 기능 개선
 - [ ] 버그 수정
 - [ ] 리팩토링
 
@@ -13,7 +14,8 @@ labels: agent-task
 <!-- 무엇을 만들거나 고쳐야 하는지 -->
 
 ## 예상 동작
-<!-- Before / After -->
+<!-- Before: -->
+<!-- After: -->
 
 ## 캡처할 화면 (선택)
 <!-- 예: WishlistView - 아이템 3개 있는 상태 -->
