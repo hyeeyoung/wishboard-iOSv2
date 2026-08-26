@@ -39,7 +39,7 @@ final class FolderBottomSheet: UIView {
         $0.spellCheckingType = .no
     }
     private let textCountLabel = UILabel().then {
-        $0.text = "(0/10)자"
+        $0.text = "(0/20)자"
         $0.font = TypoStyle.SuitD3.font
         $0.textColor = .gray_200
         $0.textAlignment = .right
@@ -59,7 +59,7 @@ final class FolderBottomSheet: UIView {
     }
     
     // MARK: - Properties
-    private var maxTextLength = 10
+    private var maxTextLength = 20
     private var cancellables = Set<AnyCancellable>()
     
     var onClose: (() -> Void)?
