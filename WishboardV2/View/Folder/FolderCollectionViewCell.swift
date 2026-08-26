@@ -27,7 +27,7 @@ final class FolderCollectionViewCell: UICollectionViewCell {
         $0.text = "폴더이름"
         $0.font = TypoStyle.SuitB2.font
         $0.textColor = .gray_700
-        $0.numberOfLines = 1
+        $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
     }
     private let itemCountLabel = UILabel().then {

@@ -30,7 +30,7 @@ final class FolderView: UIView {
     override init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
         let cellWidth = (UIScreen.main.bounds.width - 16 * 3) / 2
-        layout.itemSize = CGSize(width: cellWidth, height: cellWidth + 62)
+        layout.itemSize = CGSize(width: cellWidth, height: cellWidth + 80)
         layout.minimumLineSpacing = 16
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
