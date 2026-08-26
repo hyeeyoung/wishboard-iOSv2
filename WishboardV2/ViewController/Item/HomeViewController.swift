@@ -64,7 +64,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
     private func setupDelegates() {
         homeView.collectionView.delegate = self
-        homeView.toolbar.delegate = self
+        homeView.toolbarDelegate = self
     }
 
     private func setupBindings() {
@@ -78,10 +78,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 
     func scrollToTop() {
-        homeView.collectionView.setContentOffset(
-            CGPoint(x: 0, y: -homeView.collectionView.contentInset.top),
-            animated: true
-        )
+        homeView.collectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
 
     private func setupBackgroundDimView() {
@@ -115,6 +112,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard indexPath.section == 1 else { return }
         let item = viewModel.displayedItems[indexPath.row]
         if let itemIdx = item.id {
             UIDevice.vibrate()
@@ -146,16 +144,11 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
+        guard indexPath.section == 1 else { return }
         viewModel.loadNextIfNeeded(currentIndex: indexPath.item)
     }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let toolbarHeight = HomeView.toolbarHeight
-        let offsetY = scrollView.contentOffset.y
-        let scrolled = offsetY + toolbarHeight
-        let clampedScroll = max(0, min(toolbarHeight, scrolled))
-        homeView.toolbar.transform = CGAffineTransform(translationX: 0, y: -clampedScroll)
-    }
+
 }
 
 extension HomeViewController: HomeToolBarDelegate {
