@@ -40,30 +40,18 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         $0.font = TypoStyle.SuitB5.font
     }
     
-    // MARK: - Properties
-    
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupViews()
-        setupConstraints()
+        setupMultiColumnConstraints()
         setupActions()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        
-//        DispatchQueue.main.async {
-//            self.itemName.text = nil
-//            self.itemPrice.text = nil
-//            self.collectionTag.isHidden = true
-//        }
-//    }
     
     // MARK: - Setup
     private func setupViews() {
@@ -74,28 +62,48 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         collectionTag.addSubview(collectionTagTitle)
     }
     
-    private func setupConstraints() {
-        imageView.snp.makeConstraints { make in
+    private func setupMultiColumnConstraints() {
+        imageView.snp.remakeConstraints { make in
             make.height.equalTo(imageView.snp.width)
             make.leading.top.trailing.equalToSuperview()
         }
-        itemName.snp.makeConstraints { make in
+        itemName.snp.remakeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10)
             make.leading.trailing.equalToSuperview().inset(10)
         }
-        itemPrice.snp.makeConstraints { make in
+        itemPrice.snp.remakeConstraints { make in
             make.top.equalTo(itemName.snp.bottom).offset(8)
             make.leading.equalToSuperview().offset(10)
             make.bottom.equalToSuperview().inset(20)
         }
-        collectionTag.snp.makeConstraints { make in
+        collectionTag.snp.remakeConstraints { make in
             make.bottom.leading.equalTo(imageView)
             make.height.equalTo(22)
         }
-        collectionTagTitle.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(6)
-            make.top.bottom.equalToSuperview().inset(4)
+        itemName.numberOfLines = 1
+    }
+
+    private func setupOneColumnConstraints() {
+        imageView.snp.remakeConstraints { make in
+            make.leading.top.bottom.equalToSuperview()
+            make.width.height.equalTo(84)
         }
+        itemName.snp.remakeConstraints { make in
+            make.top.equalToSuperview().offset(10)
+            make.leading.equalTo(imageView.snp.trailing).offset(12)
+            make.trailing.equalToSuperview().inset(10)
+        }
+        itemPrice.snp.remakeConstraints { make in
+            make.leading.equalTo(imageView.snp.trailing).offset(12)
+            make.trailing.equalToSuperview().inset(10)
+            make.bottom.equalToSuperview().inset(10)
+            make.top.greaterThanOrEqualTo(itemName.snp.bottom).offset(16)
+        }
+        collectionTag.snp.remakeConstraints { make in
+            make.bottom.leading.equalTo(imageView)
+            make.height.equalTo(22)
+        }
+        itemName.numberOfLines = 2
     }
     
     private func setupActions() {
@@ -103,10 +111,15 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - Public Methods
-    func configure(with item: WishListResponse) {
+    func configure(with item: WishListResponse, columnType: GridColumnType = .two) {
+        if columnType == .one {
+            setupOneColumnConstraints()
+        } else {
+            setupMultiColumnConstraints()
+        }
+
         // item image
         if let itemImages = item.itemImages, !itemImages.isEmpty, let imgUrl = itemImages[0].itemImageUrl {
-            // 응답받은 이미지 배열 중 0번째 값 이미지 로드
             self.imageView.loadImage(from: imgUrl, placeholder: Image.emptyView)
         } else {
             self.imageView.image = Image.emptyView
@@ -135,11 +148,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         let priceText = "\(priceStr)원"
         let attributedString = NSMutableAttributedString(string: priceText)
         
-        // 숫자 부분을 굵게 설정
         let priceRange = NSRange(location: 0, length: "\(priceStr)".count)
         attributedString.addAttribute(.font, value: TypoStyle.MontserratH3.font, range: priceRange)
         
-        // '원' 부분을 작게 설정
         let currencyRange = NSRange(location: priceRange.length, length: 1)
         attributedString.addAttribute(.font, value: TypoStyle.SuitD3.font, range: currencyRange)
         

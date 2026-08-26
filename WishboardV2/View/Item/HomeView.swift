@@ -35,18 +35,24 @@ final class HomeView: UIView {
     public var refreshAction: (() -> Void)?
     private weak var stickyHeader: HomeStickyHeaderView?
 
+    private var currentColumnType: GridColumnType = {
+        GridColumnType(rawValue: UserManager.gridColumnType) ?? .two
+    }()
+
     /// 툴바 델리게이트 - 스크롤 헤더에 전달됩니다
     weak var toolbarDelegate: HomeToolBarDelegate?
 
     // MARK: - Initializers
     override init(frame: CGRect) {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: HomeView.makeLayout())
+        let initialColumn = GridColumnType(rawValue: UserManager.gridColumnType) ?? .two
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: HomeView.makeLayout(columnType: initialColumn))
         collectionView.backgroundColor = .white
         collectionView.showsVerticalScrollIndicator = false
         collectionView.contentInsetAdjustmentBehavior = .never
 
         super.init(frame: frame)
 
+        currentColumnType = initialColumn
         setupViews()
         setupConstraints()
         setupRefreshControl()
@@ -58,8 +64,9 @@ final class HomeView: UIView {
 
     // MARK: - Layout Factory
 
-    private static func makeLayout() -> UICollectionViewCompositionalLayout {
-        UICollectionViewCompositionalLayout { sectionIndex, _ in
+    private static func makeLayout(columnType: GridColumnType) -> UICollectionViewCompositionalLayout {
+        let col = columnType
+        return UICollectionViewCompositionalLayout { sectionIndex, _ in
             if sectionIndex == 0 {
                 // Section 0: 툴바 헤더만 있는 섹션 (스크롤과 함께 사라짐)
                 let dummyItem = NSCollectionLayoutItem(
@@ -83,12 +90,14 @@ final class HomeView: UIView {
                 section.boundarySupplementaryItems = [toolbarHeader]
                 return section
             } else {
-                // Section 1: 스티키헤더 + 2열 그리드 아이템
+                // Section 1: 스티키헤더 + 그리드 아이템 (열 수에 따라 동적)
                 let screenWidth = UIScreen.main.bounds.width
-                let cellHeight = screenWidth / 2 + 70
+                let count = col.rawValue
+                let cellHeight: CGFloat = col == .one ? 84 : (screenWidth / CGFloat(count) + 70)
+
                 let item = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .fractionalWidth(0.5),
+                        widthDimension: .fractionalWidth(1.0 / CGFloat(count)),
                         heightDimension: .absolute(cellHeight)
                     )
                 )
@@ -98,7 +107,7 @@ final class HomeView: UIView {
                         heightDimension: .absolute(cellHeight)
                     ),
                     repeatingSubitem: item,
-                    count: 2
+                    count: count
                 )
                 let section = NSCollectionLayoutSection(group: group)
 
@@ -207,7 +216,7 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
         }
 
         if let item = viewModel?.displayedItems[indexPath.row] {
-            cell.configure(with: item)
+            cell.configure(with: item, columnType: currentColumnType)
         }
         return cell
     }
@@ -256,5 +265,12 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
 extension HomeView: HomeStickyHeaderDelegate {
     func didToggleExcludeOwned() {
         viewModel?.toggleExcludeOwned()
+    }
+
+    func didChangeGridColumn(_ column: GridColumnType) {
+        currentColumnType = column
+        let newLayout = HomeView.makeLayout(columnType: column)
+        collectionView.setCollectionViewLayout(newLayout, animated: false)
+        collectionView.reloadData()
     }
 }
