@@ -81,3 +81,21 @@ final public class HomeToolBar: UIView {
         }
     }
 }
+
+// MARK: - HomeToolBarHeaderView
+
+final class HomeToolBarHeaderView: UICollectionReusableView {
+    static let reuseIdentifier = "HomeToolBarHeaderView"
+
+    let toolBar = HomeToolBar()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        addSubview(toolBar)
+        toolBar.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+}

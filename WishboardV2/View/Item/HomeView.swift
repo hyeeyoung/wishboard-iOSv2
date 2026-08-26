@@ -13,9 +13,8 @@ import Combine
 import Core
 
 final class HomeView: UIView {
-    
+
     // MARK: - Views
-    public let toolbar = HomeToolBar()
     public let collectionView: UICollectionView
     private let emptyLabel = UILabel().then {
         $0.text = "앗, 아이템이 없어요!\n갖고 싶은 아이템을 등록해 보세요!"
@@ -25,72 +24,144 @@ final class HomeView: UIView {
         $0.textAlignment = .center
         $0.isHidden = true
     }
-    
+
     // MARK: - Properties
-    
+
+    static let toolbarHeight: CGFloat = 52
+    static let stickyHeaderHeight: CGFloat = 44
+
     private var viewModel: HomeViewModel?
     private let refreshControl = UIRefreshControl()
     public var refreshAction: (() -> Void)?
-    
+    private weak var stickyHeader: HomeStickyHeaderView?
+
+    /// 툴바 델리게이트 - 스크롤 헤더에 전달됩니다
+    weak var toolbarDelegate: HomeToolBarDelegate?
+
     // MARK: - Initializers
     override init(frame: CGRect) {
-        let layout = UICollectionViewFlowLayout()
-        let cellWidth = UIScreen.main.bounds.width / 2
-        layout.itemSize = CGSize(width: cellWidth, height: cellWidth + 70)
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
-        
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: HomeView.makeLayout())
         collectionView.backgroundColor = .white
         collectionView.showsVerticalScrollIndicator = false
-        
+        collectionView.contentInsetAdjustmentBehavior = .never
+
         super.init(frame: frame)
-        
+
         setupViews()
         setupConstraints()
         setupRefreshControl()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    // MARK: - Layout Factory
+
+    private static func makeLayout() -> UICollectionViewCompositionalLayout {
+        UICollectionViewCompositionalLayout { sectionIndex, _ in
+            if sectionIndex == 0 {
+                // Section 0: 툴바 헤더만 있는 섹션 (스크롤과 함께 사라짐)
+                let dummyItem = NSCollectionLayoutItem(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(0))
+                )
+                let dummyGroup = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(0)),
+                    subitems: [dummyItem]
+                )
+                let section = NSCollectionLayoutSection(group: dummyGroup)
+
+                let toolbarHeader = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .absolute(HomeView.toolbarHeight)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )
+                toolbarHeader.pinToVisibleBounds = false
+                section.boundarySupplementaryItems = [toolbarHeader]
+                return section
+            } else {
+                // Section 1: 스티키헤더 + 2열 그리드 아이템
+                let screenWidth = UIScreen.main.bounds.width
+                let cellHeight = screenWidth / 2 + 70
+                let item = NSCollectionLayoutItem(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(0.5),
+                        heightDimension: .absolute(cellHeight)
+                    )
+                )
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .absolute(cellHeight)
+                    ),
+                    repeatingSubitem: item,
+                    count: 2
+                )
+                let section = NSCollectionLayoutSection(group: group)
+
+                let stickyHeader = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .absolute(HomeView.stickyHeaderHeight)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )
+                stickyHeader.pinToVisibleBounds = true
+                section.boundarySupplementaryItems = [stickyHeader]
+                return section
+            }
+        }
+    }
+
     // MARK: - Setup
     private func setupViews() {
-        addSubview(toolbar)
         addSubview(collectionView)
         addSubview(emptyLabel)
-        
-        collectionView.register(WishItemCollectionViewCell.self, forCellWithReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier)
+
+        collectionView.register(
+            WishItemCollectionViewCell.self,
+            forCellWithReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier
+        )
+        collectionView.register(
+            HomeToolBarHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: HomeToolBarHeaderView.reuseIdentifier
+        )
+        collectionView.register(
+            HomeStickyHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: HomeStickyHeaderView.reuseIdentifier
+        )
     }
-    
+
     private func setupConstraints() {
-        toolbar.configure()
-        
         collectionView.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview()
-            make.top.equalTo(toolbar.snp.bottom)
-            make.bottom.equalToSuperview()
+            make.edges.equalToSuperview()
         }
         emptyLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(HomeView.toolbarHeight / 2)
         }
     }
-    
+
     private func setupRefreshControl() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refreshControl
     }
-    
+
     @objc private func handleRefresh() {
         self.refreshAction?()
     }
-    
+
     // MARK: - Public Methods
     func configure(with viewModel: HomeViewModel) {
         self.viewModel = viewModel
-        
-        viewModel.$items
+
+        viewModel.$displayedItems
             .receive(on: RunLoop.main)
             .sink { [weak self] items in
                 self?.refreshControl.endRefreshing()
@@ -98,26 +169,92 @@ final class HomeView: UIView {
                 self?.collectionView.reloadData()
             }
             .store(in: &cancellables)
-        
+
+        Publishers.CombineLatest3(viewModel.$totalElements, viewModel.$hasOwnedItems, viewModel.$isExcludingOwned)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] totalElements, hasOwnedItems, isExcluding in
+                self?.stickyHeader?.configure(
+                    totalCount: totalElements,
+                    hasOwnedItems: hasOwnedItems,
+                    isExcludingOwned: isExcluding
+                )
+            }
+            .store(in: &cancellables)
+
         collectionView.dataSource = self
     }
-    
+
     private var cancellables = Set<AnyCancellable>()
 }
 
 extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel?.items.count ?? 0
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
     }
-    
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return section == 1 ? (viewModel?.displayedItems.count ?? 0) : 0
+    }
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier, for: indexPath) as? WishItemCollectionViewCell else {
+        guard indexPath.section == 1,
+              let cell = collectionView.dequeueReusableCell(
+                  withReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier,
+                  for: indexPath
+              ) as? WishItemCollectionViewCell else {
             return UICollectionViewCell()
         }
-        
-        if let item = viewModel?.items[indexPath.row] {
+
+        if let item = viewModel?.displayedItems[indexPath.row] {
             cell.configure(with: item)
         }
         return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader else {
+            return UICollectionReusableView()
+        }
+
+        if indexPath.section == 0 {
+            guard let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: HomeToolBarHeaderView.reuseIdentifier,
+                for: indexPath
+            ) as? HomeToolBarHeaderView else {
+                return UICollectionReusableView()
+            }
+            header.toolBar.delegate = toolbarDelegate
+            return header
+        } else {
+            guard let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: HomeStickyHeaderView.reuseIdentifier,
+                for: indexPath
+            ) as? HomeStickyHeaderView else {
+                return UICollectionReusableView()
+            }
+
+            header.delegate = self
+            stickyHeader = header
+
+            if let vm = viewModel {
+                header.configure(
+                    totalCount: vm.totalElements,
+                    hasOwnedItems: vm.hasOwnedItems,
+                    isExcludingOwned: vm.isExcludingOwned
+                )
+            }
+            return header
+        }
+    }
+}
+
+extension HomeView: HomeStickyHeaderDelegate {
+    func didToggleExcludeOwned() {
+        viewModel?.toggleExcludeOwned()
     }
 }

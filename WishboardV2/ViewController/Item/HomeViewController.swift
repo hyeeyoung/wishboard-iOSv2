@@ -12,46 +12,46 @@ import Core
 import WBNetwork
 
 final class HomeViewController: UIViewController, ItemDetailDelegate {
-    
+
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
-    
+
     private let backgroundDimView = UIView()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         self.navigationController?.navigationBar.isHidden = true
-        
+
         setupNotifications()
         setupUI()
         setupDelegates()
         setupBackgroundDimView()
         setupBottomSheet()
         setupBindings()
-        
+
         self.refreshItems()
-        
+
         // 앱 이용방법
         guard let isFirstLogin = UserManager.isFirstLogin else { return }
         if isFirstLogin {
             self.showAppGuideSheet()
         }
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = false
     }
-    
+
     private func setupNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(refreshItems), name: .ItemUpdated, object: nil)
     }
-    
+
     private func setupUI() {
         view.addSubview(homeView)
         homeView.snp.makeConstraints { make in
@@ -61,49 +61,47 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         }
         homeView.configure(with: viewModel)
     }
-    
+
     private func setupDelegates() {
         homeView.collectionView.delegate = self
-        homeView.toolbar.delegate = self
+        homeView.toolbarDelegate = self
     }
-    
+
     private func setupBindings() {
         homeView.refreshAction = { [weak self] in
             self?.refreshItems()
         }
     }
-    
+
     @objc func refreshItems() {
         viewModel.fetchItems(reset: true)
     }
-    
+
     func scrollToTop() {
-        if homeView.collectionView.numberOfSections > 0, homeView.collectionView.numberOfItems(inSection: 0) > 0 {
-            homeView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
-        }
+        homeView.collectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
-    
+
     private func setupBackgroundDimView() {
         backgroundDimView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
         backgroundDimView.alpha = 0.0 // 초기에는 투명하게 설정
         view.addSubview(backgroundDimView)
-        
+
         backgroundDimView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
-    
+
     private func setupBottomSheet() {
-        
+
     }
-    
+
     /// 앱 가이드 시트 노출
     private func showAppGuideSheet() {
         DispatchQueue.main.async {
             let guideVC = AppGuideSheetViewController()
             guideVC.modalPresentationStyle = .overFullScreen // 화면 전체 덮기
             guideVC.modalTransitionStyle = .crossDissolve // 부드러운 애니메이션
-            
+
             guideVC.onDismiss = {
                 UserManager.isFirstLogin = false
             }
@@ -114,36 +112,43 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = viewModel.items[indexPath.row]
+        guard indexPath.section == 1 else { return }
+        let item = viewModel.displayedItems[indexPath.row]
         if let itemIdx = item.id {
             UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
             detailViewController.hidesBottomBarWhenPushed = true
-            
-            detailViewController.editAction = { [weak self] item in
-                guard let item = item else { return }
-                self?.viewModel.items[indexPath.item] = item
+
+            detailViewController.editAction = { [weak self] updatedItem in
+                guard let updatedItem = updatedItem else { return }
+                if let idx = self?.viewModel.items.firstIndex(where: { $0.id == updatedItem.id }) {
+                    self?.viewModel.items[idx] = updatedItem
+                }
             }
-            
-            detailViewController.deleteAction = { [weak self] id in
+
+            detailViewController.deleteAction = { [weak self] _ in
                 self?.viewModel.items.removeAll { $0.id == item.id }
             }
-            
+
             detailViewController.collectionChangeAction = { [weak self] isCollected in
                 guard let self = self else { return }
-                self.viewModel.items[indexPath.item].itemStatus = isCollected ? .owned : .wish
-                self.homeView.collectionView.reloadItems(at: [indexPath])
+                if let idx = self.viewModel.items.firstIndex(where: { $0.id == item.id }) {
+                    self.viewModel.items[idx].itemStatus = isCollected ? .owned : .wish
+                }
             }
-            
+
             navigationController?.pushViewController(detailViewController, animated: true)
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView,
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
+        guard indexPath.section == 1 else { return }
         viewModel.loadNextIfNeeded(currentIndex: indexPath.item)
     }
+
+
 }
 
 extension HomeViewController: HomeToolBarDelegate {
