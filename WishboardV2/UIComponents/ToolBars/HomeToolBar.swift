@@ -43,7 +43,7 @@ final public class HomeToolBar: UIView {
     
     // MARK: - Views
     private let logo = UIImageView().then {
-        $0.image = Image.wishboardLogo
+        $0.image = Image.homeLogo
     }
     
     private let alarmButton = UIButton().then {
@@ -75,8 +75,8 @@ final public class HomeToolBar: UIView {
         logo.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
-            make.width.equalTo(147.94)
-            make.height.equalTo(18)
+            make.width.equalTo(110.44)
+            make.height.equalTo(19.17)
         }
         
         alarmButton.snp.makeConstraints { make in

@@ -24,30 +24,25 @@ final class HomeStickyHeaderView: UICollectionReusableView {
     // MARK: - Views
 
     private let totalCountLabel = UILabel().then {
-        $0.setTypoStyleWithSingleLine(typoStyle: .SuitB3)
-        $0.textColor = .gray_700
+        $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
+        $0.textColor = .gray_200
     }
 
     private let checkboxButton = UIButton(type: .custom).then {
-        $0.setImage(UIImage(systemName: "square"), for: .normal)
-        $0.setImage(UIImage(systemName: "checkmark.square.fill"), for: .selected)
-        $0.tintColor = .gray_300
+        $0.setImage(.ownedCircle, for: .normal)
+        $0.setImage(.ownedCircleCheck, for: .selected)
         $0.isHidden = true
     }
 
     private let excludeOwnedLabel = UILabel().then {
         $0.text = "소장템 제외"
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
-        $0.textColor = .gray_600
+        $0.textColor = .gray_200
         $0.isHidden = true
     }
 
     private let gridButton = UIButton(type: .custom).then {
-        $0.tintColor = .gray_700
-    }
-
-    private let separatorView = UIView().then {
-        $0.backgroundColor = .gray_100
+        $0.tintColor = .gray_300
     }
 
     // MARK: - Properties
@@ -78,7 +73,6 @@ final class HomeStickyHeaderView: UICollectionReusableView {
         addSubview(checkboxButton)
         addSubview(excludeOwnedLabel)
         addSubview(gridButton)
-        addSubview(separatorView)
     }
 
     private func setupConstraints() {
@@ -94,19 +88,14 @@ final class HomeStickyHeaderView: UICollectionReusableView {
         }
 
         excludeOwnedLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(gridButton.snp.leading).offset(-12)
+            make.trailing.equalTo(gridButton.snp.leading).offset(-10)
             make.centerY.equalToSuperview()
         }
 
         checkboxButton.snp.makeConstraints { make in
-            make.trailing.equalTo(excludeOwnedLabel.snp.leading).offset(-4)
+            make.trailing.equalTo(excludeOwnedLabel.snp.leading).offset(-5)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(18)
-        }
-
-        separatorView.snp.makeConstraints { make in
-            make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(1)
+            make.width.height.equalTo(14)
         }
     }
 
@@ -120,7 +109,16 @@ final class HomeStickyHeaderView: UICollectionReusableView {
     }
 
     private func updateGridButtonIcon() {
-        gridButton.setImage(UIImage(systemName: currentColumn.iconName), for: .normal)
+        var gridIconImage: UIImage = .icGrid2
+        switch currentColumn {
+        case .one:
+            gridIconImage = .icGrid1
+        case .two:
+            gridIconImage = .icGrid2
+        case .three:
+            gridIconImage = .icGrid3
+        }
+        gridButton.setImage(gridIconImage, for: .normal)
     }
 
     // MARK: - Public Methods
@@ -132,10 +130,6 @@ final class HomeStickyHeaderView: UICollectionReusableView {
         excludeOwnedLabel.isHidden = !hasOwnedItems
 
         checkboxButton.isSelected = isExcludingOwned
-        let tintColor: UIColor = isExcludingOwned
-            ? UIColor(red: 104/255, green: 114/255, blue: 235/255, alpha: 1)
-            : UIColor(red: 133/255, green: 133/255, blue: 133/255, alpha: 1)
-        checkboxButton.tintColor = tintColor
     }
 
     // MARK: - Actions

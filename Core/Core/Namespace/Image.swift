@@ -32,6 +32,15 @@ public enum Image{
     // Alarm
     public static let notice = UIImage(named: "notice")!
     
+    // 소장템 제외
+    public static let ownedCircle = UIImage(named: "owned_circle")!
+    public static let ownedCircleCheck = UIImage(named: "owned_circle_check")!
+    
+    // 그리드 Grid
+    public static let grid1 = UIImage(named: "ic_grid1")!
+    public static let grid2 = UIImage(named: "ic_grid2")!
+    public static let grid3 = UIImage(named: "ic_grid3")!
+    
     // cart
     public static let cartIcon = UIImage(named: "cart")!
     public static let cartPlus = UIImage(named: "ic_cart_plus")!
@@ -75,6 +84,10 @@ public enum Image{
     public static let homeAppLogo = UIImage(named: "home_app_logo")!
     public static let blackLogo = UIImage(named: "blackLogo")!
     public static let wishboardLogo = UIImage(named: "WishBoardLogo")!
+    // 로고 신규 버전 (GUI 3.0.0)
+    public static let homeLogo = UIImage(named: "home_logo")!
+    public static let splashLogo = UIImage(named: "splash_logo")!
+    public static let onboardingLogo = UIImage(named: "onboarding_logo")!
     
     // MARK: - Tab Bar Icons
     public static let addTab = UIImage(named: "add")!

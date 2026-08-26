@@ -28,7 +28,7 @@ final class HomeView: UIView {
     // MARK: - Properties
 
     static let toolbarHeight: CGFloat = 52
-    static let stickyHeaderHeight: CGFloat = 44
+    static let stickyHeaderHeight: CGFloat = 36
 
     private var viewModel: HomeViewModel?
     private let refreshControl = UIRefreshControl()
@@ -49,6 +49,7 @@ final class HomeView: UIView {
         collectionView.backgroundColor = .white
         collectionView.showsVerticalScrollIndicator = false
         collectionView.contentInsetAdjustmentBehavior = .never
+        collectionView.contentInset.bottom = 90
 
         super.init(frame: frame)
 
@@ -93,7 +94,16 @@ final class HomeView: UIView {
                 // Section 1: 스티키헤더 + 그리드 아이템 (열 수에 따라 동적)
                 let screenWidth = UIScreen.main.bounds.width
                 let count = col.rawValue
-                let cellHeight: CGFloat = col == .one ? 84 : (screenWidth / CGFloat(count) + 70)
+                
+                var cellHeight: CGFloat = 104
+                switch col {
+                case .one:
+                    cellHeight = 104
+                case .two:
+                    cellHeight = (screenWidth / CGFloat(count)) * 1.5
+                case .three:
+                    cellHeight = (screenWidth / CGFloat(count)) * 1.88
+                }
 
                 let item = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(
@@ -269,8 +279,18 @@ extension HomeView: HomeStickyHeaderDelegate {
 
     func didChangeGridColumn(_ column: GridColumnType) {
         currentColumnType = column
-        let newLayout = HomeView.makeLayout(columnType: column)
-        collectionView.setCollectionViewLayout(newLayout, animated: false)
+        collectionView.setCollectionViewLayout(
+            HomeView.makeLayout(columnType: column),
+            animated: false
+        )
+        collectionView.layoutIfNeeded()
+        collectionView.setContentOffset(
+            CGPoint(
+                x: 0,
+                y: -collectionView.adjustedContentInset.top
+            ),
+            animated: false
+        )
         collectionView.reloadData()
     }
 }

@@ -18,16 +18,16 @@ final class OnboardingView: UIView {
     private let handImage = UIImageView().then{
         $0.image = Image.wavingHand
     }
-    // Wish Board Logo Image
-    private let logoImage = UIImageView().then{
-        $0.image = Image.wishboardLogo
-    }
     // Onbarding label
     private let onboardingLabel = UILabel().then{
         $0.text = Message.onboarding
         $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
         $0.numberOfLines = 0
         $0.textAlignment = .center
+    }
+    // Wish Board Logo Image
+    private let logoImage = UIImageView().then{
+        $0.image = Image.onboardingLogo
     }
     // 가입하기 버튼
     public lazy var registerButton = UIButton().then{
@@ -85,27 +85,27 @@ final class OnboardingView: UIView {
     
     // MARK: - Layouts
     private func setupViews() {
+        addSubview(onboardingLabel)
         addSubview(logoImage)
         addSubview(handImage)
-        addSubview(onboardingLabel)
         addSubview(loginLabel)
         addSubview(registerButton)
     }
     
     private func setupConstraints() {
-        self.logoImage.snp.makeConstraints { make in
-            make.width.equalTo(192)
-            make.height.equalTo(24)
+        self.onboardingLabel.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
+        }
+        self.logoImage.snp.makeConstraints { make in
+            make.width.equalTo(98)
+            make.height.equalTo(17.01)
+            make.top.equalTo(onboardingLabel.snp.bottom).offset(27)
+            make.centerX.equalToSuperview()
         }
         self.handImage.snp.makeConstraints { make in
             make.width.height.equalTo(72)
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(logoImage.snp.top).offset(-24)
-        }
-        self.onboardingLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(logoImage.snp.bottom).offset(16)
+            make.bottom.equalTo(onboardingLabel.snp.top).offset(-24)
         }
         self.loginLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

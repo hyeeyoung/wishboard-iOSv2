@@ -13,7 +13,7 @@ import WBNetwork
 class SplashViewController: UIViewController {
     
     private let logo = UIImageView().then {
-        $0.image = Image.wishboardLogo
+        $0.image = Image.splashLogo
     }
     private let debugVersion = UILabel().then {
         $0.text = "Version: \(Bundle.appVersion)(\(Bundle.appBuildVersion))\nServer: \(NetworkMacro.BaseURL)"
@@ -34,7 +34,7 @@ class SplashViewController: UIViewController {
         
         logo.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(56)
+            make.leading.trailing.equalToSuperview().inset(72)
         }
         
         #if DEBUG

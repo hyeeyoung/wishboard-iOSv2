@@ -436,7 +436,7 @@ final class ItemDetailView: UIView {
         } else {
             collectedItemButton.backgroundColor = .white
             collectedItemButton.layer.borderWidth = 1
-            collectedItemButton.layer.borderColor = UIColor.gray_150.cgColor
+            collectedItemButton.layer.borderColor = UIColor.gray_100.cgColor
         }
         collectedItemButton.isSelected = isCollected
     }

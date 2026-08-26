@@ -25,7 +25,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     }
     let itemName = UILabel().then{
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
-        $0.numberOfLines = 1
         $0.lineBreakMode = .byTruncatingTail
     }
     let itemPrice = UILabel().then{
@@ -45,7 +44,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         
         setupViews()
-        setupMultiColumnConstraints()
+        setupTwoColumnConstraints()
         setupActions()
     }
     
@@ -62,7 +61,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         collectionTag.addSubview(collectionTagTitle)
     }
     
-    private func setupMultiColumnConstraints() {
+    private func setupTwoColumnConstraints() {
         imageView.snp.remakeConstraints { make in
             make.height.equalTo(imageView.snp.width)
             make.leading.top.trailing.equalToSuperview()
@@ -74,36 +73,77 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         itemPrice.snp.remakeConstraints { make in
             make.top.equalTo(itemName.snp.bottom).offset(8)
             make.leading.equalToSuperview().offset(10)
-            make.bottom.equalToSuperview().inset(20)
+            make.bottom.lessThanOrEqualToSuperview().inset(20)
         }
         collectionTag.snp.remakeConstraints { make in
             make.bottom.leading.equalTo(imageView)
             make.height.equalTo(22)
         }
-        itemName.numberOfLines = 1
+        collectionTagTitle.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(6)
+            make.top.bottom.equalToSuperview()
+        }
+        itemName.numberOfLines = 2
+        imageView.layer.cornerRadius = 0
+        imageView.clipsToBounds = true
+    }
+    
+    private func setupTripleColumnConstraints() {
+        imageView.snp.remakeConstraints { make in
+            make.height.equalTo(imageView.snp.width)
+            make.leading.top.trailing.equalToSuperview()
+        }
+        itemName.snp.remakeConstraints { make in
+            make.top.equalTo(imageView.snp.bottom).offset(10)
+            make.leading.trailing.equalToSuperview().inset(10)
+        }
+        itemPrice.snp.remakeConstraints { make in
+            make.top.equalTo(itemName.snp.bottom).offset(8)
+            make.leading.equalToSuperview().offset(10)
+            make.bottom.lessThanOrEqualToSuperview().inset(20)
+        }
+        collectionTag.snp.remakeConstraints { make in
+            make.bottom.leading.equalTo(imageView)
+            make.height.equalTo(22)
+        }
+        collectionTagTitle.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(6)
+            make.top.bottom.equalToSuperview()
+        }
+        itemName.numberOfLines = 3
+        imageView.layer.cornerRadius = 0
+        imageView.clipsToBounds = true
     }
 
     private func setupOneColumnConstraints() {
         imageView.snp.remakeConstraints { make in
-            make.leading.top.bottom.equalToSuperview()
+            make.top.bottom.equalToSuperview().inset(10)
             make.width.height.equalTo(84)
+            make.leading.equalToSuperview().offset(16)
         }
         itemName.snp.remakeConstraints { make in
-            make.top.equalToSuperview().offset(10)
-            make.leading.equalTo(imageView.snp.trailing).offset(12)
-            make.trailing.equalToSuperview().inset(10)
+            make.top.equalTo(imageView)
+            make.leading.equalTo(imageView.snp.trailing).offset(10)
+            make.trailing.equalToSuperview().inset(16)
         }
         itemPrice.snp.remakeConstraints { make in
-            make.leading.equalTo(imageView.snp.trailing).offset(12)
-            make.trailing.equalToSuperview().inset(10)
-            make.bottom.equalToSuperview().inset(10)
+            make.trailing.equalToSuperview().inset(16)
+            make.bottom.equalTo(imageView)
             make.top.greaterThanOrEqualTo(itemName.snp.bottom).offset(16)
         }
         collectionTag.snp.remakeConstraints { make in
-            make.bottom.leading.equalTo(imageView)
+            make.bottom.equalTo(imageView)
+            make.leading.equalTo(imageView.snp.trailing).offset(10)
+            make.trailing.lessThanOrEqualTo(itemPrice.snp.leading).offset(-10)
             make.height.equalTo(22)
         }
+        collectionTagTitle.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(6)
+            make.top.bottom.equalToSuperview()
+        }
         itemName.numberOfLines = 2
+        imageView.layer.cornerRadius = 10
+        imageView.clipsToBounds = true
     }
     
     private func setupActions() {
@@ -112,10 +152,13 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     func configure(with item: WishListResponse, columnType: GridColumnType = .two) {
-        if columnType == .one {
+        switch columnType {
+        case .one:
             setupOneColumnConstraints()
-        } else {
-            setupMultiColumnConstraints()
+        case .two:
+            setupTwoColumnConstraints()
+        case .three:
+            setupTripleColumnConstraints()
         }
 
         // item image
