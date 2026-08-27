@@ -34,7 +34,7 @@ class SplashViewController: UIViewController {
         
         logo.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(72)
+//            make.leading.trailing.lessThanOrEqualToSuperview().inset(72)
         }
         
         #if DEBUG
