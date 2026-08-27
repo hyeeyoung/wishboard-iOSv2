@@ -137,6 +137,7 @@ final class CalendarViewController: UIViewController {
     
     private func addTargets() {
         calendarView.quitButton.addTarget(self, action: #selector(quitCalenderView), for: .touchUpInside)
+        setupSwipeGesture()
     }
     
     @objc private func quitCalenderView() {
@@ -269,38 +270,71 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-// MARK: - ScrollView Delegates
-extension CalendarViewController: UIScrollViewDelegate {
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let velocity = scrollView.panGestureRecognizer.velocity(in: scrollView) // 스와이프 속도 감지
+// MARK: - Swipe Gesture
+extension CalendarViewController: UIGestureRecognizerDelegate {
+    func setupSwipeGesture() {
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(handleCalendarPan(_:)))
+        pan.delegate = self
+        calendarView.collectionView.addGestureRecognizer(pan)
+    }
 
-        if velocity.x < -500 {
-            viewModel.moveToNextMonth() // 🔥 오른쪽으로 스와이프 → 다음 달
-            animateCalendarSlide(to: .left)
-        } else if velocity.x > 500 {
-            viewModel.moveToPreviousMonth() // 🔥 왼쪽으로 스와이프 → 이전 달
-            animateCalendarSlide(to: .right)
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let pan = gestureRecognizer as? UIPanGestureRecognizer else { return true }
+        let velocity = pan.velocity(in: gestureRecognizer.view)
+        return abs(velocity.x) > abs(velocity.y)
+    }
+
+    @objc private func handleCalendarPan(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: calendarView.collectionView)
+        let velocity = gesture.velocity(in: calendarView.collectionView)
+        let cv = calendarView.collectionView
+
+        switch gesture.state {
+        case .changed:
+            cv.transform = CGAffineTransform(translationX: translation.x, y: 0)
+
+        case .ended, .cancelled:
+            let width = cv.bounds.width
+            let shouldCommit = gesture.state == .ended
+                && (abs(velocity.x) > 300 || abs(translation.x) > width * 0.3)
+
+            if shouldCommit {
+                let goingLeft = velocity.x < 0 || (abs(velocity.x) < 50 && translation.x < 0)
+
+                guard let snapshot = cv.snapshotView(afterScreenUpdates: false) else {
+                    cv.transform = .identity
+                    return
+                }
+                snapshot.frame = cv.frame
+                snapshot.transform = cv.transform
+                cv.superview?.insertSubview(snapshot, aboveSubview: cv)
+
+                let incomingX: CGFloat = goingLeft ? width : -width
+                cv.transform = CGAffineTransform(translationX: incomingX, y: 0)
+
+                if goingLeft {
+                    viewModel.moveToNextMonth()
+                } else {
+                    viewModel.moveToPreviousMonth()
+                }
+                viewModel.updateCalendarDays()
+
+                let outgoingX: CGFloat = goingLeft ? -width : width
+                UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut]) {
+                    snapshot.transform = CGAffineTransform(translationX: outgoingX, y: 0)
+                    cv.transform = .identity
+                } completion: { _ in
+                    snapshot.removeFromSuperview()
+                }
+
+            } else {
+                UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut]) {
+                    cv.transform = .identity
+                }
+            }
+
+        default:
+            break
         }
-        viewModel.updateCalendarDays()
     }
-    
-    func animateCalendarSlide(to direction: SlideDirection) {
-        let calendarView = self.calendarView.collectionView
-        let animationOffset: CGFloat = 50
-        let offsetX = (direction == .left) ? animationOffset : -animationOffset
-
-        calendarView.transform = CGAffineTransform(translationX: offsetX, y: 0)
-        calendarView.alpha = 0.0
-
-        UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseOut], animations: {
-            calendarView.transform = .identity
-            calendarView.alpha = 1.0
-        })
-    }
-}
-
-/// 애니메이팅 시 필요한 Enum - slide direction
-enum SlideDirection {
-    case left
-    case right
 }
