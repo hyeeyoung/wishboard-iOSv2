@@ -94,6 +94,7 @@ final class AddView: UIView {
     public weak var delegate: ActiveFieldDelegate?
     private let viewModel: AddViewModel
     private var cancellables = Set<AnyCancellable>()
+    private var isReordering = false
     
     // MARK: - Init
     init(viewModel: AddViewModel) {
@@ -136,6 +137,10 @@ final class AddView: UIView {
             make.height.equalTo(100)
             make.trailing.equalToSuperview()
         }
+
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        longPress.minimumPressDuration = 0.4
+        collectionView.addGestureRecognizer(longPress)
         
         stackView.snp.makeConstraints { make in
             make.top.equalTo(collectionView.snp.bottom).offset(12)
@@ -217,7 +222,24 @@ final class AddView: UIView {
     
     public func updateImages(_ images: [UIImage]) {
         selectedImages = images
+        guard !isReordering else { return }
         collectionView.reloadData()
+    }
+
+    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+        let location = gesture.location(in: collectionView)
+        switch gesture.state {
+        case .began:
+            guard let indexPath = collectionView.indexPathForItem(at: location),
+                  indexPath.item > 0 else { return }
+            collectionView.beginInteractiveMovementForItem(at: indexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(location)
+        case .ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
     }
     
     @objc func priceTextBegin(_ textField: UITextField) {
@@ -259,15 +281,39 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
             return
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 100, height: 100)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 8
+    }
+
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return indexPath.item > 0
+    }
+
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, toIndexPath destinationIndexPath: IndexPath) {
+        let fromIndex = sourceIndexPath.item - 1
+        let toIndex = destinationIndexPath.item - 1
+
+        let movedImage = selectedImages.remove(at: fromIndex)
+        selectedImages.insert(movedImage, at: toIndex)
+
+        isReordering = true
+        viewModel.selectedImages = selectedImages
+        viewModel.imageChanged = true
+
+        DispatchQueue.main.async { [weak self] in
+            self?.isReordering = false
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        return proposedIndexPath.item == 0 ? IndexPath(item: 1, section: 0) : proposedIndexPath
     }
 }
