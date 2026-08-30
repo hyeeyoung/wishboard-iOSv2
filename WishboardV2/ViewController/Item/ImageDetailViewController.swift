@@ -35,14 +35,13 @@ final class ImageDetailViewController: UIViewController {
     }()
 
     private let pageControl = UIPageControl().then {
-        $0.currentPageIndicatorTintColor = .white
-        $0.pageIndicatorTintColor = UIColor.white.withAlphaComponent(0.4)
+        $0.currentPageIndicatorTintColor = .white_10
+        $0.pageIndicatorTintColor = .gray_300
         $0.transform = CGAffineTransform(scaleX: 0.857, y: 0.857)
     }
 
     private let closeButton = UIButton(type: .custom).then {
-        $0.setImage(Image.whiteQuit, for: .normal)
-        $0.tintColor = .white
+        $0.setImage(Image.xCircle, for: .normal)
     }
 
     // MARK: - Init
@@ -100,14 +99,14 @@ final class ImageDetailViewController: UIViewController {
         }
 
         closeButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(12)
-            make.leading.equalToSuperview().offset(16)
-            make.size.equalTo(24)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.trailing.equalToSuperview().offset(-10)
+            make.size.equalTo(36)
         }
 
         pageControl.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-36)
             make.height.equalTo(6)
         }
     }
@@ -223,9 +222,9 @@ private final class ImageDetailCell: UICollectionViewCell {
     func configure(url: String?) {
         scrollView.setZoomScale(1.0, animated: false)
         if let urlString = url {
-            imageView.loadImage(from: urlString, placeholder: Image.emptyView)
+            imageView.loadImage(from: urlString, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            imageView.image = Image.emptyView
+            imageView.image = Image.logoIcon.withTintColor(.gray_100)
         }
     }
 

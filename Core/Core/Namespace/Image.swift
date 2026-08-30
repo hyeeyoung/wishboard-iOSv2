@@ -70,6 +70,7 @@ public enum Image{
     public static let quit = UIImage(named: "x")!
     
     public static let whiteQuit = UIImage(named: "white_x")!
+    public static let xCircle = UIImage(named: "image_x_circle")!
     
     // profile
     public static let defaultProfile = UIImage(named: "defaultProfile")!
