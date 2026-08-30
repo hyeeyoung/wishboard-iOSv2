@@ -19,7 +19,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     // MARK: - Views
     
     let imageView = UIImageView().then{
-        $0.backgroundColor = .black_5
+        $0.backgroundColor = .black_04
         $0.clipsToBounds = true
         $0.contentMode = .scaleAspectFill
     }
@@ -163,9 +163,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
 
         // item image
         if let itemImages = item.itemImages, !itemImages.isEmpty, let imgUrl = itemImages[0].itemImageUrl {
-            self.imageView.loadImage(from: imgUrl, placeholder: Image.emptyView)
+            self.imageView.loadImage(from: imgUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            self.imageView.image = Image.emptyView
+            self.imageView.image = Image.logoIcon.withTintColor(.gray_100)
         }
         // item name
         if let itemName = item.itemName {

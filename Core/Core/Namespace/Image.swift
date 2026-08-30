@@ -81,20 +81,16 @@ public enum Image{
     
     // MARK: - Logo
     public static let appLogo = UIImage(named: "appLogo")!
-    public static let homeAppLogo = UIImage(named: "home_app_logo")!
-    public static let blackLogo = UIImage(named: "blackLogo")!
-    public static let wishboardLogo = UIImage(named: "WishBoardLogo")!
     // 로고 신규 버전 (GUI 3.0.0)
     public static let homeLogo = UIImage(named: "home_logo")!
     public static let splashLogo = UIImage(named: "splash_logo")!
     public static let onboardingLogo = UIImage(named: "onboarding_logo")!
+    public static let logoIcon = UIImage(named: "logo_icon")!
+    public static let wishboardLogoIcon = UIImage(named: "wishboard_logo_icon")!
     
     // MARK: - Tab Bar Icons
     public static let addTab = UIImage(named: "add")!
     public static let folderTab = UIImage(named: "folder")!
     public static let profileTab = UIImage(named: "profile")!
     public static let wishlistTab = UIImage(named: "wishlist")!
-    
-    // MARK: - Empty View
-    public static let emptyView = UIImage(named: "emptyView")!
 }

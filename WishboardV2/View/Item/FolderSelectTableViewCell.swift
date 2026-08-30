@@ -18,7 +18,7 @@ final class FolderSelectTableViewCell: UITableViewCell {
     
     // MARK: - Views
     private let folderImg = UIImageView().then {
-        $0.backgroundColor = .black_5
+        $0.backgroundColor = .black_05
         $0.layer.cornerRadius = 20
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true

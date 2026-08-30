@@ -15,10 +15,10 @@ import Core
 final class ShareView: UIView {
     //MARK: - Views
     let itemImage = UIImageView().then{
-        $0.backgroundColor = .systemGray6
+        $0.backgroundColor = .black_10
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 40
-        $0.image = Image.blackLogo
+        $0.image = Image.logoIcon.withTintColor(.white_10)
         $0.contentMode = .scaleAspectFill
     }
     let backgroundView = UIView().then{
@@ -292,7 +292,7 @@ final class ShareView: UIView {
     // UI Methods
     private func configureItemImg(_ url: String?) {
         if let url = url {
-            self.itemImage.loadImage(from: url, placeholder: Image.blackLogo)
+            self.itemImage.loadImage(from: url, placeholder: Image.logoIcon.withTintColor(.white_10))
         }
     }
     

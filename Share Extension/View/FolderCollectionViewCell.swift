@@ -21,7 +21,7 @@ final class FolderCollectionViewCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFill
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
-        $0.backgroundColor = .black_5
+        $0.backgroundColor = .black_05
     }
     private let dimmedView = UIView().then {
         $0.layer.cornerRadius = 10

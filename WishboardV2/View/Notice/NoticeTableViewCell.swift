@@ -24,8 +24,9 @@ final class NoticeTableViewCell: UITableViewCell {
         $0.isHidden = true
     }
     let itemImageView = UIImageView().then {
+        $0.image = Image.logoIcon.withTintColor(.gray_100)
         $0.contentMode = .scaleAspectFill
-        $0.backgroundColor = .black_5
+        $0.backgroundColor = .black_04
         $0.layer.cornerRadius = 40
         $0.clipsToBounds = true
     }
@@ -61,6 +62,19 @@ final class NoticeTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        itemImageView.image = nil
+        
+        itemNameLabel.text = nil
+        notiTypeLabel.text = nil
+        notiDateLabel.text = nil
+        
+        readStateView.isHidden = false
+        background.isHidden = true
     }
     
     private func setupViews() {
@@ -113,9 +127,9 @@ final class NoticeTableViewCell: UITableViewCell {
         }
         // image
         if let imageUrl = item.imageUrl {
-            self.itemImageView.loadImage(from: imageUrl, placeholder: Image.emptyView)
+            self.itemImageView.loadImage(from: imageUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            self.itemImageView.image = Image.emptyView
+            self.itemImageView.image = Image.logoIcon.withTintColor(.gray_100)
         }
         // noti date
         self.notiDateLabel.text = FormatManager.shared.createdDateToKoreanStr(item.notiDate)
@@ -133,10 +147,11 @@ final class NoticeTableViewCell: UITableViewCell {
             notiTypeLabel.text = "알림"
         }
         // image
+        self.itemImageView.backgroundColor = .white_10
         if let imageUrl = item.imageUrl {
-            self.itemImageView.loadImage(from: imageUrl, placeholder: Image.emptyView)
+            self.itemImageView.loadImage(from: imageUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            self.itemImageView.image = Image.emptyView
+            self.itemImageView.image = Image.logoIcon.withTintColor(.gray_100)
         }
         // noti date
         self.notiDateLabel.text = createdDateToKoreanStr(item.notiDate)

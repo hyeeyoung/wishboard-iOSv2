@@ -30,13 +30,16 @@ final class ItemDetailView: UIView {
     // 엠티뷰 이미지 혹은 아이템 이미지 컬렉션뷰
     private let imageContainer = UIView()
     
-    // 엠티뷰 이미지
-    private let placeholderImageView = UIImageView().then {
-        $0.image = Image.emptyView
+    // 이미지 엠티뷰
+    private let placeholderImageBackgroundView = UIImageView().then {
         $0.layer.cornerRadius = 32
-        $0.backgroundColor = .black_5
+        $0.backgroundColor = .black_05
         $0.clipsToBounds = true
         $0.isHidden = true
+    }
+    private let placeholderImageView = UIImageView().then {
+        $0.image = Image.wishboardLogoIcon.withTintColor(.gray_200)
+        $0.backgroundColor = .clear
     }
 
     // 아이템 이미지 컬렉션뷰
@@ -50,7 +53,7 @@ final class ItemDetailView: UIView {
     }()).then {
         $0.isPagingEnabled = true
         $0.showsHorizontalScrollIndicator = false
-        $0.backgroundColor = .black_5
+        $0.backgroundColor = .black_05
         $0.layer.cornerRadius = 32
         $0.clipsToBounds = true
     }
@@ -160,7 +163,8 @@ final class ItemDetailView: UIView {
         contentView.addSubview(imageStackView)
         imageStackView.addArrangedSubview(imageContainer)
         imageStackView.addArrangedSubview(pageControl)
-        imageContainer.addSubview(placeholderImageView)
+        imageContainer.addSubview(placeholderImageBackgroundView)
+        placeholderImageBackgroundView.addSubview(placeholderImageView)
         imageContainer.addSubview(imageCarousel)
         imageContainer.addSubview(notiTypetag)
         imageContainer.addSubview(notiDatetag)
@@ -197,9 +201,15 @@ final class ItemDetailView: UIView {
             make.top.equalToSuperview()
         }
         
-        placeholderImageView.snp.makeConstraints { make in
+        placeholderImageBackgroundView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.height.equalTo(imageCarousel.snp.width).multipliedBy(1.154)
+        }
+        
+        placeholderImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(229.91)
+            make.height.equalTo(39.91)
         }
 
         imageCarousel.snp.makeConstraints { make in
@@ -321,7 +331,7 @@ final class ItemDetailView: UIView {
         guard let data = data else { return }
         let urls = data.map{ $0.itemImageUrl }
         
-        self.placeholderImageView.isHidden = !urls.isEmpty
+        self.placeholderImageBackgroundView.isHidden = !urls.isEmpty
         self.imageCarousel.isHidden = urls.isEmpty
         
         self.imageUrls = urls

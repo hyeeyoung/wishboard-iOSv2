@@ -14,10 +14,7 @@ import Core
 final class OnboardingView: UIView {
     
     // MARK: - Views
-    // 흔드는 손 Image
-    private let handImage = UIImageView().then{
-        $0.image = Image.wavingHand
-    }
+    private let container = UIView()
     // Onbarding label
     private let onboardingLabel = UILabel().then{
         $0.text = Message.onboarding
@@ -85,27 +82,25 @@ final class OnboardingView: UIView {
     
     // MARK: - Layouts
     private func setupViews() {
-        addSubview(onboardingLabel)
-        addSubview(logoImage)
-        addSubview(handImage)
+        addSubview(container)
+        container.addSubview(logoImage)
+        container.addSubview(onboardingLabel)
         addSubview(loginLabel)
         addSubview(registerButton)
     }
     
     private func setupConstraints() {
-        self.onboardingLabel.snp.makeConstraints { make in
+        self.container.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
         }
         self.logoImage.snp.makeConstraints { make in
-            make.width.equalTo(98)
-            make.height.equalTo(17.01)
-            make.top.equalTo(onboardingLabel.snp.bottom).offset(27)
-            make.centerX.equalToSuperview()
+            make.width.equalTo(229.91)
+            make.height.equalTo(39.91)
+            make.top.centerX.equalToSuperview()
         }
-        self.handImage.snp.makeConstraints { make in
-            make.width.height.equalTo(72)
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(onboardingLabel.snp.top).offset(-24)
+        self.onboardingLabel.snp.makeConstraints { make in
+            make.top.equalTo(logoImage.snp.bottom).offset(24)
+            make.centerX.bottom.equalToSuperview()
         }
         self.loginLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

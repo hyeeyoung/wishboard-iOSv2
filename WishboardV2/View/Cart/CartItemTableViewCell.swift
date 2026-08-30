@@ -23,7 +23,7 @@ final class CartItemTableViewCell: UITableViewCell {
         $0.clipsToBounds = true
     }
     let dimmedView = UIView().then {
-        $0.backgroundColor = .black_5
+        $0.backgroundColor = .black_05
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
     }

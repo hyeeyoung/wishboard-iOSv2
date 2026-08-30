@@ -13,8 +13,8 @@ final class ImageCollectionCell: UICollectionViewCell {
     
     let imageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
-        $0.image = Image.emptyView
-        $0.backgroundColor = .black_5
+        $0.image = Image.logoIcon.withTintColor(.gray_100)
+        $0.backgroundColor = .black_04
         $0.clipsToBounds = true
     }
 
@@ -32,9 +32,9 @@ final class ImageCollectionCell: UICollectionViewCell {
     
     func configure(_ url: String?) {
         if let imgUrl = url {
-            imageView.loadImage(from: imgUrl, placeholder: Image.emptyView)
+            imageView.loadImage(from: imgUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            imageView.image = Image.emptyView
+            imageView.image = Image.logoIcon.withTintColor(.gray_100)
         }
     }
 }

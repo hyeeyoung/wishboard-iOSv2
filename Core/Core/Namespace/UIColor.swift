@@ -33,10 +33,13 @@ public extension UIColor{
     public static let pink_700 = UIColor(red: 250/255, green: 93/255, blue: 187/255, alpha: 1)
     
     // MARK: 투명도
+    public static let black_04 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.04)
+    public static let black_05 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.05)
     public static let black_3 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.3)
     public static let black_4 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.4)
-    public static let black_5 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.05)
     public static let black_7 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.7)
+    public static let black_10 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1)
+    public static let white_10 = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)
     
     // 앱 이용방법 > 목업 이미지 배경
     public static let EDEDED = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1)

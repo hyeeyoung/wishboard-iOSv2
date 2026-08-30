@@ -13,7 +13,7 @@ extension UIImageView {
     
     public func loadImage(from url: URL, placeholder: UIImage? = nil) {
         
-        let processor = TintImageProcessor(tint: .black_5)
+        let processor = TintImageProcessor(tint: .black_05)
         
         self.kf.setImage(
             with: url,

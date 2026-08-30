@@ -21,7 +21,7 @@ final class FolderCollectionViewCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFill
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
-        $0.backgroundColor = .black_5
+        $0.backgroundColor = .black_04
     }
     private let folderNameLabel = UILabel().then {
         $0.text = "폴더이름"
@@ -102,9 +102,9 @@ final class FolderCollectionViewCell: UICollectionViewCell {
     
     private func configureFolderThumbnail(_ url: String?) {
         if let url = url {
-            folderThumbnailImg.loadImage(from: url, placeholder: Image.emptyView)
+            folderThumbnailImg.loadImage(from: url, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            folderThumbnailImg.image = Image.emptyView
+            folderThumbnailImg.image = Image.logoIcon.withTintColor(.gray_100)
         }
     }
     
