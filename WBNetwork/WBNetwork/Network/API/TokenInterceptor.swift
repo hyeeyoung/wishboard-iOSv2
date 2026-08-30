@@ -46,6 +46,13 @@ public final class TokenInterceptor: RequestInterceptor {
                                                     userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
                     completion(.doNotRetry)
                     return
+                case "INVALID_FCM_TOKEN":
+                    UserManager.removeUserData()
+                    NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                    object: nil,
+                                                    userInfo: ["SnackBarType": SnackBarType.invalidFcmToken])
+                    completion(.doNotRetry)
+                    return
                 default:
                     break
                 }
