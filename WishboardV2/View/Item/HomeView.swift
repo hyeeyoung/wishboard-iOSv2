@@ -16,6 +16,7 @@ final class HomeView: UIView {
 
     // MARK: - Views
     public let collectionView: UICollectionView
+    public let eventBannerView = HomeEventBannerView()
     private let emptyLabel = UILabel().then {
         $0.text = "앗, 아이템이 없어요!\n갖고 싶은 아이템을 등록해 보세요!"
         $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
@@ -29,11 +30,13 @@ final class HomeView: UIView {
 
     static let toolbarHeight: CGFloat = 52
     static let stickyHeaderHeight: CGFloat = 36
+    static let eventBannerHeight: CGFloat = 36
 
     private var viewModel: HomeViewModel?
     private let refreshControl = UIRefreshControl()
     public var refreshAction: (() -> Void)?
     private weak var stickyHeader: HomeStickyHeaderView?
+    private var bannerHeightConstraint: Constraint?
 
     private var currentColumnType: GridColumnType = {
         GridColumnType(rawValue: UserManager.gridColumnType) ?? .two
@@ -138,6 +141,7 @@ final class HomeView: UIView {
 
     // MARK: - Setup
     private func setupViews() {
+        addSubview(eventBannerView)
         addSubview(collectionView)
         addSubview(emptyLabel)
 
@@ -158,13 +162,24 @@ final class HomeView: UIView {
     }
 
     private func setupConstraints() {
+        eventBannerView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            bannerHeightConstraint = make.height.equalTo(HomeView.eventBannerHeight).constraint
+        }
         collectionView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(eventBannerView.snp.bottom)
+            make.leading.trailing.bottom.equalToSuperview()
         }
         emptyLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(HomeView.toolbarHeight / 2)
         }
+    }
+
+    func hideEventBanner() {
+        bannerHeightConstraint?.update(offset: 0)
+        eventBannerView.isHidden = true
+        layoutIfNeeded()
     }
 
     private func setupRefreshControl() {
