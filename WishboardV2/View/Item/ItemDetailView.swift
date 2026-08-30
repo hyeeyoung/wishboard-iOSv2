@@ -134,6 +134,7 @@ final class ItemDetailView: UIView {
     }
     
     private var item: WishListResponse?
+    public var imageTapAction: ((Int) -> Void)?
     public var folderListButtonAction: (() -> Void)?
     public var collectButtonAction: ((Bool) -> Void)?
     public var linkButtonAction: ((String) -> Void)?
@@ -545,5 +546,12 @@ extension ItemDetailView: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return collectionView.bounds.size
+    }
+}
+
+// MARK: - Image Tap
+extension ItemDetailView {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        imageTapAction?(indexPath.item)
     }
 }

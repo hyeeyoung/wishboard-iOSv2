@@ -113,6 +113,15 @@ final class ItemDetailViewController: UIViewController {
             }
         }
         
+
+        detailView.imageTapAction = { [weak self] index in
+            guard let self = self,
+                  let images = self.viewModel.item?.itemImages else { return }
+            let urls = images.map { $0.itemImageUrl }
+            let imageDetailVC = ImageDetailViewController(imageUrls: urls, initialIndex: index)
+            self.present(imageDetailVC, animated: true)
+        }
+        
         detailView.folderListButtonAction = { [weak self] in
             guard let folders = self?.viewModel.folders else {return}
             self?.showBottomSheet(for: folders)
