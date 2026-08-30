@@ -15,18 +15,20 @@ final class EmailInputView: UIView {
     // MARK: - Views
     public let toolBar = InputToolBar()
     
-    public let imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage.loveLetter
-        imageView.contentMode = .scaleAspectFit
-        return imageView
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .left
+        label.font = .Suit(size: 24, family: .Bold)
+        label.textColor = .gray_700
+        label.numberOfLines = 0
+        label.text = Title.emailInput
+        return label
     }()
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
-        label.font = TypoStyle.SuitD2.font
-        label.textColor = .gray_700
+        label.textAlignment = .left
+        label.textColor = .gray_300
         label.numberOfLines = 0
         return label
     }()
@@ -85,7 +87,7 @@ final class EmailInputView: UIView {
     // MARK: - Methods
     private func setupViews() {
         self.addSubview(toolBar)
-        self.addSubview(imageView)
+        self.addSubview(titleLabel)
         self.addSubview(descriptionLabel)
         self.addSubview(emailTextField)
         self.addSubview(errorLabel)
@@ -96,20 +98,18 @@ final class EmailInputView: UIView {
             make.top.leading.trailing.equalToSuperview()
         }
         
-        imageView.snp.makeConstraints { make in
-            make.top.equalTo(toolBar.snp.bottom).offset(14)
-            make.centerX.equalToSuperview()
-            make.width.height.equalTo(72)
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(toolBar.snp.bottom).offset(24)
+            make.leading.equalToSuperview().offset(16)
         }
         
         descriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(imageView.snp.bottom).offset(10)
-            make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(36)
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.leading.equalTo(titleLabel)
         }
         
         emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(descriptionLabel.snp.bottom).offset(32)
+            make.top.equalTo(descriptionLabel.snp.bottom).offset(36)
             make.left.right.equalToSuperview().inset(16)
             make.height.equalTo(42)
         }
@@ -141,16 +141,17 @@ final class EmailInputView: UIView {
         self.type = type
         switch type {
         case .emailLogin:
-            toolBar.configure(title: "이메일로 로그인하기", rightButtonTitle: "1/2단계")
+            toolBar.configure(title: "", rightButtonTitle: "1/2단계")
             actionButton.setTitle("인증메일 받기", for: .normal)
-            descriptionLabel.text = "가입하신 이메일을 입력해주세요!\n로그인을 위해 인증코드가 포함된 이메일을 보내드려요."
+            descriptionLabel.text = Message.lostPassword
             break
         case .register:
-            toolBar.configure(title: "가입하기", rightButtonTitle: "1/2단계")
+            toolBar.configure(title: "", rightButtonTitle: "1/2단계")
             actionButton.setTitle("다음", for: .normal)
-            descriptionLabel.text = "이메일 인증으로 비밀번호를 찾을 수 있어요.\n실제 사용될 이메일로 입력해주세요! "
+            descriptionLabel.text = Message.email
             break
         }
+        descriptionLabel.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
     }
     
     @objc private func actionButtonTapped() {

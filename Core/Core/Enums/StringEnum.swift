@@ -55,7 +55,7 @@ public enum ErrorMessage {
 public enum Message {
     // MARK: Authentication
     public static let email = "이메일 인증으로 비밀번호를 찾을 수 있어요.\n실제 사용될 이메일로 입력해 주세요!"
-    public static let password = "마지막 비밀번호 입력 단계예요!\n입력된 비밀번호로 바로 가입되니 신중히 입력해 주세요."
+    public static let password = "입력된 비밀번호로 바로 가입되니 신중히 입력해 주세요."
     public static let deleteUser = "정말 탈퇴하시겠습니까?\n탈퇴 시 앱 내 모든 데이터가 사라집니다.\n서비스를 탈퇴하시려면 이메일을 입력해 주세요."
     public static let toLogin = "이미 계정이 있으신가요?"
     public static let sendedEmail = "인증코드가 전송되었어요!\n이메일을 확인해 주세요."
@@ -86,6 +86,10 @@ public enum Title {
     
     public static let newPassword = "새 비밀번호"
     public static let passwordRewrite = "새 비밀번호 재입력"
+    
+    public static let emailInput = "이메일을 입력해 주세요"
+    public static let passwordInput = "비밀번호를 입력해 주세요"
+    public static let codeInput = "인증코드를 입력해 주세요"
     
     // MARK: Camera
     public static let camera = "사진 찍기"

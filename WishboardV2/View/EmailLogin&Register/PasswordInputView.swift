@@ -15,18 +15,19 @@ final class PasswordInputView: UIView {
     // MARK: - Views
     public let toolBar = InputToolBar()
     
-    public let imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage.locked
-        imageView.contentMode = .scaleAspectFit
-        return imageView
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .left
+        label.font = .Suit(size: 24, family: .Bold)
+        label.textColor = .gray_700
+        label.numberOfLines = 0
+        return label
     }()
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
-        label.font = TypoStyle.SuitD2.font
-        label.textColor = .gray_700
+        label.textAlignment = .left
+        label.textColor = .gray_300
         label.numberOfLines = 0
         return label
     }()
@@ -98,7 +99,7 @@ final class PasswordInputView: UIView {
     // MARK: - Methods
     private func setupViews() {
         self.addSubview(toolBar)
-        self.addSubview(imageView)
+        self.addSubview(titleLabel)
         self.addSubview(descriptionLabel)
         self.addSubview(textField)
         textField.addSubview(timerLabel)
@@ -111,16 +112,14 @@ final class PasswordInputView: UIView {
             make.top.leading.trailing.equalToSuperview()
         }
         
-        imageView.snp.makeConstraints { make in
-            make.top.equalTo(toolBar.snp.bottom).offset(14)
-            make.centerX.equalToSuperview()
-            make.width.height.equalTo(72)
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(toolBar.snp.bottom).offset(24)
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         descriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(imageView.snp.bottom).offset(10)
-            make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(36)
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         textField.snp.makeConstraints { make in
@@ -159,9 +158,10 @@ final class PasswordInputView: UIView {
         self.type = type
         switch type {
         case .emailLogin:
-            toolBar.configure(title: "이메일로 로그인하기", rightButtonTitle: "2/2단계")
+            toolBar.configure(title: "", rightButtonTitle: "2/2단계")
             actionButton.setTitle("로그인하기", for: .normal)
-            descriptionLabel.text = "인증코드가 전송되었어요!\n이메일을 확인해주세요."
+            titleLabel.text = Title.codeInput
+            descriptionLabel.text = Message.sendedEmail
             textField.attributedPlaceholder = NSAttributedString(
                 string: "인증코드를 입력해 주세요.",
                 attributes: [
@@ -174,9 +174,10 @@ final class PasswordInputView: UIView {
             startTimer() // ✅ 타이머 시작
             break
         case .register:
-            toolBar.configure(title: "가입하기", rightButtonTitle: "2/2단계")
+            toolBar.configure(title: "", rightButtonTitle: "2/2단계")
             actionButton.setTitle("가입하기", for: .normal)
-            descriptionLabel.text = "마지막 비밀번호 입력 단계예요!\n입력된 비밀번호로 바로 가입되니 신중히 입력해 주세요."
+            titleLabel.text = Title.passwordInput
+            descriptionLabel.text = Message.password
             textField.attributedPlaceholder = NSAttributedString(
                 string: "비밀번호를 입력해 주세요.",
                 attributes: [
@@ -188,6 +189,7 @@ final class PasswordInputView: UIView {
             timerLabel.isHidden = true
             break
         }
+        descriptionLabel.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
     }
     
     @objc private func actionButtonTapped() {
