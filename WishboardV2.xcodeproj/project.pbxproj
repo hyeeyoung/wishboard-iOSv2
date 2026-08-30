@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B9E8D03A658461CBF0D4B2D /* HomeEventBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */; };
 		230C8CEC2E3F09CA0053F68D /* ImageCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230C8CEB2E3F09CA0053F68D /* ImageCollectionCell.swift */; };
 		230C8D022E4F0A0B0053F68D /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */; };
 		230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
@@ -152,7 +153,6 @@
 		23F3FFC62C790297003C7DA9 /* loading_spin.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC42C790296003C7DA9 /* loading_spin.json */; };
 		23F3FFC72C790297003C7DA9 /* loading_horizontal_black.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */; };
 		CEEF72500061E7467ABB04C9 /* HomeStickyHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */; };
-		0B9E8D03A658461CBF0D4B2D /* HomeEventBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,8 +362,8 @@
 		23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationButton.swift; sourceTree = "<group>"; };
 		23F3FFC42C790296003C7DA9 /* loading_spin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_spin.json; sourceTree = "<group>"; };
 		23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_horizontal_black.json; sourceTree = "<group>"; };
-		F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeStickyHeaderView.swift; sourceTree = "<group>"; };
 		C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeEventBannerView.swift; sourceTree = "<group>"; };
+		F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeStickyHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1408,7 +1408,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "gomin.Wishboard.Share-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1440,7 +1440,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "gomin.Wishboard.Share-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1600,7 +1600,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gomin.Wishboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1640,7 +1640,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gomin.Wishboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
