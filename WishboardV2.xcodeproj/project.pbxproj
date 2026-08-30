@@ -152,6 +152,7 @@
 		23F3FFC62C790297003C7DA9 /* loading_spin.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC42C790296003C7DA9 /* loading_spin.json */; };
 		23F3FFC72C790297003C7DA9 /* loading_horizontal_black.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */; };
 		CEEF72500061E7467ABB04C9 /* HomeStickyHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */; };
+		0B9E8D03A658461CBF0D4B2D /* HomeEventBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,6 +363,7 @@
 		23F3FFC42C790296003C7DA9 /* loading_spin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_spin.json; sourceTree = "<group>"; };
 		23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_horizontal_black.json; sourceTree = "<group>"; };
 		F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeStickyHeaderView.swift; sourceTree = "<group>"; };
+		C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeEventBannerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -420,6 +422,7 @@
 				2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */,
 				230C8CEB2E3F09CA0053F68D /* ImageCollectionCell.swift */,
 				F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */,
+				C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */,
 			);
 			path = Item;
 			sourceTree = "<group>";
@@ -1335,6 +1338,7 @@
 				23CBF49C2C5514510061D22F /* SceneDelegate.swift in Sources */,
 				23798B732C8C256B00F6DA90 /* ModifyPasswordViewModel.swift in Sources */,
 				CEEF72500061E7467ABB04C9 /* HomeStickyHeaderView.swift in Sources */,
+				0B9E8D03A658461CBF0D4B2D /* HomeEventBannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
