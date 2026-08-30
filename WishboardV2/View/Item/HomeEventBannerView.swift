@@ -18,14 +18,14 @@ final class HomeEventBannerView: UIView {
     // MARK: - Views
 
     private let eventLabel = UILabel().then {
-        $0.text = "지금 위시보드 이벤트 진행 중 🎉"
-        $0.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        $0.textColor = .white
-        $0.textAlignment = .center
+        $0.text = "기존 위시리스트를 위시보드로 옮겨보세요 📦"
+        $0.font = TypoStyle.SuitD2.font
+        $0.textColor = .white_10
+        $0.textAlignment = .left
     }
 
-    private let closeButton = UIButton(type: .system).then {
-        $0.setImage(Image.whiteQuit.withRenderingMode(.alwaysOriginal), for: .normal)
+    private let closeButton = UIButton().then {
+        $0.setImage(Image.whiteQuit.withRenderingMode(.alwaysOriginal).withTintColor(.gray_200), for: .normal)
     }
 
     // MARK: - Initializer
@@ -49,9 +49,9 @@ final class HomeEventBannerView: UIView {
 
     private func setupConstraints() {
         closeButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-16)
+            make.trailing.equalToSuperview().offset(-13)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(24)
+            make.width.height.equalTo(16)
         }
 
         eventLabel.snp.makeConstraints { make in

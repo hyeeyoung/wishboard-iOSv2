@@ -16,8 +16,8 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
 
-    /// X 버튼으로 닫은 경우 앱 세션 동안 배너를 숨깁니다 (앱 재시작 시 초기화)
-    private static var isEventBannerDismissed = false
+    /// 이벤트 영역 > x버튼
+    private static let eventBannerDismissedAtKey = "eventBannerDismissedAt"
 
     private let backgroundDimView = UIView()
 
@@ -67,14 +67,31 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 
     private func setupEventBanner() {
-        if HomeViewController.isEventBannerDismissed {
+        if shouldHideEventBanner {
             homeView.hideEventBanner()
             return
         }
+
         homeView.eventBannerView.onClose = { [weak self] in
-            HomeViewController.isEventBannerDismissed = true
-            self?.homeView.hideEventBanner()
+            guard let self else { return }
+
+            UserDefaults.standard.set(
+                Date(),
+                forKey: Self.eventBannerDismissedAtKey
+            )
+
+            self.homeView.hideEventBanner()
         }
+    }
+
+    private var shouldHideEventBanner: Bool {
+        guard let dismissedAt = UserDefaults.standard.object(
+            forKey: Self.eventBannerDismissedAtKey
+        ) as? Date else {
+            return false
+        }
+
+        return Date().timeIntervalSince(dismissedAt) < 24 * 60 * 60
     }
 
     private func setupDelegates() {

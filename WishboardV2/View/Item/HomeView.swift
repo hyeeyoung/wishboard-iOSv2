@@ -231,7 +231,11 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
         return section == 1 ? (viewModel?.displayedItems.count ?? 0) : 0
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        
         guard indexPath.section == 1,
               let cell = collectionView.dequeueReusableCell(
                   withReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier,
@@ -239,10 +243,15 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
               ) as? WishItemCollectionViewCell else {
             return UICollectionViewCell()
         }
-
-        if let item = viewModel?.displayedItems[indexPath.row] {
-            cell.configure(with: item, columnType: currentColumnType)
+        
+        guard let items = viewModel?.displayedItems,
+              items.indices.contains(indexPath.row) else {
+            return cell
         }
+        
+        let item = items[indexPath.row]
+        cell.configure(with: item, columnType: currentColumnType)
+        
         return cell
     }
 
