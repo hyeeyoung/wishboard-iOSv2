@@ -10,8 +10,9 @@ import SnapKit
 import Then
 import Core
 import WBNetwork
+import EchoKit
 
-final class WishboardWebViewController: UIViewController {
+final class WishboardWebViewController: UIViewController, Echoable {
 
     private static let webViewURL = "https://wishboard-app-web.vercel.app/"
     private static let bridgeName = "wishboard"
@@ -67,6 +68,26 @@ final class WishboardWebViewController: UIViewController {
         }
 
         config.userContentController = userContentController
+        
+        // MARK: WebView LOG
+        let scripts = config.userContentController.userScripts
+        let userScriptsLog = scripts.enumerated().map { index, script in
+            """
+            [Script \(index)]
+            injectionTime: \(script.injectionTime)
+            mainFrameOnly: \(script.isForMainFrameOnly)
+            source:
+            \(script.source)
+            """
+        }.joined(separator: "\n\n")
+
+        print("""
+        ===== 🌐 WebView UserScripts (\(scripts.count)) =====
+
+        \(userScriptsLog)
+
+        ================================================
+        """)
 
         webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = self
@@ -80,6 +101,16 @@ final class WishboardWebViewController: UIViewController {
             let marker = "wishboard-ios/prod"
             #endif
             self.webView.customUserAgent = "\(existingUA) \(marker)"
+            
+            print("""
+
+                ===== 🌐 WebView User-Agent =====
+                
+                \(existingUA) \(marker)
+                
+                ===========================================
+
+                """)
         }
     }
 
@@ -152,6 +183,25 @@ final class WishboardWebViewController: UIViewController {
             deviceInfo: "\(deviceInfo)"
         });
         """
+        
+        print("""
+
+            ===== 🌐 iOS → Web Bridge =====
+
+            requestId: \(requestId)
+
+            token: \(token.isEmpty ? "EMPTY" : "EXISTS")
+
+            deviceInfo: \(deviceInfo)
+
+            JS:
+
+            \(js.replacingOccurrences(of: token, with: "[REDACTED]"))
+
+            ==========================================
+
+            """)
+        
         DispatchQueue.main.async { [weak self] in
             self?.webView.evaluateJavaScript(js, completionHandler: nil)
         }
@@ -163,6 +213,23 @@ final class WishboardWebViewController: UIViewController {
             error: "\(error)"
         });
         """
+        
+        print("""
+
+            ===== 🌐 iOS → Web Bridge =====
+
+            requestId: \(requestId)
+
+            error: \(error)
+
+            JS:
+
+            \(js)
+
+            ==========================================
+
+            """)
+        
         DispatchQueue.main.async { [weak self] in
             self?.webView.evaluateJavaScript(js, completionHandler: nil)
         }
@@ -173,6 +240,15 @@ final class WishboardWebViewController: UIViewController {
 
 extension WishboardWebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        
+        print("""
+        ======= 🌐 WebView → iOS Bridge =====
+        name: \(message.name)
+        body:
+        \(message.body)
+        =========================================
+        """)
+        
         guard message.name == Self.bridgeName,
               let body = message.body as? [String: Any],
               let type = body["type"] as? String else { return }
@@ -181,7 +257,6 @@ extension WishboardWebViewController: WKScriptMessageHandler {
 
         let requestId = body["requestId"] as? Int ?? 0
         let reason = body["reason"] as? String ?? ""
-        print("[WebView Bridge] REQUEST_WEBVIEW_TOKEN received - requestId: \(requestId), reason: \(reason)")
 
         Task {
             do {

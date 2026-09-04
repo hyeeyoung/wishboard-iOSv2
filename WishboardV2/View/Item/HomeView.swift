@@ -171,13 +171,35 @@ final class HomeView: UIView {
         }
     }
 
+//    func hideEventBanner() {
+//        isBannerVisible = false
+//        eventBannerView.removeFromSuperview()
+//        collectionView.setCollectionViewLayout(
+//            HomeView.makeLayout(columnType: currentColumnType, isBannerVisible: false),
+//            animated: false
+//        )
+//        collectionView.reloadData()
+//    }
+    
     func hideEventBanner() {
         isBannerVisible = false
         eventBannerView.removeFromSuperview()
+
         collectionView.setCollectionViewLayout(
-            HomeView.makeLayout(columnType: currentColumnType, isBannerVisible: false),
+            HomeView.makeLayout(
+                columnType: currentColumnType,
+                isBannerVisible: false
+            ),
             animated: false
         )
+
+        collectionView.layoutIfNeeded()
+
+        collectionView.setContentOffset(
+            CGPoint(x: 0, y: 0),
+            animated: false
+        )
+
         collectionView.reloadData()
     }
 

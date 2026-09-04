@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import EchoKit
 import Moya
 
-public final class LoadingPlugin: PluginType {
+public final class LoadingPlugin: PluginType, Echoable {
     // 빈 값으로 유지
     public static var loadingTargets: [String] = []
     
@@ -23,7 +24,7 @@ public final class LoadingPlugin: PluginType {
         if needLoadingAPIs.contains(target.path) {
 
             let url = target.baseURL.absoluteString + target.path
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 if let idx = LoadingPlugin.loadingTargets.lastIndex(of: url) {
                     LoadingPlugin.loadingTargets.remove(at: idx)
                     print("\(url): \(LoadingPlugin.loadingTargets)")
@@ -42,7 +43,7 @@ public final class LoadingPlugin: PluginType {
         let urlString = target.baseURL.absoluteString + target.path
         
         if needLoadingAPIs.contains(target.path) {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 LoadingPlugin.loadingTargets.append(urlString)
                 print("\(urlString): \(LoadingPlugin.loadingTargets)")
                 // 로딩뷰 보이기

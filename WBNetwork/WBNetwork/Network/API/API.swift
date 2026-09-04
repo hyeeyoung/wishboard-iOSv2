@@ -9,6 +9,7 @@ import Foundation
 import Moya
 import Alamofire
 import Core
+import EchoKit
 
 public var configNetworktimeout = Double(20)
 
@@ -71,7 +72,7 @@ public final class API {
     )
 }
 
-public class WBProvider<Target: TargetType> {
+public class WBProvider<Target: TargetType>: Echoable {
     public var provider = MoyaProvider<Target>()
 
     init(session: Session = MoyaProvider<Target>.defaultAlamofireSession(), plugins: [PluginType] = []) {

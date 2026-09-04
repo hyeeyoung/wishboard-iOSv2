@@ -96,6 +96,9 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 
     private var shouldHideEventBanner: Bool {
+        #if DEBUG
+        return false
+        #else
         guard let dismissedAt = UserDefaults.standard.object(
             forKey: Self.eventBannerDismissedAtKey
         ) as? Date else {
@@ -103,6 +106,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         }
 
         return Date().timeIntervalSince(dismissedAt) < 24 * 60 * 60
+        #endif
     }
 
     private func setupDelegates() {

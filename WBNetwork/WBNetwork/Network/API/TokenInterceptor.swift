@@ -8,8 +8,9 @@
 import Foundation
 import Alamofire
 import Core
+import EchoKit
 
-public final class TokenInterceptor: RequestInterceptor {
+public final class TokenInterceptor: RequestInterceptor, Echoable {
 
     static let shared = TokenInterceptor()
 
@@ -78,7 +79,7 @@ public final class TokenInterceptor: RequestInterceptor {
                 return
             }
 
-            DispatchQueue.global().async {
+            DispatchQueue.global().async { [self] in
                 // 토큰 갱신시 동시 실행 제한
                 self.sema.wait()
 
