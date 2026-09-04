@@ -173,6 +173,7 @@ final class HomeView: UIView {
 
     func hideEventBanner() {
         isBannerVisible = false
+        eventBannerView.removeFromSuperview()
         collectionView.setCollectionViewLayout(
             HomeView.makeLayout(columnType: currentColumnType, isBannerVisible: false),
             animated: false
