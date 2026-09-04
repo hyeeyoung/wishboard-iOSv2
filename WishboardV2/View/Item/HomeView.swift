@@ -36,7 +36,7 @@ final class HomeView: UIView {
     private let refreshControl = UIRefreshControl()
     public var refreshAction: (() -> Void)?
     private weak var stickyHeader: HomeStickyHeaderView?
-    private var bannerHeightConstraint: Constraint?
+    private var isBannerVisible = true
 
     private var currentColumnType: GridColumnType = {
         GridColumnType(rawValue: UserManager.gridColumnType) ?? .two
@@ -48,7 +48,7 @@ final class HomeView: UIView {
     // MARK: - Initializers
     override init(frame: CGRect) {
         let initialColumn = GridColumnType(rawValue: UserManager.gridColumnType) ?? .two
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: HomeView.makeLayout(columnType: initialColumn))
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: HomeView.makeLayout(columnType: initialColumn, isBannerVisible: true))
         collectionView.backgroundColor = .white
         collectionView.showsVerticalScrollIndicator = false
         collectionView.contentInsetAdjustmentBehavior = .never
@@ -68,11 +68,11 @@ final class HomeView: UIView {
 
     // MARK: - Layout Factory
 
-    private static func makeLayout(columnType: GridColumnType) -> UICollectionViewCompositionalLayout {
+    private static func makeLayout(columnType: GridColumnType, isBannerVisible: Bool) -> UICollectionViewCompositionalLayout {
         let col = columnType
         return UICollectionViewCompositionalLayout { sectionIndex, _ in
             if sectionIndex == 0 {
-                // Section 0: 툴바 헤더만 있는 섹션 (스크롤과 함께 사라짐)
+                // Section 0: 툴바(+이벤트 배너) 헤더만 있는 섹션 (스크롤과 함께 사라짐)
                 let dummyItem = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(0))
                 )
@@ -82,10 +82,11 @@ final class HomeView: UIView {
                 )
                 let section = NSCollectionLayoutSection(group: dummyGroup)
 
+                let bannerHeight = isBannerVisible ? HomeView.eventBannerHeight : 0
                 let toolbarHeader = NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: NSCollectionLayoutSize(
                         widthDimension: .fractionalWidth(1.0),
-                        heightDimension: .absolute(HomeView.toolbarHeight)
+                        heightDimension: .absolute(HomeView.toolbarHeight + bannerHeight)
                     ),
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
@@ -141,7 +142,6 @@ final class HomeView: UIView {
 
     // MARK: - Setup
     private func setupViews() {
-        addSubview(eventBannerView)
         addSubview(collectionView)
         addSubview(emptyLabel)
 
@@ -162,13 +162,8 @@ final class HomeView: UIView {
     }
 
     private func setupConstraints() {
-        eventBannerView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            bannerHeightConstraint = make.height.equalTo(HomeView.eventBannerHeight).constraint
-        }
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(eventBannerView.snp.bottom)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.edges.equalToSuperview()
         }
         emptyLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -177,9 +172,12 @@ final class HomeView: UIView {
     }
 
     func hideEventBanner() {
-        bannerHeightConstraint?.update(offset: 0)
-        eventBannerView.isHidden = true
-        layoutIfNeeded()
+        isBannerVisible = false
+        collectionView.setCollectionViewLayout(
+            HomeView.makeLayout(columnType: currentColumnType, isBannerVisible: false),
+            animated: false
+        )
+        collectionView.reloadData()
     }
 
     private func setupRefreshControl() {
@@ -271,6 +269,10 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
                 return UICollectionReusableView()
             }
             header.toolBar.delegate = toolbarDelegate
+            header.configure(
+                banner: isBannerVisible ? eventBannerView : nil,
+                bannerHeight: HomeView.eventBannerHeight
+            )
             return header
         } else {
             guard let header = collectionView.dequeueReusableSupplementaryView(
@@ -304,7 +306,7 @@ extension HomeView: HomeStickyHeaderDelegate {
     func didChangeGridColumn(_ column: GridColumnType) {
         currentColumnType = column
         collectionView.setCollectionViewLayout(
-            HomeView.makeLayout(columnType: column),
+            HomeView.makeLayout(columnType: column, isBannerVisible: isBannerVisible),
             animated: false
         )
         collectionView.layoutIfNeeded()
