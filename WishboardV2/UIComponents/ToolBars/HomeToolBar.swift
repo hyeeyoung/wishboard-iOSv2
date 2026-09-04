@@ -135,6 +135,7 @@ final class HomeToolBarHeaderView: UICollectionReusableView {
                 make.leading.trailing.bottom.equalToSuperview()
             }
         } else {
+            subviews.filter { $0 is HomeEventBannerView }.forEach { $0.removeFromSuperview() }
             toolBar.snp.remakeConstraints { make in
                 make.edges.equalToSuperview()
             }

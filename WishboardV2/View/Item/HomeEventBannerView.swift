@@ -65,7 +65,7 @@ final class HomeEventBannerView: UIView {
     private func setupActions() {
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
 
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(bannerTapped))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(bannerTapped(_:)))
         addGestureRecognizer(tapGesture)
     }
 
@@ -73,7 +73,9 @@ final class HomeEventBannerView: UIView {
         onClose?()
     }
 
-    @objc private func bannerTapped() {
+    @objc private func bannerTapped(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: self)
+        guard !closeButton.frame.contains(location) else { return }
         onTap?()
     }
 }
