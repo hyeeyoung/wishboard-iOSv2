@@ -22,12 +22,8 @@ final class WishboardWebViewController: UIViewController {
         $0.backgroundColor = .white
     }
 
-    private let separatorLine = UIView().then {
-        $0.backgroundColor = .gray_100
-    }
-
     private let closeButton = UIButton().then {
-        $0.setImage(Image.whiteQuit.withRenderingMode(.alwaysOriginal).withTintColor(.black), for: .normal)
+        $0.setImage(.x, for: .normal)
     }
 
     private var webView: WKWebView!
@@ -88,8 +84,9 @@ final class WishboardWebViewController: UIViewController {
     }
 
     private func setupUI() {
+        view.backgroundColor = .white
+        
         view.addSubview(navigationBar)
-        view.addSubview(separatorLine)
         view.addSubview(webView)
 
         navigationBar.addSubview(closeButton)
@@ -97,24 +94,19 @@ final class WishboardWebViewController: UIViewController {
         navigationBar.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(51)
+            make.height.equalTo(42)
         }
 
         closeButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
+            make.leading.equalToSuperview().offset(13)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(24)
         }
 
-        separatorLine.snp.makeConstraints { make in
+        webView.snp.makeConstraints { make in
             make.top.equalTo(navigationBar.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(0.5)
-        }
-
-        webView.snp.makeConstraints { make in
-            make.top.equalTo(separatorLine.snp.bottom)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
     }
 

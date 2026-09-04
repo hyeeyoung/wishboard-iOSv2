@@ -10,7 +10,6 @@
 		0B9E8D03A658461CBF0D4B2D /* HomeEventBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */; };
 		230C8CEC2E3F09CA0053F68D /* ImageCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230C8CEB2E3F09CA0053F68D /* ImageCollectionCell.swift */; };
 		230C8D022E4F0A0B0053F68D /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */; };
-		5063165F0DC44F60910E46E8 /* WishboardWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1013F656332484F87BA49CE /* WishboardWebViewController.swift */; };
 		230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
 		230DE29E2D6B08BB00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
 		23167A012E22805E00F7D9AB /* FolderFormItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23167A002E22805E00F7D9AB /* FolderFormItemView.swift */; };
@@ -153,6 +152,7 @@
 		23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */; };
 		23F3FFC62C790297003C7DA9 /* loading_spin.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC42C790296003C7DA9 /* loading_spin.json */; };
 		23F3FFC72C790297003C7DA9 /* loading_horizontal_black.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */; };
+		5063165F0DC44F60910E46E8 /* WishboardWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1013F656332484F87BA49CE /* WishboardWebViewController.swift */; };
 		CEEF72500061E7467ABB04C9 /* HomeStickyHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */; };
 /* End PBXBuildFile section */
 
@@ -237,7 +237,6 @@
 /* Begin PBXFileReference section */
 		230C8CEB2E3F09CA0053F68D /* ImageCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionCell.swift; sourceTree = "<group>"; };
 		230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
-		A1013F656332484F87BA49CE /* WishboardWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishboardWebViewController.swift; sourceTree = "<group>"; };
 		230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		23167A002E22805E00F7D9AB /* FolderFormItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderFormItemView.swift; sourceTree = "<group>"; };
 		23167A022E22807A00F7D9AB /* FolderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCell.swift; sourceTree = "<group>"; };
@@ -364,6 +363,7 @@
 		23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationButton.swift; sourceTree = "<group>"; };
 		23F3FFC42C790296003C7DA9 /* loading_spin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_spin.json; sourceTree = "<group>"; };
 		23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_horizontal_black.json; sourceTree = "<group>"; };
+		A1013F656332484F87BA49CE /* WishboardWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishboardWebViewController.swift; sourceTree = "<group>"; };
 		C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeEventBannerView.swift; sourceTree = "<group>"; };
 		F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeStickyHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -461,7 +461,6 @@
 				232466772C6F92B800979940 /* HomeViewController.swift */,
 				2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */,
 				230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */,
-				A1013F656332484F87BA49CE /* WishboardWebViewController.swift */,
 				2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */,
 			);
 			path = Item;
@@ -508,6 +507,14 @@
 				23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */,
 			);
 			path = AppGuideSheet;
+			sourceTree = "<group>";
+		};
+		2371406B304B0D5500D39ABE /* WebView */ = {
+			isa = PBXGroup;
+			children = (
+				A1013F656332484F87BA49CE /* WishboardWebViewController.swift */,
+			);
+			path = WebView;
 			sourceTree = "<group>";
 		};
 		237468B12D77180D00959E09 /* EmailLogin&Register */ = {
@@ -878,6 +885,7 @@
 		23CBF4CB2C5515CD0061D22F /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				2371406B304B0D5500D39ABE /* WebView */,
 				23626D5C2D7B16B0000A144A /* AppGuideSheet */,
 				237468B42D77182900959E09 /* EmailLogin&Register */,
 				23C610762D68D397003E71F4 /* Add */,
