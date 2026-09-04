@@ -110,7 +110,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
             make.leading.trailing.equalToSuperview().inset(6)
             make.top.bottom.equalToSuperview()
         }
-        itemName.numberOfLines = 3
+        itemName.numberOfLines = 2
         imageView.layer.cornerRadius = 0
         imageView.clipsToBounds = true
     }
