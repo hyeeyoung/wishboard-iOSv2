@@ -37,4 +37,8 @@ public final class AuthManager {
     public func loginWithoutPassword(verify: Bool, email: String, fcmToken: String) async throws -> LoginResponse {
         try await API.Auth.request(.loginWithoutPassword(verify: verify, email: email, fcmToken: fcmToken))
     }
+
+    public func requestWebViewToken() async throws -> WebViewTokenResponse {
+        try await API.Auth.request(.requestWebViewToken)
+    }
 }

@@ -25,6 +25,8 @@ public enum AuthAPI {
     case registerEmail(email: String)
     /// 이메일로 로그인
     case loginWithoutPassword(verify: Bool, email: String, fcmToken: String)
+    /// WebView 전용 임시 토큰 발급
+    case requestWebViewToken
 }
 
 extension AuthAPI: TargetType, AccessTokenAuthorizable {
@@ -49,6 +51,8 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
             return "/check-email"
         case .loginWithoutPassword:
             return "/re-signin"
+        case .requestWebViewToken:
+            return "/webview/token"
         }
     }
 
@@ -67,6 +71,8 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
         case .registerEmail:
             return .post
         case .loginWithoutPassword:
+            return .post
+        case .requestWebViewToken:
             return .post
         }
     }
@@ -88,11 +94,14 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
             parameters = ["verify": verify,
                           "email": email,
                           "fcmToken": fcmToken]
-        default:
+        case .requestWebViewToken, .logout:
             parameters = [:]
         }
-        
+
         let encoding: ParameterEncoding = self.method == .post ? JSONEncoding.default : URLEncoding.default
+        if parameters.isEmpty && self.method == .post {
+            return .requestPlain
+        }
         return .requestParameters(parameters: parameters, encoding: encoding)
     }
 
@@ -102,7 +111,7 @@ extension AuthAPI: TargetType, AccessTokenAuthorizable {
     
     public var authorizationType: Moya.AuthorizationType? {
         switch self {
-        case .logout:
+        case .logout, .requestWebViewToken:
             return .bearer
         default:
             return .none

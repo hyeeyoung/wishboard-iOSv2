@@ -82,6 +82,17 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
             self.homeView.hideEventBanner()
         }
+
+        homeView.eventBannerView.onTap = { [weak self] in
+            guard let self else { return }
+            self.presentWishboardWebView()
+        }
+    }
+
+    private func presentWishboardWebView() {
+        let webVC = WishboardWebViewController()
+        webVC.modalPresentationStyle = .fullScreen
+        present(webVC, animated: true)
     }
 
     private var shouldHideEventBanner: Bool {

@@ -14,6 +14,7 @@ import Core
 final class HomeEventBannerView: UIView {
 
     var onClose: (() -> Void)?
+    var onTap: (() -> Void)?
 
     // MARK: - Views
 
@@ -63,9 +64,16 @@ final class HomeEventBannerView: UIView {
 
     private func setupActions() {
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(bannerTapped))
+        addGestureRecognizer(tapGesture)
     }
 
     @objc private func closeTapped() {
         onClose?()
+    }
+
+    @objc private func bannerTapped() {
+        onTap?()
     }
 }
