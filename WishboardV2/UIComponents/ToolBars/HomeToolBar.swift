@@ -120,4 +120,24 @@ final class HomeToolBarHeaderView: UICollectionReusableView {
     }
 
     required init?(coder: NSCoder) { fatalError() }
+
+    func configure(banner: HomeEventBannerView?, bannerHeight: CGFloat) {
+        if let banner = banner {
+            if banner.superview != self {
+                addSubview(banner)
+            }
+            banner.snp.remakeConstraints { make in
+                make.top.leading.trailing.equalToSuperview()
+                make.height.equalTo(bannerHeight)
+            }
+            toolBar.snp.remakeConstraints { make in
+                make.top.equalTo(banner.snp.bottom)
+                make.leading.trailing.bottom.equalToSuperview()
+            }
+        } else {
+            toolBar.snp.remakeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+        }
+    }
 }
