@@ -36,7 +36,8 @@ final class FolderDetailView: UIView {
     override init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
         let cellWidth = UIScreen.main.bounds.width / 2
-        layout.itemSize = CGSize(width: cellWidth, height: cellWidth + 70)
+        let cellHeight = cellWidth * 1.5
+        layout.itemSize = CGSize(width: cellWidth, height: cellHeight)
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         
