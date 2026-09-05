@@ -32,6 +32,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     }
     let collectionTag = UIView().then {
         $0.backgroundColor = .green_alpha_80
+        $0.clipsToBounds = true
     }
     let collectionTagTitle = UILabel().then {
         $0.text = "소장템"
@@ -112,7 +113,6 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         }
         itemName.numberOfLines = 2
         imageView.layer.cornerRadius = 0
-        imageView.clipsToBounds = true
     }
 
     private func setupOneColumnConstraints() {
@@ -143,7 +143,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         }
         itemName.numberOfLines = 2
         imageView.layer.cornerRadius = 10
-        imageView.clipsToBounds = true
+        
+        collectionTag.layer.cornerRadius = 2
+        
     }
     
     private func setupActions() {
