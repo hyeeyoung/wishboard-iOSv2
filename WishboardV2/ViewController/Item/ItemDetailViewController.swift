@@ -106,6 +106,8 @@ final class ItemDetailViewController: UIViewController {
                     // Action 전달
                     self?.collectionChangeAction?(isCollected)
                 } catch {
+                    // 실패하면 원래 상태로 UI 복구
+                    self?.detailView.updateCollectButton(isCollected: !isCollected)
                     // error snackbar
                     SnackBar.shared.show(type: .errorMessage)
                     throw error

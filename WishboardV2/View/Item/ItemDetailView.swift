@@ -288,6 +288,8 @@ final class ItemDetailView: UIView {
     
     @objc private func collectButtonTapped(_ button: UIButton) {
         let isCollected = !(button.isSelected)
+        // QA 3.0.0: 낙관적 업데이트 적용
+        configureCollectButton(isCollected: isCollected)
         UIDevice.vibrate()
         self.collectButtonAction?(isCollected)
     }
@@ -440,6 +442,10 @@ final class ItemDetailView: UIView {
     
     private func configureCollectBtn(_ item: WishListResponse) {
         let isCollected = item.itemStatus == .owned
+        configureCollectButton(isCollected: isCollected)
+    }
+    
+    private func configureCollectButton(isCollected: Bool) {
         if isCollected {
             collectedItemButton.backgroundColor = .gray_100
             collectedItemButton.layer.borderWidth = 0
@@ -449,7 +455,12 @@ final class ItemDetailView: UIView {
             collectedItemButton.layer.borderWidth = 1
             collectedItemButton.layer.borderColor = UIColor.gray_100.cgColor
         }
+        
         collectedItemButton.isSelected = isCollected
+    }
+    
+    public func updateCollectButton(isCollected: Bool) {
+        configureCollectButton(isCollected: isCollected)
     }
     
     private func createLinkInfoView(url: String) -> UIView {
