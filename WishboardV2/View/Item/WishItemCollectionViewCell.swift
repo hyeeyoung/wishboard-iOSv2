@@ -39,6 +39,10 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         $0.textColor = .white
         $0.font = TypoStyle.SuitB5.font
     }
+    let divider = UIView().then {
+        $0.backgroundColor = .gray_100
+        $0.isHidden = true
+    }
     
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -60,6 +64,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(itemPrice)
         contentView.addSubview(collectionTag)
         collectionTag.addSubview(collectionTagTitle)
+        contentView.addSubview(divider)
     }
     
     private func setupTwoColumnConstraints() {
@@ -87,6 +92,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         itemName.numberOfLines = 2
         imageView.layer.cornerRadius = 0
         imageView.clipsToBounds = true
+        divider.isHidden = true
     }
     
     private func setupTripleColumnConstraints() {
@@ -113,6 +119,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         }
         itemName.numberOfLines = 2
         imageView.layer.cornerRadius = 0
+        divider.isHidden = true
     }
 
     private func setupOneColumnConstraints() {
@@ -141,10 +148,15 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
             make.leading.trailing.equalToSuperview().inset(6)
             make.top.bottom.equalToSuperview()
         }
+        divider.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.height.equalTo(1)
+        }
         itemName.numberOfLines = 2
         imageView.layer.cornerRadius = 10
         
         collectionTag.layer.cornerRadius = 2
+        divider.isHidden = false
         
     }
     
