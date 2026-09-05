@@ -75,13 +75,14 @@ final class FolderCollectionViewCell: UICollectionViewCell {
             make.height.equalTo(folderThumbnailImg.snp.width)
         }
         folderNameLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.lessThanOrEqualTo(etcBtn.snp.leading).offset(-4.5)
             make.top.equalTo(folderThumbnailImg.snp.bottom).offset(10)
         }
         itemCountLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(folderNameLabel.snp.bottom).offset(6)
-            make.bottom.equalToSuperview().offset(-16)
+            make.bottom.lessThanOrEqualToSuperview().offset(-16)
         }
         etcBtn.snp.makeConstraints { make in
             make.width.height.equalTo(24)
