@@ -168,6 +168,7 @@ final class PasswordInputView: UIView {
                     .foregroundColor: UIColor.gray_300
                 ]
             )
+            textField.clearButtonMode = .never
             errorLabel.text = ErrorMessage.authcode
             termsLabel.isHidden = true
             timerLabel.isHidden = false
@@ -184,6 +185,7 @@ final class PasswordInputView: UIView {
                     .foregroundColor: UIColor.gray_300
                 ]
             )
+            textField.clearButtonMode = .always
             errorLabel.text = ErrorMessage.password
             termsLabel.isHidden = false
             timerLabel.isHidden = true
