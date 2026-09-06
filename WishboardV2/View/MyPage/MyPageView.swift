@@ -47,6 +47,7 @@ final class MypageView: UIView {
         tableView.delegate = self
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
+        tableView.contentInset.bottom = 30
         addSubview(tableView)
         
         toolBar.configure(title: "마이페이지")

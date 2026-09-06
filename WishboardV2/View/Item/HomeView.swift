@@ -215,7 +215,7 @@ final class HomeView: UIView {
             }
             .store(in: &cancellables)
 
-        Publishers.CombineLatest2(viewModel.$totalElements, viewModel.$isExcludingOwned)
+        Publishers.CombineLatest(viewModel.$totalElements, viewModel.$isExcludingOwned)
             .receive(on: RunLoop.main)
             .sink { [weak self] totalElements, isExcluding in
                 self?.stickyHeader?.configure(
@@ -301,7 +301,6 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
             if let vm = viewModel {
                 header.configure(
                     totalCount: vm.totalElements,
-                    hasOwnedItems: vm.hasOwnedItems,
                     isExcludingOwned: vm.isExcludingOwned
                 )
             }
