@@ -115,30 +115,35 @@ extension MypageViewController: MypageViewDelegate {
             self.navigationController?.pushViewController(vc, animated: true)
             break
         case 2:
-            // 문의하기
-            showSendEmail()
-            break
+            // 위시리스트 한 번에 등록하기
+            let webVC = WishboardWebViewController()
+            webVC.modalPresentationStyle = .fullScreen
+            present(webVC, animated: true)
         case 3:
             // 위시보드 이용 방법
             self.moveToWebVC(Storage.howToUseLink.rawValue, "위시보드 이용 방법")
             break
         case 4:
+            // 문의하기
+            showSendEmail()
+            break
+        case 5:
             // 이용약관
             self.moveToWebVC(Storage.useTermURL.rawValue, "이용약관")
             break
-        case 5:
+        case 6:
             // 개인정보처리방침
             self.moveToWebVC(Storage.privacyTermURL.rawValue, "개인정보 처리방침")
             break
-        case 6:
+        case 7:
             // 오픈소스 라이브러리
             self.moveToWebVC(Storage.openSourceLibraryURL.rawValue, "오픈소스 라이브러리")
             break
-        case 8:
+        case 9:
             // 로그아웃
             self.presentLogoutAlert()
             break
-        case 9:
+        case 10:
             // 회원탈퇴
             self.presentDeleteUserAlert()
             break

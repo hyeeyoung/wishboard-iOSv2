@@ -81,6 +81,9 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
             )
 
             self.homeView.hideEventBanner()
+            
+            // show toast
+            SnackBar.shared.show(type: .hideEventBanner)
         }
 
         homeView.eventBannerView.onTap = { [weak self] in
@@ -96,17 +99,12 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 
     private var shouldHideEventBanner: Bool {
-        #if DEBUG
-        return false
-        #else
-        guard let dismissedAt = UserDefaults.standard.object(
+        guard let _ = UserDefaults.standard.object(
             forKey: Self.eventBannerDismissedAtKey
-        ) as? Date else {
+        ) else {
             return false
         }
-
-        return Date().timeIntervalSince(dismissedAt) < 24 * 60 * 60
-        #endif
+        return true
     }
 
     private func setupDelegates() {

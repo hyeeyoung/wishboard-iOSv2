@@ -34,6 +34,7 @@ final class SnackBar {
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD2)
         $0.textAlignment = .center
         $0.numberOfLines = 0
+        $0.lineBreakMode = .byCharWrapping
     }
     
     public init(in viewController: UIViewController? = nil) {

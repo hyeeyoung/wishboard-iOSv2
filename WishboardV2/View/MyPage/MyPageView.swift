@@ -98,7 +98,7 @@ extension MypageView: UITableViewDataSource, UITableViewDelegate {
         
         // 알림설정, 버전정보는 선택이벤트 X
         switch indexPath.row {
-        case 0, 7:
+        case 0, 8:
             cell.selectionStyle = .none
         default:
             cell.selectionStyle = .default
@@ -110,7 +110,7 @@ extension MypageView: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
-        case 1, 7:
+        case 1, 8:
             return 48 + 10
         default:
             return 48

@@ -24,12 +24,15 @@ class MypageViewModel {
         self.settings = [
             Setting(title: "알림 설정", type: .switch(isOn: false, showDivider: false)),
             Setting(title: "비밀번호 변경", type: .normal(showDivider: true)),
-            Setting(title: "문의하기", type: .normal(showDivider: false)),
+            
+            Setting(title: "위시리스트 한 번에 등록하기", type: .normal(showDivider: false)),
             Setting(title: "위시보드 이용방법", type: .normal(showDivider: false)),
+            Setting(title: "문의하기", type: .normal(showDivider: false)),
             Setting(title: "이용약관", type: .normal(showDivider: false)),
             Setting(title: "개인정보 처리방침", type: .normal(showDivider: false)),
             Setting(title: "오픈소스 라이브러리", type: .normal(showDivider: false)),
             Setting(title: "버전정보", type: .subTitle(value: nil, showDivider: true)),
+            
             Setting(title: "로그아웃", type: .normal(showDivider: false)),
             Setting(title: "회원탈퇴", type: .normal(showDivider: false)),
         ]

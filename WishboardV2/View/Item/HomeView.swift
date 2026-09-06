@@ -170,16 +170,6 @@ final class HomeView: UIView {
             make.centerY.equalToSuperview().offset(HomeView.toolbarHeight / 2)
         }
     }
-
-//    func hideEventBanner() {
-//        isBannerVisible = false
-//        eventBannerView.removeFromSuperview()
-//        collectionView.setCollectionViewLayout(
-//            HomeView.makeLayout(columnType: currentColumnType, isBannerVisible: false),
-//            animated: false
-//        )
-//        collectionView.reloadData()
-//    }
     
     func hideEventBanner() {
         isBannerVisible = false
@@ -225,12 +215,11 @@ final class HomeView: UIView {
             }
             .store(in: &cancellables)
 
-        Publishers.CombineLatest3(viewModel.$totalElements, viewModel.$hasOwnedItems, viewModel.$isExcludingOwned)
+        Publishers.CombineLatest2(viewModel.$totalElements, viewModel.$isExcludingOwned)
             .receive(on: RunLoop.main)
-            .sink { [weak self] totalElements, hasOwnedItems, isExcluding in
+            .sink { [weak self] totalElements, isExcluding in
                 self?.stickyHeader?.configure(
                     totalCount: totalElements,
-                    hasOwnedItems: hasOwnedItems,
                     isExcludingOwned: isExcluding
                 )
             }

@@ -14,7 +14,6 @@ final class HomeViewModel {
     @Published var displayedItems: [WishListResponse] = []
     @Published var totalElements: Int = 0
     @Published var isExcludingOwned: Bool = false
-    @Published var hasOwnedItems: Bool = false
 
     // Paging
     @Published var isLoading: Bool = false
@@ -30,10 +29,6 @@ final class HomeViewModel {
                 isExcluding ? items.filter { $0.itemStatus != .owned } : items
             }
             .assign(to: &$displayedItems)
-
-        $items
-            .map { items in items.contains { $0.itemStatus == .owned } }
-            .assign(to: &$hasOwnedItems)
     }
 
     func toggleExcludeOwned() {

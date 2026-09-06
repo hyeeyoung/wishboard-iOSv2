@@ -31,14 +31,12 @@ final class HomeStickyHeaderView: UICollectionReusableView {
     private let checkboxButton = UIButton(type: .custom).then {
         $0.setImage(.ownedCircle, for: .normal)
         $0.setImage(.ownedCircleCheck, for: .selected)
-        $0.isHidden = true
     }
 
     private let excludeOwnedLabel = UILabel().then {
         $0.text = "소장템 제외"
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD3)
         $0.textColor = .gray_200
-        $0.isHidden = true
     }
 
     private let gridButton = UIButton(type: .custom).then {
@@ -123,12 +121,8 @@ final class HomeStickyHeaderView: UICollectionReusableView {
 
     // MARK: - Public Methods
 
-    func configure(totalCount: Int, hasOwnedItems: Bool, isExcludingOwned: Bool) {
+    func configure(totalCount: Int, isExcludingOwned: Bool) {
         totalCountLabel.text = "전체 \(totalCount)개"
-
-        checkboxButton.isHidden = !hasOwnedItems
-        excludeOwnedLabel.isHidden = !hasOwnedItems
-
         checkboxButton.isSelected = isExcludingOwned
     }
 
