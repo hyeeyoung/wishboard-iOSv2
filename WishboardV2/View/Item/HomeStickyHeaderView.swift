@@ -121,10 +121,8 @@ final class HomeStickyHeaderView: UICollectionReusableView {
 
     // MARK: - Public Methods
 
-    func configure(totalCount: Int, hasOwnedItems: Bool, isExcludingOwned: Bool) {
+    func configure(totalCount: Int, isExcludingOwned: Bool) {
         totalCountLabel.text = "전체 \(totalCount)개"
-        checkboxButton.isHidden = !hasOwnedItems
-        excludeOwnedLabel.isHidden = !hasOwnedItems
         checkboxButton.isSelected = isExcludingOwned
     }
 

@@ -14,7 +14,7 @@ public final class ItemManager {
         return try await API.Item.requestRaw(.getWishItems(page: page, size: size, itemStatus: itemStatus))
     }
 
-    public func getItemCounts() async throws -> CommonResponse<ItemCountsResponse> {
+    public func getItemCounts() async throws -> ItemCountsResponse {
         return try await API.Item.request(.getItemCounts)
     }
     

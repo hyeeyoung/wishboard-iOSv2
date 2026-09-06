@@ -15,7 +15,6 @@ final class HomeViewModel {
     @Published var totalCount: Int = 0
     @Published var ownedCount: Int = 0
     @Published var isExcludingOwned: Bool = false
-    @Published var hasOwnedItems: Bool = false
 
     // Paging
     @Published var isLoading: Bool = false
@@ -32,10 +31,6 @@ final class HomeViewModel {
                 isExcluding ? items.filter { $0.itemStatus != .owned } : items
             }
             .assign(to: &$displayedItems)
-
-        $ownedCount
-            .map { $0 > 0 }
-            .assign(to: &$hasOwnedItems)
     }
 
     func toggleExcludeOwned() {
@@ -88,8 +83,8 @@ final class HomeViewModel {
         do {
             let usecase = GetItemCountsUseCase()
             let response = try await usecase.execute()
-            totalCount = response.data?.totalCount ?? 0
-            ownedCount = response.data?.ownedCount ?? 0
+            totalCount = response.totalCount ?? 0
+            ownedCount = response.ownedCount ?? 0
         } catch {
             // counts 실패 시 기존 값 유지
         }

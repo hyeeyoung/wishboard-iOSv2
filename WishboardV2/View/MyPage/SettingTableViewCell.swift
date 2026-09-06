@@ -17,6 +17,8 @@ class SettingTableViewCell: UITableViewCell {
     
     // MARK: - Views
     
+    private let cellContainerView = UIView()
+    
     private let titleLabel = UILabel().then {
         $0.setTypoStyleWithSingleLine(typoStyle: .SuitD1)
         $0.textColor = .gray_600
@@ -61,10 +63,16 @@ class SettingTableViewCell: UITableViewCell {
     
     private func setupView() {
         // 기본 셀 설정
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(switchControl)
-        contentView.addSubview(subTitleLabel)
+        contentView.addSubview(cellContainerView)
+        cellContainerView.addSubview(titleLabel)
+        cellContainerView.addSubview(switchControl)
+        cellContainerView.addSubview(subTitleLabel)
         contentView.addSubview(dividerView)
+        
+        cellContainerView.snp.makeConstraints { make in
+            make.height.equalTo(54)
+            make.leading.top.trailing.equalToSuperview()
+        }
         
         // titleLabel 설정
         titleLabel.snp.makeConstraints { make in
@@ -91,7 +99,7 @@ class SettingTableViewCell: UITableViewCell {
         dividerView.isHidden = true
         dividerView.snp.makeConstraints { make in
             make.height.equalTo(6)
-            make.top.equalTo(titleLabel.snp.bottom).offset(16)
+            make.top.equalTo(cellContainerView.snp.bottom)
             make.leading.trailing.equalToSuperview()
         }
     }
@@ -109,7 +117,7 @@ class SettingTableViewCell: UITableViewCell {
             subTitleLabel.isHidden = true
             switchControl.isOn = isOn
             dividerView.isHidden = !showDivider
-        case .subTitle(let value, let showDivider):
+        case .subTitle(_, let showDivider):
             switchControl.isHidden = true
             subTitleLabel.isHidden = false
             dividerView.isHidden = !showDivider

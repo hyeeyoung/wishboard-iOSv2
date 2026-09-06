@@ -24,7 +24,7 @@ public class GetWishItemsUseCase: GetWishItemsUseCaseInterface {
 }
 
 public protocol GetItemCountsUseCaseInterface {
-    func execute() async throws -> CommonResponse<ItemCountsResponse>
+    func execute() async throws -> ItemCountsResponse
 }
 
 public class GetItemCountsUseCase: GetItemCountsUseCaseInterface {
@@ -34,7 +34,7 @@ public class GetItemCountsUseCase: GetItemCountsUseCaseInterface {
         self.repository = repository
     }
 
-    public func execute() async throws -> CommonResponse<ItemCountsResponse> {
+    public func execute() async throws -> ItemCountsResponse {
         return try await self.repository.getItemCounts()
     }
 }

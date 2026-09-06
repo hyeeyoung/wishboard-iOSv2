@@ -112,9 +112,9 @@ extension MypageView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 1, 8:
-            return 48 + 10
+            return 54 + 6
         default:
-            return 48
+            return 54
         }
     }
     

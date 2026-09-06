@@ -219,8 +219,7 @@ final class HomeView: UIView {
             .receive(on: RunLoop.main)
             .sink { [weak self] totalCount, ownedCount, isExcluding in
                 self?.stickyHeader?.configure(
-                    totalCount: isExcluding ? ownedCount : totalCount,
-                    hasOwnedItems: ownedCount > 0,
+                    totalCount: isExcluding ? (totalCount - ownedCount) : totalCount,
                     isExcludingOwned: isExcluding
                 )
             }
@@ -301,8 +300,7 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
 
             if let vm = viewModel {
                 header.configure(
-                    totalCount: vm.isExcludingOwned ? vm.ownedCount : vm.totalCount,
-                    hasOwnedItems: vm.ownedCount > 0,
+                    totalCount: vm.isExcludingOwned ? (vm.totalCount - vm.ownedCount) : vm.totalCount,
                     isExcludingOwned: vm.isExcludingOwned
                 )
             }
