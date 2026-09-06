@@ -28,9 +28,14 @@ public struct WishListResponse: Decodable {
 public struct ItemImageResponse: Decodable {
     public var itemImg: String?
     public var itemImageUrl: String?
-    
+
     public init(itemImg: String? = nil, itemImageUrl: String? = nil) {
         self.itemImg = itemImg
         self.itemImageUrl = itemImageUrl
     }
+}
+
+public struct ItemCountsResponse: Decodable {
+    public var totalCount: Int?
+    public var ownedCount: Int?
 }
