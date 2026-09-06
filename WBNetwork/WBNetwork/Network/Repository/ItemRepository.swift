@@ -8,7 +8,8 @@
 import Foundation
 
 public protocol ItemRepositoryInterface {
-    func getWishItems(page: Int, size: Int) async throws -> CommonPaginationResponse<[WishListResponse]>
+    func getWishItems(page: Int, size: Int, itemStatus: ItemStatusType?) async throws -> CommonPaginationResponse<[WishListResponse]>
+    func getItemCounts() async throws -> CommonResponse<ItemCountsResponse>
     func deleteItem(id: Int) async throws -> EmptyResponse
     func getItemDetail(id: Int) async throws -> WishListResponse
     func modifyItemFolder(itemId: Int, folderId: Int) async throws -> EmptyResponse
@@ -20,9 +21,13 @@ public protocol ItemRepositoryInterface {
 
 public final class ItemRepository: ItemRepositoryInterface {
     public init() { }
-    
-    public func getWishItems(page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[WishListResponse]> {
-        return try await ItemManager.shared.getWishItems(page: page, size: size)
+
+    public func getWishItems(page: Int = 0, size: Int = 10, itemStatus: ItemStatusType? = nil) async throws -> CommonPaginationResponse<[WishListResponse]> {
+        return try await ItemManager.shared.getWishItems(page: page, size: size, itemStatus: itemStatus)
+    }
+
+    public func getItemCounts() async throws -> CommonResponse<ItemCountsResponse> {
+        return try await ItemManager.shared.getItemCounts()
     }
     
     public func deleteItem(id: Int) async throws -> EmptyResponse {

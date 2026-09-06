@@ -55,7 +55,9 @@ public struct RequestItemDTO {
 
 public enum ItemAPI {
     /// 위시리스트 조회
-    case getWishItems(page: Int, size: Int)
+    case getWishItems(page: Int, size: Int, itemStatus: ItemStatusType?)
+    /// 아이템 개수 조회 (전체/소장템)
+    case getItemCounts
     /// 위시아이템 삭제
     case deleteItem(id: Int)
     /// 아이템 디테일 조회
@@ -82,6 +84,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         switch self {
         case .getWishItems:
             return ""
+        case .getItemCounts:
+            return "/counts"
         case .deleteItem(let id):
             return "/\(id)"
         case .getItemDetail(let id):
@@ -101,7 +105,7 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
 
     public var method: Moya.Method {
         switch self {
-        case .getWishItems, .getItemDetail, .parseItemUrl:
+        case .getWishItems, .getItemDetail, .parseItemUrl, .getItemCounts:
             return .get
         case .modifyItemFolder:
             return .put
@@ -118,10 +122,13 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
 
     public var task: Moya.Task {
         var parameters: [String: Any] = [:]
-        
+
         switch self {
-        case .getWishItems(let page, let size):
+        case .getWishItems(let page, let size, let itemStatus):
             parameters = ["page": page, "size": size]
+            if let itemStatus = itemStatus {
+                parameters["itemStatus"] = itemStatus.rawValue
+            }
         case .parseItemUrl(let link):
             parameters = ["site": link]
         case .addItem(let type, let item):
@@ -136,7 +143,7 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         default:
             parameters = [:]
         }
-        
+
         let encoding: ParameterEncoding = self.method == .post ? JSONEncoding.default : URLEncoding.default
         return .requestParameters(parameters: parameters, encoding: encoding)
     }
