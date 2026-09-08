@@ -208,15 +208,14 @@ extension MypageViewController: MypageViewDelegate {
     
     /// 회원탈퇴 및 화면 전환, 유저데이터 삭제
     private func requestDeleteUser() {
-        Task {
-            try await self.viewModel.deleteUser()
-            self.dismiss(animated: true) {
-                NotificationCenter.default.post(name: .SignOut, object: nil)
-                // 스낵바 출력
-                DispatchQueue.main.async {
-                    SnackBar.shared.show(type: .deleteUser)
-                }
+        self.dismiss(animated: true) {
+            NotificationCenter.default.post(name: .SignOut, object: nil)
+            DispatchQueue.main.async {
+                SnackBar.shared.show(type: .deleteUser)
             }
+        }
+        Task {
+            try? await self.viewModel.deleteUser()
         }
     }
     
