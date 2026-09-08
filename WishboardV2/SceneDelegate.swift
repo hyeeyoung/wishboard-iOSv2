@@ -76,16 +76,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     /// 자동 로그인 만료 (토큰 재발급 실패) 시 온보딩으로 이동 및 토스트 노출
     @objc private func signOutAndShowToast(_ notification: Foundation.Notification) {
+        let snackBarType = notification.userInfo?["SnackBarType"] as? SnackBarType ?? .refreshTokenFailed
         DispatchQueue.main.async {
             // 기존 유저 데이터 삭제
             UserManager.removeUserData()
-            // 온보딩 화면으로 이동하는 로직
-            self.setRootOnboarding()
-            // 토스트 노출
-            if let snackBarType = notification.userInfo?["SnackBarType"] as? SnackBarType {
+            // 온보딩 화면으로 이동하는 로직 - 전환 완료 후 토스트 노출
+            self.setRootOnboarding {
                 SnackBar.shared.show(type: snackBarType)
-            } else {
-                SnackBar.shared.show(type: .refreshTokenFailed)
             }
         }
     }
@@ -107,13 +104,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     /// 온보딩 화면 설정
-    private func setRootOnboarding() {
+    private func setRootOnboarding(completion: (() -> Void)? = nil) {
         let onboardingViewController = OnboardingViewController()
         let navigationController = UINavigationController(rootViewController: onboardingViewController)
         guard let window = self.window else { return }
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
-        UIView.transition(with: window, duration: 0.3, options: [.transitionCrossDissolve], animations: nil, completion: nil)
+        UIView.transition(with: window, duration: 0.3, options: [.transitionCrossDissolve], animations: nil) { _ in
+            completion?()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

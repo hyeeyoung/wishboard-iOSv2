@@ -65,26 +65,9 @@ public class ErrorPlugin: PluginType {
     }
     
     public func on401Error(_ error: MoyaError) {
-        switch error {
-        case .underlying(_, let response):
-            if let data = response?.data,
-               let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
-                switch apiError.code {
-                case "NOT_FOUND_USER":
-                    NotificationCenter.default.post(name: .SignOutAndShowToast,
-                                                    object: nil,
-                                                    userInfo: ["SnackBarType": SnackBarType.invalidUser])
-                case "LOGOUT_BY_DEVICE_OVERFLOW":
-                    NotificationCenter.default.post(name: .SignOutAndShowToast,
-                                                    object: nil,
-                                                    userInfo: ["SnackBarType": SnackBarType.logoutByDeviceOverflow])
-                default:
-                    break
-                }
-            }
-        default:
-            break
-        }
+        // NOT_FOUND_USER, LOGOUT_BY_DEVICE_OVERFLOW 는 TokenInterceptor.retry 에서 이미 처리됨
+        // 여기서 중복 처리하면 SignOutAndShowToast 알림이 두 번 발행되어 온보딩 이동이 두 번 일어나고
+        // 두 번째 이동이 첫 번째 토스트를 방해하는 버그가 발생하므로 제거
     }
     
 }
