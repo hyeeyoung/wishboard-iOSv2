@@ -173,6 +173,7 @@ extension HomeViewController: UICollectionViewDelegate {
 
             detailViewController.deleteAction = { [weak self] _ in
                 self?.viewModel.items.removeAll { $0.id == item.id }
+                Task { await self?.viewModel.fetchItemCounts() }
             }
 
             detailViewController.collectionChangeAction = { [weak self] isCollected in
