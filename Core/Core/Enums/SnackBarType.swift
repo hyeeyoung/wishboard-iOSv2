@@ -34,6 +34,7 @@ public enum SnackBarType {
     case otherUserModifying
     case refreshTokenFailed
     case invalidFcmToken
+    case nonExistAccount
     case hideEventBanner
     case test
     
@@ -65,6 +66,7 @@ public enum SnackBarType {
         case .otherUserModifying: return "변경사항을 저장하지 못했어요!\n잠시 후 다시 시도해주세요."
         case .refreshTokenFailed: return "자동 로그인이 만료되었습니다."
         case .invalidFcmToken: return "앗, 알림 설정이 만료되었습니다.\n다시 로그인해 주세요."
+        case .nonExistAccount: return "앗, 가입되지 않은 계정이에요! 가입하기부터 진행해 주세요."
         case .hideEventBanner: return "마이페이지 > ‘위시리스트 한 번에 등록하기’에서 언제든 확인할 수 있어요!"
 
         case .test: return "로그아웃"

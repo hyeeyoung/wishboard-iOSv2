@@ -41,6 +41,14 @@ public final class TokenInterceptor: RequestInterceptor, Echoable {
                                                     userInfo: ["SnackBarType": SnackBarType.invalidUser])
                     completion(.doNotRetry)
                     return
+                case "INVALID_TOKEN":
+                    // 유효하지 않은 토큰 — refresh 시도 없이 즉시 로그인 화면으로 이동
+                    UserManager.removeUserData()
+                    NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                                    object: nil,
+                                                    userInfo: ["SnackBarType": SnackBarType.refreshTokenFailed])
+                    completion(.doNotRetry)
+                    return
                 case "LOGOUT_BY_DEVICE_OVERFLOW":
                     NotificationCenter.default.post(name: .SignOutAndShowToast,
                                                     object: nil,
