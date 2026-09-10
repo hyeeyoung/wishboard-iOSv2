@@ -100,7 +100,7 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
                         
                         // 로그인 에러
                         switch response.statusCode {
-                        case 400, 401:
+                        case 400:
                             SnackBar.shared.show(type: .login)
                         case 404:
                             // 가입되지 않은 이메일 → 회원가입 유도
