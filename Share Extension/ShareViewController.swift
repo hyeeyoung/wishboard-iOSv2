@@ -9,6 +9,7 @@ import UIKit
 import Combine
 import Core
 import WBNetwork
+import ApplicationLibrary
 
 class ShareViewController: UIViewController {
     
@@ -24,6 +25,8 @@ class ShareViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        AnalyticsManager.shared.log(.shareExtensionOpened)
 
         setUpShareView()
         setupBackgroundDimView()
@@ -277,10 +280,11 @@ class ShareViewController: UIViewController {
         Task {
             do {
                 try await viewModel.addItem(item: itemDTO)
+                AnalyticsManager.shared.log(.itemAdded(source: .shareExtension))
                 shareView.completeButton.stopAnimation()
                 shareView.isUserInteractionEnabled = false
                 shareView.completeButton.isEnabled = false
-                
+
                 // complete snackbar
                 SnackBar(in: self).show(type: .addItem)
                 // quit

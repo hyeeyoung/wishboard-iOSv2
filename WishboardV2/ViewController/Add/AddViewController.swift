@@ -16,6 +16,7 @@ import Mantis
 
 import Core
 import WBNetwork
+import ApplicationLibrary
 
 enum AddItemType {
     case manual
@@ -700,13 +701,14 @@ extension AddViewController: AddToolBarDelegate {
                 
                 if self.type == .manual {
                     try await self.viewModel.addItem()
+                    AnalyticsManager.shared.log(.itemAdded(source: .manual))
                 } else if self.type == .modify {
                     guard let itemIdx = self.item?.id else {return}
                     try await self.viewModel.modifyItem(idx: itemIdx)
                 }
-                
+
                 lottie.stopAnimation()
-                
+
                 self.dismiss(animated: true) {
                     // 스낵바 노출
                     if self.type == .manual {

@@ -11,6 +11,7 @@ import SafariServices
 import Combine
 import Core
 import WBNetwork
+import ApplicationLibrary
 
 public protocol ItemDetailDelegate {
     func refreshItems()
@@ -101,6 +102,10 @@ final class ItemDetailViewController: UIViewController {
                     try await self?.viewModel.updateItemStatus(status: status)
                     // 아이템 정보 reload
                     try await self?.viewModel.fetchItemDetail()
+                    // '소장템으로 바꾸기'만 집계 (해제는 제외)
+                    if isCollected {
+                        AnalyticsManager.shared.log(.itemMarkedAsOwned)
+                    }
                     // 스낵바 노출
                     SnackBar.shared.show(type: isCollected ? .collectItem : .removeCollectItem)
                     // Action 전달
@@ -232,6 +237,7 @@ extension ItemDetailViewController: DetailToolBarDelegate {
                         if let id = self.viewModel.item?.id {
                             // delete item
                             try await self.viewModel.deleteItem()
+                            AnalyticsManager.shared.log(.itemDeleted)
                             self.deleteAction?(id)
                             
                             // 뒤로가기

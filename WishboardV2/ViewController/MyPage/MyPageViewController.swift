@@ -10,6 +10,7 @@ import UIKit
 import MessageUI
 import Combine
 import Core
+import ApplicationLibrary
 
 struct User {
     var profileImageUrl: String?
@@ -216,6 +217,8 @@ extension MypageViewController: MypageViewDelegate {
         }
         Task {
             try? await self.viewModel.deleteUser()
+            AnalyticsManager.shared.log(.withdraw)
+            AnalyticsManager.shared.setUserID(nil)
         }
     }
     

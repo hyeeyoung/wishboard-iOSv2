@@ -10,6 +10,7 @@ import UIKit
 import Combine
 import SafariServices
 import Core
+import ApplicationLibrary
 
 final class AlarmListViewController: UIViewController, ItemDetailDelegate {
     func refreshItems() {
@@ -32,6 +33,7 @@ final class AlarmListViewController: UIViewController, ItemDetailDelegate {
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
         super.viewWillAppear(animated)
+        AnalyticsManager.shared.log(.screenView(name: .notification))
     }
     
     private func setupUI() {

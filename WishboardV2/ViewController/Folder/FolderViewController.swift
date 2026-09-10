@@ -10,6 +10,7 @@ import UIKit
 import Combine
 import WBNetwork
 import Moya
+import ApplicationLibrary
 
 final class FolderViewController: UIViewController, ItemDetailDelegate {
     private let folderView = FolderView()
@@ -183,6 +184,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
                     do {
                         self?.bottomSheetView.actionButton.startAnimation()
                         try await self?.viewModel.addFolder(name: folderName)
+                        AnalyticsManager.shared.log(.folderCreated)
                         self?.dismissKeyboard()
                         self?.bottomSheetView.actionButton.stopAnimation()
                         self?.hideBottomSheet()

@@ -11,6 +11,7 @@ import MessageUI
 import Combine
 import Core
 import Moya
+import ApplicationLibrary
 
 final class ModifyProfileViewController: UIViewController {
     
@@ -66,8 +67,9 @@ final class ModifyProfileViewController: UIViewController {
                 do {
                     self?.modifyProfileView.actionButton.startAnimation()
                     try await self?.viewModel.updateProfile(img: image, name: name)
+                    AnalyticsManager.shared.log(.profileEdited)
                     self?.modifyProfileView.actionButton.stopAnimation()
-                    
+
                     self?.navigationController?.popViewController(animated: true)
                     SnackBar.shared.show(type: .modifyProfile)
                     self?.modifyProfileAction?()

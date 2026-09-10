@@ -27,6 +27,7 @@ let package = Package(
             name: "ApplicationLibrary",
             dependencies: ["SnapKit", "Then", "Kingfisher", "Mantis",
                            .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
+                           .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
                            .product(name: "Lottie", package: "lottie-spm"),
                           ]),
         .testTarget(

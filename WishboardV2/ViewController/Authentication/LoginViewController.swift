@@ -11,6 +11,7 @@ import Combine
 import Moya
 import Core
 import WBNetwork
+import ApplicationLibrary
 
 final class LoginViewController: UIViewController, ToolBarDelegate {
     
@@ -89,8 +90,9 @@ final class LoginViewController: UIViewController, ToolBarDelegate {
                 loginView.loginButton.startAnimation()
                 
                 try await viewModel.login()
-                
+
                 loginView.loginButton.stopAnimation()
+                AnalyticsManager.shared.log(.loginSucceeded(provider: .email))
                 self.moveToMain()
             } catch {
                 if let moyaError = error as? MoyaError, let response = moyaError.response {

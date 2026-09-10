@@ -10,6 +10,7 @@ import UIKit
 import Combine
 import SafariServices
 import Core
+import ApplicationLibrary
 
 final class CalendarViewController: UIViewController {
     private var viewModel = CalendarViewModel()
@@ -39,6 +40,7 @@ final class CalendarViewController: UIViewController {
         self.navigationController?.navigationBar.isHidden = true
         self.tabBarController?.tabBar.isHidden = true
         super.viewWillAppear(animated)
+        AnalyticsManager.shared.log(.screenView(name: .calendar))
         
         if isFirstLoad {return}
         Task {

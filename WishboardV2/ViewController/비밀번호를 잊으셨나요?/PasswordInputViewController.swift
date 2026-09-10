@@ -11,6 +11,7 @@ import Combine
 import SnapKit
 import Core
 import Moya
+import ApplicationLibrary
 
 final class PasswordInputViewController: UIViewController {
     
@@ -136,6 +137,7 @@ final class PasswordInputViewController: UIViewController {
             do {
                 let _ = try await self.viewModel.register(email: self.email)
                 print("회원가입 성공")
+                AnalyticsManager.shared.log(.signupSucceeded(provider: .email))
                 
                 // 화면 이동
                 self.navigationController?.popToRootViewController(animated: false)
