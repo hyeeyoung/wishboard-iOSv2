@@ -40,7 +40,7 @@ public enum SnackBarType {
     
     public var message: String {
         switch self {
-        case .login: return "아이디 또는 비밀번호를 확인해 주세요."
+        case .login: return "아이디 또는 비밀번호를 다시 확인해 주세요."
         case .networkCheck: return "네트워크 연결 상태를 확인해 주세요."
         case .addFolder: return "폴더를 추가했어요!😉"
         case .modifyFolder: return "폴더명을 수정했어요!📁"
