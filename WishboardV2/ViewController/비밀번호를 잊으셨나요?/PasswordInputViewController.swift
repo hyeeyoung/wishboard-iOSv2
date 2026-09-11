@@ -122,9 +122,12 @@ final class PasswordInputViewController: UIViewController {
             } catch {
                 if let moyaError = error as? MoyaError, let response = moyaError.response {
                     if response.statusCode == 404 {
-                        print("존재하지 않는 유저")
+                        // 가입되지 않은 이메일(계정 탈퇴 포함) → 빨간 에러 문구 표시
+                        self.passwordInputView.errorLabel.text = ErrorMessage.nonExistAccount
+                        self.passwordInputView.errorLabel.isHidden = false
+                    } else {
+                        SnackBar.shared.show(type: .errorMessage)
                     }
-                    SnackBar.shared.show(type: .errorMessage)
                 }
                 throw error
             }
@@ -147,10 +150,7 @@ final class PasswordInputViewController: UIViewController {
                 
             } catch {
                 if let moyaError = error as? MoyaError, let response = moyaError.response {
-                    if response.statusCode == 404 {
-                        print("이미 존재하는 fcmToken")
-                        return
-                    } else if response.statusCode == 409 {
+                    if response.statusCode == 409 {
                         self.passwordInputView.errorLabel.text = ErrorMessage.existAccount
                         self.passwordInputView.errorLabel.isHidden = false
                         return
@@ -158,7 +158,7 @@ final class PasswordInputViewController: UIViewController {
                         SnackBar.shared.show(type: .errorMessage)
                     }
                 }
-                
+
                 throw error
             }
         }
