@@ -1,18 +1,20 @@
 name: TestFlight Upload
 
 on:
+  push:
+    branches:
+      - dev
   workflow_dispatch:
     inputs:
-      upload_existing:
-        description: '가장 최근 로컬 아카이브 업로드 (skip build)'
-        required: false
-        default: 'false'
-        type: boolean
       build_number_override:
-        description: '빌드 번호 수동 지정 (비워두면 자동)'
+        description: '빌드 번호 수동 지정 (비워두면 자동: YYYYMMDDHHmm)'
         required: false
         default: ''
         type: string
+
+concurrency:
+  group: testflight-upload
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -23,14 +25,14 @@ jobs:
 
     env:
       TEAM_ID: B974XY47GZ
-      BUNDLE_ID: gomin.Wishboard
       SCHEME: WishboardV2
       CONFIGURATION: Release
       ARCHIVE_PATH: /tmp/WishboardV2_CI.xcarchive
       EXPORT_PATH: /tmp/WishboardV2_CI_Export
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout dev branch
+        uses: actions/checkout@v4
         with:
           ref: dev
 
@@ -40,39 +42,24 @@ jobs:
           echo "${{ secrets.ASC_API_KEY_CONTENT }}" | base64 --decode > ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
           chmod 600 ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
 
-      - name: Archive App
-        if: ${{ inputs.upload_existing == 'false' }}
+      - name: Set Build Number
         run: |
-          cd ~/actions-runner/_work/wishboard-iOSv2/wishboard-iOSv2
-
-          # 빌드 번호 설정
           if [ -n "${{ inputs.build_number_override }}" ]; then
-            BUILD_NUMBER="${{ inputs.build_number_override }}"
+            echo "BUILD_NUMBER=${{ inputs.build_number_override }}" >> $GITHUB_ENV
           else
-            BUILD_NUMBER=$(date +%Y%m%d%H%M)
+            echo "BUILD_NUMBER=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
           fi
-          echo "Build number: $BUILD_NUMBER"
 
+      - name: Archive App
+        run: |
+          rm -rf "${{ env.ARCHIVE_PATH }}"
           xcodebuild archive \
             -project WishboardV2.xcodeproj \
             -scheme "${{ env.SCHEME }}" \
             -configuration "${{ env.CONFIGURATION }}" \
             -archivePath "${{ env.ARCHIVE_PATH }}" \
             -destination "generic/platform=iOS" \
-            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM="${{ env.TEAM_ID }}" \
-            -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8 \
-            -authenticationKeyID ${{ secrets.ASC_API_KEY_ID }} \
-            -authenticationKeyIssuerID ${{ secrets.ASC_API_ISSUER_ID }} \
-            -allowProvisioningUpdates \
-            | xcpretty || xcodebuild archive \
-            -project WishboardV2.xcodeproj \
-            -scheme "${{ env.SCHEME }}" \
-            -configuration "${{ env.CONFIGURATION }}" \
-            -archivePath "${{ env.ARCHIVE_PATH }}" \
-            -destination "generic/platform=iOS" \
-            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            CURRENT_PROJECT_VERSION="${{ env.BUILD_NUMBER }}" \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM="${{ env.TEAM_ID }}" \
             -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8 \
@@ -80,31 +67,7 @@ jobs:
             -authenticationKeyIssuerID ${{ secrets.ASC_API_ISSUER_ID }} \
             -allowProvisioningUpdates
 
-      - name: Use Most Recent Local Archive
-        if: ${{ inputs.upload_existing == 'true' }}
-        run: |
-          python3 -c "
-          import os, shutil
-          archive_dirs = []
-          base = os.path.expanduser('~/Library/Developer/Xcode/Archives')
-          for date_dir in sorted(os.listdir(base), reverse=True):
-              full_date_dir = os.path.join(base, date_dir)
-              if not os.path.isdir(full_date_dir):
-                  continue
-              for archive in sorted(os.listdir(full_date_dir), reverse=True):
-                  if archive.endswith('.xcarchive') and 'WishboardV2' in archive:
-                      src = os.path.join(full_date_dir, archive)
-                      dst = '${{ env.ARCHIVE_PATH }}'
-                      if os.path.exists(dst):
-                          shutil.rmtree(dst)
-                      shutil.copytree(src, dst)
-                      print(f'Copied: {src}')
-                      exit(0)
-          print('No WishboardV2 archive found')
-          exit(1)
-          "
-
-      - name: Export IPA
+      - name: Export & Upload to TestFlight
         run: |
           cat > /tmp/ExportOptions.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
@@ -114,7 +77,7 @@ jobs:
               <key>method</key>
               <string>app-store-connect</string>
               <key>destination</key>
-              <string>export</string>
+              <string>upload</string>
               <key>teamID</key>
               <string>${{ env.TEAM_ID }}</string>
               <key>signingStyle</key>
@@ -137,23 +100,7 @@ jobs:
             -authenticationKeyIssuerID ${{ secrets.ASC_API_ISSUER_ID }} \
             -allowProvisioningUpdates
 
-      - name: Upload to TestFlight
-        run: |
-          IPA_PATH=$(find "${{ env.EXPORT_PATH }}" -name "*.ipa" | head -1)
-          if [ -z "$IPA_PATH" ]; then
-            echo "Error: IPA not found"
-            exit 1
-          fi
-          echo "Uploading: $IPA_PATH"
-
-          xcrun altool --upload-app \
-            --type ios \
-            --file "$IPA_PATH" \
-            --apiKey ${{ secrets.ASC_API_KEY_ID }} \
-            --apiIssuer ${{ secrets.ASC_API_ISSUER_ID }} \
-            --verbose
-
-      - name: Cleanup API Key
+      - name: Cleanup
         if: always()
         run: |
           rm -f ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
