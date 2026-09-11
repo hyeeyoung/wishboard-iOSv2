@@ -1,9 +1,8 @@
 name: TestFlight Upload
 
 on:
-  schedule:
-    # 매일 자정 KST (= 15:00 UTC) 에 실행
-    - cron: '0 15 * * *'
+  issues:
+    types: [labeled]
   workflow_dispatch:
     inputs:
       build_number_override:
@@ -11,14 +10,6 @@ on:
         required: false
         default: ''
         type: string
-      skip_commit_check:
-        description: '커밋 체크 건너뛰기 (수동 실행 시 무조건 빌드)'
-        required: false
-        default: 'true'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
 
 concurrency:
   group: testflight-upload
@@ -26,9 +17,11 @@ concurrency:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   upload-testflight:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'testflight'
     runs-on: self-hosted
 
     env:
@@ -45,38 +38,22 @@ jobs:
           ref: dev
           fetch-depth: 0
 
-      - name: Check for new commits (스케줄 실행 시만)
-        id: commit_check
+      - name: Remove testflight label (이슈 트리거 시)
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # 수동 실행이고 skip_commit_check=true 이면 항상 빌드
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.skip_commit_check }}" = "true" ]; then
-            echo "Manual run – skipping commit check."
-            echo "should_build=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # 지난 25시간 이내 dev 브랜치 커밋 확인
-          SINCE=$(date -u -v-25H "+%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u -d "25 hours ago" "+%Y-%m-%dT%H:%M:%SZ")
-          COMMIT_COUNT=$(git log origin/dev --since="$SINCE" --oneline | wc -l | tr -d " ")
-          echo "Commits in last 25h: $COMMIT_COUNT"
-
-          if [ "$COMMIT_COUNT" -eq "0" ]; then
-            echo "No new commits – skipping TestFlight upload."
-            echo "should_build=false" >> $GITHUB_OUTPUT
-          else
-            echo "New commits found – proceeding with build."
-            echo "should_build=true" >> $GITHUB_OUTPUT
-          fi
+          gh issue edit ${{ github.event.issue.number }} \
+            --remove-label "testflight" \
+            --repo ${{ github.repository }} || true
 
       - name: Setup App Store Connect API Key
-        if: steps.commit_check.outputs.should_build == 'true'
         run: |
           mkdir -p ~/private_keys
           echo "${{ secrets.ASC_API_KEY_CONTENT }}" | base64 --decode > ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
           chmod 600 ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
 
       - name: Set Build Number
-        if: steps.commit_check.outputs.should_build == 'true'
         run: |
           if [ -n "${{ inputs.build_number_override }}" ]; then
             echo "BUILD_NUMBER=${{ inputs.build_number_override }}" >> $GITHUB_ENV
@@ -85,7 +62,6 @@ jobs:
           fi
 
       - name: Archive App
-        if: steps.commit_check.outputs.should_build == 'true'
         run: |
           rm -rf "${{ env.ARCHIVE_PATH }}"
           xcodebuild archive \
@@ -103,7 +79,6 @@ jobs:
             -allowProvisioningUpdates
 
       - name: Export & Upload to TestFlight
-        if: steps.commit_check.outputs.should_build == 'true'
         run: |
           cat > /tmp/ExportOptions.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
