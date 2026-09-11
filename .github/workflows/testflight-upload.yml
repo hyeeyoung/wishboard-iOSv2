@@ -1,0 +1,118 @@
+name: TestFlight Upload
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      build_number_override:
+        description: '빌드 번호 수동 지정 (비워두면 자동: YYYYMMDDHHmm)'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: testflight-upload
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  upload-testflight:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'testflight'
+    runs-on: self-hosted
+
+    env:
+      TEAM_ID: B974XY47GZ
+      SCHEME: WishboardV2
+      CONFIGURATION: Release
+      ARCHIVE_PATH: /tmp/WishboardV2_CI.xcarchive
+      EXPORT_PATH: /tmp/WishboardV2_CI_Export
+
+    steps:
+      - name: Checkout dev branch
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Remove testflight label (이슈 트리거 시)
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} \
+            --remove-label "testflight" \
+            --repo ${{ github.repository }} || true
+
+      - name: Setup App Store Connect API Key
+        run: |
+          mkdir -p ~/private_keys
+          echo "${{ secrets.ASC_API_KEY_CONTENT }}" | base64 --decode > ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
+          chmod 600 ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
+
+      - name: Set Build Number
+        run: |
+          if [ -n "${{ inputs.build_number_override }}" ]; then
+            echo "BUILD_NUMBER=${{ inputs.build_number_override }}" >> $GITHUB_ENV
+          else
+            echo "BUILD_NUMBER=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+          fi
+
+      - name: Archive App
+        run: |
+          rm -rf "${{ env.ARCHIVE_PATH }}"
+          xcodebuild archive \
+            -project WishboardV2.xcodeproj \
+            -scheme "${{ env.SCHEME }}" \
+            -configuration "${{ env.CONFIGURATION }}" \
+            -archivePath "${{ env.ARCHIVE_PATH }}" \
+            -destination "generic/platform=iOS" \
+            CURRENT_PROJECT_VERSION="${{ env.BUILD_NUMBER }}" \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM="${{ env.TEAM_ID }}" \
+            -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.ASC_API_KEY_ID }} \
+            -authenticationKeyIssuerID ${{ secrets.ASC_API_ISSUER_ID }} \
+            -allowProvisioningUpdates
+
+      - name: Export & Upload to TestFlight
+        run: |
+          cat > /tmp/ExportOptions.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store-connect</string>
+              <key>destination</key>
+              <string>upload</string>
+              <key>teamID</key>
+              <string>${{ env.TEAM_ID }}</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>uploadSymbols</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+
+          rm -rf "${{ env.EXPORT_PATH }}"
+          xcodebuild -exportArchive \
+            -archivePath "${{ env.ARCHIVE_PATH }}" \
+            -exportPath "${{ env.EXPORT_PATH }}" \
+            -exportOptionsPlist /tmp/ExportOptions.plist \
+            -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.ASC_API_KEY_ID }} \
+            -authenticationKeyIssuerID ${{ secrets.ASC_API_ISSUER_ID }} \
+            -allowProvisioningUpdates
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f ~/private_keys/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
+          rm -rf "${{ env.ARCHIVE_PATH }}" "${{ env.EXPORT_PATH }}"
