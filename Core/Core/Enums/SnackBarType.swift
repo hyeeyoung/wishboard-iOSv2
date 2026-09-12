@@ -36,7 +36,7 @@ public enum SnackBarType {
     case invalidFcmToken
     case nonExistAccount
     case hideEventBanner
-    case test
+    case logout
     
     public var message: String {
         switch self {
@@ -69,7 +69,7 @@ public enum SnackBarType {
         case .nonExistAccount: return "앗, 가입되지 않은 계정이에요!\n회원가입 후 이용해주세요."
         case .hideEventBanner: return "마이페이지 > ‘위시리스트 한 번에 등록하기’에서 언제든 확인할 수 있어요!"
 
-        case .test: return "로그아웃"
+        case .logout: return "로그아웃 되었어요."
         }
     }
 }

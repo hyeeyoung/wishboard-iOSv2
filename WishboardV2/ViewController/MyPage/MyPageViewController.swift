@@ -172,8 +172,10 @@ extension MypageViewController: MypageViewDelegate {
     private func requestLogout() {
         Task {
             self.dismiss(animated: true)
-            NotificationCenter.default.post(name: .SignOut, object: nil)
-            try await self.viewModel.logout()
+            try? await self.viewModel.logout()
+            NotificationCenter.default.post(name: .SignOutAndShowToast,
+                                            object: nil,
+                                            userInfo: ["SnackBarType": SnackBarType.logout])
         }
     }
     
