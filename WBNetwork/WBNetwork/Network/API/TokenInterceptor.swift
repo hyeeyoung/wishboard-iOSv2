@@ -30,6 +30,12 @@ public final class TokenInterceptor: RequestInterceptor, Echoable {
             return
         }
 
+        // 로그아웃 요청은 토큰 오류가 발생해도 SignOutAndShowToast 없이 조용히 실패 처리
+        if let url = request.request?.url?.absoluteString, url.contains("/auth/logout") {
+            completion(.doNotRetry)
+            return
+        }
+
         // 유저 인증상태 에러 분기처리
         if let dataRequest = request as? DataRequest,
            let data = dataRequest.data {
