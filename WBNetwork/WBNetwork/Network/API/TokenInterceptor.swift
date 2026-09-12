@@ -30,7 +30,7 @@ public final class TokenInterceptor: RequestInterceptor, Echoable {
             return
         }
 
-        // 로그아웃 요청은 토큰 오류와 무관하게 조용히 실패 처리 (호출부에서 로그아웃 토스트를 직접 노출)
+        // 로그아웃 요청은 토큰 오류가 발생해도 SignOutAndShowToast 없이 조용히 실패 처리
         if let url = request.request?.url?.absoluteString, url.contains("/auth/logout") {
             completion(.doNotRetry)
             return
