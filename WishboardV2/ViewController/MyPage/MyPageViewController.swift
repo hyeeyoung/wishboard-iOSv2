@@ -170,10 +170,11 @@ extension MypageViewController: MypageViewDelegate {
     
     /// 로그아웃 및 화면 전환, 유저데이터 삭제
     private func requestLogout() {
-        Task {
-            self.dismiss(animated: true)
-            try? await self.viewModel.logout()
+        self.dismiss(animated: true) {
             NotificationCenter.default.post(name: .SignOut, object: nil)
+        }
+        Task {
+            try? await self.viewModel.logout()
         }
     }
     
