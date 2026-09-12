@@ -173,9 +173,7 @@ extension MypageViewController: MypageViewDelegate {
         Task {
             self.dismiss(animated: true)
             try? await self.viewModel.logout()
-            NotificationCenter.default.post(name: .SignOutAndShowToast,
-                                            object: nil,
-                                            userInfo: ["SnackBarType": SnackBarType.logout])
+            NotificationCenter.default.post(name: .SignOut, object: nil)
         }
     }
     
