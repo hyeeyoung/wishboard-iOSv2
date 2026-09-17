@@ -53,8 +53,8 @@ jobs:
                - 생성/업데이트된 PR 링크
                - 캡처한 스크린샷이 있다면 함께 첨부
           " --allowedTools "Bash,Edit,Write,mcp__github__*" --dangerously-skip-permissions
-        env:
+        # env:
           # LaunchAgent 컨텍스트에선 macOS Keychain 접근 불가 → CI용 장기 토큰 사용
           # 발급: `claude setup-token` (러너 머신 터미널에서 1회)
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
