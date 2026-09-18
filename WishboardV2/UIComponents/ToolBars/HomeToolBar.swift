@@ -35,6 +35,7 @@ public enum GridColumnType: Int {
 
 public protocol HomeToolBarDelegate: AnyObject {
     func alarmNaviItemTap()
+    func moreNaviItemTap()
 }
 
 final public class HomeToolBar: UIView {
@@ -49,6 +50,11 @@ final public class HomeToolBar: UIView {
     private let alarmButton = UIButton().then {
         $0.tintColor = .gray_700
         $0.setImage(Image.notice, for: .normal)
+    }
+    
+    /// 아이템 다중 선택 진입 메뉴
+    private let moreButton = UIButton().then {
+        $0.setImage(Image.more, for: .normal)
     }
     
     // MARK: - Initializer
@@ -69,6 +75,7 @@ final public class HomeToolBar: UIView {
     private func setupViews() {
         addSubview(logo)
         addSubview(alarmButton)
+        addSubview(moreButton)
     }
     
     private func setupConstraints() {
@@ -84,16 +91,27 @@ final public class HomeToolBar: UIView {
             make.trailing.equalToSuperview().offset(-16)
             make.centerY.equalToSuperview()
         }
+        
+        moreButton.snp.makeConstraints { make in
+            make.width.height.equalTo(24)
+            make.trailing.equalTo(alarmButton.snp.leading).offset(-18)
+            make.centerY.equalToSuperview()
+        }
     }
     
     // MARK: - Setup Actions
     private func setupActions() {
         alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
+        moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - Button Actions
     @objc private func alarmButtonTapped() {
         delegate?.alarmNaviItemTap()
+    }
+    
+    @objc private func moreButtonTapped() {
+        delegate?.moreNaviItemTap()
     }
     
     public func configure() {

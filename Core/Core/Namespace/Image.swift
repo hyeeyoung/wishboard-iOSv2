@@ -28,6 +28,8 @@ public enum Image{
     // check
     public static let checkWhite = UIImage(named: "check_white")!
     public static let checkGreen = UIImage(named: "check")!
+    /// 아이템 다중 선택 체크 아이콘
+    public static let checkCircle = UIImage(named: "ic_check_circle")!
     
     // Alarm
     public static let notice = UIImage(named: "notice")!

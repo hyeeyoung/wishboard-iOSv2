@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 import SnapKit
+import Then
+import Combine
 import Core
 import WBNetwork
 
@@ -15,11 +17,18 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
+    private let selectionViewModel = ItemSelectionViewModel()
 
     /// 이벤트 영역 > x버튼
     private static let eventBannerDismissedAtKey = "eventBannerDismissedAt"
 
     private let backgroundDimView = UIView()
+    /// 다중 선택 모드에서 탭바 대신 노출되는 하단바
+    private let selectionBottomBar = ItemSelectionBottomBar().then {
+        $0.isHidden = true
+    }
+
+    private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +39,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         setupUI()
         setupDelegates()
         setupBackgroundDimView()
+        setupSelectionBottomBar()
         setupBottomSheet()
         setupBindings()
 
@@ -48,7 +58,8 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.tabBarController?.tabBar.isHidden = false
+        // 다중 선택 모드에서는 탭바 대신 선택 하단바가 노출됩니다.
+        self.tabBarController?.tabBar.isHidden = selectionViewModel.isSelectionMode
     }
 
     private func setupNotifications() {
@@ -62,7 +73,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
             make.top.equalTo(self.view.safeAreaLayoutGuide)
             make.bottom.equalToSuperview()
         }
-        homeView.configure(with: viewModel)
+        homeView.configure(with: viewModel, selectionViewModel: selectionViewModel)
         setupEventBanner()
     }
 
@@ -81,7 +92,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
             )
 
             self.homeView.hideEventBanner()
-            
+
             // show toast
             SnackBar.shared.show(type: .hideEventBanner)
         }
@@ -110,12 +121,28 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     private func setupDelegates() {
         homeView.collectionView.delegate = self
         homeView.toolbarDelegate = self
+        homeView.selectionToolBar.delegate = self
+        selectionBottomBar.delegate = self
     }
 
     private func setupBindings() {
         homeView.refreshAction = { [weak self] in
             self?.refreshItems()
         }
+
+        selectionViewModel.$selectedItemIds
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateSelectionBottomBar()
+            }
+            .store(in: &cancellables)
+
+        viewModel.$displayedItems
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateSelectionBottomBar()
+            }
+            .store(in: &cancellables)
     }
 
     @objc func refreshItems() {
@@ -133,6 +160,14 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
 
         backgroundDimView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+    }
+
+    private func setupSelectionBottomBar() {
+        view.addSubview(selectionBottomBar)
+        selectionBottomBar.snp.makeConstraints { make in
+            make.horizontalEdges.bottom.equalToSuperview()
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-ItemSelectionBottomBar.height)
         }
     }
 
@@ -155,10 +190,63 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 }
 
+// MARK: - 아이템 다중 선택
+
+extension HomeViewController {
+
+    private func enterSelectionMode() {
+        selectionViewModel.enterSelectionMode()
+        homeView.setSelectionMode(true)
+        selectionBottomBar.isHidden = false
+        tabBarController?.tabBar.isHidden = true
+        updateSelectionBottomBar()
+    }
+
+    private func exitSelectionMode() {
+        selectionViewModel.exitSelectionMode()
+        homeView.setSelectionMode(false)
+        selectionBottomBar.isHidden = true
+        tabBarController?.tabBar.isHidden = false
+    }
+
+    private func updateSelectionBottomBar() {
+        guard selectionViewModel.isSelectionMode else { return }
+        selectionBottomBar.configure(
+            selectedCount: selectionViewModel.selectedCount,
+            hasItems: !viewModel.displayedItems.isEmpty
+        )
+    }
+
+    /// 선택된 아이템 삭제
+    private func requestDeleteSelectedItems() {
+        guard selectionViewModel.hasSelection else { return }
+        let indicator = ItemSelectionFlow.showLoading(on: self)
+
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            defer { ItemSelectionFlow.hideLoading(indicator) }
+
+            // TODO: 아이템 다중 삭제 API 연동 시, selectionViewModel.selectedItemIds 를 전달해 이 위치에서 호출합니다.
+
+            self.exitSelectionMode()
+            self.refreshItems()
+            SnackBar.shared.show(type: .deleteItem)
+        }
+    }
+}
+
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.section == 1 else { return }
         let item = viewModel.displayedItems[indexPath.row]
+
+        // 다중 선택 모드에서는 셀 전체가 선택 토글 영역이 됩니다.
+        if selectionViewModel.isSelectionMode {
+            guard let itemIdx = item.id else { return }
+            selectionViewModel.toggle(itemIdx)
+            return
+        }
+
         if let itemIdx = item.id {
             UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
@@ -203,5 +291,37 @@ extension HomeViewController: HomeToolBarDelegate {
         let nextVC = AlarmListViewController()
         nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+
+    func moreNaviItemTap() {
+        UIDevice.vibrate()
+        ItemSelectionFlow.presentSelectionActionSheet(on: self) { [weak self] in
+            self?.enterSelectionMode()
+        }
+    }
+}
+
+extension HomeViewController: ItemSelectionToolBarDelegate {
+    func selectionCloseButtonTap() {
+        exitSelectionMode()
+    }
+}
+
+extension HomeViewController: ItemSelectionBottomBarDelegate {
+    func selectionBarDidTapSelectAll() {
+        selectionViewModel.selectAll(itemIds: homeView.displayedItemIds())
+    }
+
+    func selectionBarDidTapDeselectAll() {
+        selectionViewModel.clearSelection()
+    }
+
+    func selectionBarDidTapDelete() {
+        ItemSelectionFlow.presentDeleteAlert(
+            on: self,
+            selectedCount: selectionViewModel.selectedCount
+        ) { [weak self] in
+            self?.requestDeleteSelectedItems()
+        }
     }
 }

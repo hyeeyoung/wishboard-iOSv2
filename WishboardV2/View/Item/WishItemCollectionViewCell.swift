@@ -43,7 +43,18 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         $0.backgroundColor = .gray_100
         $0.isHidden = true
     }
-    
+    /// 다중 선택 모드에서 선택된 아이템의 딤드 처리
+    private let selectionDimView = UIView().then {
+        $0.backgroundColor = .black_05
+        $0.clipsToBounds = true
+        $0.isHidden = true
+    }
+    /// 다중 선택 모드에서 선택된 아이템의 체크 아이콘
+    private let selectionCheckImageView = UIImageView().then {
+        $0.image = Image.checkCircle
+        $0.isHidden = true
+    }
+
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -65,6 +76,20 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(collectionTag)
         collectionTag.addSubview(collectionTagTitle)
         contentView.addSubview(divider)
+        contentView.addSubview(selectionDimView)
+        contentView.addSubview(selectionCheckImageView)
+    }
+
+    /// 이미지뷰의 레이아웃이 열 수에 따라 달라지므로, 선택 오버레이도 함께 다시 잡아줍니다.
+    private func setupSelectionConstraints() {
+        selectionDimView.snp.remakeConstraints { make in
+            make.edges.equalTo(imageView)
+        }
+        selectionCheckImageView.snp.remakeConstraints { make in
+            make.trailing.bottom.equalTo(imageView).offset(-5)
+            make.width.height.equalTo(24)
+        }
+        selectionDimView.layer.cornerRadius = imageView.layer.cornerRadius
     }
     
     private func setupTwoColumnConstraints() {
@@ -174,6 +199,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         case .three:
             setupTripleColumnConstraints()
         }
+        setupSelectionConstraints()
 
         // item image
         if let itemImages = item.itemImages, !itemImages.isEmpty, let imgUrl = itemImages[0].itemImageUrl {
@@ -193,7 +219,19 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         let isCollected = (item.itemStatus == .owned)
         self.configureCollection(with: isCollected)
     }
-    
+
+    /// 다중 선택 모드에서의 선택 상태를 반영합니다.
+    func configureSelection(isSelectionMode: Bool, isSelected: Bool) {
+        let isHighlighted = isSelectionMode && isSelected
+        selectionDimView.isHidden = !isHighlighted
+        selectionCheckImageView.isHidden = !isHighlighted
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        configureSelection(isSelectionMode: false, isSelected: false)
+    }
+
     // MARK: - Private Methods
     
     private func configureItemName(with name: String) {

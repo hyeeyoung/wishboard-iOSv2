@@ -154,6 +154,11 @@
 		23F3FFC72C790297003C7DA9 /* loading_horizontal_black.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */; };
 		5063165F0DC44F60910E46E8 /* WishboardWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1013F656332484F87BA49CE /* WishboardWebViewController.swift */; };
 		CEEF72500061E7467ABB04C9 /* HomeStickyHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */; };
+		ABA02E876FCAF0121D93AD5C /* ItemSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16DF78A977F21589344BD66 /* ItemSelectionViewModel.swift */; };
+		B44DF1797D100830997D2ECA /* ItemSelectionToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFCBF1403B1F78CAF16F520 /* ItemSelectionToolBar.swift */; };
+		10E097BED39EC183A8341039 /* ItemSelectionBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E88ABE02AD132C040362931 /* ItemSelectionBottomBar.swift */; };
+		6A5D72834918C8BEC60EFA7B /* ItemDragSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6C4FA95ED20EDBC702A8 /* ItemDragSelectionController.swift */; };
+		30EFB95419F517C75D6229E4 /* ItemSelectionFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64917113960340291378C2B /* ItemSelectionFlow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -366,6 +371,11 @@
 		A1013F656332484F87BA49CE /* WishboardWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishboardWebViewController.swift; sourceTree = "<group>"; };
 		C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeEventBannerView.swift; sourceTree = "<group>"; };
 		F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeStickyHeaderView.swift; sourceTree = "<group>"; };
+		F16DF78A977F21589344BD66 /* ItemSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionViewModel.swift; sourceTree = "<group>"; };
+		6CFCBF1403B1F78CAF16F520 /* ItemSelectionToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionToolBar.swift; sourceTree = "<group>"; };
+		2E88ABE02AD132C040362931 /* ItemSelectionBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionBottomBar.swift; sourceTree = "<group>"; };
+		721C6C4FA95ED20EDBC702A8 /* ItemDragSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDragSelectionController.swift; sourceTree = "<group>"; };
+		B64917113960340291378C2B /* ItemSelectionFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionFlow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -409,6 +419,7 @@
 		231F51BC2C708EAC00524968 /* Item */ = {
 			isa = PBXGroup;
 			children = (
+				F16DF78A977F21589344BD66 /* ItemSelectionViewModel.swift */,
 				231F51C42C708F4A00524968 /* HomeViewModel.swift */,
 				2337C8672C70FDB400E2A67B /* ItemDetailViewModel.swift */,
 			);
@@ -418,6 +429,8 @@
 		231F51BF2C708ED500524968 /* Item */ = {
 			isa = PBXGroup;
 			children = (
+				721C6C4FA95ED20EDBC702A8 /* ItemDragSelectionController.swift */,
+				2E88ABE02AD132C040362931 /* ItemSelectionBottomBar.swift */,
 				231F51BD2C708EB400524968 /* HomeView.swift */,
 				231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */,
 				2337C8652C70FD4F00E2A67B /* ItemDetailView.swift */,
@@ -458,6 +471,7 @@
 		232466762C6F92AF00979940 /* Item */ = {
 			isa = PBXGroup;
 			children = (
+				B64917113960340291378C2B /* ItemSelectionFlow.swift */,
 				232466772C6F92B800979940 /* HomeViewController.swift */,
 				2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */,
 				230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */,
@@ -550,6 +564,7 @@
 		2385950D2C71BC8400B85CBC /* ToolBars */ = {
 			isa = PBXGroup;
 			children = (
+				6CFCBF1403B1F78CAF16F520 /* ItemSelectionToolBar.swift */,
 				239AD1DE2C6A2410002052BD /* ToolBar.swift */,
 				238F45A72C70A83600A6119B /* HomeToolBar.swift */,
 				2337C86C2C710A5F00E2A67B /* DetailToolBar.swift */,
@@ -1254,6 +1269,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30EFB95419F517C75D6229E4 /* ItemSelectionFlow.swift in Sources */,
+				6A5D72834918C8BEC60EFA7B /* ItemDragSelectionController.swift in Sources */,
+				10E097BED39EC183A8341039 /* ItemSelectionBottomBar.swift in Sources */,
+				B44DF1797D100830997D2ECA /* ItemSelectionToolBar.swift in Sources */,
+				ABA02E876FCAF0121D93AD5C /* ItemSelectionViewModel.swift in Sources */,
 				23B3A0D32C7F5257006D0561 /* CartView.swift in Sources */,
 				23B82A9F2D786B7400EF2194 /* PasswordInputView.swift in Sources */,
 				235FFE332F653090007A77D2 /* FolderReorderViewController.swift in Sources */,
