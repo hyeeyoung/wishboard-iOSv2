@@ -94,7 +94,10 @@ final class AddView: UIView {
     public weak var delegate: ActiveFieldDelegate?
     private let viewModel: AddViewModel
     private var cancellables = Set<AnyCancellable>()
+    /// 이미지 순서 변경으로 발생한 갱신인지 여부. 불필요한 reload를 막기 위해 사용합니다.
     private var isReordering = false
+    /// 롱프레스로 시작한 인터랙티브 이동이 진행 중인지 여부
+    private var isInteractiveMoving = false
     
     // MARK: - Init
     init(viewModel: AddViewModel) {
@@ -222,24 +225,49 @@ final class AddView: UIView {
     
     public func updateImages(_ images: [UIImage]) {
         selectedImages = images
-        guard !isReordering else { return }
+
+        // 순서 변경은 인터랙티브 이동으로 셀 위치가 이미 반영되어 있으므로 reload를 건너뜁니다.
+        if isReordering {
+            isReordering = false
+            return
+        }
         collectionView.reloadData()
     }
 
     @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
         let location = gesture.location(in: collectionView)
+
         switch gesture.state {
         case .began:
+            // 0번은 카메라 셀이므로 이동 대상에서 제외합니다.
             guard let indexPath = collectionView.indexPathForItem(at: location),
-                  indexPath.item > 0 else { return }
-            collectionView.beginInteractiveMovementForItem(at: indexPath)
+                  indexPath.item > 0,
+                  collectionView.beginInteractiveMovementForItem(at: indexPath) else { return }
+
+            isInteractiveMoving = true
+            // 이동 중에는 바깥 스크롤뷰가 제스처를 가져가지 않도록 잠급니다.
+            scrollView.isScrollEnabled = false
+            UIDevice.vibrate()
+
         case .changed:
+            guard isInteractiveMoving else { return }
             collectionView.updateInteractiveMovementTargetPosition(location)
+
         case .ended:
+            guard isInteractiveMoving else { return }
             collectionView.endInteractiveMovement()
+            finishInteractiveMove()
+
         default:
+            guard isInteractiveMoving else { return }
             collectionView.cancelInteractiveMovement()
+            finishInteractiveMove()
         }
+    }
+
+    private func finishInteractiveMove() {
+        isInteractiveMoving = false
+        scrollView.isScrollEnabled = true
     }
     
     @objc func priceTextBegin(_ textField: UITextField) {
@@ -265,9 +293,16 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
             let image = selectedImages[indexPath.item - 1]
             cell.configure(with: image)
             
-            cell.onDelete = { [weak self] in
-                guard let self = self else { return }
-                self.selectedImages.remove(at: indexPath.item - 1)
+            // 순서 변경 이후에도 올바른 이미지를 지우도록, 캡처한 indexPath 대신 현재 위치를 조회합니다.
+            cell.onDelete = { [weak self, weak cell] in
+                guard let self = self,
+                      let cell = cell,
+                      let currentIndexPath = self.collectionView.indexPath(for: cell) else { return }
+
+                let imageIndex = currentIndexPath.item - 1
+                guard self.selectedImages.indices.contains(imageIndex) else { return }
+
+                self.selectedImages.remove(at: imageIndex)
                 self.viewModel.selectedImages = self.selectedImages
                 self.viewModel.imageChanged = true
             }
@@ -297,9 +332,12 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
         return indexPath.item > 0
     }
 
-    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, toIndexPath destinationIndexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let fromIndex = sourceIndexPath.item - 1
         let toIndex = destinationIndexPath.item - 1
+
+        guard selectedImages.indices.contains(fromIndex),
+              selectedImages.indices.contains(toIndex) else { return }
 
         let movedImage = selectedImages.remove(at: fromIndex)
         selectedImages.insert(movedImage, at: toIndex)
@@ -307,10 +345,6 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
         isReordering = true
         viewModel.selectedImages = selectedImages
         viewModel.imageChanged = true
-
-        DispatchQueue.main.async { [weak self] in
-            self?.isReordering = false
-        }
     }
 
     func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
