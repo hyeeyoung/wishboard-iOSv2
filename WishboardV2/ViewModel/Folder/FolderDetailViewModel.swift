@@ -16,6 +16,8 @@ final class FolderDetailViewModel {
     /// '소장템 제외' 필터가 적용된, 실제로 화면에 노출되는 아이템
     @Published var displayedItems: [WishListResponse] = []
     @Published var isExcludingOwned: Bool = false
+    /// 서버가 내려주는 전체 아이템 개수 ('소장템 제외' 필터가 적용된 기준)
+    @Published var totalCount: Int = 0
     private var folderId: String
     private var cancellables = Set<AnyCancellable>()
     
@@ -29,7 +31,7 @@ final class FolderDetailViewModel {
     init(folderId: String) {
         self.folderId = folderId
 
-        // TODO: 폴더 아이템 필터 API 연동 전까지는 로컬에서 필터링합니다.
+        // 서버에서 필터링된 결과를 받아오지만, 클라이언트 로컬 상태 변경(소장 등록 등)도 반영
         Publishers.CombineLatest($items, $isExcludingOwned)
             .map { items, isExcluding in
                 isExcluding ? items.filter { $0.itemStatus != .owned } : items
@@ -39,6 +41,7 @@ final class FolderDetailViewModel {
 
     func toggleExcludeOwned() {
         isExcludingOwned.toggle()
+        fetchItems(reset: true)
     }
     
     required init?(coder: NSCoder) {
@@ -55,12 +58,16 @@ final class FolderDetailViewModel {
             hasMore = true
         }
 
+        let itemStatus: ItemStatusType? = isExcludingOwned ? .wish : nil
+
         _Concurrency.Task {
             do {
                 let usecase = GetFolderItemListUseCase()
-                let response = try await usecase.execute(folderId: folderId, page: page, size: pageSize)
+                let response = try await usecase.execute(folderId: folderId, page: page, size: pageSize, itemStatus: itemStatus)
 
                 if reset { items.removeAll() }
+
+                totalCount = response.data?.totalElements ?? 0
 
                 if let itemDatas = response.data?.content {
                     items.append(contentsOf: itemDatas)
@@ -75,13 +82,17 @@ final class FolderDetailViewModel {
                 isLoading = false
                 isRefreshing = false
             } catch {
-                if reset { items = [] }
+                if reset {
+                    items = []
+                    totalCount = 0
+                }
                 isLoading = false
                 isRefreshing = false
                 
                 if let moyaError = error as? MoyaError, let response = moyaError.response {
                     if response.statusCode == 404 {
                         self.items = []
+                        self.totalCount = 0
                     }
                 }
             }

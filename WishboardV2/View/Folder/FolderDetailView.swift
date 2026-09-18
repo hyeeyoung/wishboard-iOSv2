@@ -165,8 +165,15 @@ final class FolderDetailView: UIView {
                 self.emptyLabel.isHidden = !(items.isEmpty)
                 // 전체 선택 상태라면 페이징으로 새로 불러온 아이템도 선택 상태로 유지합니다.
                 selectionViewModel.applySelectAllIfNeeded(itemIds: items.compactMap { $0.id })
-                self.header?.configure(totalCount: items.count, isExcludingOwned: viewModel.isExcludingOwned)
                 self.collectionView.reloadData()
+            }
+            .store(in: &cancellables)
+
+        // 전체 아이템 개수는 서버 응답(totalElements)을 그대로 사용합니다.
+        Publishers.CombineLatest(viewModel.$totalCount, viewModel.$isExcludingOwned)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] totalCount, isExcludingOwned in
+                self?.header?.configure(totalCount: totalCount, isExcludingOwned: isExcludingOwned)
             }
             .store(in: &cancellables)
 
@@ -276,7 +283,7 @@ extension FolderDetailView: UICollectionViewDataSource, UICollectionViewDelegate
 
         if let viewModel = viewModel {
             header.configure(
-                totalCount: viewModel.displayedItems.count,
+                totalCount: viewModel.totalCount,
                 isExcludingOwned: viewModel.isExcludingOwned
             )
         }

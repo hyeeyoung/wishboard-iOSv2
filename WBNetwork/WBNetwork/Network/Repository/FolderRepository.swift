@@ -12,7 +12,7 @@ public protocol FolderRepositoryInterface {
     func addFolder(folderName: String) async throws -> FolderListResponse
     func modifyFolderName(folderId: String, folderName: String) async throws -> EmptyResponse
     func deleteFolder(folderId: String) async throws -> EmptyResponse
-    func getFolderItemList(folderId: String, page: Int, size: Int) async throws -> CommonPaginationResponse<[WishListResponse]>
+    func getFolderItemList(folderId: String, page: Int, size: Int, itemStatus: ItemStatusType?) async throws -> CommonPaginationResponse<[WishListResponse]>
     func getFolderList(order: FolderOrder?) async throws -> [FolderListResponse]
     func reorderFolders(ids: [Int]) async throws -> EmptyResponse
 }
@@ -32,8 +32,8 @@ public final class FolderRepository: FolderRepositoryInterface {
     public func deleteFolder(folderId: String) async throws -> EmptyResponse {
         return try await FolderManager.shared.deleteFolder(folderId: folderId)
     }
-    public func getFolderItemList(folderId: String, page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[WishListResponse]> {
-        return try await FolderManager.shared.getFolderItemList(folderId: folderId, page: page, size: size)
+    public func getFolderItemList(folderId: String, page: Int = 0, size: Int = 10, itemStatus: ItemStatusType? = nil) async throws -> CommonPaginationResponse<[WishListResponse]> {
+        return try await FolderManager.shared.getFolderItemList(folderId: folderId, page: page, size: size, itemStatus: itemStatus)
     }
     public func getFolderList(order: FolderOrder? = nil) async throws -> [FolderListResponse] {
         return try await FolderManager.shared.getFolderList(order: order)
