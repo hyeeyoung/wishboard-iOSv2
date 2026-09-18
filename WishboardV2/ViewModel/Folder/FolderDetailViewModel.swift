@@ -13,6 +13,9 @@ import Moya
 final class FolderDetailViewModel {
     
     @Published var items: [WishListResponse] = []
+    /// '소장템 제외' 필터가 적용된, 실제로 화면에 노출되는 아이템
+    @Published var displayedItems: [WishListResponse] = []
+    @Published var isExcludingOwned: Bool = false
     private var folderId: String
     private var cancellables = Set<AnyCancellable>()
     
@@ -25,6 +28,17 @@ final class FolderDetailViewModel {
     
     init(folderId: String) {
         self.folderId = folderId
+
+        // TODO: 폴더 아이템 필터 API 연동 전까지는 로컬에서 필터링합니다.
+        Publishers.CombineLatest($items, $isExcludingOwned)
+            .map { items, isExcluding in
+                isExcluding ? items.filter { $0.itemStatus != .owned } : items
+            }
+            .assign(to: &$displayedItems)
+    }
+
+    func toggleExcludeOwned() {
+        isExcludingOwned.toggle()
     }
     
     required init?(coder: NSCoder) {
