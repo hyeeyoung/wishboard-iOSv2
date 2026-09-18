@@ -25,7 +25,7 @@ public enum FolderAPI {
     /// 폴더 삭제
     case deleteFolder(folderId: String)
     /// 폴더 내 아이템 리스트 조회
-    case getFolderItemList(folderId: String, page: Int, size: Int)
+    case getFolderItemList(folderId: String, page: Int, size: Int, itemStatus: ItemStatusType?)
     /// 폴더리스트 조회 - 페이징X
     /// (사용화면: 폴더 상세뷰, 수동 등록, 링크 공유 뷰)
     case getFolderList(order: FolderOrder?)
@@ -48,7 +48,7 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             return "/\(folderId)"
         case .deleteFolder(let folderId):
             return "/\(folderId)"
-        case .getFolderItemList(let folderId, _, _):
+        case .getFolderItemList(let folderId, _, _, _):
             return "/item/\(folderId)"
         case .getFolderList:
             return "/list"
@@ -87,8 +87,11 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             parameters = ["folderName": folderName]
         case .modifyFolderName(_, let folderName):
             parameters = ["folderName": folderName]
-        case .getFolderItemList(_, let page, let size):
+        case .getFolderItemList(_, let page, let size, let itemStatus):
             parameters = ["page": page, "size": size]
+            if let itemStatus = itemStatus {
+                parameters["itemStatus"] = itemStatus.rawValue
+            }
         case .getFolderList(let order):
             // 사실상 '링크공유'를 제외한 모든 폴더 목록은 CUSTOM으로 호출
             if let order = order {
