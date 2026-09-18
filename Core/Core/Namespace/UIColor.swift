@@ -37,6 +37,7 @@ public extension UIColor{
     public static let black_05 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.05)
     public static let black_3 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.3)
     public static let black_4 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.4)
+    public static let black_55 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.55)
     public static let black_7 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.7)
     public static let black_10 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1)
     public static let white_10 = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)

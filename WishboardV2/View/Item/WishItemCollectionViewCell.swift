@@ -45,7 +45,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     }
     /// 다중 선택 모드에서 선택된 아이템의 딤드 처리
     private let selectionDimView = UIView().then {
-        $0.backgroundColor = .black_05
+        $0.backgroundColor = .black_55
         $0.clipsToBounds = true
         $0.isHidden = true
     }

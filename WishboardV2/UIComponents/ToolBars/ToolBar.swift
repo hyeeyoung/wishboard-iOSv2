@@ -38,7 +38,7 @@ final public class ToolBar: UIView {
     
     /// 아이템 다중 선택 진입 메뉴 (사용하는 화면에서만 노출)
     private let moreButton = UIButton().then {
-        $0.setImage(Image.more, for: .normal)
+        $0.setImage(Image.itemMore, for: .normal)
         $0.isHidden = true
     }
     

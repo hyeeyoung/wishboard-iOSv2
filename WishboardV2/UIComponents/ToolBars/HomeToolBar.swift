@@ -54,7 +54,7 @@ final public class HomeToolBar: UIView {
     
     /// 아이템 다중 선택 진입 메뉴
     private let moreButton = UIButton().then {
-        $0.setImage(Image.more, for: .normal)
+        $0.setImage(Image.itemMore, for: .normal)
     }
     
     // MARK: - Initializer

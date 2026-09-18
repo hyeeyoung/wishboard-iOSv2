@@ -27,18 +27,6 @@ enum ItemSelectionFlow {
         actionSheet.addAction(UIAlertAction(title: "취소", style: .cancel))
         actionSheet.view.tintColor = .gray_700
 
-        // iPad에서 액션시트는 popover로 표시되므로 anchor가 필요합니다.
-        if let popover = actionSheet.popoverPresentationController {
-            popover.sourceView = viewController.view
-            popover.sourceRect = CGRect(
-                x: viewController.view.bounds.midX,
-                y: viewController.view.bounds.maxY,
-                width: 0,
-                height: 0
-            )
-            popover.permittedArrowDirections = []
-        }
-
         viewController.present(actionSheet, animated: true) {
             actionSheet.view.tintColor = .gray_700
         }

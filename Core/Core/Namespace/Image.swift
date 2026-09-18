@@ -54,6 +54,8 @@ public enum Image{
     // menu
     public static let menu = UIImage(named: "ic_menu")!
     public static let more = UIImage(named: "ic_more")!
+    public static let itemMore = UIImage(named: "more")!
+    
     
     // noti
     public static let noti = UIImage(named: "ic_noti")!

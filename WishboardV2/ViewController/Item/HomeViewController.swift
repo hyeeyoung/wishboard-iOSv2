@@ -167,7 +167,7 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         view.addSubview(selectionBottomBar)
         selectionBottomBar.snp.makeConstraints { make in
             make.horizontalEdges.bottom.equalToSuperview()
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-ItemSelectionBottomBar.height)
+            make.height.equalTo(ItemSelectionBottomBar.height + 34)
         }
     }
 

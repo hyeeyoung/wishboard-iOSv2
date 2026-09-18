@@ -46,7 +46,7 @@ final class ItemSelectionBottomBar: UIView {
     private let countLabel = UILabel().then {
         $0.text = SelectionText.emptyDescription
         $0.font = TypoStyle.SuitD2.font
-        $0.textColor = .gray_700
+        $0.textColor = .gray_200
         $0.textAlignment = .center
         $0.lineBreakMode = .byTruncatingTail
     }
