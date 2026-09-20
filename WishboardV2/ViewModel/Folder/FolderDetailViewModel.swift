@@ -18,7 +18,7 @@ final class FolderDetailViewModel {
     @Published var isExcludingOwned: Bool = false
     /// 서버가 내려주는 전체 아이템 개수 ('소장템 제외' 필터가 적용된 기준)
     @Published var totalCount: Int = 0
-    private var folderId: String
+    private(set) var folderId: String
     private var cancellables = Set<AnyCancellable>()
     
     // Paging
@@ -97,6 +97,12 @@ final class FolderDetailViewModel {
                 }
             }
         }
+    }
+
+    /// 선택한 아이템 일괄 삭제
+    func deleteItems(request: BulkDeleteItemsRequest) async throws {
+        let usecase = DeleteItemsBulkUseCase()
+        _ = try await usecase.execute(request: request)
     }
 
     /// 풀-투-리프레시에서 호출
