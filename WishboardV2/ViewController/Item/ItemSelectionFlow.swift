@@ -13,25 +13,6 @@ import Core
 /// 홈화면 / 폴더 상세 화면의 아이템 다중 선택 플로우에서 공통으로 사용하는 화면 표시 헬퍼
 enum ItemSelectionFlow {
 
-    /// more 버튼 탭 시 노출되는 액션시트
-    static func presentSelectionActionSheet(
-        on viewController: UIViewController,
-        onSelectItems: @escaping () -> Void
-    ) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.addAction(
-            UIAlertAction(title: "아이템 선택", style: .default) { _ in
-                onSelectItems()
-            }
-        )
-        actionSheet.addAction(UIAlertAction(title: "취소", style: .cancel))
-        actionSheet.view.tintColor = .gray_700
-
-        viewController.present(actionSheet, animated: true) {
-            actionSheet.view.tintColor = .gray_700
-        }
-    }
-
     /// 선택된 아이템 삭제 알럿
     static func presentDeleteAlert(
         on viewController: UIViewController,
