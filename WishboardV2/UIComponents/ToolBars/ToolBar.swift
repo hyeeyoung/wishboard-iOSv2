@@ -13,12 +13,12 @@ import Core
 
 public protocol ToolBarDelegate: AnyObject {
     func leftNaviItemTap()
-    func rightNaviItemTap()
+    func itemSelectNaviItemTap()
 }
 
 public extension ToolBarDelegate {
-    /// 우측 more 버튼을 사용하는 화면에서만 구현합니다.
-    func rightNaviItemTap() {}
+    /// 우측 아이템 다중 선택 버튼을 사용하는 화면에서만 구현합니다.
+    func itemSelectNaviItemTap() {}
 }
 
 final public class ToolBar: UIView {
@@ -36,8 +36,8 @@ final public class ToolBar: UIView {
         $0.textAlignment = .center
     }
     
-    /// 아이템 다중 선택 진입 메뉴 (사용하는 화면에서만 노출)
-    private let moreButton = UIButton().then {
+    /// 아이템 다중 선택 진입 버튼 (사용하는 화면에서만 노출)
+    private let itemSelectButton = UIButton().then {
         $0.setImage(Image.tabBarCheck, for: .normal)
         $0.isHidden = true
     }
@@ -60,7 +60,7 @@ final public class ToolBar: UIView {
     private func setupViews() {
         addSubview(backButton)
         addSubview(titleLabel)
-        addSubview(moreButton)
+        addSubview(itemSelectButton)
     }
     
     private func setupConstraints() {
@@ -74,7 +74,7 @@ final public class ToolBar: UIView {
             make.center.equalToSuperview()
         }
         
-        moreButton.snp.makeConstraints { make in
+        itemSelectButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-13)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(24)
@@ -84,7 +84,7 @@ final public class ToolBar: UIView {
     // MARK: - Setup Actions
     private func setupActions() {
         backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
-        moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
+        itemSelectButton.addTarget(self, action: #selector(itemSelectButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - Button Actions
@@ -92,13 +92,13 @@ final public class ToolBar: UIView {
         delegate?.leftNaviItemTap()
     }
     
-    @objc private func moreButtonTapped() {
-        delegate?.rightNaviItemTap()
+    @objc private func itemSelectButtonTapped() {
+        delegate?.itemSelectNaviItemTap()
     }
     
-    public func configure(title: String, showsMoreButton: Bool = false) {
+    public func configure(title: String, showsItemSelectButton: Bool = false) {
         self.titleLabel.text = title
-        self.moreButton.isHidden = !showsMoreButton
+        self.itemSelectButton.isHidden = !showsItemSelectButton
         
         self.snp.makeConstraints { make in
             make.height.equalTo(42)

@@ -293,7 +293,7 @@ extension HomeViewController: HomeToolBarDelegate {
         navigationController?.pushViewController(nextVC, animated: true)
     }
 
-    func moreNaviItemTap() {
+    func itemSelectNaviItemTap() {
         UIDevice.vibrate()
         ItemSelectionFlow.presentSelectionActionSheet(on: self) { [weak self] in
             self?.enterSelectionMode()
