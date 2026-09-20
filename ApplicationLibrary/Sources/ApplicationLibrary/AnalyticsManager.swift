@@ -24,6 +24,7 @@ public enum AnalyticsEvent {
     // Item
     case itemAdded(source: ItemSource)
     case itemDeleted
+    case itemsBulkDeleted(source: BulkDeleteSource, scope: BulkDeleteScope, itemCount: Int)  // 아이템 일괄 삭제
     case itemMarkedAsOwned      // 소장템으로 바꾸기
 
     // Folder
@@ -44,6 +45,7 @@ public enum AnalyticsEvent {
         case .shareExtensionOpened: return "share_extension_opened"
         case .itemAdded:            return "item_added"
         case .itemDeleted:          return "item_deleted"
+        case .itemsBulkDeleted:     return "items_bulk_deleted"
         case .itemMarkedAsOwned:    return "item_marked_as_owned"
         case .folderCreated:        return "folder_created"
         case .profileEdited:        return "profile_edited"
@@ -59,6 +61,10 @@ public enum AnalyticsEvent {
             return ["provider": p.rawValue]
         case .itemAdded(let source):
             return ["source": source.rawValue]
+        case .itemsBulkDeleted(let source, let scope, let itemCount):
+            return ["source": source.rawValue,
+                    "scope": scope.rawValue,
+                    "item_count": itemCount]
         case .withdraw,
              .itemDeleted,
              .itemMarkedAsOwned,
@@ -83,6 +89,18 @@ public enum ItemSource: String {
     case manual                             // 앱 내 수동 등록
     case shareExtension = "share_extension" // 공유 확장에서 등록
     case linkParsing = "link_parsing"       // 링크 붙여넣기로 자동 파싱 등록
+}
+
+/// 아이템 일괄 삭제를 실행한 화면
+public enum BulkDeleteSource: String {
+    case home                               // 홈화면
+    case folderDetail = "folder_detail"     // 폴더 상세 화면
+}
+
+/// 아이템 일괄 삭제 범위
+public enum BulkDeleteScope: String {
+    case all        // '전체 선택'으로 조회 조건 전체를 삭제
+    case selected   // 개별로 고른 아이템만 삭제
 }
 
 public enum ScreenName: String {
