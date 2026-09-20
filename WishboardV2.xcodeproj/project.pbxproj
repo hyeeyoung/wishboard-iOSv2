@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0B9E8D03A658461CBF0D4B2D /* HomeEventBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */; };
+		10E097BED39EC183A8341039 /* ItemSelectionBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E88ABE02AD132C040362931 /* ItemSelectionBottomBar.swift */; };
 		230C8CEC2E3F09CA0053F68D /* ImageCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230C8CEB2E3F09CA0053F68D /* ImageCollectionCell.swift */; };
 		230C8D022E4F0A0B0053F68D /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */; };
 		230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
@@ -152,13 +153,12 @@
 		23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */; };
 		23F3FFC62C790297003C7DA9 /* loading_spin.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC42C790296003C7DA9 /* loading_spin.json */; };
 		23F3FFC72C790297003C7DA9 /* loading_horizontal_black.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */; };
+		30EFB95419F517C75D6229E4 /* ItemSelectionFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64917113960340291378C2B /* ItemSelectionFlow.swift */; };
 		5063165F0DC44F60910E46E8 /* WishboardWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1013F656332484F87BA49CE /* WishboardWebViewController.swift */; };
-		CEEF72500061E7467ABB04C9 /* HomeStickyHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */; };
+		6A5D72834918C8BEC60EFA7B /* ItemDragSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6C4FA95ED20EDBC702A8 /* ItemDragSelectionController.swift */; };
 		ABA02E876FCAF0121D93AD5C /* ItemSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16DF78A977F21589344BD66 /* ItemSelectionViewModel.swift */; };
 		B44DF1797D100830997D2ECA /* ItemSelectionToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFCBF1403B1F78CAF16F520 /* ItemSelectionToolBar.swift */; };
-		10E097BED39EC183A8341039 /* ItemSelectionBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E88ABE02AD132C040362931 /* ItemSelectionBottomBar.swift */; };
-		6A5D72834918C8BEC60EFA7B /* ItemDragSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721C6C4FA95ED20EDBC702A8 /* ItemDragSelectionController.swift */; };
-		30EFB95419F517C75D6229E4 /* ItemSelectionFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64917113960340291378C2B /* ItemSelectionFlow.swift */; };
+		CEEF72500061E7467ABB04C9 /* HomeStickyHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -368,14 +368,14 @@
 		23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationButton.swift; sourceTree = "<group>"; };
 		23F3FFC42C790296003C7DA9 /* loading_spin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_spin.json; sourceTree = "<group>"; };
 		23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_horizontal_black.json; sourceTree = "<group>"; };
-		A1013F656332484F87BA49CE /* WishboardWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishboardWebViewController.swift; sourceTree = "<group>"; };
-		C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeEventBannerView.swift; sourceTree = "<group>"; };
-		F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeStickyHeaderView.swift; sourceTree = "<group>"; };
-		F16DF78A977F21589344BD66 /* ItemSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionViewModel.swift; sourceTree = "<group>"; };
-		6CFCBF1403B1F78CAF16F520 /* ItemSelectionToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionToolBar.swift; sourceTree = "<group>"; };
 		2E88ABE02AD132C040362931 /* ItemSelectionBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionBottomBar.swift; sourceTree = "<group>"; };
+		6CFCBF1403B1F78CAF16F520 /* ItemSelectionToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionToolBar.swift; sourceTree = "<group>"; };
 		721C6C4FA95ED20EDBC702A8 /* ItemDragSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDragSelectionController.swift; sourceTree = "<group>"; };
+		A1013F656332484F87BA49CE /* WishboardWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishboardWebViewController.swift; sourceTree = "<group>"; };
 		B64917113960340291378C2B /* ItemSelectionFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionFlow.swift; sourceTree = "<group>"; };
+		C93A6DDE7D4D452A9AF58005 /* HomeEventBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeEventBannerView.swift; sourceTree = "<group>"; };
+		F16DF78A977F21589344BD66 /* ItemSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionViewModel.swift; sourceTree = "<group>"; };
+		F83F2E079AA0EF556DD81DFE /* HomeStickyHeaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeStickyHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1632,7 +1632,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = 3.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gomin.Wishboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1672,7 +1672,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = 3.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gomin.Wishboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
