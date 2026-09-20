@@ -142,9 +142,7 @@ final class HomeView: UIView {
                 )
                 let section = NSCollectionLayoutSection(group: group)
 
-                // 다중 선택 모드에서는 스티키헤더를 노출하지 않습니다.
-                guard !isSelectionMode else { return section }
-
+                // 스티키헤더는 다중 선택 모드에서도 노출되며, 선택 모드에서는 x버튼 바 바로 아래에 붙습니다.
                 let stickyHeader = NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: NSCollectionLayoutSize(
                         widthDimension: .fractionalWidth(1.0),
@@ -416,6 +414,8 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
 
 extension HomeView: HomeStickyHeaderDelegate {
     func didToggleExcludeOwned() {
+        // 필터가 바뀌면 목록을 다시 조회하므로, 화면에서 사라질 아이템의 선택 상태를 정리합니다.
+        selectionViewModel?.clearSelection()
         viewModel?.toggleExcludeOwned()
     }
 

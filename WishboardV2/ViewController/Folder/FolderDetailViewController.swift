@@ -74,7 +74,7 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
         navigationController?.popViewController(animated: true)
     }
 
-    func rightNaviItemTap() {
+    func itemSelectNaviItemTap() {
         UIDevice.vibrate()
         ItemSelectionFlow.presentSelectionActionSheet(on: self) { [weak self] in
             self?.enterSelectionMode()

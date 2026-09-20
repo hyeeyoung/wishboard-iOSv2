@@ -97,7 +97,7 @@ final class FolderDetailView: UIView {
     }
 
     private func setupConstraints() {
-        toolbar.configure(title: folderTitle ?? "", showsMoreButton: true)
+        toolbar.configure(title: folderTitle ?? "", showsItemSelectButton: true)
 
         selectionToolBar.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
@@ -139,10 +139,8 @@ final class FolderDetailView: UIView {
 
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
-        // 다중 선택 모드에서는 헤더를 노출하지 않습니다.
-        layout.headerReferenceSize = isSelectionMode
-        ? .zero
-        : CGSize(width: screenWidth, height: FolderDetailView.headerHeight)
+        // 헤더는 다중 선택 모드에서도 노출되며, 선택 모드에서는 x버튼 바 바로 아래에 붙습니다.
+        layout.headerReferenceSize = CGSize(width: screenWidth, height: FolderDetailView.headerHeight)
 
         collectionView.setCollectionViewLayout(layout, animated: false)
         collectionView.reloadData()
@@ -293,6 +291,8 @@ extension FolderDetailView: UICollectionViewDataSource, UICollectionViewDelegate
 
 extension FolderDetailView: HomeStickyHeaderDelegate {
     func didToggleExcludeOwned() {
+        // 필터가 바뀌면 목록을 다시 조회하므로, 화면에서 사라질 아이템의 선택 상태를 정리합니다.
+        selectionViewModel?.clearSelection()
         viewModel?.toggleExcludeOwned()
     }
 
