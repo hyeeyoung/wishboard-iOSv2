@@ -80,6 +80,14 @@ final class ItemSelectionViewModel {
         apply(Set(itemIds))
     }
 
+    /// 이미 삭제된 아이템을 선택에서 제외합니다.
+    /// 일부만 삭제된 뒤 다시 시도할 때, 지워진 id가 섞여 요청 전체가 실패하지 않도록 합니다.
+    func removeFromSelection(_ itemIds: Set<Int>) {
+        guard !itemIds.isEmpty else { return }
+        excludedItemIds.subtract(itemIds)
+        apply(selectedItemIds.subtracting(itemIds))
+    }
+
     func clearSelection() {
         isSelectAllOn = false
         excludedItemIds = []

@@ -66,6 +66,9 @@ public enum ItemDeleteScope: String {
 /// scope에 따라 함께 보낼 수 있는 값이 정해져 있어(금지 조합은 400),
 /// 반드시 `selected(itemIds:)` / `all(folderId:itemStatus:excludeItemIds:)` 로 생성합니다.
 public struct BulkDeleteItemsRequest {
+    /// 한 요청에 담을 수 있는 itemIds / excludeItemIds 최대 개수
+    public static let maxItemIdsPerRequest = 500
+
     public let scope: ItemDeleteScope
     public let folderId: Int?
     public let itemStatus: ItemStatusType?
@@ -106,6 +109,22 @@ public struct BulkDeleteItemsRequest {
                                itemStatus: itemStatus,
                                itemIds: nil,
                                excludeItemIds: excludeItemIds.isEmpty ? nil : excludeItemIds)
+    }
+
+    /// itemIds 가 한 요청의 최대 개수를 넘으면 여러 요청으로 나눕니다.
+    /// 나눌 필요가 없으면 자기 자신 하나만 반환합니다.
+    public func chunked() -> [BulkDeleteItemsRequest] {
+        guard scope == .selected,
+              let itemIds = itemIds,
+              itemIds.count > BulkDeleteItemsRequest.maxItemIdsPerRequest else {
+            return [self]
+        }
+
+        return stride(from: 0, to: itemIds.count, by: BulkDeleteItemsRequest.maxItemIdsPerRequest)
+            .map { start -> BulkDeleteItemsRequest in
+                let end = min(start + BulkDeleteItemsRequest.maxItemIdsPerRequest, itemIds.count)
+                return .selected(itemIds: Array(itemIds[start..<end]))
+            }
     }
 }
 

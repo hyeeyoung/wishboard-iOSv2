@@ -155,7 +155,7 @@ extension FolderDetailViewController {
                 excludeItemIds: Array(selectionViewModel.excludedItemIds)
             )
         }
-        return .selected(itemIds: Array(selectionViewModel.selectedItemIds))
+        return .selected(itemIds: selectionViewModel.selectedItemIds.sorted())
     }
 
     /// 선택된 아이템 삭제
@@ -175,6 +175,13 @@ extension FolderDetailViewController {
                 // 홈화면 등 다른 화면의 목록도 갱신되도록 알립니다.
                 NotificationCenter.default.post(name: .ItemUpdated, object: nil)
                 SnackBar.shared.show(type: .deleteItem)
+            } catch let error as BulkDeleteItemsError {
+                // 나눠 호출하던 중 실패한 경우. 이미 삭제된 아이템은 선택에서 빼고
+                // 목록을 갱신해, 남은 선택 그대로 다시 시도할 수 있게 합니다.
+                self.selectionViewModel.removeFromSelection(Set(error.deletedItemIds))
+                self.refreshItems()
+                // 홈화면 등 다른 화면의 목록도 갱신되도록 알립니다.
+                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
             } catch {
                 // 실패 토스트는 ErrorPlugin에서 공통 처리합니다.
                 // 선택 상태는 그대로 두어 다시 시도할 수 있게 합니다.
