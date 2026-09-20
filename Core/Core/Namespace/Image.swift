@@ -54,7 +54,7 @@ public enum Image{
     // menu
     public static let menu = UIImage(named: "ic_menu")!
     public static let more = UIImage(named: "ic_more")!
-    public static let itemMore = UIImage(named: "more")!
+    public static let tabBarCheck = UIImage(named: "tabbar_check")!
     
     
     // noti
