@@ -12,6 +12,7 @@ import Then
 import Combine
 import Core
 import WBNetwork
+import ApplicationLibrary
 
 final class FolderDetailViewController: UIViewController, ToolBarDelegate {
 
@@ -161,6 +162,13 @@ extension FolderDetailViewController {
     /// 선택된 아이템 삭제
     private func requestDeleteSelectedItems() {
         guard let request = makeBulkDeleteRequest() else { return }
+
+        AnalyticsManager.shared.log(
+            .itemsBulkDeleted(source: .folderDetail,
+                              scope: request.scope == .all ? .all : .selected,
+                              itemCount: deletionTargetCount)
+        )
+
         let indicator = ItemSelectionFlow.showLoading(on: self)
 
         Task { @MainActor [weak self] in
