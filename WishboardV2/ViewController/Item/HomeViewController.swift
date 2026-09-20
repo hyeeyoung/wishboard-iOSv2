@@ -241,7 +241,7 @@ extension HomeViewController {
                 excludeItemIds: Array(selectionViewModel.excludedItemIds)
             )
         }
-        return .selected(itemIds: Array(selectionViewModel.selectedItemIds))
+        return .selected(itemIds: selectionViewModel.selectedItemIds.sorted())
     }
 
     /// 선택된 아이템 삭제
@@ -259,6 +259,11 @@ extension HomeViewController {
                 self.exitSelectionMode()
                 self.refreshItems()
                 SnackBar.shared.show(type: .deleteItem)
+            } catch let error as BulkDeleteItemsError {
+                // 나눠 호출하던 중 실패한 경우. 이미 삭제된 아이템은 선택에서 빼고
+                // 목록을 갱신해, 남은 선택 그대로 다시 시도할 수 있게 합니다.
+                self.selectionViewModel.removeFromSelection(Set(error.deletedItemIds))
+                self.refreshItems()
             } catch {
                 // 실패 토스트는 ErrorPlugin에서 공통 처리합니다.
                 // 선택 상태는 그대로 두어 다시 시도할 수 있게 합니다.
