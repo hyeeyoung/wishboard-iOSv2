@@ -90,6 +90,12 @@ final class HomeViewModel {
         }
     }
 
+    /// 선택한 아이템 일괄 삭제
+    func deleteItems(request: BulkDeleteItemsRequest) async throws {
+        let usecase = DeleteItemsBulkUseCase()
+        _ = try await usecase.execute(request: request)
+    }
+
     /// 풀-투-리프레시에서 호출
     func refresh() {
         isRefreshing = true

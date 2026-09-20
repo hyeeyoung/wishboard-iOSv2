@@ -11,6 +11,7 @@ import SnapKit
 import Then
 import Combine
 import Core
+import WBNetwork
 
 final class FolderDetailViewController: UIViewController, ToolBarDelegate {
 
@@ -132,25 +133,54 @@ extension FolderDetailViewController {
     private func updateSelectionBottomBar() {
         guard selectionViewModel.isSelectionMode else { return }
         selectionBottomBar.configure(
-            selectedCount: selectionViewModel.selectedCount,
+            selectedCount: deletionTargetCount,
             hasItems: !viewModel.displayedItems.isEmpty
         )
     }
 
+    /// 실제로 삭제될 아이템 개수.
+    /// 폴더 상세의 전체 개수는 '소장템 제외' 필터가 이미 반영된 값입니다.
+    private var deletionTargetCount: Int {
+        selectionViewModel.deletionTargetCount(filteredTotalCount: viewModel.totalCount)
+    }
+
+    /// 일괄 삭제 요청 생성
+    private func makeBulkDeleteRequest() -> BulkDeleteItemsRequest? {
+        guard deletionTargetCount > 0 else { return nil }
+
+        // 전체 선택 상태라면 아직 불러오지 않은 아이템도 대상이므로,
+        // 화면의 조회 조건(폴더 + 상태 필터)을 그대로 넘기고 개별 해제한 아이템만 제외합니다.
+        if selectionViewModel.isSelectAllOn {
+            return .all(
+                folderId: Int(viewModel.folderId),
+                itemStatus: viewModel.isExcludingOwned ? .wish : nil,
+                excludeItemIds: Array(selectionViewModel.excludedItemIds)
+            )
+        }
+        return .selected(itemIds: Array(selectionViewModel.selectedItemIds))
+    }
+
     /// 선택된 아이템 삭제
     private func requestDeleteSelectedItems() {
-        guard selectionViewModel.hasSelection else { return }
+        guard let request = makeBulkDeleteRequest() else { return }
         let indicator = ItemSelectionFlow.showLoading(on: self)
 
         Task { @MainActor [weak self] in
             guard let self = self else { return }
             defer { ItemSelectionFlow.hideLoading(indicator) }
 
-            // TODO: 아이템 다중 삭제 API 연동 시, selectionViewModel.selectedItemIds 를 전달해 이 위치에서 호출합니다.
+            do {
+                try await self.viewModel.deleteItems(request: request)
 
-            self.exitSelectionMode()
-            self.refreshItems()
-            SnackBar.shared.show(type: .deleteItem)
+                self.exitSelectionMode()
+                self.refreshItems()
+                // 홈화면 등 다른 화면의 목록도 갱신되도록 알립니다.
+                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
+                SnackBar.shared.show(type: .deleteItem)
+            } catch {
+                // 실패 토스트는 ErrorPlugin에서 공통 처리합니다.
+                // 선택 상태는 그대로 두어 다시 시도할 수 있게 합니다.
+            }
         }
     }
 }
@@ -199,7 +229,7 @@ extension FolderDetailViewController: ItemSelectionBottomBarDelegate {
     func selectionBarDidTapDelete() {
         ItemSelectionFlow.presentDeleteAlert(
             on: self,
-            selectedCount: selectionViewModel.selectedCount
+            selectedCount: deletionTargetCount
         ) { [weak self] in
             self?.requestDeleteSelectedItems()
         }
