@@ -53,13 +53,14 @@ final class OnboardingView: UIView {
         paragraphStyle.maximumLineHeight = TypoStyle.SuitD2.labelDescription.singleLineHeight
         paragraphStyle.minimumLineHeight = TypoStyle.SuitD2.labelDescription.singleLineHeight
         
-        let attributedText = NSMutableAttributedString(string: Message.toLogin, attributes: toLoginAttributes)
+        // 띄어쓰기에 밑줄이 그어지지 않도록, 공백은 앞 문구에 포함시킵니다.
+        let attributedText = NSMutableAttributedString(string: "\(Message.toLogin) ", attributes: toLoginAttributes)
         attributedText.addAttributes([.paragraphStyle: paragraphStyle], range: NSRange(location: 0, length: attributedText.length))
         
         paragraphStyle.maximumLineHeight = TypoStyle.SuitH4.labelDescription.singleLineHeight
         paragraphStyle.minimumLineHeight = TypoStyle.SuitH4.labelDescription.singleLineHeight
         
-        let loginAttributedText = NSMutableAttributedString(string: " \(Message.login)", attributes: loginAttributes)
+        let loginAttributedText = NSMutableAttributedString(string: Message.login, attributes: loginAttributes)
         loginAttributedText.addAttributes([.paragraphStyle: paragraphStyle], range: NSRange(location: 0, length: loginAttributedText.length))
         
         attributedText.append(loginAttributedText)
