@@ -60,7 +60,8 @@ final class ItemSelectionBottomBar: UIView {
 
     // MARK: - Properties
 
-    private var isSelectionEmpty: Bool = true
+    /// 좌측 버튼이 '선택 해제'로 노출 중인지 여부
+    private var showsDeselectAll: Bool = false
 
     private enum SelectionText {
         static let selectAll = "전체 선택"
@@ -79,7 +80,7 @@ final class ItemSelectionBottomBar: UIView {
         setupConstraints()
         setupPriorities()
         setupActions()
-        configure(selectedCount: 0, hasItems: false)
+        configure(selectedCount: 0, hasItems: false, isSelectAllOn: false)
     }
 
     required init?(coder: NSCoder) {
@@ -141,18 +142,22 @@ final class ItemSelectionBottomBar: UIView {
     /// - Parameters:
     ///   - selectedCount: 현재 선택된 아이템 수
     ///   - hasItems: 화면에 선택 가능한 아이템이 존재하는지 여부
-    func configure(selectedCount: Int, hasItems: Bool) {
-        isSelectionEmpty = (selectedCount == 0)
+    ///   - isSelectAllOn: '전체 선택'을 누른 상태인지 여부
+    func configure(selectedCount: Int, hasItems: Bool, isSelectAllOn: Bool) {
+        let isSelectionEmpty = (selectedCount == 0)
+        // 개별로 몇 개를 골랐든 '전체 선택'을 누르기 전까지는 '전체 선택'으로 노출합니다.
+        // 전체 선택 후 모두 해제해 남은 게 없다면 다시 '전체 선택'으로 돌아갑니다.
+        showsDeselectAll = isSelectAllOn && !isSelectionEmpty
 
         countLabel.text = isSelectionEmpty
         ? SelectionText.emptyDescription
         : "\(selectedCount)개 아이템 선택됨"
 
         selectAllButton.setTitle(
-            isSelectionEmpty ? SelectionText.selectAll : SelectionText.deselectAll,
+            showsDeselectAll ? SelectionText.deselectAll : SelectionText.selectAll,
             for: .normal
         )
-        selectAllButton.isEnabled = hasItems || !isSelectionEmpty
+        selectAllButton.isEnabled = hasItems || showsDeselectAll
         deleteButton.isEnabled = !isSelectionEmpty
     }
 
@@ -160,10 +165,10 @@ final class ItemSelectionBottomBar: UIView {
 
     @objc private func selectAllButtonTapped() {
         UIDevice.vibrate()
-        if isSelectionEmpty {
-            delegate?.selectionBarDidTapSelectAll()
-        } else {
+        if showsDeselectAll {
             delegate?.selectionBarDidTapDeselectAll()
+        } else {
+            delegate?.selectionBarDidTapSelectAll()
         }
     }
 

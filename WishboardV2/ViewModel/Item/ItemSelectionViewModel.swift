@@ -19,7 +19,7 @@ final class ItemSelectionViewModel {
     /// '전체 선택' 상태 여부.
     /// 페이징으로 새로 불러온 아이템도 선택 상태로 유지하고,
     /// 일괄 삭제 시 scope=ALL 로 보내기 위해 사용합니다.
-    private(set) var isSelectAllOn: Bool = false
+    @Published private(set) var isSelectAllOn: Bool = false
 
     /// '전체 선택' 이후 개별 해제한 아이템 id 목록. 일괄 삭제의 excludeItemIds 로 전달됩니다.
     private(set) var excludedItemIds: Set<Int> = []
