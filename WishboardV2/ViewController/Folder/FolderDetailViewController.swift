@@ -96,9 +96,10 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
     }
 
     private func setupBindings() {
-        selectionViewModel.$selectedItemIds
+        // '전체 선택' 상태는 선택 개수가 그대로여도 바뀔 수 있어 함께 관찰합니다.
+        Publishers.CombineLatest(selectionViewModel.$selectedItemIds, selectionViewModel.$isSelectAllOn)
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] _, _ in
                 self?.updateSelectionBottomBar()
             }
             .store(in: &cancellables)
@@ -133,7 +134,8 @@ extension FolderDetailViewController {
         guard selectionViewModel.isSelectionMode else { return }
         selectionBottomBar.configure(
             selectedCount: deletionTargetCount,
-            hasItems: !viewModel.displayedItems.isEmpty
+            hasItems: !viewModel.displayedItems.isEmpty,
+            isSelectAllOn: selectionViewModel.isSelectAllOn
         )
     }
 
