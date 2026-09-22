@@ -221,6 +221,8 @@ extension FolderDetailViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
+        // 미리 만들어 둔 셀은 선택이 바뀌어도 다시 구성되지 않으므로, 나타나기 직전에 맞춰줍니다.
+        folderView.applySelectionAppearance(to: cell, at: indexPath)
         viewModel.loadNextIfNeeded(currentIndex: indexPath.item)
     }
 }

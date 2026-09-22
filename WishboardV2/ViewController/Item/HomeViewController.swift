@@ -325,6 +325,8 @@ extension HomeViewController: UICollectionViewDelegate {
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
         guard indexPath.section == 1 else { return }
+        // 미리 만들어 둔 셀은 선택이 바뀌어도 다시 구성되지 않으므로, 나타나기 직전에 맞춰줍니다.
+        homeView.applySelectionAppearance(to: cell, at: indexPath)
         viewModel.loadNextIfNeeded(currentIndex: indexPath.item)
     }
 
