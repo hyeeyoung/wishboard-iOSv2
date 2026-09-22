@@ -134,8 +134,7 @@ extension FolderDetailViewController {
         guard selectionViewModel.isSelectionMode else { return }
         selectionBottomBar.configure(
             selectedCount: deletionTargetCount,
-            hasItems: !viewModel.displayedItems.isEmpty,
-            isSelectAllOn: selectionViewModel.isSelectAllOn
+            totalCount: viewModel.totalCount
         )
     }
 

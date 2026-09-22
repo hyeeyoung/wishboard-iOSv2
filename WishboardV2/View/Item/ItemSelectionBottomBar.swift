@@ -80,7 +80,7 @@ final class ItemSelectionBottomBar: UIView {
         setupConstraints()
         setupPriorities()
         setupActions()
-        configure(selectedCount: 0, hasItems: false, isSelectAllOn: false)
+        configure(selectedCount: 0, totalCount: 0)
     }
 
     required init?(coder: NSCoder) {
@@ -141,13 +141,12 @@ final class ItemSelectionBottomBar: UIView {
 
     /// - Parameters:
     ///   - selectedCount: 현재 선택된 아이템 수
-    ///   - hasItems: 화면에 선택 가능한 아이템이 존재하는지 여부
-    ///   - isSelectAllOn: '전체 선택'을 누른 상태인지 여부
-    func configure(selectedCount: Int, hasItems: Bool, isSelectAllOn: Bool) {
+    ///   - totalCount: 현재 조회 조건에 해당하는 전체 아이템 수
+    func configure(selectedCount: Int, totalCount: Int) {
         let isSelectionEmpty = (selectedCount == 0)
-        // 개별로 몇 개를 골랐든 '전체 선택'을 누르기 전까지는 '전체 선택'으로 노출합니다.
-        // 전체 선택 후 모두 해제해 남은 게 없다면 다시 '전체 선택'으로 돌아갑니다.
-        showsDeselectAll = isSelectAllOn && !isSelectionEmpty
+        // '전체 선택' 버튼을 눌렀는지와 무관하게, 실제로 전부 선택된 상태에서만
+        // '선택 해제'로 노출합니다. (개별로 하나하나 골라 전부 채운 경우 포함)
+        showsDeselectAll = !isSelectionEmpty && selectedCount >= totalCount
 
         countLabel.text = isSelectionEmpty
         ? SelectionText.emptyDescription
@@ -157,7 +156,7 @@ final class ItemSelectionBottomBar: UIView {
             showsDeselectAll ? SelectionText.deselectAll : SelectionText.selectAll,
             for: .normal
         )
-        selectAllButton.isEnabled = hasItems || showsDeselectAll
+        selectAllButton.isEnabled = totalCount > 0
         deleteButton.isEnabled = !isSelectionEmpty
     }
 
