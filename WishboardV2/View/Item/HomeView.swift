@@ -312,17 +312,26 @@ final class HomeView: UIView {
 
     /// 선택 상태가 바뀔 때마다 전체를 다시 그리지 않고, 보이는 셀만 갱신합니다.
     private func updateSelectionAppearance() {
-        guard let selectionViewModel = selectionViewModel else { return }
-
         for cell in collectionView.visibleCells {
-            guard let itemCell = cell as? WishItemCollectionViewCell,
-                  let indexPath = collectionView.indexPath(for: cell),
-                  let id = itemId(at: indexPath) else { continue }
-            itemCell.configureSelection(
-                isSelectionMode: selectionViewModel.isSelectionMode,
-                isSelected: selectionViewModel.isSelected(id)
-            )
+            guard let indexPath = collectionView.indexPath(for: cell) else { continue }
+            applySelectionAppearance(to: cell, at: indexPath)
         }
+    }
+
+    /// 셀 하나의 선택 표시를 현재 상태에 맞춰 갱신합니다.
+    ///
+    /// 컬렉션뷰가 미리 만들어 둔(프리페치) 셀은 화면 밖에 있어 `visibleCells` 에 잡히지 않습니다.
+    /// 그래서 그 사이에 선택이 바뀌면 갱신에서 빠지고, 스크롤해서 나타날 때는 이미 만들어진 셀이라
+    /// `cellForItemAt` 도 다시 불리지 않아 예전 상태 그대로 보입니다.
+    /// 화면에 나타나기 직전(`willDisplay`)에도 이 메서드를 호출해 상태를 맞춰야 합니다.
+    func applySelectionAppearance(to cell: UICollectionViewCell, at indexPath: IndexPath) {
+        guard let itemCell = cell as? WishItemCollectionViewCell else { return }
+
+        var isItemSelected = false
+        if let id = itemId(at: indexPath) {
+            isItemSelected = selectionViewModel?.isSelected(id) ?? false
+        }
+        itemCell.configureSelection(isSelectionMode: isSelectionMode, isSelected: isItemSelected)
     }
 
     private var cancellables = Set<AnyCancellable>()
@@ -359,11 +368,7 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
         let item = items[indexPath.row]
         cell.configure(with: item, columnType: currentColumnType)
 
-        var isItemSelected = false
-        if let id = item.id {
-            isItemSelected = selectionViewModel?.isSelected(id) ?? false
-        }
-        cell.configureSelection(isSelectionMode: isSelectionMode, isSelected: isItemSelected)
+        applySelectionAppearance(to: cell, at: indexPath)
 
         return cell
     }
