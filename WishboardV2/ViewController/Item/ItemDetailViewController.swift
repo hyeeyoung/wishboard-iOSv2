@@ -93,7 +93,14 @@ final class ItemDetailViewController: UIViewController {
                 // (ErrorPlugin이 400은 별도 처리하지 않아 여기서 알려줍니다.)
                 print("❌ 메모 저장 실패: \(error)")
                 SnackBar.shared.show(type: .errorMessage)
+                return
             }
+
+            // 저장이 끝나면 서버의 version이 올라갑니다.
+            // 들고 있는 값이 옛 version이면 이후 아이템 수정 화면에서 충돌(409)이 나므로,
+            // 로딩뷰 없이 조용히 최신 상태를 받아 둡니다. 화면은 이미 갱신되어 있어 깜빡이지 않습니다.
+            try? await self.viewModel.fetchItemDetail()
+            self.editAction?(self.viewModel.item)
         }
     }
 
