@@ -29,15 +29,8 @@ class ProfileHeaderView: UIView {
         $0.textColor = .gray_200
         $0.numberOfLines = 1
     }
-    let modifyButton = UIButton().then{
-        $0.setTitle("편집", for: .normal)
-        $0.setTitleColor(UIColor.gray_600, for: .normal)
-        $0.titleLabel?.setTypoStyleWithSingleLine(typoStyle: .SuitB3)
-        $0.backgroundColor = UIColor.gray_100
-        $0.titleEdgeInsets = UIEdgeInsets(top: 4, left: 10, bottom: 4, right: 10)
-        
-        $0.clipsToBounds = true
-        $0.layer.cornerRadius = 12
+    let modifyButton = EditPillButton().then{
+        $0.configure(title: Button.edit, style: .edit)
     }
     let dividerView = UIView().then {
         $0.backgroundColor = .gray_50
