@@ -330,7 +330,7 @@ final class AddViewController: UIViewController {
         }
         shoppingLinkBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(view.frame.height * ShoppingLinkBottomSheet.heightRatio)
+            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
         }
         selectDateBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -493,7 +493,7 @@ final class AddViewController: UIViewController {
     }
 
     /// 파싱 결과를 아이템 등록/수정 화면에 반영합니다.
-    /// 불러온 정보로 채우는 동작이므로 기존 입력값은 응답값으로 대체합니다.
+    /// 제목과 가격은 응답값으로 대체하고, 이미지는 기존 선택에 덧붙입니다.
     private func applyParsedItem(_ parsedItem: ItemParseResponse, link: String) {
         // 파싱에 사용한 링크도 함께 등록해, 저장 시 같이 전송되도록 합니다.
         viewModel.selectedLink = link
@@ -512,7 +512,10 @@ final class AddViewController: UIViewController {
         guard let itemImageUrl = parsedItem.itemImageUrl, !itemImageUrl.isEmpty else { return }
         fetchImage(from: itemImageUrl) { [weak self] image in
             guard let self = self, let image = image else { return }
-            self.viewModel.selectedImages = [image]
+            // 이미 고른 이미지는 그대로 두고 뒤에 덧붙입니다.
+            guard self.viewModel.selectedImages.count < self.MAX_IMAGE_COUNT else { return }
+
+            self.viewModel.selectedImages.append(image)
             self.viewModel.imageChanged = true
         }
     }
@@ -539,7 +542,7 @@ final class AddViewController: UIViewController {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.shoppingLinkBottomSheet.snp.updateConstraints { make in
-                    make.bottom.equalToSuperview().offset(self.view.frame.height * ShoppingLinkBottomSheet.heightRatio)
+                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
                 }
                 self.view.layoutIfNeeded()
             }

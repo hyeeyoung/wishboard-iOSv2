@@ -16,8 +16,6 @@ import WBNetwork
 
 final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
 
-    /// 바텀시트 높이 비율. 노출/미노출 애니메이션에서도 같은 값을 씁니다.
-    static let heightRatio: CGFloat = 0.45
     /// 두 버튼 사이 간격
     private static let buttonSpacing: CGFloat = 13
     private static let buttonHeight: CGFloat = 50
@@ -70,8 +68,10 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
     }
+    /// 두 버튼을 가로로 나란히 배치합니다. (좌: 아이템 정보 불러오기 / 우: 링크만 등록하기)
     private lazy var buttonStackView = UIStackView(arrangedSubviews: [parseButton, linkOnlyButton]).then {
-        $0.axis = .vertical
+        $0.axis = .horizontal
+        $0.distribution = .fillEqually
         $0.spacing = ShoppingLinkBottomSheet.buttonSpacing
     }
     /// 로딩뷰가 덮을 영역. 타이틀과 닫기 버튼은 가리지 않습니다.
@@ -147,16 +147,11 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         buttonStackView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-34)
             make.leading.trailing.equalToSuperview().inset(16)
-        }
-
-        [parseButton, linkOnlyButton].forEach { button in
-            button.snp.makeConstraints { make in
-                make.height.equalTo(ShoppingLinkBottomSheet.buttonHeight)
-            }
+            make.height.equalTo(ShoppingLinkBottomSheet.buttonHeight)
         }
 
         textField.snp.makeConstraints { make in
-            make.bottom.equalTo(buttonStackView.snp.top).offset(-48)
+            make.bottom.equalTo(buttonStackView.snp.top).offset(-80)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(42)
         }
@@ -267,7 +262,7 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         setUpObservers()
         
         self.snp.makeConstraints { make in
-            make.height.equalToSuperview().multipliedBy(ShoppingLinkBottomSheet.heightRatio)
+            make.height.equalToSuperview().multipliedBy(0.4)
         }
         
         titleLabel.text = Title.shoppingLinkBottomSheet
