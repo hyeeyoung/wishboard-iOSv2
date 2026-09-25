@@ -44,6 +44,8 @@ final class AddViewController: UIViewController {
     private let folderSelectBottomSheet = FolderSelectBottomSheet()
     private let addFolderBottomSheet = FolderBottomSheet()
     private let shoppingLinkBottomSheet = ShoppingLinkBottomSheet()
+    /// 진행 중인 아이템 파싱 요청. 시트를 닫으면 결과를 반영하지 않습니다.
+    private var parsingTask: _Concurrency.Task<Void, Never>?
     private let selectDateBottomSheet = SelectDateBottomSheet()
     
     // 모드
@@ -328,7 +330,7 @@ final class AddViewController: UIViewController {
         }
         shoppingLinkBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+            make.bottom.equalToSuperview().offset(view.frame.height * ShoppingLinkBottomSheet.heightRatio)
         }
         selectDateBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -370,11 +372,16 @@ final class AddViewController: UIViewController {
         
         // Shopping Link Binding
         shoppingLinkBottomSheet.onClose = { [weak self] in
+            // 응답을 기다리는 중이었다면 그 결과는 반영하지 않습니다.
+            self?.parsingTask?.cancel()
             self?.hideLinkBottomSheet()
         }
-        shoppingLinkBottomSheet.onActionButtonTap = { [weak self] link in
+        shoppingLinkBottomSheet.onLinkOnlyButtonTap = { [weak self] link in
             self?.hideLinkBottomSheet()
             self?.viewModel.selectedLink = link
+        }
+        shoppingLinkBottomSheet.onParseButtonTap = { [weak self] link in
+            self?.parseItem(with: link)
         }
         // Select Date Binding
         selectDateBottomSheet.onClose = { [weak self] in
@@ -460,6 +467,56 @@ final class AddViewController: UIViewController {
         }
     }
     
+    /// '아이템 정보 불러오기' - 쇼핑몰 링크를 파싱해 상품 정보를 채웁니다.
+    private func parseItem(with link: String) {
+        parsingTask?.cancel()
+        parsingTask = _Concurrency.Task { [weak self] in
+            guard let self = self else { return }
+
+            // 조회 동안 바텀시트 위에 로딩뷰 노출
+            self.shoppingLinkBottomSheet.showLoading()
+            defer { self.shoppingLinkBottomSheet.hideLoading() }
+
+            do {
+                let parsedItem = try await self.viewModel.parseItem(link: link)
+                // 응답을 기다리는 동안 시트를 닫았다면 반영하지 않습니다.
+                guard !_Concurrency.Task.isCancelled else { return }
+
+                self.applyParsedItem(parsedItem, link: link)
+                self.hideLinkBottomSheet()
+            } catch {
+                guard !_Concurrency.Task.isCancelled else { return }
+                // 실패 시 시트를 유지한 채 입력 필드 아래에 안내만 노출합니다.
+                self.shoppingLinkBottomSheet.displayParseError()
+            }
+        }
+    }
+
+    /// 파싱 결과를 아이템 등록/수정 화면에 반영합니다.
+    /// 불러온 정보로 채우는 동작이므로 기존 입력값은 응답값으로 대체합니다.
+    private func applyParsedItem(_ parsedItem: ItemParseResponse, link: String) {
+        // 파싱에 사용한 링크도 함께 등록해, 저장 시 같이 전송되도록 합니다.
+        viewModel.selectedLink = link
+
+        if let itemName = parsedItem.itemName, !itemName.isEmpty {
+            addView.itemNameSection.text = itemName
+            viewModel.itemName = itemName
+        }
+
+        if let itemPrice = parsedItem.itemPrice, !itemPrice.isEmpty {
+            let formattedPrice = FormatManager.shared.strToPrice(numStr: itemPrice) ?? ""
+            addView.itemPriceSection.text = "₩ \(formattedPrice)"
+            viewModel.itemPrice = itemPrice
+        }
+
+        guard let itemImageUrl = parsedItem.itemImageUrl, !itemImageUrl.isEmpty else { return }
+        fetchImage(from: itemImageUrl) { [weak self] image in
+            guard let self = self, let image = image else { return }
+            self.viewModel.selectedImages = [image]
+            self.viewModel.imageChanged = true
+        }
+    }
+
     /// 쇼핑몰 링크 입력 시트 노출
     private func showLinkBottomSheet(with prevLink: String? = nil) {
         DispatchQueue.main.async {
@@ -482,7 +539,7 @@ final class AddViewController: UIViewController {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.shoppingLinkBottomSheet.snp.updateConstraints { make in
-                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                    make.bottom.equalToSuperview().offset(self.view.frame.height * ShoppingLinkBottomSheet.heightRatio)
                 }
                 self.view.layoutIfNeeded()
             }
