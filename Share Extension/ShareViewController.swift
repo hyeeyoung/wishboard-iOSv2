@@ -35,9 +35,24 @@ class ShareViewController: UIViewController {
         setupBindings()
         
         // fetch datas
-        viewModel.fetchFolders()
+        // 폴더 리스트 조회와 아이템 파싱 조회가 모두 끝날 때까지 로딩뷰를 노출합니다.
+        shareView.showLoading()
+        shareView.showLoading()
+
+        Task { @MainActor [weak self] in
+            defer { self?.shareView.hideLoading() }
+
+            do {
+                try await self?.viewModel.fetchFolders()
+            } catch {
+                // 폴더 조회 실패 시에도 로딩뷰는 내리고, 폴더 없이 진행합니다.
+            }
+        }
+
         viewModel.getSharedUrl(self) { [weak self] url in
-            Task {
+            Task { @MainActor in
+                defer { self?.shareView.hideLoading() }
+
                 // 유효한 URL을 못 뽑은 경우, 서버 호출 없이 스낵바만 노출
                 guard !url.isEmpty else {
                     if UserManager.accessToken != nil && UserManager.refreshToken != nil {

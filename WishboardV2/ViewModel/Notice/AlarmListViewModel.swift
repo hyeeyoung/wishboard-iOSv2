@@ -24,6 +24,9 @@ struct NoticeItem {
 class AlarmListViewModel: ObservableObject {
     @Published var noticeItems: [NoticeItem] = []
     @Published var readState: Bool = false
+    /// 알림 리스트 조회 중인지 여부.
+    /// 당겨서 새로고침에는 자체 인디케이터가 있어 로딩뷰를 띄우지 않습니다.
+    @Published var isLoading: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -32,8 +35,11 @@ class AlarmListViewModel: ObservableObject {
     }
     
     // 알림 리스트 조회
-    func fetchItems() {
+    func fetchItems(isRefreshing: Bool = false) {
         Task {
+            isLoading = !isRefreshing
+            defer { isLoading = false }
+
             do {
                 let useCase = GetNoticesUseCase()
                 let datas = try await useCase.execute()

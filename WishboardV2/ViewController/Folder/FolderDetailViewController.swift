@@ -59,8 +59,9 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
         selectionBottomBar.delegate = self
         viewModel.fetchItems(reset: true)
 
+        // 당겨서 새로고침은 자체 인디케이터가 있어, 로딩뷰를 띄우지 않는 경로로 조회합니다.
         folderView.refreshAction = { [weak self] in
-            self?.refreshItems()
+            self?.viewModel.refresh()
         }
 
         setupBindings()
@@ -108,6 +109,15 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.updateSelectionBottomBar()
+            }
+            .store(in: &cancellables)
+
+        // 폴더 아이템 리스트 조회 동안 로딩뷰 노출
+        viewModel.$isInitialLoading
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isLoading in
+                self?.folderView.setLoading(isLoading)
             }
             .store(in: &cancellables)
     }

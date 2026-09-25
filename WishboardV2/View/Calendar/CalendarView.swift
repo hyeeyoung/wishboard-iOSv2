@@ -12,7 +12,7 @@ import Then
 import Combine
 import Core
 
-final class CalendarView: UIView {
+final class CalendarView: UIView, LoadingPresentable {
     // MARK: - UI Components
     private let scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
@@ -85,6 +85,12 @@ final class CalendarView: UIView {
         $0.backgroundColor = .gray_100
     }
 
+    /// 로딩뷰가 덮을 영역.
+    /// 상단바와 캘린더(날짜 그리드)는 가리지 않고 그 아래쪽만 덮습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
+    }
+
     // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -100,7 +106,7 @@ final class CalendarView: UIView {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
 
-        [toolBar, weekDaysStackView, collectionView, firstSeparatorView, secondSeparatorView, selectedDateLabel, tableView, emptyView].forEach {
+        [toolBar, weekDaysStackView, collectionView, firstSeparatorView, secondSeparatorView, selectedDateLabel, tableView, emptyView, loadingContainerView].forEach {
             contentView.addSubview($0)
         }
 
@@ -192,6 +198,12 @@ final class CalendarView: UIView {
             $0.top.equalTo(emptyView.snp.centerY).offset(10)
             $0.centerX.equalToSuperview()
             $0.leading.trailing.equalToSuperview()
+        }
+
+        loadingContainerView.snp.makeConstraints {
+            $0.top.equalTo(secondSeparatorView.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
     }
 

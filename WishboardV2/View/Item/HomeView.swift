@@ -12,7 +12,7 @@ import Then
 import Combine
 import Core
 
-final class HomeView: UIView {
+final class HomeView: UIView, LoadingPresentable {
 
     // MARK: - Views
     public let collectionView: UICollectionView
@@ -20,6 +20,10 @@ final class HomeView: UIView {
     /// 다중 선택 모드에서 툴바/스티키헤더 대신 노출되는 상단바
     public let selectionToolBar = ItemSelectionToolBar().then {
         $0.isHidden = true
+    }
+    /// 로딩뷰가 덮을 영역. 로고/알림/다중선택이 있는 상단바는 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
     }
     private let emptyLabel = UILabel().then {
         $0.text = "앗, 아이템이 없어요!\n갖고 싶은 아이템을 등록해 보세요!"
@@ -163,6 +167,7 @@ final class HomeView: UIView {
         addSubview(collectionView)
         addSubview(selectionToolBar)
         addSubview(emptyLabel)
+        addSubview(loadingContainerView)
 
         collectionView.register(
             WishItemCollectionViewCell.self,
@@ -192,11 +197,29 @@ final class HomeView: UIView {
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(HomeView.toolbarHeight / 2)
         }
+        loadingContainerView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(loadingContainerTopInset)
+            make.horizontalEdges.bottom.equalToSuperview()
+        }
+    }
+
+    /// 상단바 높이. 상단바는 컬렉션뷰 헤더라 배너/선택 모드에 따라 높이가 달라집니다.
+    private var loadingContainerTopInset: CGFloat {
+        if isSelectionMode { return ItemSelectionToolBar.height }
+        return HomeView.toolbarHeight + (isBannerVisible ? HomeView.eventBannerHeight : 0)
+    }
+
+    /// 상단바 높이가 바뀌면 로딩뷰가 덮는 영역도 따라가야 합니다.
+    private func updateLoadingContainerTopInset() {
+        loadingContainerView.snp.updateConstraints { make in
+            make.top.equalToSuperview().offset(loadingContainerTopInset)
+        }
     }
 
     func hideEventBanner() {
         isBannerVisible = false
         eventBannerView.removeFromSuperview()
+        updateLoadingContainerTopInset()
 
         collectionView.setCollectionViewLayout(
             HomeView.makeLayout(
@@ -276,6 +299,7 @@ final class HomeView: UIView {
 
         selectionToolBar.isHidden = !isSelectionMode
         dragSelectionController?.isEnabled = isSelectionMode
+        updateLoadingContainerTopInset()
 
         collectionView.refreshControl = isSelectionMode ? nil : refreshControl
         collectionView.snp.remakeConstraints { make in

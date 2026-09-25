@@ -75,6 +75,15 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
                 self?.folderView.toolBar.configureFolderToolBar(delegate: self, with: folders.count)
             }
             .store(in: &cancellables)
+
+        // 폴더 리스트 조회 동안 로딩뷰 노출
+        viewModel.$isInitialLoading
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isLoading in
+                self?.folderView.setLoading(isLoading)
+            }
+            .store(in: &cancellables)
     }
     
     private func addActions() {
@@ -82,8 +91,9 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.backgroundDimView.addGestureRecognizer(tapGesture)
         
+        // 당겨서 새로고침은 자체 인디케이터가 있어, 로딩뷰를 띄우지 않는 경로로 조회합니다.
         self.folderView.refreshAction = { [weak self] in
-            self?.refreshItems()
+            self?.viewModel.refresh()
         }
     }
     

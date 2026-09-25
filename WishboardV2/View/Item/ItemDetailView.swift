@@ -12,10 +12,14 @@ import Then
 import Core
 import WBNetwork
 
-final class ItemDetailView: UIView {
+final class ItemDetailView: UIView, LoadingPresentable {
     
     // MARK: - UI Components
     public let toolbar = DetailToolBar()
+    /// 로딩뷰가 덮을 영역. 상단바는 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
+    }
     private let scrollView = UIScrollView().then {
         $0.isScrollEnabled = true
     }
@@ -180,6 +184,8 @@ final class ItemDetailView: UIView {
         
         imageContainer.bringSubviewToFront(notiTypetag)
         imageContainer.bringSubviewToFront(notiDatetag)
+
+        addSubview(loadingContainerView)
     }
     
     private func setupConstraints() {
@@ -270,6 +276,11 @@ final class ItemDetailView: UIView {
         
         moveToLinkButton.snp.makeConstraints { make in
             make.height.equalTo(50)
+        }
+
+        loadingContainerView.snp.makeConstraints { make in
+            make.top.equalTo(toolbar.snp.bottom)
+            make.horizontalEdges.bottom.equalToSuperview()
         }
     }
     

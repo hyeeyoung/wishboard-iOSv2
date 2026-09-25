@@ -44,6 +44,10 @@ final class CalendarViewController: UIViewController {
         
         if isFirstLoad {return}
         Task {
+            // 알림 리스트 조회 동안, 캘린더 아래 영역에만 로딩뷰 노출
+            calendarView.showLoading()
+            defer { calendarView.hideLoading() }
+
             do {
                 viewModel.updateCalendarDays()
                 try await viewModel.fetchAlarms()
@@ -65,6 +69,10 @@ final class CalendarViewController: UIViewController {
     
     private func fetchDatas() {
         Task {
+            // 첫 진입 시에도 동일하게, 캘린더 아래 영역에만 로딩뷰 노출
+            calendarView.showLoading()
+            defer { calendarView.hideLoading() }
+
             do {
                 viewModel.updateCalendarDays()
                 try await viewModel.fetchAlarms()

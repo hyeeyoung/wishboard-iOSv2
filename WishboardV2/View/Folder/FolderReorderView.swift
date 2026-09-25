@@ -10,9 +10,13 @@ import SnapKit
 import Then
 import Core
 
-final class FolderReorderView: UIView {
+final class FolderReorderView: UIView, LoadingPresentable {
 
     let toolBar = UIView()
+    /// 로딩뷰가 덮을 영역. 상단바는 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
+    }
     
     let titleLabel = UILabel().then {
         $0.text = "폴더 정렬"
@@ -76,6 +80,7 @@ final class FolderReorderView: UIView {
         addSubview(tableView)
         addSubview(gradientView)
         addSubview(buttonStackView)
+        addSubview(loadingContainerView)
         buttonStackView.addArrangedSubview(saveButton)
         buttonStackView.addArrangedSubview(recentSortButton)
 
@@ -124,7 +129,13 @@ final class FolderReorderView: UIView {
         recentSortButton.snp.makeConstraints {
             $0.height.equalTo(28)
         }
+
+        loadingContainerView.snp.makeConstraints {
+            $0.top.equalTo(toolBar.snp.bottom)
+            $0.horizontalEdges.bottom.equalToSuperview()
+        }
     }
+
 
     private func setupGradient() {
 

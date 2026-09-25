@@ -12,7 +12,7 @@ import Then
 import Combine
 import Core
 
-final class ShareView: UIView {
+final class ShareView: UIView, LoadingPresentable {
     //MARK: - Views
     let itemImage = UIImageView().then{
         $0.backgroundColor = .black_10
@@ -25,6 +25,10 @@ final class ShareView: UIView {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 20
         $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+    }
+    /// 로딩뷰가 덮을 영역. 닫기(X) 버튼은 위로 올려 계속 누를 수 있게 둡니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
     }
     lazy var quitButton = UIButton().then{
         $0.setImage(Image.quit, for: .normal)
@@ -148,6 +152,10 @@ final class ShareView: UIView {
         backgroundView.addSubview(completeButton)
         
         addSubview(itemImage)
+
+        backgroundView.addSubview(loadingContainerView)
+        // 로딩 중에도 공유 화면을 닫을 수 있도록 닫기 버튼만 로딩뷰 위에 둡니다.
+        backgroundView.bringSubviewToFront(quitButton)
         
         itemNameTextField.attributedPlaceholder = NSAttributedString(
             string: Placeholder.shareItemName,
@@ -218,6 +226,9 @@ final class ShareView: UIView {
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(addFolderButton.snp.bottom).offset(16)
             make.bottom.equalToSuperview().offset(-34)
+        }
+        loadingContainerView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     

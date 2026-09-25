@@ -152,6 +152,10 @@
 		23F3FFBE2C78FAAF003C7DA9 /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
 		23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */; };
 		23F3FFC62C790297003C7DA9 /* loading_spin.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC42C790296003C7DA9 /* loading_spin.json */; };
+		23AA00032D99000300A0EB42 /* lottie_three_dots_loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 23AA00012D99000100A0EB42 /* lottie_three_dots_loading.json */; };
+		23AA00042D99000400A0EB42 /* lottie_three_dots_loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 23AA00012D99000100A0EB42 /* lottie_three_dots_loading.json */; };
+		23AA00052D99000500A0EB42 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AA00022D99000200A0EB42 /* LoadingView.swift */; };
+		23AA00062D99000600A0EB42 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AA00022D99000200A0EB42 /* LoadingView.swift */; };
 		23F3FFC72C790297003C7DA9 /* loading_horizontal_black.json in Resources */ = {isa = PBXBuildFile; fileRef = 23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */; };
 		30EFB95419F517C75D6229E4 /* ItemSelectionFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64917113960340291378C2B /* ItemSelectionFlow.swift */; };
 		5063165F0DC44F60910E46E8 /* WishboardWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1013F656332484F87BA49CE /* WishboardWebViewController.swift */; };
@@ -367,6 +371,8 @@
 		23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnackBar.swift; sourceTree = "<group>"; };
 		23F3FFC22C7901F0003C7DA9 /* AnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationButton.swift; sourceTree = "<group>"; };
 		23F3FFC42C790296003C7DA9 /* loading_spin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_spin.json; sourceTree = "<group>"; };
+		23AA00012D99000100A0EB42 /* lottie_three_dots_loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lottie_three_dots_loading.json; sourceTree = "<group>"; };
+		23AA00022D99000200A0EB42 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_horizontal_black.json; sourceTree = "<group>"; };
 		2E88ABE02AD132C040362931 /* ItemSelectionBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionBottomBar.swift; sourceTree = "<group>"; };
 		6CFCBF1403B1F78CAF16F520 /* ItemSelectionToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectionToolBar.swift; sourceTree = "<group>"; };
@@ -1014,6 +1020,8 @@
 				23F3FFC52C790297003C7DA9 /* loading_horizontal_black.json */,
 				23F3FFC42C790296003C7DA9 /* loading_spin.json */,
 				23EFA1C52D85B39F00A0EB42 /* SpinningLottie.swift */,
+				23AA00022D99000200A0EB42 /* LoadingView.swift */,
+				23AA00012D99000100A0EB42 /* lottie_three_dots_loading.json */,
 			);
 			path = AnimationLottie;
 			sourceTree = "<group>";
@@ -1196,6 +1204,7 @@
 				23C4D23B2C7A526D00BB0B08 /* SUIT-Bold.ttf in Resources */,
 				23C4D23A2C7A526D00BB0B08 /* SUIT-Medium.ttf in Resources */,
 				23C4D2332C7A521F00BB0B08 /* loading_spin.json in Resources */,
+				23AA00042D99000400A0EB42 /* lottie_three_dots_loading.json in Resources */,
 				23C4D2352C7A526600BB0B08 /* Montserrat-ExtraBold.ttf in Resources */,
 				23C4D2322C7A521B00BB0B08 /* loading_horizontal_black.json in Resources */,
 				23C4D23C2C7A526D00BB0B08 /* SUIT-SemiBold.ttf in Resources */,
@@ -1214,6 +1223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23F3FFC62C790297003C7DA9 /* loading_spin.json in Resources */,
+				23AA00032D99000300A0EB42 /* lottie_three_dots_loading.json in Resources */,
 				23974D542C5E5304006BBC97 /* SUIT-Bold.ttf in Resources */,
 				23974D522C5E5304006BBC97 /* SUIT-Regular.ttf in Resources */,
 				23974D512C5E5304006BBC97 /* SUIT-Medium.ttf in Resources */,
@@ -1254,6 +1264,7 @@
 				23C4D23D2C7A52B300BB0B08 /* FolderBottomSheet.swift in Sources */,
 				2395DFF32D8AF767005489FD /* SetNotificationDate.swift in Sources */,
 				23C4D2302C7A4F6F00BB0B08 /* AnimationButton.swift in Sources */,
+				23AA00062D99000600A0EB42 /* LoadingView.swift in Sources */,
 				2395DFF22D8AF75B005489FD /* SelectDateBottomSheet.swift in Sources */,
 				23C4D22F2C7A4EFE00BB0B08 /* ShareView.swift in Sources */,
 				2357E5652C7B0D3A00CC9509 /* FolderCollectionViewCell.swift in Sources */,
@@ -1353,6 +1364,7 @@
 				230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */,
 				235FFE2F2F653061007A77D2 /* FolderReorderView.swift in Sources */,
 				23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */,
+				23AA00052D99000500A0EB42 /* LoadingView.swift in Sources */,
 				23F0F53D2C83FC65001ABAA9 /* ModifyProfileView.swift in Sources */,
 				23C6107E2D68D6C3003E71F4 /* AddViewModel.swift in Sources */,
 				23626D602D7B17B1000A144A /* AppGuideCollectionViewCell.swift in Sources */,
