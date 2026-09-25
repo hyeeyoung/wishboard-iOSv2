@@ -89,7 +89,10 @@ final class ItemDetailViewController: UIViewController {
             do {
                 try await self.viewModel.updateMemo(memo)
             } catch {
-                // 실패해도 화면은 그대로 둡니다. 다음 조회에서 서버 값으로 맞춰집니다.
+                // 화면은 낙관적 업데이트 그대로 두되, 실패를 조용히 넘기지는 않습니다.
+                // (ErrorPlugin이 400은 별도 처리하지 않아 여기서 알려줍니다.)
+                print("❌ 메모 저장 실패: \(error)")
+                SnackBar.shared.show(type: .errorMessage)
             }
         }
     }

@@ -20,10 +20,14 @@ final class ItemDetailView: UIView, LoadingPresentable {
     let loadingContainerView = UIView().then {
         $0.isUserInteractionEnabled = false
     }
+    /// 하단 버튼에 콘텐츠가 붙지 않도록 스크롤 끝에 두는 여백
+    private static let scrollBottomInset: CGFloat = 64
+
     private let scrollView = UIScrollView().then {
         $0.isScrollEnabled = true
         // 메모 편집 중 화면을 스크롤하면 키보드를 내립니다.
         $0.keyboardDismissMode = .onDrag
+        $0.contentInset.bottom = ItemDetailView.scrollBottomInset
     }
     private let contentView = UIView()
     
@@ -671,7 +675,7 @@ extension ItemDetailView: UITextViewDelegate {
     }
 
     @objc private func memoKeyboardWillHide(_ notification: Foundation.Notification) {
-        scrollView.contentInset.bottom = 0
+        scrollView.contentInset.bottom = ItemDetailView.scrollBottomInset
         scrollView.verticalScrollIndicatorInsets.bottom = 0
     }
 }
