@@ -22,6 +22,8 @@ final class ItemDetailView: UIView, LoadingPresentable {
     }
     private let scrollView = UIScrollView().then {
         $0.isScrollEnabled = true
+        // 메모 편집 중 화면을 스크롤하면 키보드를 내립니다.
+        $0.keyboardDismissMode = .onDrag
     }
     private let contentView = UIView()
     
@@ -163,6 +165,7 @@ final class ItemDetailView: UIView, LoadingPresentable {
         addTargets()
         setDelegates()
         setupMemoKeyboardObservers()
+        setupDismissKeyboardGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -309,6 +312,19 @@ final class ItemDetailView: UIView, LoadingPresentable {
         imageCarousel.register(ImageCollectionCell.self, forCellWithReuseIdentifier: "ImageCollectionCell")
         imageCarousel.dataSource = self
         imageCarousel.delegate = self
+    }
+
+    /// 화면 아무 곳이나 탭하면 메모 편집 키보드를 내립니다.
+    private func setupDismissKeyboardGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissMemoKeyboard))
+        // 버튼이나 링크 같은 기존 터치는 그대로 전달되어야 합니다.
+        tapGesture.cancelsTouchesInView = false
+        tapGesture.delegate = self
+        addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissMemoKeyboard() {
+        endEditing(true)
     }
     
     @objc private func collectButtonTapped(_ button: UIButton) {
@@ -657,6 +673,23 @@ extension ItemDetailView: UITextViewDelegate {
     @objc private func memoKeyboardWillHide(_ notification: Foundation.Notification) {
         scrollView.contentInset.bottom = 0
         scrollView.verticalScrollIndicatorInsets.bottom = 0
+    }
+}
+
+// MARK: - 탭으로 키보드 내리기
+extension ItemDetailView: UIGestureRecognizerDelegate {
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldReceive touch: UITouch) -> Bool {
+        // 편집 중인 메모 안을 탭한 경우에는 키보드를 그대로 둡니다.
+        guard isMemoEditing, let memoTextView = memoTextView else { return true }
+        return touch.view?.isDescendant(of: memoTextView) != true
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // 폴더 라벨 탭 같은 기존 제스처와 함께 인식되어야 키보드도 같이 내려갑니다.
+        return true
     }
 }
 
