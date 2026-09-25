@@ -46,6 +46,7 @@ public enum ErrorMessage {
     public static let fiveHundredError = "예상하지 못한 오류가 발생했어요!\n잠시후 다시 시도해주세요."
     // MARK: Not Valid
     public static let shoppingLink = "쇼핑몰 링크를 다시 확인해 주세요."
+    public static let parseItem = "아이템 정보를 가져오지 못했어요! 링크가 올바른지 확인해 주세요."
     // MARK: Already Exist
     public static let sameFolderName = "동일이름의 폴더가 있어요!"
     public static let existingNickName = "이미 사용 중인 닉네임이에요!"
@@ -140,6 +141,8 @@ public enum Button {
     public static let modify = "수정"
     public static let howTo = "네! 알겠어요"
     public static let setNoti = "상품 알림 설정하기"
+    public static let parseItem = "아이템 정보 불러오기"
+    public static let registerLinkOnly = "링크만 등록하기"
     
     public static let addFolder = "+ 새 폴더"
 }

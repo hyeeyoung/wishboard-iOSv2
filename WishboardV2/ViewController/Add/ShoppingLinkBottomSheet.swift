@@ -14,7 +14,12 @@ import Combine
 import Core
 import WBNetwork
 
-final class ShoppingLinkBottomSheet: UIView {
+final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
+
+    /// 두 버튼 사이 간격
+    private static let buttonSpacing: CGFloat = 13
+    private static let buttonHeight: CGFloat = 50
+
     
     // MARK: - UI Components
     private let titleLabel = UILabel().then {
@@ -43,15 +48,35 @@ final class ShoppingLinkBottomSheet: UIView {
         $0.font = TypoStyle.SuitD3.font
         $0.textAlignment = .left
         $0.textColor = .pink_700
+        // 화면 너비보다 메시지가 길면 여러 줄로 노출합니다.
+        $0.numberOfLines = 0
         $0.isHidden = true
     }
-    private let actionButton = AnimatedButton().then {
-        $0.setTitle("추가", for: .normal)
-        $0.backgroundColor = .gray_100
-        $0.setTitleColor(.gray_300, for: .normal)
-        $0.titleLabel?.font = TypoStyle.SuitH3.font
+    /// 링크를 파싱해 아이템 정보를 불러오는 버튼
+    private let parseButton = UIButton(type: .system).then {
+        $0.setTitle(Button.parseItem, for: .normal)
+        $0.backgroundColor = .white
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor.gray_100.cgColor
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
+    }
+    /// 파싱 없이 링크만 등록하는 버튼
+    private let linkOnlyButton = UIButton(type: .system).then {
+        $0.setTitle(Button.registerLinkOnly, for: .normal)
+        $0.backgroundColor = .green_500
+        $0.layer.cornerRadius = 12
+        $0.clipsToBounds = true
+    }
+    /// 두 버튼을 가로로 나란히 배치합니다. (좌: 아이템 정보 불러오기 / 우: 링크만 등록하기)
+    private lazy var buttonStackView = UIStackView(arrangedSubviews: [parseButton, linkOnlyButton]).then {
+        $0.axis = .horizontal
+        $0.distribution = .fillEqually
+        $0.spacing = ShoppingLinkBottomSheet.buttonSpacing
+    }
+    /// 로딩뷰가 덮을 영역. 타이틀과 닫기 버튼은 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
     }
     
     // MARK: - Properties
@@ -59,7 +84,10 @@ final class ShoppingLinkBottomSheet: UIView {
     public var prevLink: String?
     
     var onClose: (() -> Void)?
-    var onActionButtonTap: ((String?) -> Void)?
+    /// '아이템 정보 불러오기' 탭. 링크를 파싱해 상품 정보를 채웁니다.
+    var onParseButtonTap: ((String) -> Void)?
+    /// '링크만 등록하기' 탭. 파싱 없이 링크만 등록합니다.
+    var onLinkOnlyButtonTap: ((String) -> Void)?
     
     // MARK: - Initializer
     override init(frame: CGRect) {
@@ -87,10 +115,20 @@ final class ShoppingLinkBottomSheet: UIView {
         addSubview(closeButton)
         addSubview(textField)
         addSubview(errorLabel)
-        addSubview(actionButton)
-        
+        addSubview(buttonStackView)
+        addSubview(loadingContainerView)
+
+        // 두 버튼은 텍스트 스타일이 같고 배경/테두리만 다릅니다.
+        [parseButton, linkOnlyButton].forEach { button in
+            [UIControl.State.normal, .disabled].forEach {
+                button.setTitleColor(.gray_700, for: $0)
+            }
+            button.titleLabel?.font = TypoStyle.SuitH3.font
+        }
+
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
-        actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
+        parseButton.addTarget(self, action: #selector(parseButtonTapped), for: .touchUpInside)
+        linkOnlyButton.addTarget(self, action: #selector(linkOnlyButtonTapped), for: .touchUpInside)
     }
     
     private func setupConstraints() {
@@ -106,21 +144,26 @@ final class ShoppingLinkBottomSheet: UIView {
             make.trailing.equalToSuperview().offset(-16)
         }
         
-        actionButton.snp.makeConstraints { make in
+        buttonStackView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-34)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(50)
+            make.height.equalTo(ShoppingLinkBottomSheet.buttonHeight)
         }
-        
+
         textField.snp.makeConstraints { make in
-            make.bottom.equalTo(actionButton.snp.top).offset(-80)
+            make.bottom.equalTo(buttonStackView.snp.top).offset(-80)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(42)
         }
-        
+
         errorLabel.snp.makeConstraints { make in
             make.leading.trailing.equalTo(textField)
-            make.top.equalTo(textField.snp.bottom).offset(6)
+            make.top.equalTo(textField.snp.bottom).offset(2)
+        }
+
+        loadingContainerView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(16)
+            make.leading.trailing.bottom.equalToSuperview()
         }
     }
     
@@ -149,18 +192,30 @@ final class ShoppingLinkBottomSheet: UIView {
         onClose?()
     }
     
-    @objc private func actionButtonTapped() {
-        guard let text = textField.text, !text.isEmpty else { return }
-        
+    @objc private func parseButtonTapped() {
+        guard let link = validatedLink() else { return }
+        self.endEditing(true)
+        onParseButtonTap?(link)
+    }
+
+    @objc private func linkOnlyButtonTapped() {
+        guard let link = validatedLink() else { return }
+        self.endEditing(true)
+        onLinkOnlyButtonTap?(link)
+        self.removeObservers()
+    }
+
+    /// 입력된 링크가 유효하면 돌려주고, 아니면 에러 메시지를 노출합니다.
+    private func validatedLink() -> String? {
+        guard let text = textField.text, !text.isEmpty else { return nil }
+
         // 유효하지 않은 링크 예외처리
         guard let url = URL(string: text), ["http", "https"].contains(url.scheme?.lowercased()) else {
-            errorLabel.isHidden = false
+            displayError(ErrorMessage.shoppingLink)
             updateActionButtonState(isEnabled: false)
-            return
+            return nil
         }
-        self.endEditing(true)
-        onActionButtonTap?(text)
-        self.removeObservers()
+        return text
     }
     
     @objc func dismissKeyboard() {
@@ -168,7 +223,21 @@ final class ShoppingLinkBottomSheet: UIView {
     }
     
     private func updateActionButtonState(isEnabled: Bool) {
-        actionButton.isEnabled = isEnabled
+        parseButton.isEnabled = isEnabled
+        linkOnlyButton.isEnabled = isEnabled
+        // 비활성 상태에서도 두 버튼의 배경/테두리는 그대로 두고 흐리게만 표시합니다.
+        [parseButton, linkOnlyButton].forEach { $0.alpha = isEnabled ? 1.0 : 0.4 }
+    }
+
+    /// 입력 필드 하단에 에러 메시지를 노출합니다.
+    func displayError(_ message: String) {
+        errorLabel.text = message
+        errorLabel.isHidden = false
+    }
+
+    /// 아이템 정보 불러오기 실패 메시지를 노출합니다.
+    func displayParseError() {
+        displayError(ErrorMessage.parseItem)
     }
     
     // MARK: - Public Methods
@@ -183,6 +252,7 @@ final class ShoppingLinkBottomSheet: UIView {
     
     func resetView() {
         textField.text = ""
+        errorLabel.isHidden = true
         self.updateActionButtonState(isEnabled: false)
         self.removeObservers()
         self.isHidden = true
@@ -197,6 +267,7 @@ final class ShoppingLinkBottomSheet: UIView {
         
         titleLabel.text = Title.shoppingLinkBottomSheet
         textField.text = prevLink
+        errorLabel.isHidden = true
         self.updateActionButtonState(isEnabled: (prevLink != nil))
     }
 }

@@ -63,6 +63,12 @@ final class AddViewModel {
         return formatter.string(from: NSNumber(value: number)) ?? ""
     }
     
+    /// 쇼핑몰 링크로 아이템 정보 파싱
+    func parseItem(link: String) async throws -> ItemParseResponse {
+        let usecase = ParseItemUrlUseCase()
+        return try await usecase.execute(link: link)
+    }
+
     // API 호출
     func addItem() async throws {
         do {
