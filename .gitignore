@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+
+# Xcode - 개인 설정 (스킴 선택, 브레이크포인트, 창 상태 등)
+# 공유 스킴(xcshareddata/)은 빌드에 필요하므로 계속 추적합니다.
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+
+# Xcode - 빌드 산출물
+DerivedData/
+build/
+*.hmap
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# Swift Package Manager
+# Package.resolved는 의존성 버전을 고정하므로 추적합니다.
+.build/
+.swiftpm/configuration/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
