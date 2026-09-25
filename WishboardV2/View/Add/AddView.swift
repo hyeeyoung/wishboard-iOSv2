@@ -93,6 +93,9 @@ final class AddView: UIView, LoadingPresentable {
     }, count: 6)
     
     // MARK: - Properties
+    /// '대표 사진'이 붙는 셀 위치. 0번은 카메라 셀이라 이미지 배열의 첫 번째는 1번입니다.
+    private static let thumbnailItem: Int = 1
+
     public var selectedImages: [UIImage] = []
     public var selectNewImageAction: (() -> Void)?
     public weak var delegate: ActiveFieldDelegate?
@@ -239,6 +242,8 @@ final class AddView: UIView, LoadingPresentable {
         // 순서 변경은 인터랙티브 이동으로 셀 위치가 이미 반영되어 있으므로 reload를 건너뜁니다.
         if isReordering {
             isReordering = false
+            // 셀을 다시 구성하지 않으므로, 대표 사진 표시만 현재 순서에 맞춰 줍니다.
+            updateThumbnailBadges()
             return
         }
         collectionView.reloadData()
@@ -278,6 +283,17 @@ final class AddView: UIView, LoadingPresentable {
     private func finishInteractiveMove() {
         isInteractiveMoving = false
         scrollView.isScrollEnabled = true
+        // 이동이 취소된 경우에도 원래 순서 기준으로 다시 맞춰 줍니다.
+        updateThumbnailBadges()
+    }
+
+    /// 화면에 떠 있는 이미지 셀들의 '대표 사진' 표시를 현재 순서에 맞춰 갱신합니다.
+    private func updateThumbnailBadges() {
+        for cell in collectionView.visibleCells {
+            guard let imageCell = cell as? SelectedImageCell,
+                  let indexPath = collectionView.indexPath(for: cell) else { continue }
+            imageCell.setThumbnail(indexPath.item == AddView.thumbnailItem)
+        }
     }
     
     @objc func priceTextBegin(_ textField: UITextField) {
@@ -301,7 +317,8 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
             // 기존 폴더 셀
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectedImageCell.identifier, for: indexPath) as! SelectedImageCell
             let image = selectedImages[indexPath.item - 1]
-            cell.configure(with: image)
+            // 0번은 카메라 셀이므로, 이미지 배열의 첫 번째는 1번 셀입니다.
+            cell.configure(with: image, isThumbnail: indexPath.item == AddView.thumbnailItem)
             
             // 순서 변경 이후에도 올바른 이미지를 지우도록, 캡처한 indexPath 대신 현재 위치를 조회합니다.
             cell.onDelete = { [weak self, weak cell] in
@@ -325,6 +342,14 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
             self.selectNewImageAction?()
             return
         }
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        // 미리 만들어 둔 셀은 순서가 바뀌어도 다시 구성되지 않으므로, 나타나기 직전에 맞춰 줍니다.
+        guard let imageCell = cell as? SelectedImageCell else { return }
+        imageCell.setThumbnail(indexPath.item == AddView.thumbnailItem)
     }
 
     func collectionView(_ collectionView: UICollectionView,
@@ -355,6 +380,9 @@ extension AddView: UICollectionViewDataSource, UICollectionViewDelegate {
         isReordering = true
         viewModel.selectedImages = selectedImages
         viewModel.imageChanged = true
+
+        // 순서가 바뀌어도 '대표 사진'은 항상 첫 번째 이미지에 있어야 합니다.
+        updateThumbnailBadges()
     }
 
     func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
