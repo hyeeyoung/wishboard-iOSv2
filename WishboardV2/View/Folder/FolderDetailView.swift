@@ -13,13 +13,17 @@ import Combine
 import Core
 
 
-final class FolderDetailView: UIView {
+final class FolderDetailView: UIView, LoadingPresentable {
 
     // MARK: - Views
     public let toolbar = ToolBar()
     /// 다중 선택 모드에서 툴바/헤더 대신 노출되는 상단바
     public let selectionToolBar = ItemSelectionToolBar().then {
         $0.isHidden = true
+    }
+    /// 로딩뷰가 덮을 영역. 상단바는 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
     }
     private var folderTitle: String?
     public let collectionView: UICollectionView
@@ -83,6 +87,7 @@ final class FolderDetailView: UIView {
         addSubview(selectionToolBar)
         addSubview(collectionView)
         addSubview(emptyLabel)
+        addSubview(loadingContainerView)
 
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.register(
@@ -112,6 +117,11 @@ final class FolderDetailView: UIView {
 
         emptyLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
+        }
+
+        loadingContainerView.snp.makeConstraints { make in
+            make.horizontalEdges.bottom.equalToSuperview()
+            make.top.equalTo(toolbar.snp.bottom)
         }
     }
 
@@ -195,6 +205,11 @@ final class FolderDetailView: UIView {
         dragSelectionController?.isEnabled = isSelectionMode
 
         collectionView.snp.remakeConstraints { make in
+            make.horizontalEdges.bottom.equalToSuperview()
+            make.top.equalTo(isSelectionMode ? selectionToolBar.snp.bottom : toolbar.snp.bottom)
+        }
+        // 로딩뷰도 노출 중인 상단바 아래에서 시작하도록 맞춥니다.
+        loadingContainerView.snp.remakeConstraints { make in
             make.horizontalEdges.bottom.equalToSuperview()
             make.top.equalTo(isSelectionMode ? selectionToolBar.snp.bottom : toolbar.snp.bottom)
         }

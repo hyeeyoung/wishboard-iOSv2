@@ -66,9 +66,9 @@ final class ItemDetailViewController: UIViewController {
     
     private func fetchData() {
         Task {
-            // 아이템 상세 조회 동안 로딩뷰 노출
-            LoadingView.show(in: self.view)
-            defer { LoadingView.hide(in: self.view) }
+            // 아이템 상세 조회 동안 로딩뷰 노출 (상단바는 가리지 않습니다)
+            self.detailView.showLoading()
+            defer { self.detailView.hideLoading() }
 
             do {
                 try await self.viewModel.fetchItemDetail()

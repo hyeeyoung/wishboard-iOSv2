@@ -11,9 +11,13 @@ import SnapKit
 import Then
 import Core
 
-final class FolderView: UIView {
+final class FolderView: UIView, LoadingPresentable {
     
     public let toolBar = BaseToolBar()
+    /// 로딩뷰가 덮을 영역. 상단바는 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
+    }
     public let collectionView: UICollectionView
     public let emptyLabel = UILabel().then {
         $0.text = EmptyMessage.folder
@@ -52,6 +56,7 @@ final class FolderView: UIView {
         addSubview(toolBar)
         addSubview(collectionView)
         addSubview(emptyLabel)
+        addSubview(loadingContainerView)
         
         collectionView.register(FolderCollectionViewCell.self, forCellWithReuseIdentifier: FolderCollectionViewCell.reuseIdentifier)
     }
@@ -66,8 +71,13 @@ final class FolderView: UIView {
         emptyLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+        loadingContainerView.snp.makeConstraints { make in
+            make.top.equalTo(toolBar.snp.bottom)
+            make.horizontalEdges.bottom.equalToSuperview()
+        }
     }
     
+
     private func setupRefreshControl() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refreshControl

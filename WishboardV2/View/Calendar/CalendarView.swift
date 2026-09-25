@@ -12,7 +12,7 @@ import Then
 import Combine
 import Core
 
-final class CalendarView: UIView {
+final class CalendarView: UIView, LoadingPresentable {
     // MARK: - UI Components
     private let scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
@@ -85,10 +85,9 @@ final class CalendarView: UIView {
         $0.backgroundColor = .gray_100
     }
 
-    /// 알림 리스트 조회 로딩뷰가 노출되는 영역.
-    /// 캘린더(날짜 그리드)는 가리지 않고 그 아래쪽만 덮습니다.
-    /// 로딩 중이 아닐 때는 아래쪽 리스트의 터치를 가로채지 않도록 비활성화해 둡니다.
-    private let loadingContainerView = UIView().then {
+    /// 로딩뷰가 덮을 영역.
+    /// 상단바와 캘린더(날짜 그리드)는 가리지 않고 그 아래쪽만 덮습니다.
+    let loadingContainerView = UIView().then {
         $0.isUserInteractionEnabled = false
     }
 
@@ -209,19 +208,6 @@ final class CalendarView: UIView {
     }
 
     // MARK: - Public
-
-    /// 알림 리스트 조회 동안, 캘린더 아래 영역에만 로딩뷰를 노출합니다.
-    public func showAlarmListLoading() {
-        loadingContainerView.isUserInteractionEnabled = true
-        LoadingView.show(in: loadingContainerView)
-    }
-
-    /// 알림 리스트 로딩뷰를 내립니다. 아직 끝나지 않은 조회가 있다면 그대로 둡니다.
-    public func hideAlarmListLoading() {
-        LoadingView.hide(in: loadingContainerView)
-        loadingContainerView.isUserInteractionEnabled = !loadingContainerView.subviews.isEmpty
-    }
-
     public func configureSelectedLabel(_ rawDate: Date) {
         let formattedDate = formatDate(rawDate)
         selectedDateLabel.text = "\(formattedDate) 일정"

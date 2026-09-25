@@ -696,21 +696,21 @@ extension AddViewController: AddToolBarDelegate {
         _Concurrency.Task {
             do {
                 self.view.endEditing(true)
-                // 저장(등록/편집) 동안 로딩뷰 노출
-                LoadingView.show(in: self.view)
+                // 저장(등록/편집) 동안 로딩뷰 노출 (상단바는 가리지 않습니다)
+                self.addView.showLoading()
                 
                 if self.type == .manual {
                     try await self.viewModel.addItem()
                     AnalyticsManager.shared.log(.itemAdded(source: .manual))
                 } else if self.type == .modify {
                     guard let itemIdx = self.item?.id else {
-                        LoadingView.hide(in: self.view)
+                        self.addView.hideLoading()
                         return
                     }
                     try await self.viewModel.modifyItem(idx: itemIdx)
                 }
 
-                LoadingView.hide(in: self.view)
+                self.addView.hideLoading()
 
                 self.dismiss(animated: true) {
                     // 스낵바 노출
@@ -723,7 +723,7 @@ extension AddViewController: AddToolBarDelegate {
                 self.confirmAction?()
                 
             } catch {
-                LoadingView.hide(in: self.view)
+                self.addView.hideLoading()
                 
                 if let moyaError = error as? MoyaError, let response = moyaError.response {
                     switch response.statusCode {

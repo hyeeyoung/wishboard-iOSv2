@@ -12,11 +12,15 @@ import Combine
 import Then
 import Core
 
-final class AddView: UIView {
+final class AddView: UIView, LoadingPresentable {
     
     // MARK: - UI Components
     
     let toolBar = AddToolBar()
+    /// 로딩뷰가 덮을 영역. 상단바는 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
+    }
     
     let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
@@ -127,6 +131,12 @@ final class AddView: UIView {
             make.top.equalTo(toolBar.snp.bottom)
             make.horizontalEdges.equalToSuperview()
             make.bottom.equalTo(super.safeAreaLayoutGuide)
+        }
+
+        addSubview(loadingContainerView)
+        loadingContainerView.snp.makeConstraints { make in
+            make.top.equalTo(toolBar.snp.bottom)
+            make.horizontalEdges.bottom.equalToSuperview()
         }
         
         contentView.snp.makeConstraints { make in

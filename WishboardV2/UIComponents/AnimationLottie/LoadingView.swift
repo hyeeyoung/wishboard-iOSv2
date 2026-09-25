@@ -16,8 +16,8 @@ import Core
 ///
 /// 로띠(가로 40 * 세로 15)와 'LOADING' 텍스트를 세로로 쌓은 컨테이너를
 /// 노출 대상 영역의 정중앙에 배치합니다.
-/// 보통은 화면 전체를 덮지만, 캘린더처럼 일부 영역만 가려야 하는 화면에서는
-/// 해당 영역의 뷰를 `show(in:)`에 넘겨 그 안에서만 노출할 수 있습니다.
+/// 앱 전체에서 이 타입 하나만 사용하고, 각 화면은 '어디를 덮을지'만 정합니다.
+/// (`LoadingPresentable` 참고)
 final class LoadingView: UIView {
 
     /// 로띠뷰 고정 크기
@@ -26,7 +26,10 @@ final class LoadingView: UIView {
     private static let spacing: CGFloat = 16
 
     private let animationView = LottieAnimationView(name: "lottie_three_dots_loading").then {
+        // 로딩뷰가 떠 있는 동안에는 끊기지 않고 계속 반복 재생되어야 합니다.
         $0.loopMode = .loop
+        // 앱이 백그라운드에 다녀와도 멈춘 채로 남지 않도록 복원합니다.
+        $0.backgroundBehavior = .pauseAndRestore
         $0.contentMode = .scaleAspectFit
         $0.isUserInteractionEnabled = false
     }
@@ -76,9 +79,20 @@ final class LoadingView: UIView {
         }
     }
 
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        // 화면에 다시 붙었는데 멈춰 있다면, 노출되어 있는 한 계속 돌도록 이어서 재생합니다.
+        guard window != nil, !animationView.isAnimationPlaying else { return }
+        animationView.play()
+    }
+
     // MARK: - Animation
 
+    /// 항상 첫 프레임부터 새로 재생합니다.
+    /// (직전 노출에서 돌던 상태가 그대로 보이는 일이 없도록)
     private func startAnimating() {
+        animationView.stop()
+        animationView.currentProgress = 0
         animationView.play()
     }
 
@@ -98,8 +112,7 @@ final class LoadingView: UIView {
 
 extension LoadingView {
 
-    /// 지정한 뷰를 덮어 로딩뷰를 노출합니다.
-    /// - Parameter container: 로딩뷰가 덮을 영역. 화면 전체라면 `viewController.view`를 넘깁니다.
+    /// 지정한 뷰를 덮어 로딩뷰를 노출합니다. 노출될 때마다 로띠는 첫 프레임부터 새로 재생됩니다.
     static func show(in container: UIView?) {
         guard let container = container else { return }
 
@@ -141,6 +154,39 @@ extension LoadingView {
         } else {
             container.currentLoadingView?.dismiss()
         }
+    }
+}
+
+// MARK: - 화면별 노출 영역
+
+/// 로딩뷰를 노출할 영역을 가진 화면 뷰.
+///
+/// 로딩뷰는 `LoadingView` 하나만 쓰고, 각 화면은 '어디를 덮을지'만 정합니다.
+/// 상단바는 가리지 않아야 하므로, 보통 상단바 아래쪽을 컨테이너로 잡습니다.
+protocol LoadingPresentable: UIView {
+    /// 로딩뷰가 덮을 영역.
+    /// 로딩 중이 아닐 때 아래쪽 터치를 가로채지 않도록 `isUserInteractionEnabled = false`로 만들어 둡니다.
+    var loadingContainerView: UIView { get }
+}
+
+extension LoadingPresentable {
+
+    /// 조회 시작 시 호출합니다.
+    func showLoading() {
+        loadingContainerView.isUserInteractionEnabled = true
+        LoadingView.show(in: loadingContainerView)
+    }
+
+    /// 조회 종료 시 호출합니다. 아직 끝나지 않은 조회가 있다면 그대로 둡니다.
+    func hideLoading() {
+        LoadingView.hide(in: loadingContainerView)
+        loadingContainerView.isUserInteractionEnabled = !loadingContainerView.subviews.isEmpty
+    }
+
+    /// 로딩 상태를 그대로 반영합니다. `@Published` 로딩 상태를 바인딩할 때 사용합니다.
+    func setLoading(_ isLoading: Bool) {
+        loadingContainerView.isUserInteractionEnabled = isLoading
+        LoadingView.setVisible(isLoading, in: loadingContainerView)
     }
 }
 

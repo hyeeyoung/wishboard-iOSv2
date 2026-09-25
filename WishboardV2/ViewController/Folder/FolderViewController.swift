@@ -81,7 +81,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
             .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] isLoading in
-                LoadingView.setVisible(isLoading, in: self?.view)
+                self?.folderView.setLoading(isLoading)
             }
             .store(in: &cancellables)
     }

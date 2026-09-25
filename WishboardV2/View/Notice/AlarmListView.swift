@@ -11,8 +11,12 @@ import SnapKit
 import Then
 import Core
 
-final class AlarmListView: UIView {
+final class AlarmListView: UIView, LoadingPresentable {
     let toolBar = AlarmToolBar()
+    /// 로딩뷰가 덮을 영역. 상단바는 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
+    }
     let tableView = UITableView()
     public let refreshControl = UIRefreshControl()
     public var refreshAction: (() -> Void)?
@@ -41,6 +45,7 @@ final class AlarmListView: UIView {
         addSubview(toolBar)
         addSubview(tableView)
         addSubview(emptyLabel)
+        addSubview(loadingContainerView)
     }
     
     private func setupConstraints() {
@@ -53,8 +58,13 @@ final class AlarmListView: UIView {
         emptyLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+        loadingContainerView.snp.makeConstraints { make in
+            make.top.equalTo(toolBar.snp.bottom)
+            make.horizontalEdges.bottom.equalToSuperview()
+        }
     }
     
+
     private func setupRefreshControl() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         tableView.refreshControl = refreshControl

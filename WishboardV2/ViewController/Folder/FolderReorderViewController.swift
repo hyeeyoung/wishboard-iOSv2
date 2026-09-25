@@ -71,7 +71,7 @@ final class FolderReorderViewController: UIViewController {
             .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [weak self] isLoading in
-                LoadingView.setVisible(isLoading, in: self?.view)
+                self?.reorderView.setLoading(isLoading)
             }
             .store(in: &cancellables)
     }
