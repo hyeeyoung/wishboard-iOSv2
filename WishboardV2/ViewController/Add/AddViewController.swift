@@ -493,7 +493,7 @@ final class AddViewController: UIViewController {
     }
 
     /// 파싱 결과를 아이템 등록/수정 화면에 반영합니다.
-    /// 제목과 가격은 응답값으로 대체하고, 이미지는 기존 선택에 덧붙입니다.
+    /// 불러온 정보로 화면을 채우는 동작이므로, 이미지를 포함해 기존 입력값은 모두 응답값으로 대체합니다.
     private func applyParsedItem(_ parsedItem: ItemParseResponse, link: String) {
         // 파싱에 사용한 링크도 함께 등록해, 저장 시 같이 전송되도록 합니다.
         viewModel.selectedLink = link
@@ -512,10 +512,9 @@ final class AddViewController: UIViewController {
         guard let itemImageUrl = parsedItem.itemImageUrl, !itemImageUrl.isEmpty else { return }
         fetchImage(from: itemImageUrl) { [weak self] image in
             guard let self = self, let image = image else { return }
-            // 이미 고른 이미지는 그대로 두고 뒤에 덧붙입니다.
-            guard self.viewModel.selectedImages.count < self.MAX_IMAGE_COUNT else { return }
-
-            self.viewModel.selectedImages.append(image)
+            // 기존에 고른 이미지는 모두 비우고 응답 이미지로 대체합니다.
+            // 배열의 첫 번째가 되므로 '대표 사진'도 이 이미지에 붙습니다.
+            self.viewModel.selectedImages = [image]
             self.viewModel.imageChanged = true
         }
     }
