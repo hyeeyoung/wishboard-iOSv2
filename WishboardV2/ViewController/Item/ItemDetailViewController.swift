@@ -89,8 +89,17 @@ final class ItemDetailViewController: UIViewController {
             do {
                 try await self.viewModel.updateMemo(memo)
             } catch {
-                // 실패해도 화면은 그대로 둡니다. 다음 조회에서 서버 값으로 맞춰집니다.
+                // 낙관적 업데이트이므로 실패해도 화면은 그대로 두고 사용자에게 알리지 않습니다.
+                // 원인 파악용 로그만 남깁니다.
+                print("❌ 메모 저장 실패: \(error)")
+                return
             }
+
+            // 저장이 끝나면 서버의 version이 올라갑니다.
+            // 들고 있는 값이 옛 version이면 이후 아이템 수정 화면에서 충돌(409)이 나므로,
+            // 로딩뷰 없이 조용히 최신 상태를 받아 둡니다. 화면은 이미 갱신되어 있어 깜빡이지 않습니다.
+            try? await self.viewModel.fetchItemDetail()
+            self.editAction?(self.viewModel.item)
         }
     }
 

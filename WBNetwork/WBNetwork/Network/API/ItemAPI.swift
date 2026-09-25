@@ -275,7 +275,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
         if let itemURL = param.itemURL, !itemURL.isEmpty {
             requestBody["itemUrl"] = itemURL
         }
-        if let itemMemo = param.itemMemo, !itemMemo.isEmpty {
+        // 빈 문자열도 그대로 보내야 기존 메모를 지울 수 있습니다.
+        if let itemMemo = param.itemMemo {
             requestBody["itemMemo"] = itemMemo
         }
         if let notificationType = param.itemNotificationType, !notificationType.isEmpty {

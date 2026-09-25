@@ -68,7 +68,10 @@ final class ItemDetailViewModel {
     /// 메모만 수정
     /// 아이템 수정 API는 전체 필드를 받으므로, 메모를 뺀 나머지는 현재 값을 그대로 다시 보냅니다.
     func updateMemo(_ memo: String) async throws {
-        guard let itemId = self.itemId, let item = self.item else { return }
+        guard let itemId = self.itemId, let item = self.item else {
+            print("❌ 메모 저장 불가 - itemId: \(String(describing: self.itemId)), item 로드 여부: \(self.item != nil)")
+            return
+        }
 
         let originPrice = FormatManager.shared.priceToStr(price: item.itemPrice ?? "0")
 
