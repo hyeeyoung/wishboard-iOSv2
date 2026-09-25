@@ -68,8 +68,17 @@ final class AlarmListViewController: UIViewController, ItemDetailDelegate {
             .store(in: &cancellables)
         
         noticeView.refreshAction = { [weak self] in
-            self?.viewModel.fetchItems()
+            self?.viewModel.fetchItems(isRefreshing: true)
         }
+
+        // 알림 리스트 조회 동안 로딩뷰 노출
+        viewModel.$isLoading
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isLoading in
+                LoadingView.setVisible(isLoading, in: self?.view)
+            }
+            .store(in: &cancellables)
     }
 }
 

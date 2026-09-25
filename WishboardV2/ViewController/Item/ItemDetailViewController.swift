@@ -66,6 +66,10 @@ final class ItemDetailViewController: UIViewController {
     
     private func fetchData() {
         Task {
+            // 아이템 상세 조회 동안 로딩뷰 노출
+            LoadingView.show(in: self.view)
+            defer { LoadingView.hide(in: self.view) }
+
             do {
                 try await self.viewModel.fetchItemDetail()
             } catch {

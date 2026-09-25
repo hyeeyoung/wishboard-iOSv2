@@ -14,12 +14,17 @@ final class FolderReorderViewModel {
     @Published var folders: [FolderListResponse] = []
     @Published var isSaveEnabled: Bool = false
     @Published var showRestoreButton: Bool = true
+    /// 폴더 리스트 조회 중인지 여부
+    @Published var isLoading: Bool = false
 
     private var originalOrder: [Int] = []
     
     /// 폴더 가져오기 (초기 데이터)
     func fetchFolders() {
         Task {
+            isLoading = true
+            defer { isLoading = false }
+
             do {
                 let usecase = GetFolderListUseCase()
                 let response = try await usecase.execute()

@@ -19,6 +19,9 @@ final class FolderViewModel {
     // Paging
     @Published var isLoading: Bool = false
     @Published var isRefreshing: Bool = false
+    /// 첫 조회(또는 목록 갱신) 중인지 여부.
+    /// 페이지 추가 로드나 당겨서 새로고침에는 로딩뷰를 띄우지 않습니다.
+    @Published var isInitialLoading: Bool = false
     @Published var hasMore: Bool = true
     private var page: Int = 0          // 서버의 data.number (0-based)
     private let pageSize: Int = 10     // 서버의 data.size와 일치
@@ -33,6 +36,7 @@ final class FolderViewModel {
     func fetchFolders(reset: Bool = false) {
         guard !isLoading, hasMore || reset else { return }
         isLoading = true
+        isInitialLoading = reset && !isRefreshing
 
         if reset {
             page = 0
@@ -58,10 +62,12 @@ final class FolderViewModel {
 
                 isLoading = false
                 isRefreshing = false
+                isInitialLoading = false
             } catch {
                 if reset { folders = [] }
                 isLoading = false
                 isRefreshing = false
+                isInitialLoading = false
                 // 필요하면 에러 상태 @Published 추가해서 바인딩
             }
         }
@@ -69,6 +75,8 @@ final class FolderViewModel {
 
     /// 풀-투-리프레시에서 호출
     func refresh() {
+        // 이미 조회 중이라면 새로고침 상태만 남아 이후 조회에서 로딩뷰가 빠질 수 있어, 그대로 흘려보냅니다.
+        guard !isLoading else { return }
         isRefreshing = true
         fetchFolders(reset: true)
     }

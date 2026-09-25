@@ -38,16 +38,15 @@ final class ShareViewModel {
     }
     
     /// 폴더 가져오기
-    func fetchFolders() {
-        _Concurrency.Task {
-            do {
-                let usecase = GetFolderListUseCase()
-                let response = try await usecase.execute(order: .recent_item)
-                
-                folders = response
-            } catch {
-                throw error
-            }
+    /// 링크 공유 진입 시 아이템 파싱 조회와 함께 로딩뷰를 내릴 시점을 잡아야 해서, 완료를 기다릴 수 있게 합니다.
+    func fetchFolders() async throws {
+        do {
+            let usecase = GetFolderListUseCase()
+            let response = try await usecase.execute(order: .recent_item)
+            
+            folders = response
+        } catch {
+            throw error
         }
     }
     
@@ -58,7 +57,7 @@ final class ShareViewModel {
                 let usecase = AddFolderNameUseCase()
                 let _ = try await usecase.execute(folderName: name)
                 
-                self.fetchFolders()
+                try await self.fetchFolders()
             } catch {
                 throw error
             }

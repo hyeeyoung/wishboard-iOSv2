@@ -65,6 +65,15 @@ final class FolderReorderViewController: UIViewController {
                 self?.reorderView.recentSortButton.isHidden = !show
             }
             .store(in: &cancellables)
+
+        // 폴더 리스트 조회 동안 로딩뷰 노출
+        viewModel.$isLoading
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isLoading in
+                LoadingView.setVisible(isLoading, in: self?.view)
+            }
+            .store(in: &cancellables)
     }
 
     private func addActions() {
