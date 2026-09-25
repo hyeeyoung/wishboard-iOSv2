@@ -64,6 +64,31 @@ final class ItemDetailViewModel {
         }
     }
     
+    /// 메모만 수정
+    /// 아이템 수정 API는 전체 필드를 받으므로, 메모를 뺀 나머지는 현재 값을 그대로 다시 보냅니다.
+    func updateMemo(_ memo: String) async throws {
+        guard let itemId = self.itemId, let item = self.item else { return }
+
+        let originPrice = FormatManager.shared.priceToStr(price: item.itemPrice ?? "0")
+
+        let request = RequestItemDTO(
+            folderId: item.folderId,
+            photos: nil,
+            itemName: item.itemName ?? "",
+            itemPrice: Int(originPrice) ?? 0,
+            itemURL: item.itemUrl,
+            itemMemo: memo,
+            itemNotificationType: item.itemNotificationType,
+            itemNotificationDate: item.itemNotificationDate?.replacingOccurrences(of: "T", with: " "),
+            version: item.version,
+            // 이미지는 건드리지 않습니다.
+            imageChanged: false
+        )
+
+        let usecase = ModifyItemUseCase()
+        _ = try await usecase.execute(idx: itemId, item: request)
+    }
+
     // 아이템 삭제
     func deleteItem() async throws {
         do {

@@ -146,6 +146,15 @@ final class ItemDetailView: UIView, LoadingPresentable {
     public var collectButtonAction: ((Bool) -> Void)?
     public var linkButtonAction: ((String) -> Void)?
 
+    // 메모 간단 편집
+    /// 메모 저장 요청. 낙관적 반영과 API 호출은 컨트롤러가 맡습니다.
+    public var memoSaveAction: ((String) -> Void)?
+    /// 메모 섹션은 아이템을 구성할 때마다 새로 만들어지므로 약한 참조로 들고 있습니다.
+    private weak var memoTextView: UITextView?
+    private weak var memoEditButton: EditPillButton?
+    private var memoTextViewHeightConstraint: Constraint?
+    private var isMemoEditing: Bool = false
+
     // MARK: - Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -153,10 +162,15 @@ final class ItemDetailView: UIView, LoadingPresentable {
         setupConstraints()
         addTargets()
         setDelegates()
+        setupMemoKeyboardObservers()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Setup
@@ -524,16 +538,28 @@ final class ItemDetailView: UIView, LoadingPresentable {
             $0.textContainerInset = .zero
             $0.text = memo
         }
+        memoTextView.delegate = self
+
+        let editButton = EditPillButton().then {
+            $0.configure(title: Button.edit, style: .edit)
+        }
+        editButton.addTarget(self, action: #selector(memoEditButtonTapped), for: .touchUpInside)
+
+        // 메모 섹션은 다시 그릴 때마다 새로 만들어지므로, 편집 상태도 함께 초기화합니다.
+        self.memoTextView = memoTextView
+        self.memoEditButton = editButton
+        self.isMemoEditing = false
 
         let estimatedSize = memoTextView.sizeThatFits(
             CGSize(width: UIScreen.main.bounds.width - 32, height: .greatestFiniteMagnitude)
         )
         memoTextView.snp.makeConstraints { make in
-            make.height.equalTo(estimatedSize.height).priority(.high)
+            self.memoTextViewHeightConstraint = make.height.equalTo(estimatedSize.height).priority(.high).constraint
         }
 
         view.addSubview(separatorView)
         view.addSubview(memoTitleLabel)
+        view.addSubview(editButton)
         view.addSubview(memoTextView)
 
         separatorView.snp.makeConstraints { make in
@@ -545,12 +571,92 @@ final class ItemDetailView: UIView, LoadingPresentable {
             make.leading.top.equalToSuperview().inset(16)
         }
 
+        editButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-16)
+            make.centerY.equalTo(memoTitleLabel)
+        }
+
         memoTextView.snp.makeConstraints { make in
             make.top.equalTo(memoTitleLabel.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalToSuperview().inset(12)
         }
 
         return view
+    }
+
+    // MARK: - 메모 간단 편집
+
+    @objc private func memoEditButtonTapped() {
+        guard let memoTextView = memoTextView, let editButton = memoEditButton else { return }
+
+        if isMemoEditing {
+            isMemoEditing = false
+            // 편집을 끝내면 링크 감지를 다시 켭니다.
+            memoTextView.isEditable = false
+            memoTextView.dataDetectorTypes = [.all]
+            memoTextView.resignFirstResponder()
+            editButton.configure(title: Button.edit, style: .edit)
+
+            memoSaveAction?(memoTextView.text ?? "")
+        } else {
+            isMemoEditing = true
+            memoTextView.isEditable = true
+            memoTextView.becomeFirstResponder()
+            editButton.configure(title: Button.save, style: .save)
+        }
+    }
+
+    /// 입력에 따라 메모 영역 높이를 맞춥니다.
+    private func updateMemoTextViewHeight() {
+        guard let memoTextView = memoTextView else { return }
+
+        let size = memoTextView.sizeThatFits(
+            CGSize(width: memoTextView.bounds.width, height: .greatestFiniteMagnitude)
+        )
+        memoTextViewHeightConstraint?.update(offset: size.height)
+    }
+}
+
+// MARK: - 메모 편집 (텍스트 입력 / 키보드 대응)
+extension ItemDetailView: UITextViewDelegate {
+
+    func textViewDidChange(_ textView: UITextView) {
+        guard textView === memoTextView else { return }
+        updateMemoTextViewHeight()
+    }
+
+    func setupMemoKeyboardObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(memoKeyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(memoKeyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+
+    @objc private func memoKeyboardWillShow(_ notification: Foundation.Notification) {
+        guard isMemoEditing,
+              let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+        else { return }
+
+        scrollView.contentInset.bottom = keyboardFrame.height
+        scrollView.verticalScrollIndicatorInsets.bottom = keyboardFrame.height
+
+        // 편집 중인 메모가 키보드에 가려지지 않도록 위치를 맞춥니다.
+        guard let memoTextView = memoTextView else { return }
+        let memoFrame = memoTextView.convert(memoTextView.bounds, to: scrollView)
+        scrollView.scrollRectToVisible(memoFrame, animated: true)
+    }
+
+    @objc private func memoKeyboardWillHide(_ notification: Foundation.Notification) {
+        scrollView.contentInset.bottom = 0
+        scrollView.verticalScrollIndicatorInsets.bottom = 0
     }
 }
 

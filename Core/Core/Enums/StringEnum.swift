@@ -143,6 +143,7 @@ public enum Button {
     public static let setNoti = "상품 알림 설정하기"
     public static let parseItem = "아이템 정보 불러오기"
     public static let registerLinkOnly = "링크만 등록하기"
+    public static let edit = "편집"
     
     public static let addFolder = "+ 새 폴더"
 }
