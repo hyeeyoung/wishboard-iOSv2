@@ -14,14 +14,13 @@ import Core
 
 /// 조회 API 호출 동안 노출되는 공통 로딩뷰.
 ///
-/// 로띠(가로 40 * 세로 15)와 'LOADING' 텍스트를 세로로 쌓은 컨테이너를
+/// 로띠와 'LOADING' 텍스트를 세로로 쌓은 컨테이너를
 /// 노출 대상 영역의 정중앙에 배치합니다.
+/// 로띠는 원본 크기 그대로 그리고, 텍스트와의 간격만 맞춥니다.
 /// 앱 전체에서 이 타입 하나만 사용하고, 각 화면은 '어디를 덮을지'만 정합니다.
 /// (`LoadingPresentable` 참고)
 final class LoadingView: UIView {
 
-    /// 로띠뷰 고정 크기
-    private static let animationSize = CGSize(width: 40, height: 15)
     /// 로띠뷰와 'LOADING' 텍스트 사이 간격
     private static let spacing: CGFloat = 16
 
@@ -69,11 +68,7 @@ final class LoadingView: UIView {
 
         addSubview(contentStackView)
 
-        animationView.snp.makeConstraints { make in
-            make.width.equalTo(LoadingView.animationSize.width)
-            make.height.equalTo(LoadingView.animationSize.height)
-        }
-
+        // 로띠는 별도 크기 제약 없이 원본 크기(intrinsicContentSize)대로 그립니다.
         contentStackView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
