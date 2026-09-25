@@ -79,24 +79,18 @@ final class ItemDetailViewController: UIViewController {
     }
     
     /// 메모만 수정합니다.
-    /// 응답을 기다리지 않고 화면에 먼저 반영한 뒤, 상세를 다시 불러옵니다.
+    /// 저장과 동시에 화면에 반영하고, API 응답은 기다리지 않습니다. (낙관적 업데이트)
     private func saveMemo(_ memo: String) {
-        // 낙관적 업데이트 - 저장 버튼을 누른 즉시 반영합니다.
         viewModel.item?.itemMemo = memo
+        // 목록 화면의 아이템 정보도 갱신되도록 전달합니다.
+        editAction?(viewModel.item)
 
         Task {
-            self.detailView.showLoading()
-            defer { self.detailView.hideLoading() }
-
             do {
                 try await self.viewModel.updateMemo(memo)
             } catch {
-                // 실패해도 화면을 되돌리지 않고, 아래 재조회 결과로 맞춥니다.
+                // 실패해도 화면은 그대로 둡니다. 다음 조회에서 서버 값으로 맞춰집니다.
             }
-
-            try? await self.viewModel.fetchItemDetail()
-            // 목록 화면의 아이템 정보도 갱신되도록 전달합니다.
-            self.editAction?(self.viewModel.item)
         }
     }
 
