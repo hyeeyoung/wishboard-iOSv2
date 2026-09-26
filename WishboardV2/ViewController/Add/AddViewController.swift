@@ -482,14 +482,58 @@ final class AddViewController: UIViewController {
                 // 응답을 기다리는 동안 시트를 닫았다면 반영하지 않습니다.
                 guard !_Concurrency.Task.isCancelled else { return }
 
-                self.applyParsedItem(parsedItem, link: link)
-                self.hideLinkBottomSheet()
+                // 덮어쓸 입력값이 없다면 확인 없이 바로 채웁니다.
+                guard self.hasItemInputToOverwrite else {
+                    self.applyParsedItem(parsedItem, link: link)
+                    self.hideLinkBottomSheet()
+                    return
+                }
+                self.presentOverwriteAlert(for: parsedItem, link: link)
             } catch {
                 guard !_Concurrency.Task.isCancelled else { return }
-                // 실패 시 시트를 유지한 채 입력 필드 아래에 안내만 노출합니다.
-                self.shoppingLinkBottomSheet.displayParseError()
+                // 파싱에 실패해도 입력한 링크는 살려 둡니다.
+                // 빨간 에러 메시지 없이 토스트로만 알리고 시트를 닫습니다.
+                self.viewModel.selectedLink = link
+                self.hideLinkBottomSheet()
+                SnackBar.shared.show(type: .failShoppingLink)
             }
         }
+    }
+
+    /// 파싱 결과가 덮어쓰게 될 입력값(이미지 / 제목 / 가격)이 이미 있는지
+    private var hasItemInputToOverwrite: Bool {
+        let hasName = !viewModel.itemName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        // 가격은 '₩'나 콤마가 섞여 있을 수 있어 숫자만 남겨 확인합니다.
+        let hasPrice = !FormatManager.shared.priceToStr(price: viewModel.itemPrice).isEmpty
+
+        return !viewModel.selectedImages.isEmpty || hasName || hasPrice
+    }
+
+    /// 불러온 정보로 기존 입력값을 덮어쓸지 확인받습니다.
+    /// '취소'를 누르면 링크만 등록된 상태로 둡니다.
+    private func presentOverwriteAlert(for parsedItem: ItemParseResponse, link: String) {
+        let alert = AlertViewController(
+            alertType: .custom(
+                title: Title.overwriteItemInfo,
+                message: Message.overwriteItemInfo,
+                buttonTitles: [Title.cancel, Button.load],
+                buttonColors: [.gray_600, .pink_700]
+            )
+        )
+        alert.buttonHandlers = [
+            { [weak self] _ in
+                // 취소 - 링크만 등록합니다.
+                self?.viewModel.selectedLink = link
+                self?.hideLinkBottomSheet()
+            },
+            { [weak self] _ in
+                self?.applyParsedItem(parsedItem, link: link)
+                self?.hideLinkBottomSheet()
+            }
+        ]
+        alert.modalTransitionStyle = .crossDissolve
+        alert.modalPresentationStyle = .overFullScreen
+        present(alert, animated: true)
     }
 
     /// 파싱 결과를 아이템 등록/수정 화면에 반영합니다.
