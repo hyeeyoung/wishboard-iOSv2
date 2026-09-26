@@ -74,6 +74,7 @@ public enum Message {
     public static let itemNotification = "30분 전에 일정을 알려드려요. 시간은 30분 단위로 설정 가능해요!"
     public static let shoppingLink = "복사한 링크로 아이템을 불러올 수 있어요!"
     public static let overwriteItemInfo = "불러온 아이템 정보로\n기존에 입력된 내용이 변경될 수 있어요.\n그래도 불러올까요?"
+    public static let clipboardShoppingLink = "복사한 링크에서 아이템 정보를 불러올까요?"
     public static let onboarding = "흩어져 있는 위시리스트를 한 곳에.\n위시보드에 모아보세요!️"
 }
 

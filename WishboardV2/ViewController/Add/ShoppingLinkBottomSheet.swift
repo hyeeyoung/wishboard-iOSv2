@@ -209,7 +209,7 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         guard let text = textField.text, !text.isEmpty else { return nil }
 
         // 유효하지 않은 링크 예외처리
-        guard let url = URL(string: text), ["http", "https"].contains(url.scheme?.lowercased()) else {
+        guard text.isValidShoppingLink() else {
             displayError(ErrorMessage.shoppingLink)
             return nil
         }

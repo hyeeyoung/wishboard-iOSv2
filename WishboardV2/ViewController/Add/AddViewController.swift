@@ -44,6 +44,10 @@ final class AddViewController: UIViewController {
     private let folderSelectBottomSheet = FolderSelectBottomSheet()
     private let addFolderBottomSheet = FolderBottomSheet()
     private let shoppingLinkBottomSheet = ShoppingLinkBottomSheet()
+    /// 클립보드에 복사해 둔 링크로 아이템 정보를 불러올지 묻는 토스트
+    private let clipboardLinkToast = ClipboardLinkToast()
+    /// 화면당 한 번만 묻습니다.
+    private var hasCheckedClipboard = false
     /// 진행 중인 아이템 파싱 요청. 시트를 닫으면 결과를 반영하지 않습니다.
     private var parsingTask: _Concurrency.Task<Void, Never>?
     private let selectDateBottomSheet = SelectDateBottomSheet()
@@ -163,6 +167,27 @@ final class AddViewController: UIViewController {
             if type == .modify {
                 setModifyItemData()
             }
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        suggestClipboardLinkIfNeeded()
+    }
+
+    /// 화면 진입 시 클립보드에 복사된 쇼핑몰 링크가 있으면 불러오기를 제안합니다.
+    private func suggestClipboardLinkIfNeeded() {
+        guard !hasCheckedClipboard else { return }
+        hasCheckedClipboard = true
+
+        // 클립보드에 문자열이 없으면 읽지 않습니다. (읽는 순간 OS 권한 알럿이 뜹니다)
+        guard UIPasteboard.general.hasStrings,
+              let copiedText = UIPasteboard.general.string?.trimmingCharacters(in: .whitespacesAndNewlines),
+              copiedText.isValidShoppingLink()
+        else { return }
+
+        clipboardLinkToast.show(in: view) { [weak self] in
+            self?.parseItem(with: copiedText, fromBottomSheet: false)
         }
     }
     
@@ -381,7 +406,7 @@ final class AddViewController: UIViewController {
             self?.viewModel.selectedLink = link
         }
         shoppingLinkBottomSheet.onParseButtonTap = { [weak self] link in
-            self?.parseItem(with: link)
+            self?.parseItem(with: link, fromBottomSheet: true)
         }
         // Select Date Binding
         selectDateBottomSheet.onClose = { [weak self] in
@@ -468,14 +493,17 @@ final class AddViewController: UIViewController {
     }
     
     /// '아이템 정보 불러오기' - 쇼핑몰 링크를 파싱해 상품 정보를 채웁니다.
-    private func parseItem(with link: String) {
+    /// - Parameter fromBottomSheet: 쇼핑몰 링크 시트에서 시작했는지 여부.
+    ///   클립보드 토스트에서 시작한 경우에는 시트가 떠 있지 않아 화면 자체에 로딩을 띄웁니다.
+    private func parseItem(with link: String, fromBottomSheet: Bool) {
         parsingTask?.cancel()
         parsingTask = _Concurrency.Task { [weak self] in
             guard let self = self else { return }
 
-            // 조회 동안 바텀시트 위에 로딩뷰 노출
-            self.shoppingLinkBottomSheet.showLoading()
-            defer { self.shoppingLinkBottomSheet.hideLoading() }
+            // 조회 동안 로딩뷰 노출
+            let loadingHost: any LoadingPresentable = fromBottomSheet ? self.shoppingLinkBottomSheet : self.addView
+            loadingHost.showLoading()
+            defer { loadingHost.hideLoading() }
 
             do {
                 let parsedItem = try await self.viewModel.parseItem(link: link)
