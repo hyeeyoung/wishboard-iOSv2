@@ -13,6 +13,12 @@ import Combine
 import Core
 
 final class ShareView: UIView, LoadingPresentable {
+
+    /// 시트 위쪽 모서리 곡률. 로딩뷰도 같은 값으로 잘라 내야 모서리가 각지지 않습니다.
+    private static let sheetCornerRadius: CGFloat = 20
+    /// 시트에서 둥글게 처리하는 모서리 (위쪽 좌/우)
+    private static let sheetMaskedCorners: CACornerMask = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+
     //MARK: - Views
     let itemImage = UIImageView().then{
         $0.backgroundColor = .black_10
@@ -23,12 +29,19 @@ final class ShareView: UIView, LoadingPresentable {
     }
     let backgroundView = UIView().then{
         $0.backgroundColor = .white
-        $0.layer.cornerRadius = 20
-        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        $0.layer.cornerRadius = ShareView.sheetCornerRadius
+        $0.layer.maskedCorners = ShareView.sheetMaskedCorners
     }
     /// 로딩뷰가 덮을 영역. 닫기(X) 버튼은 위로 올려 계속 누를 수 있게 둡니다.
+    ///
+    /// 시트 전체를 덮기 때문에 `backgroundView`의 둥근 위쪽 모서리까지 가립니다.
+    /// `backgroundView`에는 `clipsToBounds`가 없어 자식 뷰가 모서리 밖으로 그려지므로,
+    /// 이 영역 자체를 같은 곡률로 잘라 로딩 중에도 모서리가 유지되도록 합니다.
     let loadingContainerView = UIView().then {
         $0.isUserInteractionEnabled = false
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = ShareView.sheetCornerRadius
+        $0.layer.maskedCorners = ShareView.sheetMaskedCorners
     }
     lazy var quitButton = UIButton().then{
         $0.setImage(Image.quit, for: .normal)
