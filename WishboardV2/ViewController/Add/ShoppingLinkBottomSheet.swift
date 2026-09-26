@@ -120,9 +120,8 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
 
         // 두 버튼은 텍스트 스타일이 같고 배경/테두리만 다릅니다.
         [parseButton, linkOnlyButton].forEach { button in
-            [UIControl.State.normal, .disabled].forEach {
-                button.setTitleColor(.gray_700, for: $0)
-            }
+            button.setTitleColor(.gray_700, for: .normal)
+            button.setTitleColor(.gray_300, for: .disabled)
             button.titleLabel?.font = TypoStyle.SuitH3.font
         }
 
@@ -212,7 +211,6 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         // 유효하지 않은 링크 예외처리
         guard let url = URL(string: text), ["http", "https"].contains(url.scheme?.lowercased()) else {
             displayError(ErrorMessage.shoppingLink)
-            updateActionButtonState(isEnabled: false)
             return nil
         }
         return text
@@ -225,8 +223,12 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
     private func updateActionButtonState(isEnabled: Bool) {
         parseButton.isEnabled = isEnabled
         linkOnlyButton.isEnabled = isEnabled
-        // 비활성 상태에서도 두 버튼의 배경/테두리는 그대로 두고 흐리게만 표시합니다.
-        [parseButton, linkOnlyButton].forEach { $0.alpha = isEnabled ? 1.0 : 0.4 }
+
+        // 비활성 상태에서는 두 버튼 모두 gray_100 배경에 테두리 없이 노출됩니다.
+        // (텍스트 컬러는 .disabled 상태로 미리 지정해 두었습니다)
+        parseButton.backgroundColor = isEnabled ? .white_10 : .gray_100
+        parseButton.layer.borderWidth = isEnabled ? 1 : 0
+        linkOnlyButton.backgroundColor = isEnabled ? .green_500 : .gray_100
     }
 
     /// 입력 필드 하단에 에러 메시지를 노출합니다.
@@ -235,11 +237,6 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         errorLabel.isHidden = false
     }
 
-    /// 아이템 정보 불러오기 실패 메시지를 노출합니다.
-    func displayParseError() {
-        displayError(ErrorMessage.parseItem)
-    }
-    
     // MARK: - Public Methods
     
     func initView() {
@@ -268,7 +265,8 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         titleLabel.text = Title.shoppingLinkBottomSheet
         textField.text = prevLink
         errorLabel.isHidden = true
-        self.updateActionButtonState(isEnabled: (prevLink != nil))
+        // 입력 필드가 비어 있으면 두 버튼 모두 비활성화입니다.
+        self.updateActionButtonState(isEnabled: (prevLink?.isEmpty == false))
     }
 }
 

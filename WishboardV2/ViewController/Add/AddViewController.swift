@@ -482,14 +482,44 @@ final class AddViewController: UIViewController {
                 // 응답을 기다리는 동안 시트를 닫았다면 반영하지 않습니다.
                 guard !_Concurrency.Task.isCancelled else { return }
 
-                self.applyParsedItem(parsedItem, link: link)
-                self.hideLinkBottomSheet()
+                // 기존 입력값을 덮어쓰게 되므로 반영 전에 한 번 확인받습니다.
+                self.presentOverwriteAlert(for: parsedItem, link: link)
             } catch {
                 guard !_Concurrency.Task.isCancelled else { return }
-                // 실패 시 시트를 유지한 채 입력 필드 아래에 안내만 노출합니다.
-                self.shoppingLinkBottomSheet.displayParseError()
+                // 파싱에 실패해도 입력한 링크는 살려 둡니다.
+                // 빨간 에러 메시지 없이 토스트로만 알리고 시트를 닫습니다.
+                self.viewModel.selectedLink = link
+                self.hideLinkBottomSheet()
+                SnackBar.shared.show(type: .failShoppingLink)
             }
         }
+    }
+
+    /// 불러온 정보로 기존 입력값을 덮어쓸지 확인받습니다.
+    /// '취소'를 누르면 링크만 등록된 상태로 둡니다.
+    private func presentOverwriteAlert(for parsedItem: ItemParseResponse, link: String) {
+        let alert = AlertViewController(
+            alertType: .custom(
+                title: Title.overwriteItemInfo,
+                message: Message.overwriteItemInfo,
+                buttonTitles: [Title.cancel, Button.load],
+                buttonColors: [.gray_600, .pink_700]
+            )
+        )
+        alert.buttonHandlers = [
+            { [weak self] _ in
+                // 취소 - 링크만 등록합니다.
+                self?.viewModel.selectedLink = link
+                self?.hideLinkBottomSheet()
+            },
+            { [weak self] _ in
+                self?.applyParsedItem(parsedItem, link: link)
+                self?.hideLinkBottomSheet()
+            }
+        ]
+        alert.modalTransitionStyle = .crossDissolve
+        alert.modalPresentationStyle = .overFullScreen
+        present(alert, animated: true)
     }
 
     /// 파싱 결과를 아이템 등록/수정 화면에 반영합니다.
