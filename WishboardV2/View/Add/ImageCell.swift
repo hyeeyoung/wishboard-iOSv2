@@ -26,6 +26,15 @@ class SelectedImageCell: UICollectionViewCell {
         $0.layer.cornerRadius = SelectedImageCell.cornerRadius
     }
 
+    /// 흰 배경 이미지가 앱의 흰 배경에 묻혀 경계가 보이지 않는 것을 막기 위해
+    /// 이미지 위에 아주 옅게 덮는 레이어.
+    /// URL로 불러오는 이미지뷰들은 `loadImage`에서 같은 색으로 틴트되지만,
+    /// 이 셀은 로컬 `UIImage`를 그대로 쓰기 때문에 뷰로 덮어 맞춰 줍니다.
+    private let imageDimView = UIView().then {
+        $0.backgroundColor = .black_05
+        $0.isUserInteractionEnabled = false
+    }
+
     /// 이미지 배열의 첫 번째 사진에만 노출되는 '대표 사진' 바
     private let thumbnailBar = UIView().then {
         $0.backgroundColor = .black_8
@@ -51,11 +60,13 @@ class SelectedImageCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(imageView)
+        imageView.addSubview(imageDimView)
         contentView.addSubview(thumbnailBar)
         thumbnailBar.addSubview(thumbnailLabel)
         contentView.addSubview(deleteButton)
 
         imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        imageDimView.snp.makeConstraints { $0.edges.equalToSuperview() }
         thumbnailBar.snp.makeConstraints { make in
             make.horizontalEdges.bottom.equalTo(imageView)
             make.height.equalTo(SelectedImageCell.thumbnailBarHeight)

@@ -80,7 +80,8 @@ final class AddViewModel {
             let selectedFolderId = self.selectedFolderId
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
-            let itemMemo = self.memo
+            // 공백만 남은 메모는 내용이 없는 것으로 보고 빈 문자열로 보내 서버의 메모를 지웁니다.
+            let itemMemo = self.memo?.trimmingCharacters(in: .whitespacesAndNewlines)
             let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
             let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
               
@@ -110,7 +111,8 @@ final class AddViewModel {
             let selectedFolderId = self.selectedFolderId
             let itemImages: [Data]? = self.selectedImages.map { $0.resizeImageIfNeeded().jpegData(compressionQuality: 1.0) ?? Data() }
             let itemURL = self.selectedLink
-            let itemMemo = self.memo
+            // 공백만 남은 메모는 내용이 없는 것으로 보고 빈 문자열로 보내 서버의 메모를 지웁니다.
+            let itemMemo = self.memo?.trimmingCharacters(in: .whitespacesAndNewlines)
             let notiType = self.convertNotiTypeToEnum(input: self.selectedAlarmType)
             let notiDate = self.convertKoreanShortDateTimeToFullFormat(self.selectedAlarmDate ?? "")
             let version = self.version ?? 0     // version이 없다면 0으로 보내기

@@ -98,7 +98,8 @@ final class AddViewController: UIViewController {
         if let itemUrl = self.item?.itemUrl, !itemUrl.isEmpty {
             self.viewModel.selectedLink = itemUrl
         }
-        if let itemMemo = self.item?.itemMemo, !itemMemo.isEmpty {
+        if let itemMemo = self.item?.itemMemo,
+           !itemMemo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             self.viewModel.memo = itemMemo
         }
         self.viewModel.selectedAlarmType =  Alarm.from(apiString: self.item?.itemNotificationType ?? "")?.rawValue
