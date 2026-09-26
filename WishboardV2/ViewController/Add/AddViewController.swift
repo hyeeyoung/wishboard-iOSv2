@@ -482,7 +482,12 @@ final class AddViewController: UIViewController {
                 // 응답을 기다리는 동안 시트를 닫았다면 반영하지 않습니다.
                 guard !_Concurrency.Task.isCancelled else { return }
 
-                // 기존 입력값을 덮어쓰게 되므로 반영 전에 한 번 확인받습니다.
+                // 덮어쓸 입력값이 없다면 확인 없이 바로 채웁니다.
+                guard self.hasItemInputToOverwrite else {
+                    self.applyParsedItem(parsedItem, link: link)
+                    self.hideLinkBottomSheet()
+                    return
+                }
                 self.presentOverwriteAlert(for: parsedItem, link: link)
             } catch {
                 guard !_Concurrency.Task.isCancelled else { return }
@@ -493,6 +498,15 @@ final class AddViewController: UIViewController {
                 SnackBar.shared.show(type: .failShoppingLink)
             }
         }
+    }
+
+    /// 파싱 결과가 덮어쓰게 될 입력값(이미지 / 제목 / 가격)이 이미 있는지
+    private var hasItemInputToOverwrite: Bool {
+        let hasName = !viewModel.itemName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        // 가격은 '₩'나 콤마가 섞여 있을 수 있어 숫자만 남겨 확인합니다.
+        let hasPrice = !FormatManager.shared.priceToStr(price: viewModel.itemPrice).isEmpty
+
+        return !viewModel.selectedImages.isEmpty || hasName || hasPrice
     }
 
     /// 불러온 정보로 기존 입력값을 덮어쓸지 확인받습니다.
