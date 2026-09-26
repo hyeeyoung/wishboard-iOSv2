@@ -41,6 +41,7 @@ public extension UIColor{
     public static let black_7 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.7)
     public static let black_8 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.8)
     public static let black_10 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1)
+    public static let white_7 = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 0.7)
     public static let white_10 = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)
     
     // 앱 이용방법 > 목업 이미지 배경

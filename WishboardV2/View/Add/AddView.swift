@@ -21,6 +21,8 @@ final class AddView: UIView, LoadingPresentable {
     let loadingContainerView = UIView().then {
         $0.isUserInteractionEnabled = false
     }
+    /// 저장 중에도 입력한 내용이 비쳐 보이도록 딤드로 덮습니다.
+    var loadingBackground: LoadingView.Background { .dimmed }
     
     let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
