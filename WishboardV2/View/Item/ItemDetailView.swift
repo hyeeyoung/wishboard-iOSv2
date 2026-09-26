@@ -471,7 +471,8 @@ final class ItemDetailView: UIView, LoadingPresentable {
     }
     
     private func configureItemMemo(_ item: WishListResponse) {
-        if let memo = item.itemMemo, !memo.isEmpty {
+        // 공백만 남아 있는 메모도 내용이 없는 것으로 보고 섹션을 노출하지 않습니다.
+        if let memo = item.itemMemo, !memo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             let memoView = createMemoInfoView(memo: memo)
             contentStackView.addArrangedSubview(memoView)
         }
@@ -617,7 +618,9 @@ final class ItemDetailView: UIView, LoadingPresentable {
             memoTextView.resignFirstResponder()
             editButton.configure(title: Button.edit, style: .edit)
 
-            memoSaveAction?(memoTextView.text ?? "")
+            // 공백만 입력한 경우는 내용을 지운 것으로 처리합니다.
+            let memo = (memoTextView.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            memoSaveAction?(memo)
         } else {
             isMemoEditing = true
             memoTextView.isEditable = true
