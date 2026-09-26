@@ -21,6 +21,21 @@ import Core
 /// (`LoadingPresentable` 참고)
 final class LoadingView: UIView {
 
+    /// 로딩뷰 뒷배경
+    enum Background {
+        /// 흰 배경으로 완전히 덮습니다.
+        case opaque
+        /// 뒤 화면이 비치도록 흰색 70%로 덮습니다.
+        case dimmed
+
+        var color: UIColor {
+            switch self {
+            case .opaque: return .white_10
+            case .dimmed: return .white_7
+            }
+        }
+    }
+
     /// 로띠뷰와 'LOADING' 텍스트 사이 간격
     private static let spacing: CGFloat = 16
 
@@ -62,8 +77,8 @@ final class LoadingView: UIView {
     }
 
     private func setupUI() {
-        // 뒷배경은 흰색으로 덮고, 로딩 중에는 뒤쪽 터치가 먹히지 않도록 막습니다.
-        backgroundColor = .white
+        // 뒷배경은 노출 시점에 정하고, 로딩 중에는 뒤쪽 터치가 먹히지 않도록 막습니다.
+        backgroundColor = Background.opaque.color
         isUserInteractionEnabled = true
 
         addSubview(contentStackView)
@@ -108,7 +123,7 @@ final class LoadingView: UIView {
 extension LoadingView {
 
     /// 지정한 뷰를 덮어 로딩뷰를 노출합니다. 노출될 때마다 로띠는 첫 프레임부터 새로 재생됩니다.
-    static func show(in container: UIView?) {
+    static func show(in container: UIView?, background: Background = .opaque) {
         guard let container = container else { return }
 
         // 이미 노출 중이라면 새로 만들지 않고 노출 요청 수만 올립니다.
@@ -120,6 +135,7 @@ extension LoadingView {
 
         let loadingView = LoadingView()
         loadingView.showCount = 1
+        loadingView.backgroundColor = background.color
 
         container.addSubview(loadingView)
         loadingView.snp.makeConstraints { make in
@@ -139,13 +155,13 @@ extension LoadingView {
     }
 
     /// 로딩 상태를 그대로 반영합니다. `@Published` 로딩 상태를 바인딩할 때 사용합니다.
-    static func setVisible(_ isVisible: Bool, in container: UIView?) {
+    static func setVisible(_ isVisible: Bool, in container: UIView?, background: Background = .opaque) {
         guard let container = container else { return }
 
         if isVisible {
             // 바인딩으로 같은 값이 여러 번 들어올 수 있어, 이미 노출 중이면 그대로 둡니다.
             guard container.currentLoadingView == nil else { return }
-            show(in: container)
+            show(in: container, background: background)
         } else {
             container.currentLoadingView?.dismiss()
         }
@@ -162,14 +178,18 @@ protocol LoadingPresentable: UIView {
     /// 로딩뷰가 덮을 영역.
     /// 로딩 중이 아닐 때 아래쪽 터치를 가로채지 않도록 `isUserInteractionEnabled = false`로 만들어 둡니다.
     var loadingContainerView: UIView { get }
+    /// 로딩뷰 뒷배경. 기본은 흰 배경이고, 필요한 화면만 딤드로 덮습니다.
+    var loadingBackground: LoadingView.Background { get }
 }
 
 extension LoadingPresentable {
 
+    var loadingBackground: LoadingView.Background { .opaque }
+
     /// 조회 시작 시 호출합니다.
     func showLoading() {
         loadingContainerView.isUserInteractionEnabled = true
-        LoadingView.show(in: loadingContainerView)
+        LoadingView.show(in: loadingContainerView, background: loadingBackground)
     }
 
     /// 조회 종료 시 호출합니다. 아직 끝나지 않은 조회가 있다면 그대로 둡니다.
@@ -181,7 +201,7 @@ extension LoadingPresentable {
     /// 로딩 상태를 그대로 반영합니다. `@Published` 로딩 상태를 바인딩할 때 사용합니다.
     func setLoading(_ isLoading: Bool) {
         loadingContainerView.isUserInteractionEnabled = isLoading
-        LoadingView.setVisible(isLoading, in: loadingContainerView)
+        LoadingView.setVisible(isLoading, in: loadingContainerView, background: loadingBackground)
     }
 }
 
