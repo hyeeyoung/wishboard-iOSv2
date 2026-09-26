@@ -264,6 +264,10 @@ final class AddView: UIView, LoadingPresentable {
             isInteractiveMoving = true
             // 이동 중에는 바깥 스크롤뷰가 제스처를 가져가지 않도록 잠급니다.
             scrollView.isScrollEnabled = false
+            // 드래그 중인 셀이 컬렉션뷰 경계에서 잘리거나 아래 입력 섹션에 가려지지 않도록,
+            // 이동하는 동안만 클리핑을 끄고 맨 앞으로 올립니다.
+            collectionView.clipsToBounds = false
+            contentView.bringSubviewToFront(collectionView)
             UIDevice.vibrate()
 
         case .changed:
@@ -285,6 +289,9 @@ final class AddView: UIView, LoadingPresentable {
     private func finishInteractiveMove() {
         isInteractiveMoving = false
         scrollView.isScrollEnabled = true
+        // 가로 스크롤 시 셀이 좌우 여백 밖으로 삐져나오지 않도록 되돌립니다.
+        collectionView.clipsToBounds = true
+        contentView.sendSubviewToBack(collectionView)
         // 이동이 취소된 경우에도 원래 순서 기준으로 다시 맞춰 줍니다.
         updateThumbnailBadges()
     }
