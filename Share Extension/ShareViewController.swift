@@ -64,7 +64,9 @@ class ShareViewController: UIViewController {
                 do {
                     // 아이템 정보 파싱
                     self?.link = url
-                    try await self?.viewModel.fetchItem(link: url)
+                    guard let self = self else { return }
+                    try await self.viewModel.fetchItem(link: url)
+                    AnalyticsManager.shared.log(.itemParsed(source: .shareExtension))
                 } catch {
                     // 파싱 실패 시 스낵바 노출
                     // 미로그인 상태에서는 스낵바 미노출

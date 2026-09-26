@@ -518,6 +518,8 @@ final class AddViewController: UIViewController {
 
             do {
                 let parsedItem = try await self.viewModel.parseItem(link: link)
+                AnalyticsManager.shared.log(.itemParsed(source: .app))
+
                 // 응답을 기다리는 동안 시트를 닫았다면 반영하지 않습니다.
                 guard !_Concurrency.Task.isCancelled else { return }
 
