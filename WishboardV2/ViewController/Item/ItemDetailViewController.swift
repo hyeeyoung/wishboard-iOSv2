@@ -81,6 +81,8 @@ final class ItemDetailViewController: UIViewController {
     /// 메모만 수정합니다.
     /// 저장과 동시에 화면에 반영하고, API 응답은 기다리지 않습니다. (낙관적 업데이트)
     private func saveMemo(_ memo: String) {
+        AnalyticsManager.shared.log(.itemMemoEdited)
+
         viewModel.item?.itemMemo = memo
         // 목록 화면의 아이템 정보도 갱신되도록 전달합니다.
         editAction?(viewModel.item)

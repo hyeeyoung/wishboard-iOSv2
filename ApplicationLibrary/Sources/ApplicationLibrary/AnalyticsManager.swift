@@ -26,6 +26,8 @@ public enum AnalyticsEvent {
     case itemDeleted
     case itemsBulkDeleted(source: BulkDeleteSource, scope: BulkDeleteScope, itemCount: Int)  // 아이템 일괄 삭제
     case itemMarkedAsOwned      // 소장템으로 바꾸기
+    case itemParsed(source: ItemParseSource)    // 쇼핑몰 링크로 아이템 정보 불러오기 성공
+    case itemMemoEdited         // 아이템 상세 화면에서 메모 간단 편집/저장
 
     // Folder
     case folderCreated
@@ -47,6 +49,8 @@ public enum AnalyticsEvent {
         case .itemDeleted:          return "item_deleted"
         case .itemsBulkDeleted:     return "items_bulk_deleted"
         case .itemMarkedAsOwned:    return "item_marked_as_owned"
+        case .itemParsed:           return "item_parsed"
+        case .itemMemoEdited:       return "item_memo_edited"
         case .folderCreated:        return "folder_created"
         case .profileEdited:        return "profile_edited"
         }
@@ -61,6 +65,8 @@ public enum AnalyticsEvent {
             return ["provider": p.rawValue]
         case .itemAdded(let source):
             return ["source": source.rawValue]
+        case .itemParsed(let source):
+            return ["source": source.rawValue]
         case .itemsBulkDeleted(let source, let scope, let itemCount):
             return ["source": source.rawValue,
                     "scope": scope.rawValue,
@@ -68,6 +74,7 @@ public enum AnalyticsEvent {
         case .withdraw,
              .itemDeleted,
              .itemMarkedAsOwned,
+             .itemMemoEdited,
              .folderCreated,
              .profileEdited,
              .shareExtensionOpened:
@@ -89,6 +96,13 @@ public enum ItemSource: String {
     case manual                             // 앱 내 수동 등록
     case shareExtension = "share_extension" // 공유 확장에서 등록
     case linkParsing = "link_parsing"       // 링크 붙여넣기로 자동 파싱 등록
+}
+
+/// 쇼핑몰 링크로 아이템 정보를 불러온 경로.
+/// 등록 경로를 뜻하는 `ItemSource`와는 의미가 달라 따로 둡니다.
+public enum ItemParseSource: String {
+    case app                                // 앱 내 아이템 등록/수정 화면
+    case shareExtension = "share_extension" // 링크 공유로 진입한 확장뷰
 }
 
 /// 아이템 일괄 삭제를 실행한 화면
