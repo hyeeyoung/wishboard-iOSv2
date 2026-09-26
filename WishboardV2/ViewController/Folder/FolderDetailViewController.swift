@@ -39,6 +39,9 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 첫 노출인지 여부. 최초 진입 시 viewDidLoad와 조회가 겹치지 않도록 구분합니다.
+    private var hasAppearedOnce = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -69,6 +72,13 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        // 최초 진입은 viewDidLoad에서 이미 조회했습니다.
+        // 아이템 상세 등에 다녀와 다시 보이게 된 경우에만 목록을 갱신합니다.
+        guard hasAppearedOnce else {
+            hasAppearedOnce = true
+            return
+        }
         self.refreshItems()
     }
 

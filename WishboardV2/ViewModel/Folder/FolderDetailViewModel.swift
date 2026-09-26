@@ -55,7 +55,9 @@ final class FolderDetailViewModel {
     func fetchItems(reset: Bool = false) {
         guard !isLoading, hasMore || reset else { return }
         isLoading = true
-        isInitialLoading = reset && !isRefreshing
+        // 이미 보여 줄 목록이 있다면 로딩뷰를 띄우지 않습니다.
+        // 화면에 목록이 그려진 상태에서 로딩뷰가 덮였다 사라지면 깜빡이기 때문입니다.
+        isInitialLoading = reset && !isRefreshing && items.isEmpty
 
         if reset {
             page = 0
