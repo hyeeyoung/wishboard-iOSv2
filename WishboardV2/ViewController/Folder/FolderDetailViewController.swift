@@ -180,11 +180,11 @@ extension FolderDetailViewController {
                               itemCount: deletionTargetCount)
         )
 
-        let indicator = ItemSelectionFlow.showLoading(on: self)
+        folderView.showLoading()
 
         Task { @MainActor [weak self] in
             guard let self = self else { return }
-            defer { ItemSelectionFlow.hideLoading(indicator) }
+            defer { self.folderView.hideLoading() }
 
             do {
                 try await self.viewModel.deleteItems(request: request)
