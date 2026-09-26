@@ -175,10 +175,20 @@ final class AddViewController: UIViewController {
         suggestClipboardLinkIfNeeded()
     }
 
+    /// 화면에 이미 쇼핑몰 링크가 등록되어 있는지.
+    /// 수정 모드는 기존 값 주입이 비동기라, 아직 반영 전일 수 있어 원본 아이템도 함께 봅니다.
+    private var hasRegisteredShoppingLink: Bool {
+        let link = viewModel.selectedLink ?? item?.itemUrl ?? ""
+        return !link.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     /// 화면 진입 시 클립보드에 복사된 쇼핑몰 링크가 있으면 불러오기를 제안합니다.
     private func suggestClipboardLinkIfNeeded() {
         guard !hasCheckedClipboard else { return }
         hasCheckedClipboard = true
+
+        // 이미 쇼핑몰 링크가 등록된 화면이라면 제안하지 않습니다.
+        guard !hasRegisteredShoppingLink else { return }
 
         // 클립보드에 문자열이 없으면 읽지 않습니다. (읽는 순간 OS 권한 알럿이 뜹니다)
         guard UIPasteboard.general.hasStrings,
@@ -819,6 +829,9 @@ extension AddViewController: CropViewControllerDelegate {
 extension AddViewController: AddToolBarDelegate {
     func leftItemTap() {
         UIDevice.vibrate()
+        // 아이템 파싱 중이었다면 그 결과가 반영되지 않도록 합니다.
+        parsingTask?.cancel()
+        clipboardLinkToast.dismiss()
         self.dismiss(animated: true)
     }
     
