@@ -35,16 +35,24 @@ class FormItemView: UIView {
         set {
             textField?.text = newValue
 
+            var appliedText = newValue
+
             if let tv = textView {
+                // 공백(스페이스/줄바꿈)만 있는 값은 내용이 없는 것으로 보고 비워 둔다.
+                // 그래야 placeholder만 깔끔하게 노출된다.
+                if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    appliedText = ""
+                }
+
                 // Placeholder는 실제 text에 넣지 않는다.
                 // UITextView에는 실제 입력값만 유지한다.
-                tv.text = newValue
+                tv.text = appliedText
                 tv.textColor = .gray_700
 
                 updateTextViewPlaceholder()
             }
 
-            textSubject.send(newValue)
+            textSubject.send(appliedText)
         }
     }
 
@@ -310,9 +318,10 @@ class FormItemView: UIView {
             return
         }
 
-        let isEmpty = textView.text
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty
+        // 여기서는 trim하지 않는다.
+        // 공백을 입력한 상태에서 placeholder까지 함께 보이면 두 글자가 겹쳐 버린다.
+        // 공백만 남은 값을 비우는 것은 text setter와 저장 시점에서 처리한다.
+        let isEmpty = textView.text.isEmpty
 
         placeholderLabel?.isHidden = !isEmpty
     }
