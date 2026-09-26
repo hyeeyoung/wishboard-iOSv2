@@ -50,6 +50,9 @@ final class AddViewController: UIViewController {
     private var hasCheckedClipboard = false
     /// 진행 중인 아이템 파싱 요청. 시트를 닫으면 결과를 반영하지 않습니다.
     private var parsingTask: _Concurrency.Task<Void, Never>?
+    /// 진행 중인 파싱을 쇼핑몰 링크 시트에서 시작했는지 여부.
+    /// 시트를 닫을 때 취소할 대상인지 가리는 데 씁니다.
+    private var isParsingFromBottomSheet = false
     private let selectDateBottomSheet = SelectDateBottomSheet()
     
     // 모드
@@ -408,8 +411,11 @@ final class AddViewController: UIViewController {
         
         // Shopping Link Binding
         shoppingLinkBottomSheet.onClose = { [weak self] in
-            // 응답을 기다리는 중이었다면 그 결과는 반영하지 않습니다.
-            self?.parsingTask?.cancel()
+            // 이 시트에서 시작한 파싱을 기다리는 중이었다면 그 결과는 반영하지 않습니다.
+            // 클립보드 토스트에서 시작한 파싱은 이 시트와 무관하므로 그대로 둡니다.
+            if self?.isParsingFromBottomSheet == true {
+                self?.parsingTask?.cancel()
+            }
             self?.hideLinkBottomSheet()
         }
         shoppingLinkBottomSheet.onLinkOnlyButtonTap = { [weak self] link in
@@ -445,6 +451,8 @@ final class AddViewController: UIViewController {
     
     /// 폴더 선택 시트 노출
     private func showSelectFolderBottomSheet(for folders: [FolderListResponse]) {
+        // 시트가 덮는 동안 토스트가 그 위에 남아 뒤쪽 화면을 조작하게 되므로 함께 내립니다.
+        clipboardLinkToast.dismiss()
         DispatchQueue.main.async {
             self.view.endEditing(true)
             self.folderSelectBottomSheet.configure(with: folders)
@@ -473,6 +481,8 @@ final class AddViewController: UIViewController {
     }
     /// 새 폴더 추가 시트 노출
     private func showAddFolderBottomSheet(for folder: FolderListResponse? = nil) {
+        // 시트가 덮는 동안 토스트가 그 위에 남아 뒤쪽 화면을 조작하게 되므로 함께 내립니다.
+        clipboardLinkToast.dismiss()
         DispatchQueue.main.async {
             self.tabBarController?.tabBar.isHidden = true
             self.addFolderBottomSheet.initView()
@@ -508,6 +518,7 @@ final class AddViewController: UIViewController {
     ///   클립보드 토스트에서 시작한 경우에는 시트가 떠 있지 않아 화면 자체에 로딩을 띄웁니다.
     private func parseItem(with link: String, fromBottomSheet: Bool) {
         parsingTask?.cancel()
+        isParsingFromBottomSheet = fromBottomSheet
         parsingTask = _Concurrency.Task { [weak self] in
             guard let self = self else { return }
 
@@ -606,6 +617,8 @@ final class AddViewController: UIViewController {
 
     /// 쇼핑몰 링크 입력 시트 노출
     private func showLinkBottomSheet(with prevLink: String? = nil) {
+        // 시트가 덮는 동안 토스트가 그 위에 남아 뒤쪽 화면을 조작하게 되므로 함께 내립니다.
+        clipboardLinkToast.dismiss()
         DispatchQueue.main.async {
             self.shoppingLinkBottomSheet.configure(with: prevLink)
             
@@ -635,6 +648,8 @@ final class AddViewController: UIViewController {
     
     /// 날짜 선택 시트 노출
     private func showDateBottomSheet() {
+        // 시트가 덮는 동안 토스트가 그 위에 남아 뒤쪽 화면을 조작하게 되므로 함께 내립니다.
+        clipboardLinkToast.dismiss()
         DispatchQueue.main.async {
             self.view.endEditing(true)
             self.selectDateBottomSheet.configure()
