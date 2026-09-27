@@ -74,6 +74,20 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         $0.distribution = .fillEqually
         $0.spacing = ShoppingLinkBottomSheet.buttonSpacing
     }
+    /// 키보드 뒤를 덮는 배경의 높이. 어떤 기기의 키보드보다도 크게 잡아 둡니다.
+    private static let keyboardBackdropHeight: CGFloat = 400
+
+    /// 키보드가 올라와 시트가 위로 밀렸을 때, 시트 아래쪽 영역을 시트와 같은 색으로 덮습니다.
+    ///
+    /// 시트 하단이 키보드 상단에서 딱 끊기는데 키보드의 위쪽 모서리가 둥글어,
+    /// 그 모서리 틈으로 뒤에 깔린 딤뷰가 비쳐 좌우 상단이 회색으로 보입니다.
+    /// 키보드 뒤로 흰 배경을 이어 두어 그 틈에 시트 색이 보이도록 합니다.
+    /// 시트 바깥으로 나가는 뷰라 터치는 받지 않습니다.
+    private let keyboardBackdropView = UIView().then {
+        $0.backgroundColor = .white
+        $0.isUserInteractionEnabled = false
+    }
+
     /// 로딩뷰가 덮을 영역. 타이틀과 닫기 버튼은 가리지 않습니다.
     let loadingContainerView = UIView().then {
         $0.isUserInteractionEnabled = false
@@ -111,6 +125,7 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         layer.cornerRadius = 20
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         
+        addSubview(keyboardBackdropView)
         addSubview(titleLabel)
         addSubview(closeButton)
         addSubview(textField)
@@ -131,7 +146,14 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
     }
     
     private func setupConstraints() {
-        
+
+        // 화면 밖으로 넘치는 부분은 보이지 않으므로 넉넉하게 내려 둡니다.
+        keyboardBackdropView.snp.makeConstraints { make in
+            make.top.equalTo(self.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(ShoppingLinkBottomSheet.keyboardBackdropHeight)
+        }
+
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
             make.centerX.equalToSuperview()
