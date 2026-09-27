@@ -8,7 +8,8 @@
 import Foundation
 
 public protocol AddItemUseCaseInterface {
-    func execute(type: AddItemType, item: RequestItemDTO) async throws -> EmptyResponse
+    /// 등록된 아이템을 그대로 돌려줍니다. 등록 직후 상세 화면으로 이동할 때 id가 필요합니다.
+    func execute(type: AddItemType, item: RequestItemDTO) async throws -> WishListResponse
 }
 
 public class AddItemUseCase: AddItemUseCaseInterface {
@@ -18,7 +19,7 @@ public class AddItemUseCase: AddItemUseCaseInterface {
         self.repository = repository
     }
     
-    public func execute(type: AddItemType, item: RequestItemDTO) async throws -> EmptyResponse {
+    public func execute(type: AddItemType, item: RequestItemDTO) async throws -> WishListResponse {
         return try await self.repository.addItem(type: type, item: item)
     }
 }

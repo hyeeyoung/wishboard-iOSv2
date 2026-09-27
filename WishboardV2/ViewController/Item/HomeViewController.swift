@@ -161,6 +161,38 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         viewModel.fetchItems(reset: true)
     }
 
+    /// 아이템 상세 화면으로 이동합니다.
+    ///
+    /// 상세에서의 수정 / 삭제 / 소장템 전환을 목록에 반영하는 연결도 함께 걸어 둡니다.
+    /// 목록에서 탭했을 때와 새로 등록한 직후 모두 이 경로를 씁니다.
+    func showItemDetail(for item: WishListResponse) {
+        guard let itemIdx = item.id else { return }
+
+        let detailViewController = ItemDetailViewController(id: itemIdx)
+        detailViewController.hidesBottomBarWhenPushed = true
+
+        detailViewController.editAction = { [weak self] updatedItem in
+            guard let updatedItem = updatedItem else { return }
+            if let idx = self?.viewModel.items.firstIndex(where: { $0.id == updatedItem.id }) {
+                self?.viewModel.items[idx] = updatedItem
+            }
+        }
+
+        detailViewController.deleteAction = { [weak self] _ in
+            self?.viewModel.items.removeAll { $0.id == itemIdx }
+            Task { await self?.viewModel.fetchItemCounts() }
+        }
+
+        detailViewController.collectionChangeAction = { [weak self] isCollected in
+            guard let self = self else { return }
+            if let idx = self.viewModel.items.firstIndex(where: { $0.id == itemIdx }) {
+                self.viewModel.items[idx].itemStatus = isCollected ? .owned : .wish
+            }
+        }
+
+        navigationController?.pushViewController(detailViewController, animated: true)
+    }
+
     func scrollToTop() {
         homeView.collectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
@@ -303,32 +335,8 @@ extension HomeViewController: UICollectionViewDelegate {
             return
         }
 
-        if let itemIdx = item.id {
-            UIDevice.vibrate()
-            let detailViewController = ItemDetailViewController(id: itemIdx)
-            detailViewController.hidesBottomBarWhenPushed = true
-
-            detailViewController.editAction = { [weak self] updatedItem in
-                guard let updatedItem = updatedItem else { return }
-                if let idx = self?.viewModel.items.firstIndex(where: { $0.id == updatedItem.id }) {
-                    self?.viewModel.items[idx] = updatedItem
-                }
-            }
-
-            detailViewController.deleteAction = { [weak self] _ in
-                self?.viewModel.items.removeAll { $0.id == item.id }
-                Task { await self?.viewModel.fetchItemCounts() }
-            }
-
-            detailViewController.collectionChangeAction = { [weak self] isCollected in
-                guard let self = self else { return }
-                if let idx = self.viewModel.items.firstIndex(where: { $0.id == item.id }) {
-                    self.viewModel.items[idx].itemStatus = isCollected ? .owned : .wish
-                }
-            }
-
-            navigationController?.pushViewController(detailViewController, animated: true)
-        }
+        UIDevice.vibrate()
+        showItemDetail(for: item)
     }
 
     func collectionView(_ collectionView: UICollectionView,

@@ -70,7 +70,9 @@ final class AddViewModel {
     }
 
     // API 호출
-    func addItem() async throws {
+    /// 아이템을 등록하고, 등록된 아이템을 돌려줍니다. (등록 직후 상세 화면으로 이동하는 데 씁니다)
+    @discardableResult
+    func addItem() async throws -> WishListResponse {
         do {
             let itemName = self.itemName
             let originPrice = FormatManager.shared.priceToStr(price: self.itemPrice)
@@ -95,7 +97,7 @@ final class AddViewModel {
                                       itemNotificationDate: notiDate)
             
             let usecase = AddItemUseCase()
-            _ = try await usecase.execute(type: .manual, item: item)
+            return try await usecase.execute(type: .manual, item: item)
         } catch {
             throw error
         }

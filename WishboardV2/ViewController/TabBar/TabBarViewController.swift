@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Core
+import WBNetwork
 
 class TabBarViewController: UITabBarController {
     let seperator = UIView().then{
@@ -89,10 +90,15 @@ extension TabBarViewController: UITabBarControllerDelegate {
             let addViewController = AddViewController(type: .manual) // ADD 메뉴의 화면
             addViewController.modalPresentationStyle = .fullScreen
             
-            addViewController.confirmAction = { [weak self] in
-                self?.selectedIndex = 0
+            // 등록이 끝나면 위시리스트 탭으로 옮긴 뒤, 방금 등록한 아이템의 상세로 들어갑니다.
+            addViewController.addCompletionAction = { [weak self] addedItem in
+                guard let self = self else { return }
+
+                self.selectedIndex = 0
                 // Noti
                 NotificationCenter.default.post(name: .ItemUpdated, object: nil)
+
+                self.wishListVC.showItemDetail(for: addedItem)
             }
             
             present(addViewController, animated: true)

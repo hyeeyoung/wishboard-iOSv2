@@ -35,6 +35,9 @@ final class AddViewController: UIViewController {
     private let viewModel = AddViewModel()
     private var cancellables = Set<AnyCancellable>()
     public var confirmAction: (() -> Void)?
+    /// 신규 등록이 끝났을 때 등록된 아이템을 전달합니다.
+    /// 화면을 닫은 뒤 그 아이템의 상세로 이동하는 데 씁니다.
+    public var addCompletionAction: ((WishListResponse) -> Void)?
     
     // Album
     private let MAX_IMAGE_COUNT: Int = 10
@@ -866,8 +869,10 @@ extension AddViewController: AddToolBarDelegate {
                 // 저장(등록/편집) 동안 로딩뷰 노출 (상단바는 가리지 않습니다)
                 self.addView.showLoading()
                 
+                var addedItem: WishListResponse?
+
                 if self.type == .manual {
-                    try await self.viewModel.addItem()
+                    addedItem = try await self.viewModel.addItem()
                     AnalyticsManager.shared.log(.itemAdded(source: .manual))
                 } else if self.type == .modify {
                     guard let itemIdx = self.item?.id else {
@@ -885,6 +890,11 @@ extension AddViewController: AddToolBarDelegate {
                         SnackBar.shared.show(type: .addItem)
                     } else if self.type == .modify {
                         SnackBar.shared.show(type: .modifyItem)
+                    }
+
+                    // 화면이 닫힌 뒤에 이동해야 이동 대상이 가려지지 않습니다.
+                    if let addedItem = addedItem {
+                        self.addCompletionAction?(addedItem)
                     }
                 }
                 self.confirmAction?()
