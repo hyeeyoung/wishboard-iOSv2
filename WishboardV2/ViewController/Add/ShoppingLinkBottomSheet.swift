@@ -210,12 +210,17 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         let text = (textField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return nil }
 
-        // 유효하지 않은 링크 예외처리
-        guard text.isValidShoppingLink() else {
+        // 안내 문구가 함께 붙여넣어질 수 있어 본문에서 링크만 찾아 씁니다.
+        guard let link = text.firstShoppingLink() else {
             displayError(ErrorMessage.shoppingLink)
             return nil
         }
-        return text
+
+        // 화면에 보이는 값과 실제 등록되는 값이 달라지지 않도록 입력 필드도 함께 맞춥니다.
+        if textField.text != link {
+            textField.text = link
+        }
+        return link
     }
     
     @objc func dismissKeyboard() {

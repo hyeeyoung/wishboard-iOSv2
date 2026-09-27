@@ -34,6 +34,39 @@ extension String {
         return host.isDomainFormattedHost()
     }
 
+    /// 텍스트에서 쇼핑몰 링크로 쓸 수 있는 첫 번째 URL을 찾아 돌려줍니다.
+    ///
+    /// 다른 앱에서 링크를 복사하거나 공유하면 안내 문구가 함께 담기는 경우가 많습니다.
+    /// 그런 경우 문자열 전체는 URL이 아니므로, 본문에서 링크만 뽑아냅니다.
+    ///
+    /// 매치된 원문을 그대로 쓰고 `NSDataDetector`가 붙여 주는 스킴은 쓰지 않습니다.
+    /// 본문에 섞인 `www.foo.com`이나 맨 도메인까지 링크로 집지 않기 위해서입니다.
+    public func firstShoppingLink() -> String? {
+        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        // 문자열 자체가 링크라면 굳이 본문을 훑지 않습니다.
+        if trimmed.isValidShoppingLink() { return trimmed }
+
+        guard let detector = try? NSDataDetector(
+            types: NSTextCheckingResult.CheckingType.link.rawValue
+        ) else { return nil }
+
+        let fullRange = NSRange(trimmed.startIndex..<trimmed.endIndex, in: trimmed)
+
+        for match in detector.matches(in: trimmed, options: [], range: fullRange) {
+            guard let matchRange = Range(match.range, in: trimmed) else { continue }
+
+            let candidate = String(trimmed[matchRange])
+            // 스킴이 없는 매치는 여기서 걸러집니다.
+            guard candidate.isValidShoppingLink() else { continue }
+
+            return candidate
+        }
+
+        return nil
+    }
+
     /// 호스트가 도메인 형식인지 검사합니다.
     ///
     /// - 점으로 구분된 라벨이 둘 이상이어야 합니다. (`zzz` 같은 단일 라벨은 거부)

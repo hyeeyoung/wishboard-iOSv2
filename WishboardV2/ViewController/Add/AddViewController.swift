@@ -195,13 +195,13 @@ final class AddViewController: UIViewController {
         guard !hasRegisteredShoppingLink else { return }
 
         // 클립보드에 문자열이 없으면 읽지 않습니다. (읽는 순간 OS 권한 알럿이 뜹니다)
+        // 다른 앱에서 복사하면 안내 문구가 함께 담기는 경우가 많아, 본문에서 링크만 찾아 씁니다.
         guard UIPasteboard.general.hasStrings,
-              let copiedText = UIPasteboard.general.string?.trimmingCharacters(in: .whitespacesAndNewlines),
-              copiedText.isValidShoppingLink()
+              let copiedLink = UIPasteboard.general.string?.firstShoppingLink()
         else { return }
 
         clipboardLinkToast.show(in: view) { [weak self] in
-            self?.parseItem(with: copiedText, fromBottomSheet: false)
+            self?.parseItem(with: copiedLink, fromBottomSheet: false)
         }
     }
     

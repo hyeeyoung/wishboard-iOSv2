@@ -155,10 +155,11 @@ final class ShareViewModel {
                             in: .whitespacesAndNewlines
                         )
 
-                        // plain-text가 실제 URL인지 검증
+                        // plain-text에서 링크를 찾아 검증합니다.
+                        // 안내 문구가 함께 공유되는 경우가 많아 본문에서 링크만 뽑아냅니다.
                         // 앱 내 쇼핑몰 링크 검증과 같은 기준을 씁니다.
-                        guard trimmed.isValidShoppingLink(),
-                              let url = URL(string: trimmed)
+                        guard let link = trimmed.firstShoppingLink(),
+                              let url = URL(string: link)
                         else {
                             print("❌ Plain text is not a valid URL.")
                             print("   Raw: \(text)")
