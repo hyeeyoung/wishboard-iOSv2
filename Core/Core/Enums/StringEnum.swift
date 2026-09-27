@@ -148,6 +148,7 @@ public enum Button {
     public static let registerLinkOnly = "링크만 등록하기"
     public static let load = "불러오기"
     public static let edit = "편집"
+    public static let write = "작성"
     
     public static let addFolder = "+ 새 폴더"
 }

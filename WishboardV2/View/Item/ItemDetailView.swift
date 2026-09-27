@@ -157,6 +157,7 @@ final class ItemDetailView: UIView, LoadingPresentable {
     public var memoSaveAction: ((String) -> Void)?
     /// 메모 섹션은 아이템을 구성할 때마다 새로 만들어지므로 약한 참조로 들고 있습니다.
     private weak var memoTextView: UITextView?
+    private weak var memoPlaceholderLabel: UILabel?
     private weak var memoEditButton: EditPillButton?
     private var memoTextViewHeightConstraint: Constraint?
     private var isMemoEditing: Bool = false
@@ -471,11 +472,10 @@ final class ItemDetailView: UIView, LoadingPresentable {
     }
     
     private func configureItemMemo(_ item: WishListResponse) {
-        // 공백만 남아 있는 메모도 내용이 없는 것으로 보고 섹션을 노출하지 않습니다.
-        if let memo = item.itemMemo, !memo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            let memoView = createMemoInfoView(memo: memo)
-            contentStackView.addArrangedSubview(memoView)
-        }
+        // 메모가 없어도 섹션을 노출해, 수정 화면까지 가지 않고 바로 작성할 수 있게 합니다.
+        // 공백만 남아 있는 메모는 내용이 없는 것으로 봅니다.
+        let memo = (item.itemMemo ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        contentStackView.addArrangedSubview(createMemoInfoView(memo: memo))
     }
     
     private func configureLinkBtn(_ item: WishListResponse) {
@@ -561,13 +561,25 @@ final class ItemDetailView: UIView, LoadingPresentable {
         }
         memoTextView.delegate = self
 
+        // 메모가 없을 때 텍스트뷰 위에 겹쳐 보여 줄 안내 문구
+        let memoPlaceholderLabel = UILabel().then {
+            $0.text = Placeholder.uploadItemMemo
+            $0.font = TypoStyle.SuitD2.font
+            $0.textColor = .gray_200
+            $0.numberOfLines = 0
+            $0.isUserInteractionEnabled = false
+            $0.isHidden = !memo.isEmpty
+        }
+
+        // 메모가 없으면 '작성', 있으면 '편집'. 버튼 모양은 같습니다.
         let editButton = EditPillButton().then {
-            $0.configure(title: Button.edit, style: .edit)
+            $0.configure(title: memo.isEmpty ? Button.write : Button.edit, style: .edit)
         }
         editButton.addTarget(self, action: #selector(memoEditButtonTapped), for: .touchUpInside)
 
         // 메모 섹션은 다시 그릴 때마다 새로 만들어지므로, 편집 상태도 함께 초기화합니다.
         self.memoTextView = memoTextView
+        self.memoPlaceholderLabel = memoPlaceholderLabel
         self.memoEditButton = editButton
         self.isMemoEditing = false
 
@@ -602,6 +614,14 @@ final class ItemDetailView: UIView, LoadingPresentable {
             make.leading.trailing.bottom.equalToSuperview().inset(12)
         }
 
+        view.addSubview(memoPlaceholderLabel)
+        memoPlaceholderLabel.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(memoTextView)
+            // 메모가 없을 때 텍스트뷰는 한 줄 높이로 잡히는데 안내 문구는 여러 줄일 수 있습니다.
+            // 문구가 잘리지 않도록 텍스트뷰의 최소 높이를 여기서 확보합니다.
+            make.bottom.lessThanOrEqualTo(memoTextView)
+        }
+
         return view
     }
 
@@ -616,10 +636,17 @@ final class ItemDetailView: UIView, LoadingPresentable {
             memoTextView.isEditable = false
             memoTextView.dataDetectorTypes = [.all]
             memoTextView.resignFirstResponder()
-            editButton.configure(title: Button.edit, style: .edit)
 
             // 공백만 입력한 경우는 내용을 지운 것으로 처리합니다.
             let memo = (memoTextView.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+
+            // 다듬은 값으로 화면을 먼저 맞춥니다.
+            // 내용이 없으면 안내 문구가 다시 보이고 버튼도 '작성'으로 돌아갑니다.
+            memoTextView.text = memo
+            updateMemoTextViewHeight()
+            updateMemoPlaceholderVisibility()
+            editButton.configure(title: memo.isEmpty ? Button.write : Button.edit, style: .edit)
+
             memoSaveAction?(memo)
         } else {
             isMemoEditing = true
@@ -627,6 +654,14 @@ final class ItemDetailView: UIView, LoadingPresentable {
             memoTextView.becomeFirstResponder()
             editButton.configure(title: Button.save, style: .save)
         }
+    }
+
+    /// 입력 여부에 따라 메모 안내 문구를 노출/미노출합니다.
+    ///
+    /// 공백만 입력한 상태에서도 글자가 있으므로 문구는 감춥니다.
+    /// 공백만 남은 값을 비우는 것은 저장 시점에 처리합니다.
+    private func updateMemoPlaceholderVisibility() {
+        memoPlaceholderLabel?.isHidden = !(memoTextView?.text ?? "").isEmpty
     }
 
     /// 입력에 따라 메모 영역 높이를 맞춥니다.
@@ -646,6 +681,7 @@ extension ItemDetailView: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         guard textView === memoTextView else { return }
         updateMemoTextViewHeight()
+        updateMemoPlaceholderVisibility()
     }
 
     func setupMemoKeyboardObservers() {
@@ -688,6 +724,14 @@ extension ItemDetailView: UIGestureRecognizerDelegate {
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                            shouldReceive touch: UITouch) -> Bool {
+        // 메모 작성/편집/저장 버튼은 스스로 키보드를 여닫으므로 이 제스처가 받지 않습니다.
+        // 제스처가 먼저 키보드를 내리면 그 사이 레이아웃이 움직여,
+        // 뒤늦게 전달되는 버튼의 touchUpInside가 버튼 밖으로 판정되어 유실됩니다.
+        if let memoEditButton = memoEditButton,
+           touch.view?.isDescendant(of: memoEditButton) == true {
+            return false
+        }
+
         // 편집 중인 메모 안을 탭한 경우에는 키보드를 그대로 둡니다.
         guard isMemoEditing, let memoTextView = memoTextView else { return true }
         return touch.view?.isDescendant(of: memoTextView) != true
