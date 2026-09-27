@@ -38,7 +38,7 @@ final class FolderDetailView: UIView, LoadingPresentable {
 
     // MARK: - Properties
 
-    /// 홈화면의 스티키헤더와 동일한 헤더이지만, 폴더 상세에서는 컬렉션뷰와 함께 스크롤됩니다.
+    /// 홈화면과 동일한 스티키헤더. 스크롤해도 제목바 아래에 붙어 계속 노출됩니다.
     static let headerHeight: CGFloat = 36
     /// 아이템이 들어있는 섹션 인덱스
     private static let itemSection: Int = 0
@@ -61,7 +61,7 @@ final class FolderDetailView: UIView, LoadingPresentable {
     // MARK: - Initializers
 
     override init(frame: CGRect) {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: StickyHeaderFlowLayout())
         collectionView.backgroundColor = .white
 
         super.init(frame: frame)
@@ -133,7 +133,7 @@ final class FolderDetailView: UIView, LoadingPresentable {
 
     /// 열 수 / 선택 모드에 맞춰 플로우 레이아웃을 갱신합니다.
     private func applyLayout() {
-        let layout = UICollectionViewFlowLayout()
+        let layout = StickyHeaderFlowLayout()
         let screenWidth = UIScreen.main.bounds.width
         let count = CGFloat(currentColumnType.rawValue)
         let cellWidth = screenWidth / count
@@ -150,6 +150,7 @@ final class FolderDetailView: UIView, LoadingPresentable {
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         // 헤더는 다중 선택 모드에서도 노출되며, 선택 모드에서는 x버튼 바 바로 아래에 붙습니다.
+        // 스크롤 중에도 상단에 고정되는 것은 StickyHeaderFlowLayout이 처리합니다.
         layout.headerReferenceSize = CGSize(width: screenWidth, height: FolderDetailView.headerHeight)
 
         collectionView.setCollectionViewLayout(layout, animated: false)
@@ -348,5 +349,51 @@ extension FolderDetailView: ItemDragSelectionControllerDelegate {
 
     func dragSelectionControllerDidEnd(_ controller: ItemDragSelectionController) {
         dragStartSelection = []
+    }
+}
+
+// MARK: - 스티키 헤더 레이아웃
+
+/// 섹션 헤더를 컬렉션뷰 상단에 고정하는 플로우 레이아웃.
+///
+/// `sectionHeadersPinToVisibleBounds`만 켜면 헤더가 고정되기는 하지만,
+/// `UICollectionViewFlowLayout`은 헤더에도 셀과 같은 zIndex(0)를 주기 때문에
+/// 스크롤로 셀이 헤더 영역에 겹치는 순간 셀이 헤더 위에 그려집니다.
+/// 그래서 헤더의 zIndex만 따로 올려 줍니다.
+final class StickyHeaderFlowLayout: UICollectionViewFlowLayout {
+
+    /// 셀(기본 0)보다 확실히 위에 오도록 하는 헤더의 zIndex
+    private static let headerZIndex = 1024
+
+    override init() {
+        super.init()
+        sectionHeadersPinToVisibleBounds = true
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        sectionHeadersPinToVisibleBounds = true
+    }
+
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        guard let attributes = super.layoutAttributesForElements(in: rect) else { return nil }
+        attributes.forEach { raiseIfHeader($0) }
+        return attributes
+    }
+
+    override func layoutAttributesForSupplementaryView(
+        ofKind elementKind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionViewLayoutAttributes? {
+        guard let attributes = super.layoutAttributesForSupplementaryView(ofKind: elementKind, at: indexPath) else {
+            return nil
+        }
+        raiseIfHeader(attributes)
+        return attributes
+    }
+
+    private func raiseIfHeader(_ attributes: UICollectionViewLayoutAttributes) {
+        guard attributes.representedElementKind == UICollectionView.elementKindSectionHeader else { return }
+        attributes.zIndex = StickyHeaderFlowLayout.headerZIndex
     }
 }
