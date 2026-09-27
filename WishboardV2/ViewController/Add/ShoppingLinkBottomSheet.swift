@@ -96,6 +96,11 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
     public var prevLink: String?
+    /// 유효성 검사에 한 번이라도 걸렸는지 여부.
+    ///
+    /// 처음에는 버튼을 누르기 전까지 아무것도 알리지 않다가,
+    /// 한 번 걸린 뒤로는 입력할 때마다 바로 확인해 에러 메시지를 켜고 끕니다.
+    private var hasFailedValidation = false
     
     var onClose: (() -> Void)?
     /// '아이템 정보 불러오기' 탭. 링크를 파싱해 상품 정보를 채웁니다.
@@ -202,9 +207,35 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
     
     // MARK: - Actions
     @objc private func textFieldEditingChanged(_ textField: UITextField) {
-        guard let text = textField.text else { return }
-        errorLabel.isHidden = true
+        let text = textField.text ?? ""
         updateActionButtonState(isEnabled: text.count >= 1)
+
+        // 아직 한 번도 걸린 적이 없다면 입력 중에는 아무것도 알리지 않습니다.
+        guard hasFailedValidation else {
+            errorLabel.isHidden = true
+            return
+        }
+
+        updateErrorMessage(for: text)
+    }
+
+    /// 입력값이 유효한지 보고 에러 메시지만 켜고 끕니다.
+    ///
+    /// 입력 도중이므로 `validatedLink()`와 달리 텍스트를 다듬거나 바꿔치지 않습니다.
+    private func updateErrorMessage(for text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // 비어 있는 동안은 아직 쓰는 중으로 보고 알리지 않습니다.
+        guard !trimmed.isEmpty else {
+            errorLabel.isHidden = true
+            return
+        }
+
+        if trimmed.firstShoppingLink() == nil {
+            displayError(ErrorMessage.shoppingLink)
+        } else {
+            errorLabel.isHidden = true
+        }
     }
     
     @objc private func closeButtonTapped() {
@@ -234,6 +265,8 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
 
         // 안내 문구가 함께 붙여넣어질 수 있어 본문에서 링크만 찾아 씁니다.
         guard let link = text.firstShoppingLink() else {
+            // 이후로는 입력할 때마다 확인해 바로 알려 줍니다.
+            hasFailedValidation = true
             displayError(ErrorMessage.shoppingLink)
             return nil
         }
@@ -279,6 +312,7 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
     func resetView() {
         textField.text = ""
         errorLabel.isHidden = true
+        hasFailedValidation = false
         self.updateActionButtonState(isEnabled: false)
         self.removeObservers()
         self.isHidden = true
@@ -294,6 +328,8 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
         titleLabel.text = Title.shoppingLinkBottomSheet
         textField.text = prevLink
         errorLabel.isHidden = true
+        // 시트를 다시 열면 버튼을 누르기 전까지 알리지 않는 상태로 돌아갑니다.
+        hasFailedValidation = false
         // 입력 필드가 비어 있으면 두 버튼 모두 비활성화입니다.
         self.updateActionButtonState(isEnabled: (prevLink?.isEmpty == false))
     }
