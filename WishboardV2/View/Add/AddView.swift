@@ -24,6 +24,10 @@ final class AddView: UIView, LoadingPresentable {
     /// 저장 중에도 입력한 내용이 비쳐 보이도록 딤드로 덮습니다.
     var loadingBackground: LoadingView.Background { .dimmed }
     
+    /// 메모 입력 영역 아래에 두는 여백.
+    /// 스크롤을 끝까지 내렸을 때 하단 safe area와의 간격이 이 값이 됩니다.
+    private static let memoBottomSpacing: CGFloat = 46
+
     let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
         $0.keyboardDismissMode = .onDrag
@@ -163,7 +167,9 @@ final class AddView: UIView, LoadingPresentable {
         stackView.snp.makeConstraints { make in
             make.top.equalTo(collectionView.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-16)
+            // 마지막 섹션(메모)이 자체적으로 갖는 아래 여백을 빼서,
+            // 메모 입력 영역 기준으로 memoBottomSpacing만큼만 남게 합니다.
+            make.bottom.equalToSuperview().offset(-(AddView.memoBottomSpacing - FormItemView.verticalInset))
         }
 
         let fields: [UIView] = [
@@ -175,11 +181,10 @@ final class AddView: UIView, LoadingPresentable {
             
             stackView.addArrangedSubview(field)
             
-            if field == memoSection {
-                field.snp.makeConstraints { make in
-                    make.height.equalTo(362)
-                }
-            } else {
+            // 메모는 높이를 고정하지 않습니다.
+            // 고정해 두면 입력이 짧을 때 남는 높이가 그대로 빈 여백으로 보이고,
+            // 반대로 길게 입력하면 고정 높이를 넘겨 제약이 충돌합니다.
+            if field != memoSection {
                 field.snp.makeConstraints { make in
                     make.height.equalTo(84)
                 }

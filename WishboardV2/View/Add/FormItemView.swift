@@ -66,6 +66,9 @@ class FormItemView: UIView {
 
     // MARK: - UI Components
     
+    /// 섹션 내용의 위/아래 여백. 바깥에서 섹션 아래 간격을 잡을 때도 이 값을 기준으로 씁니다.
+    public static let verticalInset: CGFloat = 16
+
     let mainContainer = UIView()
     
     public let titleLabel = UILabel().then {
@@ -135,7 +138,7 @@ class FormItemView: UIView {
 
         mainContainer.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
-            make.verticalEdges.equalToSuperview().inset(16)
+            make.verticalEdges.equalToSuperview().inset(FormItemView.verticalInset)
         }
     }
     
@@ -279,7 +282,9 @@ class FormItemView: UIView {
         tv.snp.makeConstraints { make in
             make.height.greaterThanOrEqualTo(120)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.lessThanOrEqualToSuperview()
+            // 텍스트뷰가 섹션 높이를 결정하도록 아래를 붙여 둡니다.
+            // 스크롤이 꺼져 있어 입력한 만큼 늘어나고, 그만큼 섹션도 함께 늘어납니다.
+            make.bottom.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(14)
         }
 
