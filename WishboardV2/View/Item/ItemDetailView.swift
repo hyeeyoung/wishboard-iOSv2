@@ -557,6 +557,9 @@ final class ItemDetailView: UIView, LoadingPresentable {
             $0.dataDetectorTypes = [.all]
             $0.isScrollEnabled = false
             $0.textContainerInset = .zero
+            // 기본값(5)이면 글자가 텍스트뷰 가장자리보다 안쪽에서 시작해
+            // 제목이나 안내 문구와 leading이 어긋납니다.
+            $0.textContainer.lineFragmentPadding = 0
             $0.text = memo
         }
         memoTextView.delegate = self
@@ -611,10 +614,13 @@ final class ItemDetailView: UIView, LoadingPresentable {
 
         memoTextView.snp.makeConstraints { make in
             make.top.equalTo(memoTitleLabel.snp.bottom).offset(10)
-            make.leading.trailing.bottom.equalToSuperview().inset(12)
+            // 제목과 leading을 맞춥니다. 높이 계산도 좌우 16을 전제로 하고 있습니다.
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(12)
         }
 
         view.addSubview(memoPlaceholderLabel)
+        // 텍스트뷰의 글자 들여쓰기를 0으로 두었으므로, 가장자리에 맞추면 본문 글자와 같은 자리에서 시작합니다.
         memoPlaceholderLabel.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(memoTextView)
             // 메모가 없을 때 텍스트뷰는 한 줄 높이로 잡히는데 안내 문구는 여러 줄일 수 있습니다.
