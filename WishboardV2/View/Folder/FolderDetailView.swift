@@ -90,6 +90,7 @@ final class FolderDetailView: UIView, LoadingPresentable {
         addSubview(loadingContainerView)
 
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
         collectionView.register(
             WishItemCollectionViewCell.self,
             forCellWithReuseIdentifier: WishItemCollectionViewCell.reuseIdentifier
@@ -204,6 +205,9 @@ final class FolderDetailView: UIView, LoadingPresentable {
         toolbar.isHidden = isSelectionMode
         selectionToolBar.isHidden = !isSelectionMode
         dragSelectionController?.isEnabled = isSelectionMode
+
+        // 선택 중에 목록이 새로 불려 선택이 흐트러지지 않도록 당겨서 새로고침을 막습니다.
+        collectionView.refreshControl = isSelectionMode ? nil : refreshControl
 
         collectionView.snp.remakeConstraints { make in
             make.horizontalEdges.bottom.equalToSuperview()
