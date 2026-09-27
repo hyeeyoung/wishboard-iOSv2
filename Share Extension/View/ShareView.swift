@@ -33,9 +33,10 @@ final class ShareView: UIView, LoadingPresentable {
         $0.layer.maskedCorners = ShareView.sheetMaskedCorners
     }
     /// 로딩뷰가 덮을 영역. 닫기(X) 버튼은 위로 올려 계속 누를 수 있게 둡니다.
+    /// 하단 CTA 버튼은 로딩 중에도 보여야 해서 이 영역에 포함하지 않습니다.
     ///
-    /// 시트 전체를 덮기 때문에 `backgroundView`의 둥근 위쪽 모서리까지 가립니다.
-    /// `backgroundView`에는 `clipsToBounds`가 없어 자식 뷰가 모서리 밖으로 그려지므로,
+    /// `backgroundView`의 둥근 위쪽 모서리까지 덮는데, `backgroundView`에는
+    /// `clipsToBounds`가 없어 자식 뷰가 모서리 밖으로 그려지므로,
     /// 이 영역 자체를 같은 곡률로 잘라 로딩 중에도 모서리가 유지되도록 합니다.
     let loadingContainerView = UIView().then {
         $0.isUserInteractionEnabled = false
@@ -240,8 +241,10 @@ final class ShareView: UIView, LoadingPresentable {
             make.top.equalTo(addFolderButton.snp.bottom).offset(16)
             make.bottom.equalToSuperview().offset(-34)
         }
+        // 로딩 중에도 하단 CTA 버튼은 보여야 하므로, 버튼 위쪽까지만 덮습니다.
         loadingContainerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.horizontalEdges.equalToSuperview()
+            make.bottom.equalTo(completeButton.snp.top)
         }
     }
     
@@ -262,6 +265,15 @@ final class ShareView: UIView, LoadingPresentable {
     
     /// Complete 버튼 상태를 업데이트하는 메서드
     public func updateCompleteButtonState() {
+        // 로딩 중일 때
+        // 로딩뷰가 버튼을 덮지 않으므로, 눌리지 않도록 여기서 비활성으로 둡니다.
+        // 파싱 결과가 들어오면 이 메서드가 다시 불리는데, 그때 폴더 조회가 아직 돌고 있을 수
+        // 있어 호출 횟수가 아니라 로딩뷰가 실제로 남아 있는지를 봅니다.
+        guard loadingContainerView.subviews.isEmpty else {
+            completeButton.isEnabled = false
+            return
+        }
+
         // 로그인 상태가 아닐 때
         if UserManager.accessToken == nil || UserManager.refreshToken == nil {
             completeButton.setTitle("로그인 후 이용해주세요", for: .normal)
