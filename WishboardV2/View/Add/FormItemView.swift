@@ -280,7 +280,6 @@ class FormItemView: UIView {
         mainContainer.addSubview(tv)
 
         tv.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(120)
             make.leading.trailing.equalToSuperview().inset(16)
             // 텍스트뷰가 섹션 높이를 결정하도록 아래를 붙여 둡니다.
             // 스크롤이 꺼져 있어 입력한 만큼 늘어나고, 그만큼 섹션도 함께 늘어납니다.
@@ -305,6 +304,9 @@ class FormItemView: UIView {
         placeholderLabel.snp.makeConstraints { make in
             make.leading.trailing.equalTo(tv)
             make.top.equalTo(tv)
+            // 입력이 없을 때 텍스트뷰는 한 줄 높이로 줄어드는데, placeholder는 여러 줄일 수 있습니다.
+            // placeholder가 텍스트뷰 밖으로 삐져나가지 않도록 최소 높이를 여기서 잡아 줍니다.
+            make.bottom.lessThanOrEqualTo(tv)
         }
 
         // 초기 상태에서는 placeholder 노출
