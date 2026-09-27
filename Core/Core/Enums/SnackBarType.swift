@@ -56,7 +56,7 @@ public enum SnackBarType {
         case .modifyPassword: return "비밀번호가 변경되었어요!👩‍🎤"
         case .deleteUser: return "탈퇴 완료되었어요. 이용해주셔서 감사합니다!☺️"
         case .shoppingLinkNotExist: return "쇼핑몰 링크를 등록해 주세요!🛍️️"
-        case .failShoppingLink: return "앗, 아이템 정보를 불러오지 못했어요🥲"
+        case .failShoppingLink: return "앗, 아이템 정보를 불러오지 못했어요!"
         case .emptyItemContent: return "앗, 상품명과 가격을 입력해 주세요😁"
         case .selectPastTime: return "현재 시간 이후로만 선택할 수 있어요"
         case .errorMessage: return "예상하지 못한 오류가 발생했어요!\n잠시후 다시 시도해주세요."
