@@ -38,7 +38,7 @@ public final class ItemManager {
         return try await API.Item.request(.parseItemUrl(link: link))
     }
     
-    public func addItem(type: AddItemType, item: RequestItemDTO) async throws -> EmptyResponse {
+    public func addItem(type: AddItemType, item: RequestItemDTO) async throws -> WishListResponse {
         return try await API.Item.request(.addItem(type: type, item: item))
     }
     
