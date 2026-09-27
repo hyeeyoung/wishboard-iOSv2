@@ -540,7 +540,10 @@ final class AddViewController: UIViewController {
                     self.hideLinkBottomSheet()
                     return
                 }
-                self.presentOverwriteAlert(for: parsedItem, link: link)
+                // 알럿은 시트 위가 아니라, 시트가 다 내려간 뒤에 띄웁니다.
+                self.hideLinkBottomSheet { [weak self] in
+                    self?.presentOverwriteAlert(for: parsedItem, link: link)
+                }
             } catch {
                 guard !_Concurrency.Task.isCancelled else { return }
                 // 파싱에 실패해도 입력한 링크는 살려 둡니다.
@@ -572,15 +575,14 @@ final class AddViewController: UIViewController {
                 buttonColors: [.gray_600, .pink_700]
             )
         )
+        // 시트는 알럿을 띄우기 전에 이미 내려가 있습니다.
         alert.buttonHandlers = [
             { [weak self] _ in
                 // 취소 - 링크만 등록합니다.
                 self?.viewModel.selectedLink = link
-                self?.hideLinkBottomSheet()
             },
             { [weak self] _ in
                 self?.applyParsedItem(parsedItem, link: link)
-                self?.hideLinkBottomSheet()
             }
         ]
         alert.modalTransitionStyle = .crossDissolve
@@ -633,7 +635,8 @@ final class AddViewController: UIViewController {
     }
     
     /// 쇼핑몰 링크 입력 시트 미노출
-    private func hideLinkBottomSheet() {
+    /// - Parameter completion: 시트가 완전히 내려간 뒤 실행할 동작
+    private func hideLinkBottomSheet(completion: (() -> Void)? = nil) {
         DispatchQueue.main.async {
             self.shoppingLinkBottomSheet.removeObservers()
             UIView.animate(withDuration: 0.3) {
@@ -642,6 +645,8 @@ final class AddViewController: UIViewController {
                     make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
                 }
                 self.view.layoutIfNeeded()
+            } completion: { _ in
+                completion?()
             }
         }
     }
