@@ -206,7 +206,9 @@ final class ShoppingLinkBottomSheet: UIView, LoadingPresentable {
 
     /// 입력된 링크가 유효하면 돌려주고, 아니면 에러 메시지를 노출합니다.
     private func validatedLink() -> String? {
-        guard let text = textField.text, !text.isEmpty else { return nil }
+        // 붙여넣기로 앞뒤 공백이 섞여 들어올 수 있어, 검증과 전달 모두 다듬은 값을 씁니다.
+        let text = (textField.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
 
         // 유효하지 않은 링크 예외처리
         guard text.isValidShoppingLink() else {

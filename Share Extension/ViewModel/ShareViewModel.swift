@@ -108,10 +108,12 @@ final class ShareViewModel {
                         }
 
                         // MARK: - 2. URL 타입도 실제 HTTP/HTTPS URL인지 검증
+                        // 호스트가 도메인 형식인지까지 확인합니다. (앱 내 링크 검증과 같은 기준)
                         guard let url = urlItem as? URL,
                               let scheme = url.scheme?.lowercased(),
                               (scheme == "http" || scheme == "https"),
-                              url.host != nil
+                              let host = url.host,
+                              host.isDomainFormattedHost()
                         else {
                             print("❌ Invalid URL item: \(urlItem as Any)")
                             completion("")
@@ -154,10 +156,9 @@ final class ShareViewModel {
                         )
 
                         // plain-text가 실제 URL인지 검증
-                        guard let url = URL(string: trimmed),
-                              let scheme = url.scheme?.lowercased(),
-                              (scheme == "http" || scheme == "https"),
-                              url.host != nil
+                        // 앱 내 쇼핑몰 링크 검증과 같은 기준을 씁니다.
+                        guard trimmed.isValidShoppingLink(),
+                              let url = URL(string: trimmed)
                         else {
                             print("❌ Plain text is not a valid URL.")
                             print("   Raw: \(text)")
