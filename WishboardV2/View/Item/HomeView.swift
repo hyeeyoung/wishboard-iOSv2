@@ -61,6 +61,9 @@ final class HomeView: UIView, LoadingPresentable {
 
     /// 툴바 델리게이트 - 스크롤 헤더에 전달됩니다
     weak var toolbarDelegate: HomeToolBarDelegate?
+    /// 상단바 헤더는 재사용되므로, 개수는 뷰가 들고 있다가 헤더가 만들어질 때마다 다시 반영합니다.
+    private weak var toolBarHeader: HomeToolBarHeaderView?
+    private var unreadAlarmCount: Int = 0
 
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -321,6 +324,14 @@ final class HomeView: UIView, LoadingPresentable {
     }
 
     /// 현재 화면에 노출 중인 아이템 id 목록
+    /// 읽지 않은 알림 개수를 상단바 뱃지에 반영합니다.
+    ///
+    /// 개수를 가져오는 쪽(실시간 수신)은 아직 연결되어 있지 않아, 지금은 이 메서드가 유일한 진입점입니다.
+    func updateAlarmBadge(count: Int) {
+        unreadAlarmCount = count
+        toolBarHeader?.toolBar.updateAlarmBadge(count: count)
+    }
+
     func displayedItemIds() -> [Int] {
         viewModel?.displayedItems.compactMap { $0.id } ?? []
     }
@@ -417,6 +428,8 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
                 banner: isBannerVisible ? eventBannerView : nil,
                 bannerHeight: HomeView.eventBannerHeight
             )
+            toolBarHeader = header
+            header.toolBar.updateAlarmBadge(count: unreadAlarmCount)
             return header
         } else {
             guard let header = collectionView.dequeueReusableSupplementaryView(
