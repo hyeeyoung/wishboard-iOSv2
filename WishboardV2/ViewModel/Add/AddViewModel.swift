@@ -35,9 +35,10 @@ final class AddViewModel {
     @Published var folders: [FolderListResponse] = []
     
     // 저장 버튼 활성화 여부
+    /// 필수값은 상품명과 가격입니다. 이미지는 없어도 저장할 수 있습니다.
     var isSaveEnabled: AnyPublisher<Bool, Never> {
-        return Publishers.CombineLatest3(itemNamePublisher, itemPricePublisher, selectedImagePublisher)
-            .map { !$0.isEmpty && !$1.isEmpty && !$2.isEmpty }
+        return Publishers.CombineLatest(itemNamePublisher, itemPricePublisher)
+            .map { !$0.isEmpty && !$1.isEmpty }
             .eraseToAnyPublisher()
     }
     
@@ -48,10 +49,6 @@ final class AddViewModel {
     
     private var itemPricePublisher: AnyPublisher<String, Never> {
         $itemPrice.eraseToAnyPublisher()
-    }
-    
-    private var selectedImagePublisher: AnyPublisher<[UIImage], Never> {
-        $selectedImages.eraseToAnyPublisher()
     }
     
     // 가격 포맷 (콤마 추가)
