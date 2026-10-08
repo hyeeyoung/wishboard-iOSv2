@@ -145,9 +145,31 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         
         actionSheet.addAction(renameAction)
         actionSheet.addAction(deleteAction)
+        
+        // 대표 사진으로 고를 이미지가 있어야 하므로, 아이템이 하나 이상일 때만 노출합니다.
+        if (folder.itemCount ?? 0) > 0 {
+            let changeThumbnailAction = UIAlertAction(title: "대표 사진 변경", style: .default) { [weak self] _ in
+                actionSheet.dismiss(animated: true)
+                self?.moveToFolderThumbnail(for: folder)
+            }
+            actionSheet.addAction(changeThumbnailAction)
+        }
+        
         actionSheet.addAction(cancelAction)
         
         present(actionSheet, animated: true, completion: nil)
+    }
+    
+    /// 폴더 대표 사진 변경 화면으로 이동
+    private func moveToFolderThumbnail(for folder: FolderListResponse) {
+        guard let folderId = folder.id else { return }
+        UIDevice.vibrate()
+        
+        let vc = FolderThumbnailViewController(folderId: folderId,
+                                               folderTitle: folder.folderName ?? "",
+                                               currentThumbnailUrl: folder.folderThumbnail)
+        vc.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     private func setupBottomSheet() {

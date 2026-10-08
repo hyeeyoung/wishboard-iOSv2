@@ -21,7 +21,8 @@ final public class AddToolBar: UIView {
     weak public var delegate: AddToolBarDelegate?
     
     // MARK: - Views
-    private let quitButton = UIButton().then {
+    /// 좌측 버튼. 기본은 닫기(X)이고, 화면에 따라 뒤로가기로 바꿀 수 있습니다.
+    private let leftButton = UIButton().then {
         $0.setImage(Image.quit, for: .normal)
     }
     
@@ -56,13 +57,13 @@ final public class AddToolBar: UIView {
     
     // MARK: - Setup
     private func setupViews() {
-        addSubview(quitButton)
+        addSubview(leftButton)
         addSubview(titleLabel)
         addSubview(saveButton)
     }
     
     private func setupConstraints() {
-        quitButton.snp.makeConstraints { make in
+        leftButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(13)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(24)
@@ -82,7 +83,7 @@ final public class AddToolBar: UIView {
     
     // MARK: - Setup Actions
     private func setupActions() {
-        quitButton.addTarget(self, action: #selector(quitButtonTapped), for: .touchUpInside)
+        leftButton.addTarget(self, action: #selector(leftButtonTapped), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
     
@@ -97,7 +98,7 @@ final public class AddToolBar: UIView {
     }
 
     // MARK: - Button Actions
-    @objc private func quitButtonTapped() {
+    @objc private func leftButtonTapped() {
         delegate?.leftItemTap()
     }
     
@@ -105,8 +106,10 @@ final public class AddToolBar: UIView {
         delegate?.rightItemTap()
     }
     
-    public func configure(title: String) {
+    /// - Parameter usesBackIcon: 좌측 버튼을 뒤로가기 아이콘으로 바꿀지 여부. 기본은 닫기(X)입니다.
+    public func configure(title: String, usesBackIcon: Bool = false) {
         self.titleLabel.text = title
+        self.leftButton.setImage(usesBackIcon ? Image.goBack : Image.quit, for: .normal)
         
         self.snp.makeConstraints { make in
             make.height.equalTo(42)
