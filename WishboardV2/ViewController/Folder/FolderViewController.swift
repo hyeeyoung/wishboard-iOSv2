@@ -124,7 +124,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
             actionSheet.dismiss(animated: true)
             self?.showBottomSheet(for: folder)
         }
-        let deleteAction = UIAlertAction(title: "폴더 삭제", style: .destructive) { [weak self] _ in
+        let deleteAction = UIAlertAction(title: "폴더 삭제", style: .default) { [weak self] _ in
             actionSheet.dismiss(animated: true)
             // 폴더 삭제 알럿창
             let alert = AlertViewController(alertType: .deleteFolder)
