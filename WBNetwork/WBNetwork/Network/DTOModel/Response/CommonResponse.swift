@@ -44,6 +44,10 @@ public struct PaginationResponse<T: Decodable>: Decodable {
     public let numberOfElements: Int?
     public let pageable: Pageable?
     public let empty: Bool
+    /// 조회 조건에 해당하는 위시템 개수 (아이템 목록 조회에만 내려옵니다)
+    public let wishCount: Int?
+    /// 조회 조건에 해당하는 소장템 개수 (아이템 목록 조회에만 내려옵니다)
+    public let ownedCount: Int?
 }
 
 public struct Pageable: Codable {
