@@ -47,6 +47,17 @@ final class HomeView: UIView, LoadingPresentable {
     private var selectionViewModel: ItemSelectionViewModel?
     private let refreshControl = UIRefreshControl()
     public var refreshAction: (() -> Void)?
+    /// 스티키 헤더의 필터 딱지를 탭했을 때. 바텀시트는 화면(VC)에서 띄웁니다.
+    public var onTapFilterChip: (() -> Void)?
+
+    /// 헤더에 보여 줄 개수. 필터가 걸려 있으면 그 필터에 해당하는 개수를 보여 줍니다.
+    static func displayedTotalCount(totalCount: Int, ownedCount: Int, filter: HomeItemFilter) -> Int {
+        switch filter {
+        case .all:       return totalCount
+        case .ownedOnly: return ownedCount
+        case .wishOnly:  return max(0, totalCount - ownedCount)
+        }
+    }
     private weak var stickyHeader: HomeStickyHeaderView?
     private var isBannerVisible = true
     private var isSelectionMode = false
@@ -282,12 +293,14 @@ final class HomeView: UIView, LoadingPresentable {
             }
             .store(in: &cancellables)
 
-        Publishers.CombineLatest3(viewModel.$totalCount, viewModel.$ownedCount, viewModel.$isExcludingOwned)
+        Publishers.CombineLatest3(viewModel.$totalCount, viewModel.$ownedCount, viewModel.$filter)
             .receive(on: RunLoop.main)
-            .sink { [weak self] totalCount, ownedCount, isExcluding in
+            .sink { [weak self] totalCount, ownedCount, filter in
                 self?.stickyHeader?.configure(
-                    totalCount: isExcluding ? (totalCount - ownedCount) : totalCount,
-                    isExcludingOwned: isExcluding
+                    totalCount: HomeView.displayedTotalCount(totalCount: totalCount,
+                                                             ownedCount: ownedCount,
+                                                             filter: filter),
+                    filter: filter
                 )
             }
             .store(in: &cancellables)
@@ -445,8 +458,10 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
 
             if let vm = viewModel {
                 header.configure(
-                    totalCount: vm.isExcludingOwned ? (vm.totalCount - vm.ownedCount) : vm.totalCount,
-                    isExcludingOwned: vm.isExcludingOwned
+                    totalCount: HomeView.displayedTotalCount(totalCount: vm.totalCount,
+                                                             ownedCount: vm.ownedCount,
+                                                             filter: vm.filter),
+                    filter: vm.filter
                 )
             }
             return header
@@ -455,10 +470,8 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
 }
 
 extension HomeView: HomeStickyHeaderDelegate {
-    func didToggleExcludeOwned() {
-        // 필터가 바뀌면 목록을 다시 조회하므로, 화면에서 사라질 아이템의 선택 상태를 정리합니다.
-        selectionViewModel?.clearSelection()
-        viewModel?.toggleExcludeOwned()
+    func didTapFilterChip() {
+        onTapFilterChip?()
     }
 
     func didChangeGridColumn(_ column: GridColumnType) {

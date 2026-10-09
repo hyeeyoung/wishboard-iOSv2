@@ -18,6 +18,7 @@
 		231F51BE2C708EB400524968 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51BD2C708EB400524968 /* HomeView.swift */; };
 		231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */; };
 		231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C42C708F4A00524968 /* HomeViewModel.swift */; };
+		D1540002000000000000154C /* HomeItemFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1540001000000000000154C /* HomeItemFilter.swift */; };
 		231F85C92D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85C82D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift */; };
 		231F85CB2D6B38D30060F827 /* SelectDateBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */; };
 		231F85CE2D6B3A010060F827 /* SetNotificationDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */; };
@@ -25,6 +26,7 @@
 		232185ED2C70B519008BD81B /* WBNetwork.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 232185C42C70B3BB008BD81B /* WBNetwork.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		232466752C6F92A400979940 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232466742C6F92A400979940 /* TabBarViewController.swift */; };
 		232466782C6F92B800979940 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232466772C6F92B800979940 /* HomeViewController.swift */; };
+		D1540004000000000000154C /* ItemFilterBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1540003000000000000154C /* ItemFilterBottomSheet.swift */; };
 		2328C4EB2C720CFF0081A97C /* FolderBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2328C4EA2C720CFF0081A97C /* FolderBottomSheet.swift */; };
 		2337C8642C70FD2B00E2A67B /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */; };
 		2337C8662C70FD4F00E2A67B /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C8652C70FD4F00E2A67B /* ItemDetailView.swift */; };
@@ -260,6 +262,7 @@
 		231F51BD2C708EB400524968 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishItemCollectionViewCell.swift; sourceTree = "<group>"; };
 		231F51C42C708F4A00524968 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		D1540001000000000000154C /* HomeItemFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeItemFilter.swift; sourceTree = "<group>"; };
 		231F85C82D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingLinkBottomSheet.swift; sourceTree = "<group>"; };
 		231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDateBottomSheet.swift; sourceTree = "<group>"; };
 		231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNotificationDate.swift; sourceTree = "<group>"; };
@@ -267,6 +270,7 @@
 		232185C72C70B3D4008BD81B /* NetworkLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkLibrary; sourceTree = "<group>"; };
 		232466742C6F92A400979940 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		232466772C6F92B800979940 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		D1540003000000000000154C /* ItemFilterBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemFilterBottomSheet.swift; sourceTree = "<group>"; };
 		2328C4EA2C720CFF0081A97C /* FolderBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderBottomSheet.swift; sourceTree = "<group>"; };
 		2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		2337C8652C70FD4F00E2A67B /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
@@ -443,6 +447,7 @@
 			children = (
 				F16DF78A977F21589344BD66 /* ItemSelectionViewModel.swift */,
 				231F51C42C708F4A00524968 /* HomeViewModel.swift */,
+				D1540001000000000000154C /* HomeItemFilter.swift */,
 				2337C8672C70FDB400E2A67B /* ItemDetailViewModel.swift */,
 			);
 			path = Item;
@@ -495,6 +500,7 @@
 			children = (
 				B64917113960340291378C2B /* ItemSelectionFlow.swift */,
 				232466772C6F92B800979940 /* HomeViewController.swift */,
+				D1540003000000000000154C /* ItemFilterBottomSheet.swift */,
 				2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */,
 				230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */,
 				2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */,
@@ -1379,12 +1385,14 @@
 				23AD9D6F2C80A280007AB8D1 /* AlarmListView.swift in Sources */,
 				235ABA132C8C716500763900 /* CalendarViewModel.swift in Sources */,
 				232466782C6F92B800979940 /* HomeViewController.swift in Sources */,
+				D1540004000000000000154C /* ItemFilterBottomSheet.swift in Sources */,
 				2347A9022C7ABB95009F9480 /* FolderDetailViewController.swift in Sources */,
 				23D5B65D2C7A297E00B73174 /* WebViewController.swift in Sources */,
 				238F45A82C70A83600A6119B /* HomeToolBar.swift in Sources */,
 				23CB0DCE2C79E2600053EB40 /* MyPageViewController.swift in Sources */,
 				2337C8662C70FD4F00E2A67B /* ItemDetailView.swift in Sources */,
 				231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */,
+				D1540002000000000000154C /* HomeItemFilter.swift in Sources */,
 				23C610782D68D699003E71F4 /* AddViewController.swift in Sources */,
 				23D288462C55259E0044DF16 /* SplashViewController.swift in Sources */,
 				231F85CE2D6B3A010060F827 /* SetNotificationDate.swift in Sources */,
