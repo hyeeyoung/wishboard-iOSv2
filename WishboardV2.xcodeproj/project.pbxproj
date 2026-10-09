@@ -18,6 +18,7 @@
 		231F51BE2C708EB400524968 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51BD2C708EB400524968 /* HomeView.swift */; };
 		231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */; };
 		231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F51C42C708F4A00524968 /* HomeViewModel.swift */; };
+		D1540002000000000000154C /* HomeItemFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1540001000000000000154C /* HomeItemFilter.swift */; };
 		231F85C92D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85C82D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift */; };
 		231F85CB2D6B38D30060F827 /* SelectDateBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */; };
 		231F85CE2D6B3A010060F827 /* SetNotificationDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */; };
@@ -25,6 +26,7 @@
 		232185ED2C70B519008BD81B /* WBNetwork.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 232185C42C70B3BB008BD81B /* WBNetwork.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		232466752C6F92A400979940 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232466742C6F92A400979940 /* TabBarViewController.swift */; };
 		232466782C6F92B800979940 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232466772C6F92B800979940 /* HomeViewController.swift */; };
+		D1540004000000000000154C /* ItemFilterBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1540003000000000000154C /* ItemFilterBottomSheet.swift */; };
 		2328C4EB2C720CFF0081A97C /* FolderBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2328C4EA2C720CFF0081A97C /* FolderBottomSheet.swift */; };
 		2337C8642C70FD2B00E2A67B /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */; };
 		2337C8662C70FD4F00E2A67B /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2337C8652C70FD4F00E2A67B /* ItemDetailView.swift */; };
@@ -33,6 +35,7 @@
 		2347A9022C7ABB95009F9480 /* FolderDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */; };
 		2347A9042C7ABBA9009F9480 /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */; };
 		2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */; };
+		A1460008000000000000146A /* FolderThumbnailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1460007000000000000146A /* FolderThumbnailViewModel.swift */; };
 		2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */; };
 		2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */; };
 		2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E5612C7B0A1A00CC9509 /* ShareViewModel.swift */; };
@@ -44,6 +47,9 @@
 		235FFE2F2F653061007A77D2 /* FolderReorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235FFE2E2F65305D007A77D2 /* FolderReorderView.swift */; };
 		235FFE312F65307D007A77D2 /* FolderReorderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235FFE302F653077007A77D2 /* FolderReorderCell.swift */; };
 		235FFE332F653090007A77D2 /* FolderReorderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235FFE322F65308C007A77D2 /* FolderReorderViewController.swift */; };
+		A1460006000000000000146A /* FolderThumbnailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1460005000000000000146A /* FolderThumbnailViewController.swift */; };
+		A1460004000000000000146A /* FolderThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1460003000000000000146A /* FolderThumbnailView.swift */; };
+		A1460002000000000000146A /* FolderThumbnailImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1460001000000000000146A /* FolderThumbnailImageCell.swift */; };
 		23611C922D81AA67003606DE /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3FFBD2C78FAAF003C7DA9 /* SnackBar.swift */; };
 		23626D5B2D7B0CEC000A144A /* AppGuideSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5A2D7B0CEC000A144A /* AppGuideSheetView.swift */; };
 		23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */; };
@@ -55,6 +61,8 @@
 		237468B82D77187300959E09 /* InputToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468B72D77187300959E09 /* InputToolBar.swift */; };
 		237468BB2D771E5500959E09 /* EmailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237468BA2D771E5500959E09 /* EmailInputView.swift */; };
 		23798B6F2C8C24E300F6DA90 /* ModifyPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */; };
+		A1470002000000000000147A /* WithdrawFeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1470001000000000000147A /* WithdrawFeedbackViewController.swift */; };
+		A1470004000000000000147A /* WithdrawFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1470003000000000000147A /* WithdrawFeedbackView.swift */; };
 		23798B712C8C253700F6DA90 /* ModifyPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */; };
 		23798B732C8C256B00F6DA90 /* ModifyPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B722C8C256B00F6DA90 /* ModifyPasswordViewModel.swift */; };
 		2385950C2C71BC7E00B85CBC /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */; };
@@ -254,6 +262,7 @@
 		231F51BD2C708EB400524968 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		231F51C02C708EE400524968 /* WishItemCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishItemCollectionViewCell.swift; sourceTree = "<group>"; };
 		231F51C42C708F4A00524968 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		D1540001000000000000154C /* HomeItemFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeItemFilter.swift; sourceTree = "<group>"; };
 		231F85C82D6B2ACB0060F827 /* ShoppingLinkBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingLinkBottomSheet.swift; sourceTree = "<group>"; };
 		231F85CA2D6B38D30060F827 /* SelectDateBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDateBottomSheet.swift; sourceTree = "<group>"; };
 		231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNotificationDate.swift; sourceTree = "<group>"; };
@@ -261,6 +270,7 @@
 		232185C72C70B3D4008BD81B /* NetworkLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkLibrary; sourceTree = "<group>"; };
 		232466742C6F92A400979940 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		232466772C6F92B800979940 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		D1540003000000000000154C /* ItemFilterBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemFilterBottomSheet.swift; sourceTree = "<group>"; };
 		2328C4EA2C720CFF0081A97C /* FolderBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderBottomSheet.swift; sourceTree = "<group>"; };
 		2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		2337C8652C70FD4F00E2A67B /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
@@ -269,6 +279,7 @@
 		2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewController.swift; sourceTree = "<group>"; };
 		2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
 		2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewModel.swift; sourceTree = "<group>"; };
+		A1460007000000000000146A /* FolderThumbnailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderThumbnailViewModel.swift; sourceTree = "<group>"; };
 		2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectBottomSheet.swift; sourceTree = "<group>"; };
 		2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectTableViewCell.swift; sourceTree = "<group>"; };
 		2357E5612C7B0A1A00CC9509 /* ShareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModel.swift; sourceTree = "<group>"; };
@@ -280,6 +291,9 @@
 		235FFE2E2F65305D007A77D2 /* FolderReorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderReorderView.swift; sourceTree = "<group>"; };
 		235FFE302F653077007A77D2 /* FolderReorderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderReorderCell.swift; sourceTree = "<group>"; };
 		235FFE322F65308C007A77D2 /* FolderReorderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderReorderViewController.swift; sourceTree = "<group>"; };
+		A1460005000000000000146A /* FolderThumbnailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderThumbnailViewController.swift; sourceTree = "<group>"; };
+		A1460003000000000000146A /* FolderThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderThumbnailView.swift; sourceTree = "<group>"; };
+		A1460001000000000000146A /* FolderThumbnailImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderThumbnailImageCell.swift; sourceTree = "<group>"; };
 		23626D5A2D7B0CEC000A144A /* AppGuideSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideSheetView.swift; sourceTree = "<group>"; };
 		23626D5D2D7B16C8000A144A /* AppGuideSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideSheetViewController.swift; sourceTree = "<group>"; };
 		23626D5F2D7B17B1000A144A /* AppGuideCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGuideCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -291,6 +305,8 @@
 		237468B72D77187300959E09 /* InputToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputToolBar.swift; sourceTree = "<group>"; };
 		237468BA2D771E5500959E09 /* EmailInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputView.swift; sourceTree = "<group>"; };
 		23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordViewController.swift; sourceTree = "<group>"; };
+		A1470001000000000000147A /* WithdrawFeedbackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawFeedbackViewController.swift; sourceTree = "<group>"; };
+		A1470003000000000000147A /* WithdrawFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawFeedbackView.swift; sourceTree = "<group>"; };
 		23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordView.swift; sourceTree = "<group>"; };
 		23798B722C8C256B00F6DA90 /* ModifyPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordViewModel.swift; sourceTree = "<group>"; };
 		2385950B2C71BC7E00B85CBC /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
@@ -431,6 +447,7 @@
 			children = (
 				F16DF78A977F21589344BD66 /* ItemSelectionViewModel.swift */,
 				231F51C42C708F4A00524968 /* HomeViewModel.swift */,
+				D1540001000000000000154C /* HomeItemFilter.swift */,
 				2337C8672C70FDB400E2A67B /* ItemDetailViewModel.swift */,
 			);
 			path = Item;
@@ -483,6 +500,7 @@
 			children = (
 				B64917113960340291378C2B /* ItemSelectionFlow.swift */,
 				232466772C6F92B800979940 /* HomeViewController.swift */,
+				D1540003000000000000154C /* ItemFilterBottomSheet.swift */,
 				2337C8632C70FD2B00E2A67B /* ItemDetailViewController.swift */,
 				230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */,
 				2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */,
@@ -590,7 +608,9 @@
 			isa = PBXGroup;
 			children = (
 				235FFE302F653077007A77D2 /* FolderReorderCell.swift */,
+				A1460001000000000000146A /* FolderThumbnailImageCell.swift */,
 				235FFE2E2F65305D007A77D2 /* FolderReorderView.swift */,
+				A1460003000000000000146A /* FolderThumbnailView.swift */,
 				238595122C71BF3900B85CBC /* FolderView.swift */,
 				238595192C71C13F00B85CBC /* FolderCollectionViewCell.swift */,
 				2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */,
@@ -602,6 +622,7 @@
 			isa = PBXGroup;
 			children = (
 				235FFE322F65308C007A77D2 /* FolderReorderViewController.swift */,
+				A1460005000000000000146A /* FolderThumbnailViewController.swift */,
 				238595102C71BF2B00B85CBC /* FolderViewController.swift */,
 				2328C4EA2C720CFF0081A97C /* FolderBottomSheet.swift */,
 				2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */,
@@ -615,6 +636,7 @@
 				235FFE282F653041007A77D2 /* FolderReorderViewModel.swift */,
 				238595152C71BF4F00B85CBC /* FolderViewModel.swift */,
 				2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */,
+				A1460007000000000000146A /* FolderThumbnailViewModel.swift */,
 			);
 			path = Folder;
 			sourceTree = "<group>";
@@ -800,6 +822,7 @@
 				23D5B65C2C7A297E00B73174 /* WebViewController.swift */,
 				23F0F5382C83FC24001ABAA9 /* ModiftyProfileViewController.swift */,
 				23798B6E2C8C24E300F6DA90 /* ModifyPasswordViewController.swift */,
+				A1470001000000000000147A /* WithdrawFeedbackViewController.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -812,6 +835,7 @@
 				23CB0DD72C79E43F0053EB40 /* SettingTableViewCell.swift */,
 				23F0F53C2C83FC65001ABAA9 /* ModifyProfileView.swift */,
 				23798B702C8C253700F6DA90 /* ModifyPasswordView.swift */,
+				A1470003000000000000147A /* WithdrawFeedbackView.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -1302,15 +1326,21 @@
 				23B3A0D32C7F5257006D0561 /* CartView.swift in Sources */,
 				23B82A9F2D786B7400EF2194 /* PasswordInputView.swift in Sources */,
 				235FFE332F653090007A77D2 /* FolderReorderViewController.swift in Sources */,
+				A1460006000000000000146A /* FolderThumbnailViewController.swift in Sources */,
+				A1460004000000000000146A /* FolderThumbnailView.swift in Sources */,
+				A1460002000000000000146A /* FolderThumbnailImageCell.swift in Sources */,
 				23CBF49E2C5514510061D22F /* ViewController.swift in Sources */,
 				23EFA1C62D85B39F00A0EB42 /* SpinningLottie.swift in Sources */,
 				23BB00032D99000300A0EB42 /* EditPillButton.swift in Sources */,
 				23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */,
 				238AE48C2E21571A009C4213 /* ImageCell.swift in Sources */,
 				2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */,
+				A1460008000000000000146A /* FolderThumbnailViewModel.swift in Sources */,
 				231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */,
 				238595132C71BF3900B85CBC /* FolderView.swift in Sources */,
 				23798B6F2C8C24E300F6DA90 /* ModifyPasswordViewController.swift in Sources */,
+				A1470002000000000000147A /* WithdrawFeedbackViewController.swift in Sources */,
+				A1470004000000000000147A /* WithdrawFeedbackView.swift in Sources */,
 				237468B62D77183D00959E09 /* EmailInputViewController.swift in Sources */,
 				23D5B6632C7A309F00B73174 /* AlertViewController.swift in Sources */,
 				2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */,
@@ -1355,12 +1385,14 @@
 				23AD9D6F2C80A280007AB8D1 /* AlarmListView.swift in Sources */,
 				235ABA132C8C716500763900 /* CalendarViewModel.swift in Sources */,
 				232466782C6F92B800979940 /* HomeViewController.swift in Sources */,
+				D1540004000000000000154C /* ItemFilterBottomSheet.swift in Sources */,
 				2347A9022C7ABB95009F9480 /* FolderDetailViewController.swift in Sources */,
 				23D5B65D2C7A297E00B73174 /* WebViewController.swift in Sources */,
 				238F45A82C70A83600A6119B /* HomeToolBar.swift in Sources */,
 				23CB0DCE2C79E2600053EB40 /* MyPageViewController.swift in Sources */,
 				2337C8662C70FD4F00E2A67B /* ItemDetailView.swift in Sources */,
 				231F51C52C708F4A00524968 /* HomeViewModel.swift in Sources */,
+				D1540002000000000000154C /* HomeItemFilter.swift in Sources */,
 				23C610782D68D699003E71F4 /* AddViewController.swift in Sources */,
 				23D288462C55259E0044DF16 /* SplashViewController.swift in Sources */,
 				231F85CE2D6B3A010060F827 /* SetNotificationDate.swift in Sources */,
@@ -1653,8 +1685,8 @@
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "상품 등록을 위해 앨범 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1693,8 +1725,8 @@
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "상품 등록을 위해 앨범 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -39,7 +39,17 @@ public protocol HomeToolBarDelegate: AnyObject {
 }
 
 final public class HomeToolBar: UIView {
-    
+
+    /// 뱃지 글자와 배경 사이의 여백
+    private static let badgeVerticalPadding: CGFloat = 1
+    private static let badgeHorizontalPadding: CGFloat = 2
+    /// 종 아이콘의 모서리 바깥으로 걸치는 정도
+    private static let badgeOffset: CGFloat = 5
+    /// 한 자리 수에서도 보장하는 뱃지 최소 너비
+    private static let badgeMinWidth: CGFloat = 16
+    /// 뱃지에 그대로 표시하는 최대 개수. 이보다 많으면 `99+`로 줄입니다.
+    private static let maxBadgeCount: Int = 99
+
     weak public var delegate: HomeToolBarDelegate?
     
     // MARK: - Views
@@ -52,6 +62,20 @@ final public class HomeToolBar: UIView {
         $0.setImage(Image.notice, for: .normal)
     }
     
+    /// 읽지 않은 알림 개수 뱃지. 개수가 없으면 노출하지 않습니다.
+    private let alarmBadgeView = UIView().then {
+        $0.backgroundColor = .pink_700
+        $0.clipsToBounds = true
+        $0.isUserInteractionEnabled = false
+        $0.isHidden = true
+    }
+
+    private let alarmBadgeLabel = UILabel().then {
+        $0.textColor = .white_10
+        $0.textAlignment = .center
+        $0.font = TypoStyle.SuitB3.font
+    }
+
     /// 아이템 다중 선택 진입 버튼
     private let itemSelectButton = UIButton().then {
         $0.setImage(Image.tabBarCheck, for: .normal)
@@ -76,6 +100,8 @@ final public class HomeToolBar: UIView {
         addSubview(logo)
         addSubview(alarmButton)
         addSubview(itemSelectButton)
+        addSubview(alarmBadgeView)
+        alarmBadgeView.addSubview(alarmBadgeLabel)
     }
     
     private func setupConstraints() {
@@ -97,8 +123,30 @@ final public class HomeToolBar: UIView {
             make.trailing.equalTo(alarmButton.snp.leading).offset(-18)
             make.centerY.equalToSuperview()
         }
+
+        // 종 아이콘의 위/오른쪽 모서리에서 5만큼 바깥으로 걸칩니다.
+        // 크기는 글자 + 여백으로 정해지되, 한 자리 수에서 너무 좁아지지 않도록
+        // 최소 너비를 보장합니다. (너비 제약은 그보다 우선순위를 낮게 둡니다)
+        alarmBadgeView.snp.makeConstraints { make in
+            make.top.trailing.equalTo(alarmButton).inset(-HomeToolBar.badgeOffset)
+            make.height.equalTo(alarmBadgeLabel.snp.height).offset(HomeToolBar.badgeVerticalPadding * 2)
+            make.width.greaterThanOrEqualTo(HomeToolBar.badgeMinWidth)
+            make.width.equalTo(alarmBadgeLabel.snp.width)
+                .offset(HomeToolBar.badgeHorizontalPadding * 2)
+                .priority(.high)
+        }
+
+        alarmBadgeLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
     
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        // 글자 크기에 따라 높이가 달라져도 둥근 형태를 유지합니다.
+        alarmBadgeView.layer.cornerRadius = alarmBadgeView.bounds.height / 2
+    }
+
     // MARK: - Setup Actions
     private func setupActions() {
         alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
@@ -119,6 +167,22 @@ final public class HomeToolBar: UIView {
             make.height.equalTo(52)
             make.top.leading.trailing.equalToSuperview()
         }
+    }
+
+    /// 읽지 않은 알림 개수를 뱃지에 반영합니다.
+    ///
+    /// 개수가 없으면 뱃지를 감춥니다. 개수를 가져오는 쪽(실시간 수신)은 아직 연결되어 있지 않습니다.
+    public func updateAlarmBadge(count: Int) {
+        guard count > 0 else {
+            alarmBadgeView.isHidden = true
+            alarmBadgeLabel.text = nil
+            return
+        }
+
+        alarmBadgeView.isHidden = false
+        alarmBadgeLabel.text = count > HomeToolBar.maxBadgeCount
+            ? "\(HomeToolBar.maxBadgeCount)+"
+            : "\(count)"
     }
 }
 

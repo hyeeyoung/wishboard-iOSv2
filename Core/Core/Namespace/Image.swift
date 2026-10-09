@@ -20,6 +20,7 @@ public enum Image{
     
     // arrow
     public static let arrowRight = UIImage(named: "arrow_right")!
+    public static let arrowDown = UIImage(named: "ic_arrow_down")!
     
     // camera
     public static let cameraGray = UIImage(named: "camera_gray")!
@@ -28,8 +29,12 @@ public enum Image{
     // check
     public static let checkWhite = UIImage(named: "check_white")!
     public static let checkGreen = UIImage(named: "check")!
-    /// 아이템 다중 선택 체크 아이콘
-    public static let checkCircle = UIImage(named: "ic_check_circle")!
+    /// 선택된 상태의 체크 아이콘
+    public static let checkGreenCircle18 = UIImage(named: "ic_check_green_circle18")!
+    public static let checkGreenCircle24 = UIImage(named: "ic_check_green_circle24")!
+    /// 선택되지 않은 상태의 빈 원
+    public static let circle18 = UIImage(named: "ic_circle18")!
+    public static let circle24 = UIImage(named: "ic_circle24")!
     
     // Alarm
     public static let notice = UIImage(named: "notice")!

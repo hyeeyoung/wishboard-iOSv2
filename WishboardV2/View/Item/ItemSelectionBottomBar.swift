@@ -16,8 +16,6 @@ protocol ItemSelectionBottomBarDelegate: AnyObject {
     func selectionBarDidTapSelectAll()
     /// 선택 해제
     func selectionBarDidTapDeselectAll()
-    /// 선택된 아이템 삭제
-    func selectionBarDidTapDelete()
 }
 
 /// 아이템 다중 선택 모드에서 탭바 대신 노출되는 하단바
@@ -51,11 +49,13 @@ final class ItemSelectionBottomBar: UIView {
         $0.lineBreakMode = .byTruncatingTail
     }
 
-    private let deleteButton = UIButton(type: .system).then {
-        $0.setTitle(SelectionText.delete, for: .normal)
+    /// 탭하면 할 수 있는 동작들을 메뉴로 띄웁니다. 메뉴 내용은 화면마다 달라 `setMoreMenu(_:)` 로 받습니다.
+    private let moreButton = UIButton(type: .system).then {
+        $0.setTitle(SelectionText.more, for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitB2.font
         $0.setTitleColor(.gray_700, for: .normal)
         $0.setTitleColor(.gray_300, for: .disabled)
+        $0.showsMenuAsPrimaryAction = true
     }
 
     // MARK: - Properties
@@ -66,7 +66,7 @@ final class ItemSelectionBottomBar: UIView {
     private enum SelectionText {
         static let selectAll = "전체 선택"
         static let deselectAll = "선택 해제"
-        static let delete = "삭제"
+        static let more = "더 보기"
         static let emptyDescription = "아이템을 선택하세요"
     }
 
@@ -94,7 +94,7 @@ final class ItemSelectionBottomBar: UIView {
         contentView.addSubview(separator)
         contentView.addSubview(selectAllButton)
         contentView.addSubview(countLabel)
-        contentView.addSubview(deleteButton)
+        contentView.addSubview(moreButton)
     }
 
     private func setupConstraints() {
@@ -113,7 +113,7 @@ final class ItemSelectionBottomBar: UIView {
             make.centerY.equalToSuperview()
         }
 
-        deleteButton.snp.makeConstraints { make in
+        moreButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-16)
             make.centerY.equalToSuperview()
         }
@@ -121,20 +121,19 @@ final class ItemSelectionBottomBar: UIView {
         countLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.leading.greaterThanOrEqualTo(selectAllButton.snp.trailing).offset(8)
-            make.trailing.lessThanOrEqualTo(deleteButton.snp.leading).offset(-8)
+            make.trailing.lessThanOrEqualTo(moreButton.snp.leading).offset(-8)
         }
     }
 
     private func setupPriorities() {
         // 가운데 문구보다 좌우 버튼이 항상 온전히 보이도록 합니다.
         selectAllButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        deleteButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        moreButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         countLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
     }
 
     private func setupActions() {
         selectAllButton.addTarget(self, action: #selector(selectAllButtonTapped), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - Public Methods
@@ -157,7 +156,13 @@ final class ItemSelectionBottomBar: UIView {
             for: .normal
         )
         selectAllButton.isEnabled = totalCount > 0
-        deleteButton.isEnabled = !isSelectionEmpty
+        moreButton.isEnabled = !isSelectionEmpty
+    }
+
+    /// '더 보기' 버튼을 눌렀을 때 띄울 메뉴를 지정합니다.
+    /// 선택 상태에 따라 내용이 달라지므로, 선택이 바뀔 때마다 다시 넣어 줍니다.
+    func setMoreMenu(_ menu: UIMenu?) {
+        moreButton.menu = menu
     }
 
     // MARK: - Button Actions
@@ -171,8 +176,4 @@ final class ItemSelectionBottomBar: UIView {
         }
     }
 
-    @objc private func deleteButtonTapped() {
-        UIDevice.vibrate()
-        delegate?.selectionBarDidTapDelete()
-    }
 }

@@ -113,6 +113,12 @@ final class FolderDetailViewModel {
         _ = try await usecase.execute(request: request)
     }
 
+    /// 선택한 아이템을 폴더에서 일괄 제거. 아이템 자체는 삭제되지 않습니다.
+    func removeItemsFromFolder(request: BulkRemoveItemsFromFolderRequest) async throws {
+        let usecase = RemoveItemsFromFolderBulkUseCase()
+        _ = try await usecase.execute(request: request)
+    }
+
     /// 풀-투-리프레시에서 호출
     func refresh() {
         // 이미 조회 중이라면 새로고침 상태만 남아 이후 조회에서 로딩뷰가 빠질 수 있어, 그대로 흘려보냅니다.

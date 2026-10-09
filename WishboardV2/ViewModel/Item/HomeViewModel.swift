@@ -14,7 +14,10 @@ final class HomeViewModel {
     @Published var displayedItems: [WishListResponse] = []
     @Published var totalCount: Int = 0
     @Published var ownedCount: Int = 0
-    @Published var isExcludingOwned: Bool = false
+    /// 조회 조건에 해당하는 위시템 개수. 상태 일괄 변경 시 실제로 바뀔 개수를 세는 데 씁니다.
+    @Published var wishCount: Int = 0
+    /// 현재 적용된 목록 필터
+    @Published var filter: HomeItemFilter = .all
 
     // Paging
     @Published var isLoading: Bool = false
@@ -29,15 +32,18 @@ final class HomeViewModel {
 
     init() {
         // 서버에서 필터링된 결과를 받아오지만, 클라이언트 로컬 상태 변경(소장 등록 등)도 반영
-        Publishers.CombineLatest($items, $isExcludingOwned)
-            .map { items, isExcluding in
-                isExcluding ? items.filter { $0.itemStatus != .owned } : items
+        Publishers.CombineLatest($items, $filter)
+            .map { items, filter in
+                guard let status = filter.itemStatus else { return items }
+                return items.filter { $0.itemStatus == status }
             }
             .assign(to: &$displayedItems)
     }
 
-    func toggleExcludeOwned() {
-        isExcludingOwned.toggle()
+    /// 필터를 바꾸고 목록을 다시 조회합니다.
+    func updateFilter(_ filter: HomeItemFilter) {
+        guard self.filter != filter else { return }
+        self.filter = filter
         fetchItems(reset: true)
     }
 
@@ -54,7 +60,7 @@ final class HomeViewModel {
             hasMore = true
         }
 
-        let itemStatus: ItemStatusType? = isExcludingOwned ? .wish : nil
+        let itemStatus: ItemStatusType? = filter.itemStatus
 
         Task {
             do {
@@ -68,6 +74,14 @@ final class HomeViewModel {
 
                 if let itemDatas = response.data?.content {
                     items.append(contentsOf: itemDatas)
+                }
+
+                // 목록 조회 응답에도 위시템/소장템 개수가 함께 내려옵니다.
+                if let wishCount = response.data?.wishCount {
+                    self.wishCount = wishCount
+                }
+                if let ownedCount = response.data?.ownedCount {
+                    self.ownedCount = ownedCount
                 }
 
                 hasMore = !(response.data?.last ?? true)
@@ -93,6 +107,7 @@ final class HomeViewModel {
             let response = try await usecase.execute()
             totalCount = response.totalCount ?? 0
             ownedCount = response.ownedCount ?? 0
+            wishCount = max(0, totalCount - ownedCount)
         } catch {
             // counts 실패 시 기존 값 유지
         }
@@ -101,6 +116,12 @@ final class HomeViewModel {
     /// 선택한 아이템 일괄 삭제
     func deleteItems(request: BulkDeleteItemsRequest) async throws {
         let usecase = DeleteItemsBulkUseCase()
+        _ = try await usecase.execute(request: request)
+    }
+
+    /// 선택한 아이템의 상태(위시템/소장템) 일괄 변경
+    func updateItemsStatus(request: BulkUpdateItemStatusRequest) async throws {
+        let usecase = UpdateItemsStatusBulkUseCase()
         _ = try await usecase.execute(request: request)
     }
 

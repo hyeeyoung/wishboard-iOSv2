@@ -15,6 +15,9 @@ public protocol FolderRepositoryInterface {
     func getFolderItemList(folderId: String, page: Int, size: Int, itemStatus: ItemStatusType?) async throws -> CommonPaginationResponse<[WishListResponse]>
     func getFolderList(order: FolderOrder?) async throws -> [FolderListResponse]
     func reorderFolders(ids: [Int]) async throws -> EmptyResponse
+    func getFolderThumbnailImages(folderId: String, page: Int, size: Int) async throws -> CommonPaginationResponse<[FolderThumbnailImageResponse]>
+    func setFolderThumbnail(folderId: String, itemImageId: Int) async throws -> FolderThumbnailResponse
+    func deleteFolderThumbnail(folderId: String) async throws -> FolderThumbnailResponse
 }
 
 public final class FolderRepository: FolderRepositoryInterface {
@@ -40,5 +43,14 @@ public final class FolderRepository: FolderRepositoryInterface {
     }
     public func reorderFolders(ids: [Int]) async throws -> EmptyResponse {
         return try await FolderManager.shared.reorderFolders(ids: ids)
+    }
+    public func getFolderThumbnailImages(folderId: String, page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[FolderThumbnailImageResponse]> {
+        return try await FolderManager.shared.getFolderThumbnailImages(folderId: folderId, page: page, size: size)
+    }
+    public func setFolderThumbnail(folderId: String, itemImageId: Int) async throws -> FolderThumbnailResponse {
+        return try await FolderManager.shared.setFolderThumbnail(folderId: folderId, itemImageId: itemImageId)
+    }
+    public func deleteFolderThumbnail(folderId: String) async throws -> FolderThumbnailResponse {
+        return try await FolderManager.shared.deleteFolderThumbnail(folderId: folderId)
     }
 }

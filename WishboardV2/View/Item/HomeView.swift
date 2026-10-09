@@ -47,6 +47,17 @@ final class HomeView: UIView, LoadingPresentable {
     private var selectionViewModel: ItemSelectionViewModel?
     private let refreshControl = UIRefreshControl()
     public var refreshAction: (() -> Void)?
+    /// 스티키 헤더의 필터 딱지를 탭했을 때. 바텀시트는 화면(VC)에서 띄웁니다.
+    public var onTapFilterChip: (() -> Void)?
+
+    /// 헤더에 보여 줄 개수. 필터가 걸려 있으면 그 필터에 해당하는 개수를 보여 줍니다.
+    static func displayedTotalCount(totalCount: Int, ownedCount: Int, filter: HomeItemFilter) -> Int {
+        switch filter {
+        case .all:       return totalCount
+        case .ownedOnly: return ownedCount
+        case .wishOnly:  return max(0, totalCount - ownedCount)
+        }
+    }
     private weak var stickyHeader: HomeStickyHeaderView?
     private var isBannerVisible = true
     private var isSelectionMode = false
@@ -61,6 +72,9 @@ final class HomeView: UIView, LoadingPresentable {
 
     /// 툴바 델리게이트 - 스크롤 헤더에 전달됩니다
     weak var toolbarDelegate: HomeToolBarDelegate?
+    /// 상단바 헤더는 재사용되므로, 개수는 뷰가 들고 있다가 헤더가 만들어질 때마다 다시 반영합니다.
+    private weak var toolBarHeader: HomeToolBarHeaderView?
+    private var unreadAlarmCount: Int = 0
 
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -279,12 +293,14 @@ final class HomeView: UIView, LoadingPresentable {
             }
             .store(in: &cancellables)
 
-        Publishers.CombineLatest3(viewModel.$totalCount, viewModel.$ownedCount, viewModel.$isExcludingOwned)
+        Publishers.CombineLatest3(viewModel.$totalCount, viewModel.$ownedCount, viewModel.$filter)
             .receive(on: RunLoop.main)
-            .sink { [weak self] totalCount, ownedCount, isExcluding in
+            .sink { [weak self] totalCount, ownedCount, filter in
                 self?.stickyHeader?.configure(
-                    totalCount: isExcluding ? (totalCount - ownedCount) : totalCount,
-                    isExcludingOwned: isExcluding
+                    totalCount: HomeView.displayedTotalCount(totalCount: totalCount,
+                                                             ownedCount: ownedCount,
+                                                             filter: filter),
+                    filter: filter
                 )
             }
             .store(in: &cancellables)
@@ -321,6 +337,14 @@ final class HomeView: UIView, LoadingPresentable {
     }
 
     /// 현재 화면에 노출 중인 아이템 id 목록
+    /// 읽지 않은 알림 개수를 상단바 뱃지에 반영합니다.
+    ///
+    /// 개수를 가져오는 쪽(실시간 수신)은 아직 연결되어 있지 않아, 지금은 이 메서드가 유일한 진입점입니다.
+    func updateAlarmBadge(count: Int) {
+        unreadAlarmCount = count
+        toolBarHeader?.toolBar.updateAlarmBadge(count: count)
+    }
+
     func displayedItemIds() -> [Int] {
         viewModel?.displayedItems.compactMap { $0.id } ?? []
     }
@@ -417,6 +441,8 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
                 banner: isBannerVisible ? eventBannerView : nil,
                 bannerHeight: HomeView.eventBannerHeight
             )
+            toolBarHeader = header
+            header.toolBar.updateAlarmBadge(count: unreadAlarmCount)
             return header
         } else {
             guard let header = collectionView.dequeueReusableSupplementaryView(
@@ -432,8 +458,10 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
 
             if let vm = viewModel {
                 header.configure(
-                    totalCount: vm.isExcludingOwned ? (vm.totalCount - vm.ownedCount) : vm.totalCount,
-                    isExcludingOwned: vm.isExcludingOwned
+                    totalCount: HomeView.displayedTotalCount(totalCount: vm.totalCount,
+                                                             ownedCount: vm.ownedCount,
+                                                             filter: vm.filter),
+                    filter: vm.filter
                 )
             }
             return header
@@ -442,10 +470,8 @@ extension HomeView: UICollectionViewDataSource, UICollectionViewDelegate {
 }
 
 extension HomeView: HomeStickyHeaderDelegate {
-    func didToggleExcludeOwned() {
-        // 필터가 바뀌면 목록을 다시 조회하므로, 화면에서 사라질 아이템의 선택 상태를 정리합니다.
-        selectionViewModel?.clearSelection()
-        viewModel?.toggleExcludeOwned()
+    func didTapFilterChip() {
+        onTapFilterChip?()
     }
 
     func didChangeGridColumn(_ column: GridColumnType) {

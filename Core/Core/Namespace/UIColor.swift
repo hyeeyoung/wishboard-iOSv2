@@ -35,6 +35,7 @@ public extension UIColor{
     // MARK: 투명도
     public static let black_04 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.04)
     public static let black_05 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.05)
+    public static let black_1 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.1)
     public static let black_3 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.3)
     public static let black_4 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.4)
     public static let black_55 = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.55)
