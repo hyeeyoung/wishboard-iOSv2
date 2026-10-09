@@ -45,6 +45,8 @@ final public class HomeToolBar: UIView {
     private static let badgeHorizontalPadding: CGFloat = 2
     /// 종 아이콘의 모서리 바깥으로 걸치는 정도
     private static let badgeOffset: CGFloat = 5
+    /// 한 자리 수에서도 보장하는 뱃지 최소 너비
+    private static let badgeMinWidth: CGFloat = 16
     /// 뱃지에 그대로 표시하는 최대 개수. 이보다 많으면 `99+`로 줄입니다.
     private static let maxBadgeCount: Int = 99
 
@@ -123,12 +125,12 @@ final public class HomeToolBar: UIView {
         }
 
         // 종 아이콘의 위/오른쪽 모서리에서 5만큼 바깥으로 걸칩니다.
-        // 크기는 글자 + 여백으로 정해지되, 한 자리 수에서 세로로 길쭉해 보이지 않도록
-        // 너비는 높이 이상을 유지합니다. (너비 제약은 그보다 우선순위를 낮게 둡니다)
+        // 크기는 글자 + 여백으로 정해지되, 한 자리 수에서 너무 좁아지지 않도록
+        // 최소 너비를 보장합니다. (너비 제약은 그보다 우선순위를 낮게 둡니다)
         alarmBadgeView.snp.makeConstraints { make in
             make.top.trailing.equalTo(alarmButton).inset(-HomeToolBar.badgeOffset)
             make.height.equalTo(alarmBadgeLabel.snp.height).offset(HomeToolBar.badgeVerticalPadding * 2)
-            make.width.greaterThanOrEqualTo(alarmBadgeView.snp.height)
+            make.width.greaterThanOrEqualTo(HomeToolBar.badgeMinWidth)
             make.width.equalTo(alarmBadgeLabel.snp.width)
                 .offset(HomeToolBar.badgeHorizontalPadding * 2)
                 .priority(.high)
