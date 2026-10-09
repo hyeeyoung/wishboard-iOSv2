@@ -56,6 +56,9 @@ final class ItemSelectionBottomBar: UIView {
         $0.setTitleColor(.gray_700, for: .normal)
         $0.setTitleColor(.gray_300, for: .disabled)
         $0.showsMenuAsPrimaryAction = true
+        // 화면 아래쪽이라 메뉴가 위로 열리는데, 기본값(.priority)은 그때 항목 순서를 뒤집습니다.
+        // 넣은 순서 그대로 보이도록 고정합니다.
+        $0.preferredMenuElementOrder = .fixed
     }
 
     // MARK: - Properties

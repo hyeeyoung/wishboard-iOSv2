@@ -393,7 +393,18 @@ final class WithdrawFeedbackView: UIView {
         updateActionButtonBottomInset(overlap + WithdrawFeedbackView.actionButtonKeyboardSpacing)
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
+        } completion: { _ in
+            // 버튼이 자리를 잡아 스크롤뷰가 줄어든 뒤라야 입력란 위치가 정확합니다.
+            self.scrollToDetailInput()
         }
+    }
+
+    /// 입력 중인 직접 입력란이 보이도록 스크롤을 올립니다.
+    private func scrollToDetailInput() {
+        guard detailTextView.isFirstResponder, !detailContainerView.isHidden else { return }
+
+        let targetRect = detailContainerView.convert(detailContainerView.bounds, to: scrollView)
+        scrollView.scrollRectToVisible(targetRect, animated: true)
     }
 
     @objc private func keyboardWillHide(notification: NSNotification) {
@@ -436,16 +447,6 @@ final class WithdrawFeedbackView: UIView {
 // MARK: - 직접 입력란
 
 extension WithdrawFeedbackView: UITextViewDelegate {
-
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        guard textView === detailTextView else { return }
-
-        // 키보드가 올라온 뒤 입력란이 가려지지 않도록 끝까지 내려 줍니다.
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.scrollView.scrollRectToVisible(self.detailContainerView.frame, animated: true)
-        }
-    }
 
     func textViewDidChange(_ textView: UITextView) {
         guard textView === detailTextView else { return }
