@@ -20,6 +20,10 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
 
     static let reuseIdentifier = "FolderThumbnailImageCell"
 
+    /// 체크 아이콘의 크기와, 이미지 우측/하단으로부터의 간격
+    private static let checkIconSize: CGFloat = 24
+    private static let checkIconInset: CGFloat = 9
+
     // MARK: - Views
 
     private let imageView = UIImageView().then {
@@ -28,15 +32,16 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFill
     }
 
-    /// 선택된 이미지의 딤드 처리
+    /// 선택된 이미지의 딤드 처리 (검정 10%)
     private let selectionDimView = UIView().then {
-        $0.backgroundColor = .black_55
+        $0.backgroundColor = .black_1
         $0.isHidden = true
     }
 
     /// 선택된 이미지의 체크 아이콘
     private let selectionCheckImageView = UIImageView().then {
         $0.image = Image.checkCircle
+        $0.contentMode = .scaleAspectFit
         $0.isHidden = true
     }
 
@@ -56,8 +61,8 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
             make.edges.equalTo(imageView)
         }
         selectionCheckImageView.snp.makeConstraints { make in
-            make.trailing.bottom.equalTo(imageView).offset(-5)
-            make.width.height.equalTo(24)
+            make.trailing.bottom.equalTo(imageView).offset(-FolderThumbnailImageCell.checkIconInset)
+            make.width.height.equalTo(FolderThumbnailImageCell.checkIconSize)
         }
     }
 
@@ -65,9 +70,9 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
 
     // MARK: - Public Methods
 
-    func configure(with item: WishListResponse, isSelected: Bool) {
-        if let itemImages = item.itemImages, !itemImages.isEmpty, let imgUrl = itemImages[0].itemImageUrl {
-            self.imageView.loadImage(from: imgUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
+    func configure(with image: FolderThumbnailImageResponse, isSelected: Bool) {
+        if let imageUrl = image.itemImageUrl {
+            self.imageView.loadImage(from: imageUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
             self.imageView.image = Image.logoIcon.withTintColor(.gray_100)
         }

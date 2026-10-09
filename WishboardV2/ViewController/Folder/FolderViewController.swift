@@ -146,8 +146,13 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         actionSheet.addAction(renameAction)
         actionSheet.addAction(deleteAction)
         
-        // 대표 사진으로 고를 이미지가 있어야 하므로, 아이템이 하나 이상일 때만 노출합니다.
-        if (folder.itemCount ?? 0) > 0 {
+        // 대표 사진으로 고를 이미지가 있어야 노출합니다.
+        // 폴더 썸네일은 '이미지가 있는 아이템 중 가장 최근 것의 첫 번째 이미지'라서,
+        // 값이 있다는 건 고를 수 있는 이미지가 하나 이상 있다는 뜻입니다.
+        //
+        // TODO: 아이템은 있지만 이미지가 하나도 없는 폴더(= 썸네일이 nil)의 처리는 기획 미지정입니다.
+        // 엠티뷰가 신규 제작되면 이때도 메뉴를 노출하고 화면에서 엠티뷰를 보여주도록 바꿔 주세요.
+        if folder.folderThumbnail != nil {
             let changeThumbnailAction = UIAlertAction(title: "대표 사진 변경", style: .default) { [weak self] _ in
                 actionSheet.dismiss(animated: true)
                 self?.moveToFolderThumbnail(for: folder)
@@ -166,8 +171,7 @@ final class FolderViewController: UIViewController, ItemDetailDelegate {
         UIDevice.vibrate()
         
         let vc = FolderThumbnailViewController(folderId: folderId,
-                                               folderTitle: folder.folderName ?? "",
-                                               currentThumbnailUrl: folder.folderThumbnail)
+                                               folderTitle: folder.folderName ?? "")
         vc.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(vc, animated: true)
     }

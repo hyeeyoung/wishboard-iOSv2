@@ -33,6 +33,7 @@
 		2347A9022C7ABB95009F9480 /* FolderDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */; };
 		2347A9042C7ABBA9009F9480 /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */; };
 		2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */; };
+		A1460008000000000000146A /* FolderThumbnailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1460007000000000000146A /* FolderThumbnailViewModel.swift */; };
 		2347A9102C7ACA0B009F9480 /* FolderSelectBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */; };
 		2347A9122C7ACB7C009F9480 /* FolderSelectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */; };
 		2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2357E5612C7B0A1A00CC9509 /* ShareViewModel.swift */; };
@@ -272,6 +273,7 @@
 		2347A9012C7ABB95009F9480 /* FolderDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewController.swift; sourceTree = "<group>"; };
 		2347A9032C7ABBA9009F9480 /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
 		2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewModel.swift; sourceTree = "<group>"; };
+		A1460007000000000000146A /* FolderThumbnailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderThumbnailViewModel.swift; sourceTree = "<group>"; };
 		2347A90F2C7ACA0B009F9480 /* FolderSelectBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectBottomSheet.swift; sourceTree = "<group>"; };
 		2347A9112C7ACB7C009F9480 /* FolderSelectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectTableViewCell.swift; sourceTree = "<group>"; };
 		2357E5612C7B0A1A00CC9509 /* ShareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModel.swift; sourceTree = "<group>"; };
@@ -624,6 +626,7 @@
 				235FFE282F653041007A77D2 /* FolderReorderViewModel.swift */,
 				238595152C71BF4F00B85CBC /* FolderViewModel.swift */,
 				2347A9052C7ABBE3009F9480 /* FolderDetailViewModel.swift */,
+				A1460007000000000000146A /* FolderThumbnailViewModel.swift */,
 			);
 			path = Folder;
 			sourceTree = "<group>";
@@ -1320,6 +1323,7 @@
 				23626D5E2D7B16C8000A144A /* AppGuideSheetViewController.swift in Sources */,
 				238AE48C2E21571A009C4213 /* ImageCell.swift in Sources */,
 				2347A9062C7ABBE3009F9480 /* FolderDetailViewModel.swift in Sources */,
+				A1460008000000000000146A /* FolderThumbnailViewModel.swift in Sources */,
 				231F51C12C708EE400524968 /* WishItemCollectionViewCell.swift in Sources */,
 				238595132C71BF3900B85CBC /* FolderView.swift in Sources */,
 				23798B6F2C8C24E300F6DA90 /* ModifyPasswordViewController.swift in Sources */,

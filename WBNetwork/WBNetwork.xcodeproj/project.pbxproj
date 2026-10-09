@@ -39,6 +39,10 @@
 		232186032C70B58F008BD81B /* LoadingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232185E02C70B447008BD81B /* LoadingPlugin.swift */; };
 		2325525F2C838C28001FC96D /* AddItemUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2325525E2C838C28001FC96D /* AddItemUseCase.swift */; };
 		2347A9002C7ABADF009F9480 /* GetFolderItemListUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A8FF2C7ABADF009F9480 /* GetFolderItemListUseCase.swift */; };
+		B1460008000000000000146B /* DeleteFolderThumbnailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1460007000000000000146B /* DeleteFolderThumbnailUseCase.swift */; };
+		B1460006000000000000146B /* SetFolderThumbnailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1460005000000000000146B /* SetFolderThumbnailUseCase.swift */; };
+		B1460004000000000000146B /* GetFolderThumbnailImagesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1460003000000000000146B /* GetFolderThumbnailImagesUseCase.swift */; };
+		B1460002000000000000146B /* FolderThumbnailResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1460001000000000000146B /* FolderThumbnailResponse.swift */; };
 		2347A9082C7ABFF7009F9480 /* ModifyFolderNameUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9072C7ABFF6009F9480 /* ModifyFolderNameUseCase.swift */; };
 		2347A90A2C7AC0AD009F9480 /* AddFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9092C7AC0AD009F9480 /* AddFolderUseCase.swift */; };
 		2347A90C2C7AC1E8009F9480 /* DeleteFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A90B2C7AC1E8009F9480 /* DeleteFolderUseCase.swift */; };
@@ -132,6 +136,10 @@
 		232185E62C70B447008BD81B /* CartAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartAPI.swift; sourceTree = "<group>"; };
 		2325525E2C838C28001FC96D /* AddItemUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemUseCase.swift; sourceTree = "<group>"; };
 		2347A8FF2C7ABADF009F9480 /* GetFolderItemListUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFolderItemListUseCase.swift; sourceTree = "<group>"; };
+		B1460007000000000000146B /* DeleteFolderThumbnailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFolderThumbnailUseCase.swift; sourceTree = "<group>"; };
+		B1460005000000000000146B /* SetFolderThumbnailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetFolderThumbnailUseCase.swift; sourceTree = "<group>"; };
+		B1460003000000000000146B /* GetFolderThumbnailImagesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFolderThumbnailImagesUseCase.swift; sourceTree = "<group>"; };
+		B1460001000000000000146B /* FolderThumbnailResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderThumbnailResponse.swift; sourceTree = "<group>"; };
 		2347A9072C7ABFF6009F9480 /* ModifyFolderNameUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyFolderNameUseCase.swift; sourceTree = "<group>"; };
 		2347A9092C7AC0AD009F9480 /* AddFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFolderUseCase.swift; sourceTree = "<group>"; };
 		2347A90B2C7AC1E8009F9480 /* DeleteFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFolderUseCase.swift; sourceTree = "<group>"; };
@@ -262,6 +270,7 @@
 				232185CE2C70B447008BD81B /* LoginResponse.swift */,
 				232185CF2C70B447008BD81B /* WishListResponse.swift */,
 				238595172C71BFC000B85CBC /* FolderListResponse.swift */,
+				B1460001000000000000146B /* FolderThumbnailResponse.swift */,
 				23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */,
 				23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */,
 				23AD9D762C80A8FF007AB8D1 /* NoticeResponse.swift */,
@@ -410,6 +419,9 @@
 				23BF1EA92F65CF1E004784B9 /* ReorderFoldersUseCase.swift */,
 				238595222C71C71300B85CBC /* GetFoldersUseCase.swift */,
 				2347A8FF2C7ABADF009F9480 /* GetFolderItemListUseCase.swift */,
+				B1460007000000000000146B /* DeleteFolderThumbnailUseCase.swift */,
+				B1460005000000000000146B /* SetFolderThumbnailUseCase.swift */,
+				B1460003000000000000146B /* GetFolderThumbnailImagesUseCase.swift */,
 				2347A9072C7ABFF6009F9480 /* ModifyFolderNameUseCase.swift */,
 				2347A9092C7AC0AD009F9480 /* AddFolderUseCase.swift */,
 				2347A90B2C7AC1E8009F9480 /* DeleteFolderUseCase.swift */,
@@ -574,6 +586,10 @@
 				232185EE2C70B559008BD81B /* AuthManager.swift in Sources */,
 				232185F52C70B56B008BD81B /* AddCartUseCase.swift in Sources */,
 				2347A9002C7ABADF009F9480 /* GetFolderItemListUseCase.swift in Sources */,
+				B1460008000000000000146B /* DeleteFolderThumbnailUseCase.swift in Sources */,
+				B1460006000000000000146B /* SetFolderThumbnailUseCase.swift in Sources */,
+				B1460004000000000000146B /* GetFolderThumbnailImagesUseCase.swift in Sources */,
+				B1460002000000000000146B /* FolderThumbnailResponse.swift in Sources */,
 				232185F62C70B56D008BD81B /* DeleteCartUseCase.swift in Sources */,
 				232185F22C70B563008BD81B /* CommonResponse.swift in Sources */,
 				232185F92C70B576008BD81B /* RefreshTokenUseCase.swift in Sources */,

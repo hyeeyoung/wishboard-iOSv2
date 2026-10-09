@@ -14,30 +14,26 @@ import WBNetwork
 
 /// 폴더 > 더보기 > '대표 사진 변경'.
 ///
-/// 폴더에 담긴 아이템의 이미지만 2열로 보여 주고, 그중 하나를 대표 사진으로 고릅니다.
+/// 폴더에 담긴 아이템 중 이미지가 있는 것만 2열로 보여 주고, 그중 하나를 대표 사진으로 고릅니다.
 final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate {
 
     // MARK: - Views
     private let thumbnailView: FolderThumbnailView
 
     // MARK: - Properties
-    /// 폴더 상세 화면과 같은 '폴더 아이템 리스트 조회'를 그대로 씁니다. (페이징 포함)
-    private let viewModel: FolderDetailViewModel
-    private let folderId: Int
-    /// 진입 시점에 지정되어 있던 대표 사진 URL
-    private let currentThumbnailUrl: String?
-
-    /// 선택된 아이템. 하나는 반드시 선택된 상태를 유지합니다.
-    private var selectedItemId: Int?
+    private let viewModel: FolderThumbnailViewModel
     private var cancellables = Set<AnyCancellable>()
+
+    /// 직전에 선택되어 있던 이미지. 선택이 바뀐 셀만 다시 그리기 위해 들고 있습니다.
+    private var lastSelectedItemImageId: Int?
+    /// 저장 요청이 끝나기 전에 버튼이 다시 눌리는 것을 막습니다.
+    private var isSaving = false
 
     // MARK: - Initializers
 
-    init(folderId: Int, folderTitle: String, currentThumbnailUrl: String?) {
-        self.folderId = folderId
-        self.currentThumbnailUrl = currentThumbnailUrl
+    init(folderId: Int, folderTitle: String) {
         self.thumbnailView = FolderThumbnailView(folderTitle: folderTitle)
-        self.viewModel = FolderDetailViewModel(folderId: String(folderId))
+        self.viewModel = FolderThumbnailViewModel(folderId: String(folderId))
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -53,7 +49,7 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
         setupView()
         setupBindings()
 
-        viewModel.fetchItems(reset: true)
+        viewModel.fetchImages(reset: true)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -76,17 +72,27 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
     }
 
     private func setupBindings() {
-        viewModel.$items
+        viewModel.$images
             .receive(on: RunLoop.main)
-            .sink { [weak self] items in
+            .sink { [weak self] images in
                 guard let self = self else { return }
-                self.applyInitialSelectionIfNeeded(with: items)
-                self.thumbnailView.updateEmptyState(isEmpty: items.isEmpty)
+                self.thumbnailView.updateEmptyState(isEmpty: images.isEmpty)
+                // 고를 수 있는 이미지가 없으면 저장할 것도 없습니다.
+                self.thumbnailView.updateSaveButtonState(enabled: !images.isEmpty)
                 self.thumbnailView.collectionView.reloadData()
             }
             .store(in: &cancellables)
 
-        // 아이템 리스트 조회 동안 로딩뷰 노출
+        viewModel.$selectedItemImageId
+            .receive(on: RunLoop.main)
+            .sink { [weak self] selectedId in
+                guard let self = self else { return }
+                self.reloadSelection(from: self.lastSelectedItemImageId, to: selectedId)
+                self.lastSelectedItemImageId = selectedId
+            }
+            .store(in: &cancellables)
+
+        // 이미지 조회 동안 로딩뷰 노출
         viewModel.$isInitialLoading
             .removeDuplicates()
             .receive(on: RunLoop.main)
@@ -96,19 +102,20 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
             .store(in: &cancellables)
     }
 
-    /// 화면 진입 시 기존 대표 사진을 선택된 상태로 보여 줍니다.
-    ///
-    /// 지금은 어떤 아이템이 대표 사진인지 내려주는 값이 없어, 폴더 썸네일 URL과 같은 이미지를 찾아 맞춰 둡니다.
-    /// 서버에서 대표 아이템을 내려주게 되면 그 값으로 바꾸면 됩니다.
-    private func applyInitialSelectionIfNeeded(with items: [WishListResponse]) {
-        guard selectedItemId == nil, !items.isEmpty else { return }
+    /// 선택이 바뀐 셀만 다시 그립니다. 전체를 갱신하면 이미지까지 다시 그려집니다.
+    private func reloadSelection(from previousId: Int?, to newId: Int?) {
+        let collectionView = thumbnailView.collectionView
+        let itemCount = collectionView.numberOfItems(inSection: 0)
 
-        if let thumbnailUrl = currentThumbnailUrl,
-           let matched = items.first(where: { $0.itemImages?.first?.itemImageUrl == thumbnailUrl }) {
-            selectedItemId = matched.id
-        } else {
-            selectedItemId = items.first?.id
-        }
+        let indexes = [previousId, newId]
+            .compactMap { $0 }
+            .compactMap { id in viewModel.images.firstIndex(where: { $0.itemImageId == id }) }
+            .filter { $0 < itemCount }
+
+        let indexPaths = Set(indexes).map { IndexPath(item: $0, section: 0) }
+        guard !indexPaths.isEmpty else { return }
+
+        collectionView.reloadItems(at: indexPaths)
     }
 
     // MARK: - AddToolBarDelegate
@@ -120,16 +127,24 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
     }
 
     /// 저장
+    ///
+    /// 고른 이미지가 있으면 대표 사진으로 지정하고, 선택을 해제한 상태라면 기본 대표 사진으로 되돌립니다.
     func rightItemTap() {
+        guard !isSaving else { return }
         UIDevice.vibrate()
+        isSaving = true
 
-        guard let selectedItemId = selectedItemId else { return }
-
-        // TODO: 폴더 대표 사진 변경 API 연동 (folderId: \(folderId), itemId: \(selectedItemId))
-        // 서버 작업이 끝나면 여기서 API를 호출하고, 성공 시 폴더 목록을 갱신한 뒤 화면을 닫습니다.
-        print("폴더 대표 사진 변경 - folderId: \(folderId), itemId: \(selectedItemId)")
-
-        navigationController?.popViewController(animated: true)
+        _Concurrency.Task {
+            do {
+                try await viewModel.saveThumbnail()
+                isSaving = false
+                // 폴더 목록은 되돌아갈 때 다시 조회되어 바뀐 대표 사진이 바로 반영됩니다.
+                navigationController?.popViewController(animated: true)
+            } catch {
+                isSaving = false
+                SnackBar.shared.show(type: .errorMessage)
+            }
+        }
     }
 }
 
@@ -138,7 +153,7 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
 extension FolderThumbnailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.items.count
+        return viewModel.images.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -146,33 +161,24 @@ extension FolderThumbnailViewController: UICollectionViewDelegate, UICollectionV
             withReuseIdentifier: FolderThumbnailImageCell.reuseIdentifier,
             for: indexPath
         ) as? FolderThumbnailImageCell,
-              indexPath.item < viewModel.items.count else {
+              indexPath.item < viewModel.images.count else {
             return UICollectionViewCell()
         }
 
-        let item = viewModel.items[indexPath.item]
-        cell.configure(with: item, isSelected: item.id == selectedItemId)
+        let image = viewModel.images[indexPath.item]
+        let isSelected = (image.itemImageId != nil && image.itemImageId == viewModel.selectedItemImageId)
+        cell.configure(with: image, isSelected: isSelected)
 
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.item < viewModel.items.count,
-              let itemId = viewModel.items[indexPath.item].id else { return }
-        // 이미 선택된 이미지를 다시 눌러도 선택은 풀리지 않습니다.
-        guard itemId != selectedItemId else { return }
+        guard indexPath.item < viewModel.images.count,
+              let itemImageId = viewModel.images[indexPath.item].itemImageId else { return }
 
         UIDevice.vibrate()
-
-        let previousItemId = selectedItemId
-        selectedItemId = itemId
-
-        var indexPaths = [indexPath]
-        if let previousItemId = previousItemId,
-           let previousIndex = viewModel.items.firstIndex(where: { $0.id == previousItemId }) {
-            indexPaths.append(IndexPath(item: previousIndex, section: indexPath.section))
-        }
-        collectionView.reloadItems(at: indexPaths)
+        // 같은 이미지를 다시 고르면 선택이 해제됩니다.
+        viewModel.toggleSelection(itemImageId: itemImageId)
     }
 
     func collectionView(_ collectionView: UICollectionView,

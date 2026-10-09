@@ -31,4 +31,13 @@ public final class FolderManager {
     public func reorderFolders(ids: [Int]) async throws -> EmptyResponse {
         return try await API.Folder.request(.reorderFolders(ids: ids))
     }
+    public func getFolderThumbnailImages(folderId: String, page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[FolderThumbnailImageResponse]> {
+        return try await API.Folder.requestRaw(.getFolderThumbnailImages(folderId: folderId, page: page, size: size))
+    }
+    public func setFolderThumbnail(folderId: String, itemImageId: Int) async throws -> FolderThumbnailResponse {
+        return try await API.Folder.request(.setFolderThumbnail(folderId: folderId, itemImageId: itemImageId))
+    }
+    public func deleteFolderThumbnail(folderId: String) async throws -> FolderThumbnailResponse {
+        return try await API.Folder.request(.deleteFolderThumbnail(folderId: folderId))
+    }
 }

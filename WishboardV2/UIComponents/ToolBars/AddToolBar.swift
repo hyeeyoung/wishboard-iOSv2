@@ -32,12 +32,19 @@ final public class AddToolBar: UIView {
         $0.textAlignment = .center
     }
     
+    /// 글자 기준 상하 7 / 좌우 16의 여백을 가지는 pill 형태
+    private static let saveButtonVerticalPadding: CGFloat = 7
+    private static let saveButtonHorizontalPadding: CGFloat = 16
+
     private let saveButton = UIButton().then {
         $0.setTitle("저장", for: .normal)
         $0.titleLabel?.font = TypoStyle.SuitB3.font
         $0.setTitleColor(.gray_300, for: .disabled)
         $0.setTitleColor(.gray_700, for: .normal)
-        $0.layer.cornerRadius = 15
+        $0.contentEdgeInsets = UIEdgeInsets(top: AddToolBar.saveButtonVerticalPadding,
+                                            left: AddToolBar.saveButtonHorizontalPadding,
+                                            bottom: AddToolBar.saveButtonVerticalPadding,
+                                            right: AddToolBar.saveButtonHorizontalPadding)
         $0.clipsToBounds = true
     }
     
@@ -73,9 +80,8 @@ final public class AddToolBar: UIView {
             make.center.equalToSuperview()
         }
         
+        // 너비는 글자 + 좌우 여백으로 정해지고, 높이는 글자 + 상하 여백으로 정해집니다.
         saveButton.snp.makeConstraints { make in
-            make.width.equalTo(57)
-            make.height.equalTo(30)
             make.trailing.equalToSuperview().offset(-16)
             make.centerY.equalToSuperview()
         }
@@ -87,6 +93,12 @@ final public class AddToolBar: UIView {
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
     
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        // 글자 크기에 따라 높이가 달라져도 pill 형태를 유지합니다.
+        saveButton.layer.cornerRadius = saveButton.bounds.height / 2
+    }
+
     public func updateButtonState(enabled: Bool) {
         if enabled {
             saveButton.backgroundColor = .green_500

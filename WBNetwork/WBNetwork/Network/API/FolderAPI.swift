@@ -31,6 +31,12 @@ public enum FolderAPI {
     case getFolderList(order: FolderOrder?)
     /// 폴더 목록 재정렬
     case reorderFolders(ids: [Int])
+    /// 폴더 대표 사진 후보 이미지 조회 (사용화면: 폴더 대표 사진 변경)
+    case getFolderThumbnailImages(folderId: String, page: Int, size: Int)
+    /// 폴더 대표 사진 지정
+    case setFolderThumbnail(folderId: String, itemImageId: Int)
+    /// 폴더 대표 사진 해제 (기본 대표 사진으로 되돌림)
+    case deleteFolderThumbnail(folderId: String)
 }
 
 extension FolderAPI: TargetType, AccessTokenAuthorizable {
@@ -54,7 +60,12 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             return "/list"
         case .reorderFolders:
             return "/order"
-            
+        case .getFolderThumbnailImages(let folderId, _, _):
+            return "/\(folderId)/thumbnail/images"
+        case .setFolderThumbnail(let folderId, _):
+            return "/\(folderId)/thumbnail"
+        case .deleteFolderThumbnail(let folderId):
+            return "/\(folderId)/thumbnail"
         }
     }
 
@@ -74,6 +85,12 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             return .get
         case .reorderFolders:
             return .put
+        case .getFolderThumbnailImages:
+            return .get
+        case .setFolderThumbnail:
+            return .put
+        case .deleteFolderThumbnail:
+            return .delete
         }
     }
 
@@ -101,6 +118,11 @@ extension FolderAPI: TargetType, AccessTokenAuthorizable {
             }
         case .reorderFolders(let ids):
             parameters = ["folderIds": ids]
+        case .getFolderThumbnailImages(_, let page, let size):
+            // 정렬은 최신순으로 고정이고 소장 상태 필터는 없어, page/size만 전달합니다.
+            parameters = ["page": page, "size": size]
+        case .setFolderThumbnail(_, let itemImageId):
+            parameters = ["itemImageId": itemImageId]
         default:
             parameters = [:]
         }

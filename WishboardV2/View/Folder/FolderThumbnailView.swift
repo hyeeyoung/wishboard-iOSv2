@@ -18,6 +18,8 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
 
     /// 한 줄에 보여 줄 이미지 개수
     private static let columnCount: CGFloat = 2
+    /// 행과 행 사이 간격. 열 사이에는 간격이 없습니다.
+    private static let lineSpacing: CGFloat = 0.5
 
     // MARK: - Views
 
@@ -29,8 +31,10 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
         $0.isUserInteractionEnabled = false
     }
 
+    // TODO: 폴더에 이미지가 있는 아이템이 하나도 없을 때의 화면은 기획 미지정입니다.
+    // 엠티뷰가 신규 제작되면 이 라벨을 교체해 주세요.
     private let emptyLabel = UILabel().then {
-        $0.text = "앗, 아이템이 없어요!\n갖고 싶은 아이템을 등록해 보세요!"
+        $0.text = "앗, 대표 사진으로 지정할 이미지가 없어요!"
         $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
         $0.textColor = .gray_200
         $0.numberOfLines = 0
@@ -47,9 +51,10 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
 
         let layout = UICollectionViewFlowLayout()
         let cellWidth = UIScreen.main.bounds.width / FolderThumbnailView.columnCount
+        // 셀은 정사각형이고, 행과 행 사이에만 간격이 있습니다.
         layout.itemSize = CGSize(width: cellWidth, height: cellWidth)
         layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
+        layout.minimumLineSpacing = FolderThumbnailView.lineSpacing
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .white
@@ -78,10 +83,9 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
     }
 
     private func setupConstraints() {
-        // 대표 사진은 언제든 저장할 수 있어야 해서, 저장 버튼은 항상 활성 상태로 둡니다.
         toolBar.configure(title: folderTitle, usesBackIcon: true)
-        toolBar.updateButtonState(enabled: true)
 
+        // 리스트는 상단바 바로 아래에서부터 시작합니다.
         collectionView.snp.makeConstraints { make in
             make.horizontalEdges.bottom.equalToSuperview()
             make.top.equalTo(toolBar.snp.bottom)
@@ -89,6 +93,7 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
 
         emptyLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
+            make.horizontalEdges.equalToSuperview().inset(16)
         }
 
         loadingContainerView.snp.makeConstraints { make in
@@ -101,5 +106,10 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
 
     func updateEmptyState(isEmpty: Bool) {
         emptyLabel.isHidden = !isEmpty
+    }
+
+    /// 고를 수 있는 이미지가 없으면 저장할 것도 없어 버튼을 비활성화합니다.
+    func updateSaveButtonState(enabled: Bool) {
+        toolBar.updateButtonState(enabled: enabled)
     }
 }
