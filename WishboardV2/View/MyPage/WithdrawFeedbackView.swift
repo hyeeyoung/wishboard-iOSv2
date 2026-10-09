@@ -46,9 +46,6 @@ enum WithdrawReason: CaseIterable {
 // MARK: - 탈퇴 사유 한 줄
 
 /// 라디오 버튼과 문구로 이루어진 선택지 한 줄.
-///
-/// 선택 표시는 홈화면 아이템 선택과 같은 체크 이미지를 씁니다.
-/// 미선택 상태의 빈 원은 전용 아이콘이 들어오기 전까지 테두리로 그려 둡니다.
 final class WithdrawReasonRow: UIControl {
 
     /// 체크 아이콘 크기
@@ -61,15 +58,14 @@ final class WithdrawReasonRow: UIControl {
 
     let reason: WithdrawReason
 
-    private let emptyCircleView = UIView().then {
-        $0.layer.cornerRadius = WithdrawReasonRow.indicatorSize / 2
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.gray_150.cgColor
+    private let emptyCircleView = UIImageView().then {
+        $0.image = Image.circle18
+        $0.contentMode = .scaleAspectFit
         $0.isUserInteractionEnabled = false
     }
 
     private let checkImageView = UIImageView().then {
-        $0.image = Image.checkCircle
+        $0.image = Image.checkGreenCircle18
         $0.contentMode = .scaleAspectFit
         $0.isHidden = true
         $0.isUserInteractionEnabled = false

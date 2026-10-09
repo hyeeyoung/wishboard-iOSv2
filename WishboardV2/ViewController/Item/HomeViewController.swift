@@ -216,7 +216,21 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 
     private func setupBottomSheet() {
+        homeView.onTapFilterChip = { [weak self] in
+            self?.presentFilterSheet()
+        }
+    }
 
+    /// 목록 필터 선택 바텀시트
+    private func presentFilterSheet() {
+        let sheet = ItemFilterBottomSheetViewController(selectedFilter: viewModel.filter)
+        sheet.onSelect = { [weak self] filter in
+            guard let self = self else { return }
+            // 필터가 바뀌면 목록을 다시 조회하므로, 화면에서 사라질 아이템의 선택 상태를 정리합니다.
+            self.selectionViewModel.clearSelection()
+            self.viewModel.updateFilter(filter)
+        }
+        present(sheet, animated: false)
     }
 
     /// 앱 가이드 시트 노출
@@ -286,11 +300,11 @@ extension HomeViewController {
         return UIMenu(title: "", children: [toWish, toOwned, delete])
     }
 
-    /// 현재 조회 조건('소장템 제외' 필터)에 해당하는 전체 아이템 개수
+    /// 현재 필터에 해당하는 전체 아이템 개수
     private var filteredTotalCount: Int {
-        viewModel.isExcludingOwned
-        ? max(0, viewModel.totalCount - viewModel.ownedCount)
-        : viewModel.totalCount
+        HomeView.displayedTotalCount(totalCount: viewModel.totalCount,
+                                     ownedCount: viewModel.ownedCount,
+                                     filter: viewModel.filter)
     }
 
     /// 실제로 삭제될 아이템 개수
@@ -306,7 +320,7 @@ extension HomeViewController {
         // 화면의 조회 조건을 그대로 넘기고 개별 해제한 아이템만 제외합니다.
         if selectionViewModel.isSelectAllOn {
             return .all(
-                itemStatus: viewModel.isExcludingOwned ? .wish : nil,
+                itemStatus: viewModel.filter.itemStatus,
                 excludeItemIds: Array(selectionViewModel.excludedItemIds)
             )
         }
@@ -342,13 +356,14 @@ extension HomeViewController {
         return max(0, totalInScope - excludedCount)
     }
 
-    /// '소장템 제외' 필터가 켜져 있으면 대상에 소장템이 없습니다.
+    /// '위시템만' 필터가 걸려 있으면 대상에 소장템이 없습니다.
     private var ownedCountInScope: Int {
-        viewModel.isExcludingOwned ? 0 : viewModel.ownedCount
+        viewModel.filter == .wishOnly ? 0 : viewModel.ownedCount
     }
 
+    /// '소장템만' 필터가 걸려 있으면 대상에 위시템이 없습니다.
     private var wishCountInScope: Int {
-        viewModel.isExcludingOwned ? filteredTotalCount : viewModel.wishCount
+        viewModel.filter == .ownedOnly ? 0 : viewModel.wishCount
     }
 
     /// 상태 일괄 변경 요청 생성
@@ -358,7 +373,7 @@ extension HomeViewController {
         if selectionViewModel.isSelectAllOn {
             return .all(
                 status: status,
-                itemStatus: viewModel.isExcludingOwned ? .wish : nil,
+                itemStatus: viewModel.filter.itemStatus,
                 excludeItemIds: Array(selectionViewModel.excludedItemIds)
             )
         }
