@@ -38,11 +38,11 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
         $0.isHidden = true
     }
 
-    /// 선택된 이미지의 체크 아이콘
+    /// 선택 상태를 보여 주는 체크 아이콘.
+    /// 고르지 않은 이미지에도 흰 아이콘이 기본으로 보입니다.
     private let selectionCheckImageView = UIImageView().then {
-        $0.image = Image.checkGreenCircle24
+        $0.image = Image.whiteCircle
         $0.contentMode = .scaleAspectFit
-        $0.isHidden = true
     }
 
     // MARK: - Initializers
@@ -82,7 +82,7 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
 
     func setSelected(_ isSelected: Bool) {
         selectionDimView.isHidden = !isSelected
-        selectionCheckImageView.isHidden = !isSelected
+        selectionCheckImageView.image = isSelected ? Image.checkCircle : Image.whiteCircle
     }
 
     override func prepareForReuse() {

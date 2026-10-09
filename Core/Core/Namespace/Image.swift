@@ -32,6 +32,9 @@ public enum Image{
     /// 선택된 상태의 체크 아이콘
     public static let checkGreenCircle18 = UIImage(named: "ic_check_green_circle18")!
     public static let checkGreenCircle24 = UIImage(named: "ic_check_green_circle24")!
+    /// 폴더 대표 사진 선택 - 선택됨 / 선택 안 됨
+    public static let checkCircle = UIImage(named: "ic_check_circle")!
+    public static let whiteCircle = UIImage(named: "ic_white_circle")!
     /// 선택되지 않은 상태의 빈 원
     public static let circle18 = UIImage(named: "ic_circle18")!
     public static let circle24 = UIImage(named: "ic_circle24")!
