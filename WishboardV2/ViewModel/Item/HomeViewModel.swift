@@ -14,6 +14,8 @@ final class HomeViewModel {
     @Published var displayedItems: [WishListResponse] = []
     @Published var totalCount: Int = 0
     @Published var ownedCount: Int = 0
+    /// 조회 조건에 해당하는 위시템 개수. 상태 일괄 변경 시 실제로 바뀔 개수를 세는 데 씁니다.
+    @Published var wishCount: Int = 0
     @Published var isExcludingOwned: Bool = false
 
     // Paging
@@ -70,6 +72,14 @@ final class HomeViewModel {
                     items.append(contentsOf: itemDatas)
                 }
 
+                // 목록 조회 응답에도 위시템/소장템 개수가 함께 내려옵니다.
+                if let wishCount = response.data?.wishCount {
+                    self.wishCount = wishCount
+                }
+                if let ownedCount = response.data?.ownedCount {
+                    self.ownedCount = ownedCount
+                }
+
                 hasMore = !(response.data?.last ?? true)
                 if hasMore {
                     page += 1
@@ -93,6 +103,7 @@ final class HomeViewModel {
             let response = try await usecase.execute()
             totalCount = response.totalCount ?? 0
             ownedCount = response.ownedCount ?? 0
+            wishCount = max(0, totalCount - ownedCount)
         } catch {
             // counts 실패 시 기존 값 유지
         }
@@ -101,6 +112,12 @@ final class HomeViewModel {
     /// 선택한 아이템 일괄 삭제
     func deleteItems(request: BulkDeleteItemsRequest) async throws {
         let usecase = DeleteItemsBulkUseCase()
+        _ = try await usecase.execute(request: request)
+    }
+
+    /// 선택한 아이템의 상태(위시템/소장템) 일괄 변경
+    func updateItemsStatus(request: BulkUpdateItemStatusRequest) async throws {
+        let usecase = UpdateItemsStatusBulkUseCase()
         _ = try await usecase.execute(request: request)
     }
 

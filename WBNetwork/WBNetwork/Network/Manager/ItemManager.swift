@@ -30,6 +30,14 @@ public final class ItemManager {
         return try await API.Item.request(.deleteItemsBulk(request: request))
     }
     
+    public func updateItemsStatusBulk(request: BulkUpdateItemStatusRequest) async throws -> EmptyResponse {
+        return try await API.Item.request(.updateItemsStatusBulk(request: request))
+    }
+    
+    public func removeItemsFromFolderBulk(request: BulkRemoveItemsFromFolderRequest) async throws -> EmptyResponse {
+        return try await API.Item.request(.removeItemsFromFolderBulk(request: request))
+    }
+    
     public func modifyItemFolder(itemId: Int, folderId: Int) async throws -> EmptyResponse {
         return try await API.Item.request(.modifyItemFolder(itemId: itemId, folderId: folderId))
     }

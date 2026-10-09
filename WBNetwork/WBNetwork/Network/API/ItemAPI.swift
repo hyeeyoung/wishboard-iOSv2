@@ -128,6 +128,132 @@ public struct BulkDeleteItemsRequest {
     }
 }
 
+/// 아이템 상태 일괄 변경 요청
+///
+/// 대상을 정하는 규칙은 아이템 일괄 삭제와 같고, 바꿀 상태(`status`)만 더 보냅니다.
+public struct BulkUpdateItemStatusRequest {
+
+    /// 바꿀 상태
+    public let status: ItemStatusType
+    public let scope: ItemDeleteScope
+    public let folderId: Int?
+    public let itemStatus: ItemStatusType?
+    public let itemIds: [Int]?
+    public let excludeItemIds: [Int]?
+
+    private init(status: ItemStatusType,
+                 scope: ItemDeleteScope,
+                 folderId: Int?,
+                 itemStatus: ItemStatusType?,
+                 itemIds: [Int]?,
+                 excludeItemIds: [Int]?) {
+        self.status = status
+        self.scope = scope
+        self.folderId = folderId
+        self.itemStatus = itemStatus
+        self.itemIds = itemIds
+        self.excludeItemIds = excludeItemIds
+    }
+
+    /// 선택한 아이템의 상태만 바꿉니다.
+    public static func selected(status: ItemStatusType, itemIds: [Int]) -> BulkUpdateItemStatusRequest {
+        BulkUpdateItemStatusRequest(status: status,
+                                    scope: .selected,
+                                    folderId: nil,
+                                    itemStatus: nil,
+                                    itemIds: itemIds,
+                                    excludeItemIds: nil)
+    }
+
+    /// 조회 조건에 해당하는 아이템 전체의 상태를 바꿉니다.
+    public static func all(status: ItemStatusType,
+                           folderId: Int? = nil,
+                           itemStatus: ItemStatusType? = nil,
+                           excludeItemIds: [Int] = []) -> BulkUpdateItemStatusRequest {
+        BulkUpdateItemStatusRequest(status: status,
+                                    scope: .all,
+                                    folderId: folderId,
+                                    itemStatus: itemStatus,
+                                    itemIds: nil,
+                                    excludeItemIds: excludeItemIds.isEmpty ? nil : excludeItemIds)
+    }
+
+    /// itemIds 가 한 요청의 최대 개수를 넘으면 여러 요청으로 나눕니다.
+    public func chunked() -> [BulkUpdateItemStatusRequest] {
+        guard scope == .selected,
+              let itemIds = itemIds,
+              itemIds.count > BulkDeleteItemsRequest.maxItemIdsPerRequest else {
+            return [self]
+        }
+
+        return stride(from: 0, to: itemIds.count, by: BulkDeleteItemsRequest.maxItemIdsPerRequest)
+            .map { start -> BulkUpdateItemStatusRequest in
+                let end = min(start + BulkDeleteItemsRequest.maxItemIdsPerRequest, itemIds.count)
+                return .selected(status: status, itemIds: Array(itemIds[start..<end]))
+            }
+    }
+}
+
+/// 폴더에서 아이템 일괄 제거 요청
+///
+/// 아이템과 폴더는 지워지지 않고, 아이템이 폴더 미지정 상태가 됩니다.
+public struct BulkRemoveItemsFromFolderRequest {
+
+    /// 아이템을 뺄 폴더 ID
+    public let folderId: Int
+    public let scope: ItemDeleteScope
+    public let itemStatus: ItemStatusType?
+    public let itemIds: [Int]?
+    public let excludeItemIds: [Int]?
+
+    private init(folderId: Int,
+                 scope: ItemDeleteScope,
+                 itemStatus: ItemStatusType?,
+                 itemIds: [Int]?,
+                 excludeItemIds: [Int]?) {
+        self.folderId = folderId
+        self.scope = scope
+        self.itemStatus = itemStatus
+        self.itemIds = itemIds
+        self.excludeItemIds = excludeItemIds
+    }
+
+    /// 선택한 아이템만 폴더에서 뺍니다.
+    public static func selected(folderId: Int, itemIds: [Int]) -> BulkRemoveItemsFromFolderRequest {
+        BulkRemoveItemsFromFolderRequest(folderId: folderId,
+                                         scope: .selected,
+                                         itemStatus: nil,
+                                         itemIds: itemIds,
+                                         excludeItemIds: nil)
+    }
+
+    /// 폴더 내 조회 조건에 해당하는 아이템 전체를 폴더에서 뺍니다.
+    public static func all(folderId: Int,
+                           itemStatus: ItemStatusType? = nil,
+                           excludeItemIds: [Int] = []) -> BulkRemoveItemsFromFolderRequest {
+        BulkRemoveItemsFromFolderRequest(folderId: folderId,
+                                         scope: .all,
+                                         itemStatus: itemStatus,
+                                         itemIds: nil,
+                                         excludeItemIds: excludeItemIds.isEmpty ? nil : excludeItemIds)
+    }
+
+    /// itemIds 가 한 요청의 최대 개수를 넘으면 여러 요청으로 나눕니다.
+    public func chunked() -> [BulkRemoveItemsFromFolderRequest] {
+        guard scope == .selected,
+              let itemIds = itemIds,
+              itemIds.count > BulkDeleteItemsRequest.maxItemIdsPerRequest else {
+            return [self]
+        }
+
+        return stride(from: 0, to: itemIds.count, by: BulkDeleteItemsRequest.maxItemIdsPerRequest)
+            .map { start -> BulkRemoveItemsFromFolderRequest in
+                let end = min(start + BulkDeleteItemsRequest.maxItemIdsPerRequest, itemIds.count)
+                return .selected(folderId: folderId, itemIds: Array(itemIds[start..<end]))
+            }
+    }
+}
+
 public enum ItemAPI {
     /// 위시리스트 조회
     case getWishItems(page: Int, size: Int, itemStatus: ItemStatusType?)
@@ -137,6 +263,10 @@ public enum ItemAPI {
     case deleteItem(id: Int)
     /// 위시아이템 일괄 삭제
     case deleteItemsBulk(request: BulkDeleteItemsRequest)
+    /// 아이템 상태(위시템/소장템) 일괄 변경
+    case updateItemsStatusBulk(request: BulkUpdateItemStatusRequest)
+    /// 폴더에서 아이템 일괄 제거
+    case removeItemsFromFolderBulk(request: BulkRemoveItemsFromFolderRequest)
     /// 아이템 디테일 조회
     case getItemDetail(id: Int)
     /// 아이템의 폴더 지정
@@ -167,6 +297,10 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             return "/\(id)"
         case .deleteItemsBulk:
             return "/bulk"
+        case .updateItemsStatusBulk:
+            return "/bulk/status"
+        case .removeItemsFromFolderBulk(let request):
+            return "/bulk/folder/\(request.folderId)"
         case .getItemDetail(let id):
             return "/\(id)"
         case .modifyItemFolder(let itemId, let folderId):
@@ -188,8 +322,10 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             return .get
         case .modifyItemFolder:
             return .put
-        case .deleteItem, .deleteItemsBulk:
+        case .deleteItem, .deleteItemsBulk, .removeItemsFromFolderBulk:
             return .delete
+        case .updateItemsStatusBulk:
+            return .put
         case .addItem:
             return .post
         case .modifyItem:
@@ -225,6 +361,45 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             if let folderId = request.folderId {
                 urlParameters["folderId"] = folderId
             }
+            if let itemStatus = request.itemStatus {
+                urlParameters["itemStatus"] = itemStatus.rawValue
+            }
+
+            var bodyParameters: [String: Any] = [:]
+            if let itemIds = request.itemIds {
+                bodyParameters["itemIds"] = itemIds
+            }
+            if let excludeItemIds = request.excludeItemIds {
+                bodyParameters["excludeItemIds"] = excludeItemIds
+            }
+
+            return .requestCompositeParameters(bodyParameters: bodyParameters,
+                                               bodyEncoding: JSONEncoding.default,
+                                               urlParameters: urlParameters)
+        case .updateItemsStatusBulk(let request):
+            // 일괄 삭제와 같은 방식이고, 바꿀 상태만 본문에 더 담습니다.
+            var urlParameters: [String: Any] = ["scope": request.scope.rawValue]
+            if let folderId = request.folderId {
+                urlParameters["folderId"] = folderId
+            }
+            if let itemStatus = request.itemStatus {
+                urlParameters["itemStatus"] = itemStatus.rawValue
+            }
+
+            var bodyParameters: [String: Any] = ["status": request.status.rawValue]
+            if let itemIds = request.itemIds {
+                bodyParameters["itemIds"] = itemIds
+            }
+            if let excludeItemIds = request.excludeItemIds {
+                bodyParameters["excludeItemIds"] = excludeItemIds
+            }
+
+            return .requestCompositeParameters(bodyParameters: bodyParameters,
+                                               bodyEncoding: JSONEncoding.default,
+                                               urlParameters: urlParameters)
+        case .removeItemsFromFolderBulk(let request):
+            // 폴더 ID는 경로에 들어가므로, 쿼리에는 범위와 상태 필터만 담습니다.
+            var urlParameters: [String: Any] = ["scope": request.scope.rawValue]
             if let itemStatus = request.itemStatus {
                 urlParameters["itemStatus"] = itemStatus.rawValue
             }

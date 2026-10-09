@@ -259,6 +259,31 @@ extension HomeViewController {
             selectedCount: deletionTargetCount,
             totalCount: filteredTotalCount
         )
+        // 메뉴에 들어갈 개수가 선택에 따라 달라지므로 매번 다시 만듭니다.
+        selectionBottomBar.setMoreMenu(makeMoreMenu())
+    }
+
+    /// '더 보기' 메뉴
+    private func makeMoreMenu() -> UIMenu {
+        let toWish = ItemSelectionFlow.makeConvertAction(
+            to: .wish,
+            targetCount: conversionTargetCount(to: .wish)
+        ) { [weak self] in
+            self?.presentConvertAlert(to: .wish)
+        }
+
+        let toOwned = ItemSelectionFlow.makeConvertAction(
+            to: .owned,
+            targetCount: conversionTargetCount(to: .owned)
+        ) { [weak self] in
+            self?.presentConvertAlert(to: .owned)
+        }
+
+        let delete = ItemSelectionFlow.makeDeleteAction { [weak self] in
+            self?.presentDeleteAlert()
+        }
+
+        return UIMenu(title: "", children: [toWish, toOwned, delete])
     }
 
     /// 현재 조회 조건('소장템 제외' 필터)에 해당하는 전체 아이템 개수
@@ -286,6 +311,105 @@ extension HomeViewController {
             )
         }
         return .selected(itemIds: selectionViewModel.selectedItemIds.sorted())
+    }
+
+    /// 실제로 상태가 바뀔 아이템 개수.
+    /// 이미 그 상태인 아이템은 바뀌지 않으므로, 반대 상태인 것만 셉니다.
+    private func conversionTargetCount(to status: ItemStatusType) -> Int {
+        let oppositeStatus: ItemStatusType = (status == .wish) ? .owned : .wish
+
+        guard selectionViewModel.isSelectAllOn else {
+            return viewModel.items
+                .filter { item in
+                    guard let id = item.id else { return false }
+                    return selectionViewModel.selectedItemIds.contains(id)
+                }
+                .filter { $0.itemStatus == oppositeStatus }
+                .count
+        }
+
+        // 전체 선택 상태에서는 아직 불러오지 않은 아이템까지 대상이라,
+        // 서버가 내려준 개수에서 개별 해제한 아이템만 빼서 셉니다.
+        let totalInScope = (oppositeStatus == .owned) ? ownedCountInScope : wishCountInScope
+        let excludedCount = viewModel.items
+            .filter { item in
+                guard let id = item.id else { return false }
+                return selectionViewModel.excludedItemIds.contains(id)
+            }
+            .filter { $0.itemStatus == oppositeStatus }
+            .count
+
+        return max(0, totalInScope - excludedCount)
+    }
+
+    /// '소장템 제외' 필터가 켜져 있으면 대상에 소장템이 없습니다.
+    private var ownedCountInScope: Int {
+        viewModel.isExcludingOwned ? 0 : viewModel.ownedCount
+    }
+
+    private var wishCountInScope: Int {
+        viewModel.isExcludingOwned ? filteredTotalCount : viewModel.wishCount
+    }
+
+    /// 상태 일괄 변경 요청 생성
+    private func makeBulkUpdateStatusRequest(to status: ItemStatusType) -> BulkUpdateItemStatusRequest? {
+        guard conversionTargetCount(to: status) > 0 else { return nil }
+
+        if selectionViewModel.isSelectAllOn {
+            return .all(
+                status: status,
+                itemStatus: viewModel.isExcludingOwned ? .wish : nil,
+                excludeItemIds: Array(selectionViewModel.excludedItemIds)
+            )
+        }
+        return .selected(status: status, itemIds: selectionViewModel.selectedItemIds.sorted())
+    }
+
+    private func presentConvertAlert(to status: ItemStatusType) {
+        ItemSelectionFlow.presentConvertAlert(
+            on: self,
+            to: status,
+            targetCount: conversionTargetCount(to: status)
+        ) { [weak self] in
+            self?.requestConvertSelectedItems(to: status)
+        }
+    }
+
+    private func presentDeleteAlert() {
+        ItemSelectionFlow.presentDeleteAlert(
+            on: self,
+            selectedCount: deletionTargetCount
+        ) { [weak self] in
+            self?.requestDeleteSelectedItems()
+        }
+    }
+
+    /// 선택된 아이템의 상태 일괄 변경
+    private func requestConvertSelectedItems(to status: ItemStatusType) {
+        guard let request = makeBulkUpdateStatusRequest(to: status) else { return }
+
+        homeView.showLoading()
+
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            defer { self.homeView.hideLoading() }
+
+            do {
+                try await self.viewModel.updateItemsStatus(request: request)
+
+                self.exitSelectionMode()
+                self.refreshItems()
+                SnackBar.shared.show(type: status == .wish ? .convertToWishItem : .convertToOwnedItem)
+            } catch let error as BulkItemsPartialFailureError {
+                // 나눠 호출하던 중 실패한 경우. 이미 바뀐 아이템은 선택에서 빼고
+                // 목록을 갱신해, 남은 선택 그대로 다시 시도할 수 있게 합니다.
+                self.selectionViewModel.removeFromSelection(Set(error.processedItemIds))
+                self.refreshItems()
+            } catch {
+                // 실패 토스트는 ErrorPlugin에서 공통 처리합니다.
+                // 선택 상태는 그대로 두어 다시 시도할 수 있게 합니다.
+            }
+        }
     }
 
     /// 선택된 아이템 삭제
@@ -378,14 +502,5 @@ extension HomeViewController: ItemSelectionBottomBarDelegate {
 
     func selectionBarDidTapDeselectAll() {
         selectionViewModel.clearSelection()
-    }
-
-    func selectionBarDidTapDelete() {
-        ItemSelectionFlow.presentDeleteAlert(
-            on: self,
-            selectedCount: deletionTargetCount
-        ) { [weak self] in
-            self?.requestDeleteSelectedItems()
-        }
     }
 }

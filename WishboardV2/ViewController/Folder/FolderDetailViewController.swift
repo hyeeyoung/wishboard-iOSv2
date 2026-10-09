@@ -156,6 +156,21 @@ extension FolderDetailViewController {
             selectedCount: deletionTargetCount,
             totalCount: viewModel.totalCount
         )
+        // 메뉴에 들어갈 개수가 선택에 따라 달라지므로 매번 다시 만듭니다.
+        selectionBottomBar.setMoreMenu(makeMoreMenu())
+    }
+
+    /// '더 보기' 메뉴
+    private func makeMoreMenu() -> UIMenu {
+        let removeFromFolder = ItemSelectionFlow.makeRemoveFromFolderAction { [weak self] in
+            self?.presentRemoveFromFolderAlert()
+        }
+
+        let delete = ItemSelectionFlow.makeDeleteAction { [weak self] in
+            self?.presentDeleteAlert()
+        }
+
+        return UIMenu(title: "", children: [removeFromFolder, delete])
     }
 
     /// 실제로 삭제될 아이템 개수.
@@ -178,6 +193,71 @@ extension FolderDetailViewController {
             )
         }
         return .selected(itemIds: selectionViewModel.selectedItemIds.sorted())
+    }
+
+    /// 폴더에서 아이템 제거 요청 생성
+    private func makeBulkRemoveFromFolderRequest() -> BulkRemoveItemsFromFolderRequest? {
+        guard deletionTargetCount > 0, let folderId = Int(viewModel.folderId) else { return nil }
+
+        // 전체 선택 상태라면 아직 불러오지 않은 아이템도 대상이므로,
+        // 화면의 조회 조건(상태 필터)을 그대로 넘기고 개별 해제한 아이템만 제외합니다.
+        if selectionViewModel.isSelectAllOn {
+            return .all(
+                folderId: folderId,
+                itemStatus: viewModel.isExcludingOwned ? .wish : nil,
+                excludeItemIds: Array(selectionViewModel.excludedItemIds)
+            )
+        }
+        return .selected(folderId: folderId, itemIds: selectionViewModel.selectedItemIds.sorted())
+    }
+
+    private func presentRemoveFromFolderAlert() {
+        ItemSelectionFlow.presentRemoveFromFolderAlert(
+            on: self,
+            selectedCount: deletionTargetCount
+        ) { [weak self] in
+            self?.requestRemoveSelectedItemsFromFolder()
+        }
+    }
+
+    private func presentDeleteAlert() {
+        ItemSelectionFlow.presentDeleteAlert(
+            on: self,
+            selectedCount: deletionTargetCount
+        ) { [weak self] in
+            self?.requestDeleteSelectedItems()
+        }
+    }
+
+    /// 선택된 아이템을 폴더에서 제거
+    private func requestRemoveSelectedItemsFromFolder() {
+        guard let request = makeBulkRemoveFromFolderRequest() else { return }
+
+        folderView.showLoading()
+
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            defer { self.folderView.hideLoading() }
+
+            do {
+                try await self.viewModel.removeItemsFromFolder(request: request)
+
+                self.exitSelectionMode()
+                self.refreshItems()
+                // 홈화면 등 다른 화면의 목록도 갱신되도록 알립니다.
+                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
+                SnackBar.shared.show(type: .removeItemFromFolder)
+            } catch let error as BulkItemsPartialFailureError {
+                // 나눠 호출하던 중 실패한 경우. 이미 제거된 아이템은 선택에서 빼고
+                // 목록을 갱신해, 남은 선택 그대로 다시 시도할 수 있게 합니다.
+                self.selectionViewModel.removeFromSelection(Set(error.processedItemIds))
+                self.refreshItems()
+                NotificationCenter.default.post(name: .ItemUpdated, object: nil)
+            } catch {
+                // 실패 토스트는 ErrorPlugin에서 공통 처리합니다.
+                // 선택 상태는 그대로 두어 다시 시도할 수 있게 합니다.
+            }
+        }
     }
 
     /// 선택된 아이템 삭제
@@ -262,12 +342,4 @@ extension FolderDetailViewController: ItemSelectionBottomBarDelegate {
         selectionViewModel.clearSelection()
     }
 
-    func selectionBarDidTapDelete() {
-        ItemSelectionFlow.presentDeleteAlert(
-            on: self,
-            selectedCount: deletionTargetCount
-        ) { [weak self] in
-            self?.requestDeleteSelectedItems()
-        }
-    }
 }
