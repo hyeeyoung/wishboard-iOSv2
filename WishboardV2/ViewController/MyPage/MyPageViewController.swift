@@ -146,7 +146,7 @@ extension MypageViewController: MypageViewDelegate {
             break
         case 10:
             // 회원탈퇴
-            self.presentDeleteUserAlert()
+            self.moveToWithdrawFeedback()
             break
         default:
             break
@@ -178,49 +178,13 @@ extension MypageViewController: MypageViewDelegate {
         }
     }
     
-    /// 회원 탈퇴 알럿창 노출
-    private func presentDeleteUserAlert() {
-        let alert = AlertViewController(alertType: .accountDeletion)
-        alert.buttonHandlers = [
-            { _ in
-                alert.dismissAlert()
-                print("회원탈퇴 취소 버튼 클릭됨")
-            }, { _ in
-                if let email = alert.emailTextField.text {
-                    guard let userEmail = UserManager.email else {
-                        alert.dismissAlert()
-                        return
-                    }
-                    // 입력된 이메일이 같을 때에만 회원 탈퇴 가능
-                    if email == userEmail {
-                        alert.dismissAlert()
-                        self.requestDeleteUser()
-                    } else {
-                        alert.errorMessageLabel.isHidden = false
-                    }
-                } else {
-                    alert.errorMessageLabel.isHidden = false
-                }
-            }
-        ]
-        alert.modalTransitionStyle = .crossDissolve
-        alert.modalPresentationStyle = .overFullScreen
-        present(alert, animated: true, completion: nil)
-    }
-    
-    /// 회원탈퇴 및 화면 전환, 유저데이터 삭제
-    private func requestDeleteUser() {
-        self.dismiss(animated: true) {
-            NotificationCenter.default.post(name: .SignOut, object: nil)
-            DispatchQueue.main.async {
-                SnackBar.shared.show(type: .deleteUser)
-            }
-        }
-        Task {
-            try? await self.viewModel.deleteUser()
-            AnalyticsManager.shared.log(.withdraw)
-            AnalyticsManager.shared.setUserID(nil)
-        }
+    /// 탈퇴 피드백 화면으로 이동
+    ///
+    /// 예전에는 여기서 이메일 입력 알럿을 거쳤지만, 지금은 탈퇴 사유를 받는 화면으로 대체했습니다.
+    private func moveToWithdrawFeedback() {
+        UIDevice.vibrate()
+        let vc = WithdrawFeedbackViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     /// 알림 허용 상태값 변경

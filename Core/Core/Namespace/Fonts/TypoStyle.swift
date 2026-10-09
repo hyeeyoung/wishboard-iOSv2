@@ -34,6 +34,7 @@ public struct LabelDescription {
 
 public enum TypoStyle: Int, CaseIterable {     // font size / type / line height (multiLine, underline)
     
+    case SuitH0           // 24pt / bold / 26 / 30(m)
     case SuitH1           // 20pt / bold / 22 / 26(m)
     case SuitH2           // 18pt / bold / 20 / 24(m)
     case SuitH3           // 16pt / bold / 18 / 22(m)
@@ -66,6 +67,7 @@ extension TypoStyle {
     private var fontDescription: FontDescription {
         switch self {
             
+            case .SuitH0:                   return FontDescription(font: .SUIT, style: .Bold, size: 24)
             case .SuitH1:                   return FontDescription(font: .SUIT, style: .Bold, size: 20)
             case .SuitH2:                   return FontDescription(font: .SUIT, style: .Bold, size: 18)
             case .SuitH3:                   return FontDescription(font: .SUIT, style: .Bold, size: 16)
@@ -92,6 +94,7 @@ extension TypoStyle {
     public var labelDescription: LabelDescription {
         switch self {
         
+            case .SuitH0:               return LabelDescription(singleLineHeight: 26, multiLineHeight: 30)
             case .SuitH1:               return LabelDescription(singleLineHeight: 22, multiLineHeight: 26)
             case .SuitH2:               return LabelDescription(singleLineHeight: 20, multiLineHeight: 24)
             case .SuitH3:               return LabelDescription(singleLineHeight: 18, multiLineHeight: 22)

@@ -26,6 +26,8 @@ public enum Placeholder {
     public static let newPassword = "새 비밀번호를 입력해 주세요."
     public static let rewritePassword = "새 비밀번호를 다시 입력해 주세요."
     
+    public static let withdrawReason = "탈퇴하시는 이유를 자유롭게 작성해 주세요"
+    
     public static let uploadItemName = "상품명을 입력해 주세요."
     public static let uploadItemPrice = "₩ 가격을 입력해 주세요."
     public static let uploadItemNoti = "재입고, 세일 시작 등 일정 알림을 받아보세요."
@@ -58,6 +60,7 @@ public enum Message {
     public static let email = "이메일 인증으로 비밀번호를 찾을 수 있어요.\n실제 사용될 이메일로 입력해 주세요!"
     public static let password = "입력된 비밀번호로 바로 가입되니 신중히 입력해 주세요."
     public static let deleteUser = "정말 탈퇴하시겠습니까?\n탈퇴 시 앱 내 모든 데이터가 사라집니다.\n서비스를 탈퇴하시려면 이메일을 입력해 주세요."
+    public static let withdrawFeedback = "소중한 의견을 남겨주시면 위시보드 개선에 큰 도움이 돼요."
     public static let toLogin = "이미 계정이 있으신가요?"
     public static let sendedEmail = "인증코드가 전송되었어요!\n이메일을 확인해 주세요."
     public static let lostPassword = "가입하신 이메일을 입력해 주세요!\n로그인을 위해 인증코드가 포함된 이메일을 보내드려요."
@@ -102,6 +105,7 @@ public enum Title {
     // MARK: Account
     public static let modifyProfile = "프로필 수정"
     public static let mypage = "마이페이지"
+    public static let withdrawFeedback = "어떤 점이 아쉬우셨나요?"
     
     // MARK: Item
     public static let itemName = "상품명"
@@ -149,6 +153,7 @@ public enum Button {
     public static let load = "불러오기"
     public static let edit = "편집"
     public static let write = "작성"
+    public static let withdraw = "탈퇴하기"
     
     public static let addFolder = "+ 새 폴더"
 }
