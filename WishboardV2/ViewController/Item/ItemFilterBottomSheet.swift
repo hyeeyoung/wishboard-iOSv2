@@ -26,15 +26,14 @@ final class ItemFilterCell: UITableViewCell {
         $0.textColor = .gray_700
     }
 
-    /// 미선택 상태의 빈 원. 전용 아이콘이 들어오기 전까지 테두리로 그려 둡니다.
-    private let emptyCircleView = UIView().then {
-        $0.layer.cornerRadius = ItemFilterCell.checkIconSize / 2
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.gray_150.cgColor
+    /// 미선택 상태의 빈 원
+    private let emptyCircleView = UIImageView().then {
+        $0.image = Image.circle24
+        $0.contentMode = .scaleAspectFit
     }
 
     private let checkImageView = UIImageView().then {
-        $0.image = Image.checkCircle
+        $0.image = Image.checkGreenCircle24
         $0.contentMode = .scaleAspectFit
         $0.isHidden = true
     }

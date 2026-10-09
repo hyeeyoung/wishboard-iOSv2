@@ -40,7 +40,7 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
 
     /// 선택된 이미지의 체크 아이콘
     private let selectionCheckImageView = UIImageView().then {
-        $0.image = Image.checkCircle
+        $0.image = Image.checkGreenCircle24
         $0.contentMode = .scaleAspectFit
         $0.isHidden = true
     }

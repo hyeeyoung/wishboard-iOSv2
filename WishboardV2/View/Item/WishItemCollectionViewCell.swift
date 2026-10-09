@@ -51,7 +51,7 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     }
     /// 다중 선택 모드에서 선택된 아이템의 체크 아이콘
     private let selectionCheckImageView = UIImageView().then {
-        $0.image = Image.checkCircle
+        $0.image = Image.checkGreenCircle24
         $0.isHidden = true
     }
 

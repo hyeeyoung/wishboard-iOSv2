@@ -63,7 +63,8 @@ final class HomeStickyHeaderView: UICollectionReusableView {
     }
 
     private let filterChipArrow = UIImageView().then {
-        $0.image = UIImage(systemName: "chevron.down")
+        $0.image = Image.arrowDown
+        // 에셋을 템플릿으로 넣는 경우에도 색이 맞도록 틴트를 함께 둡니다.
         $0.tintColor = .gray_300
         $0.contentMode = .scaleAspectFit
         $0.isUserInteractionEnabled = false
