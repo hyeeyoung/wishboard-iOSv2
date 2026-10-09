@@ -51,9 +51,13 @@ enum WithdrawReason: CaseIterable {
 /// 미선택 상태의 빈 원은 전용 아이콘이 들어오기 전까지 테두리로 그려 둡니다.
 final class WithdrawReasonRow: UIControl {
 
-    private static let indicatorSize: CGFloat = 20
-    /// 라디오와 문구 사이 간격
-    private static let spacing: CGFloat = 10
+    /// 체크 아이콘 크기
+    private static let indicatorSize: CGFloat = 18
+    /// 체크 아이콘과 문구 사이 간격
+    private static let spacing: CGFloat = 6
+    /// 줄 높이는 아이콘만큼 작아, 위아래로 조금 더 눌리도록 터치 영역만 넓혀 둡니다.
+    /// (줄과 줄 사이 간격의 절반이라 이웃한 줄과 겹치지 않습니다)
+    private static let touchAreaExpansion: CGFloat = 6
 
     let reason: WithdrawReason
 
@@ -72,8 +76,8 @@ final class WithdrawReasonRow: UIControl {
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = TypoStyle.SuitD2.font
-        $0.textColor = .gray_700
+        $0.font = TypoStyle.SuitB3.font
+        $0.textColor = .black_10
         $0.numberOfLines = 0
         $0.isUserInteractionEnabled = false
     }
@@ -95,10 +99,13 @@ final class WithdrawReasonRow: UIControl {
         addSubview(checkImageView)
         addSubview(titleLabel)
 
+        // 줄 높이는 아이콘과 문구 중 큰 쪽을 따릅니다. (문구가 길어 두 줄이 되는 경우 대비)
         emptyCircleView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
             make.width.height.equalTo(WithdrawReasonRow.indicatorSize)
+            make.top.greaterThanOrEqualToSuperview()
+            make.bottom.lessThanOrEqualToSuperview()
         }
 
         checkImageView.snp.makeConstraints { make in
@@ -109,11 +116,16 @@ final class WithdrawReasonRow: UIControl {
             make.leading.equalTo(emptyCircleView.snp.trailing).offset(WithdrawReasonRow.spacing)
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.verticalEdges.equalToSuperview().inset(12)
+            make.top.greaterThanOrEqualToSuperview()
+            make.bottom.lessThanOrEqualToSuperview()
         }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        bounds.insetBy(dx: 0, dy: -WithdrawReasonRow.touchAreaExpansion).contains(point)
+    }
 }
 
 // MARK: - 탈퇴 피드백 화면
@@ -125,6 +137,16 @@ final class WithdrawFeedbackView: UIView {
 
     private static let horizontalInset: CGFloat = 16
     private static let actionButtonHeight: CGFloat = 50
+    /// 키보드가 올라왔을 때 '탈퇴하기' 버튼과 키보드 사이 간격
+    private static let actionButtonKeyboardSpacing: CGFloat = 16
+    /// 선택지 줄과 줄 사이 간격
+    private static let reasonRowSpacing: CGFloat = 12
+    /// 직접 입력란의 안쪽 여백
+    private static let detailVerticalPadding: CGFloat = 12
+    private static let detailHorizontalPadding: CGFloat = 10
+    /// 입력 글자와 글자 수 라벨 사이의 최소 간격
+    private static let detailCountSpacing: CGFloat = 12
+    private static let detailContainerHeight: CGFloat = 120
 
     // MARK: - Views
 
@@ -139,14 +161,14 @@ final class WithdrawFeedbackView: UIView {
 
     private let titleLabel = UILabel().then {
         $0.text = Title.withdrawFeedback
-        $0.font = TypoStyle.SuitH1.font
+        $0.font = TypoStyle.SuitH0.font
         $0.textColor = .gray_700
         $0.numberOfLines = 0
     }
 
     private let subtitleLabel = UILabel().then {
         $0.text = Message.withdrawFeedback
-        $0.font = TypoStyle.SuitD3.font
+        $0.font = TypoStyle.SuitD2.font
         $0.textColor = .gray_300
         $0.numberOfLines = 0
     }
@@ -155,19 +177,19 @@ final class WithdrawFeedbackView: UIView {
         $0.axis = .vertical
         $0.alignment = .fill
         $0.distribution = .fill
-        $0.spacing = 0
+        $0.spacing = WithdrawFeedbackView.reasonRowSpacing
     }
 
     /// '기타'를 골랐을 때만 노출되는 직접 입력란
     private let detailContainerView = UIView().then {
         $0.backgroundColor = .gray_50
-        $0.layer.cornerRadius = 12
+        $0.layer.cornerRadius = 6
         $0.clipsToBounds = true
         $0.isHidden = true
     }
 
     let detailTextView = UITextView().then {
-        $0.font = TypoStyle.SuitD2.font
+        $0.font = TypoStyle.SuitD1.font
         $0.textColor = .gray_700
         $0.backgroundColor = .clear
         $0.textContainerInset = .zero
@@ -177,8 +199,8 @@ final class WithdrawFeedbackView: UIView {
 
     private let detailPlaceholderLabel = UILabel().then {
         $0.text = Placeholder.withdrawReason
-        $0.font = TypoStyle.SuitD2.font
-        $0.textColor = .gray_200
+        $0.font = TypoStyle.SuitD1.font
+        $0.textColor = .gray_300
         $0.numberOfLines = 0
         $0.isUserInteractionEnabled = false
     }
@@ -258,14 +280,12 @@ final class WithdrawFeedbackView: UIView {
 
         // 직접 입력란도 스택에 넣어, 숨겼을 때 자리까지 함께 접히도록 합니다.
         reasonStackView.addArrangedSubview(detailContainerView)
-        if let lastRow = reasonRows.last {
-            reasonStackView.setCustomSpacing(12, after: lastRow)
-        }
 
         detailTextView.delegate = self
     }
 
     private func setupConstraints() {
+        // 스크롤뷰는 상단바 아래에서 '탈퇴하기' 버튼 위까지를 차지합니다.
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(toolBar.snp.bottom)
             make.horizontalEdges.equalToSuperview()
@@ -283,7 +303,7 @@ final class WithdrawFeedbackView: UIView {
         }
 
         subtitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(8)
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalTo(titleLabel)
         }
 
@@ -294,12 +314,14 @@ final class WithdrawFeedbackView: UIView {
         }
 
         detailContainerView.snp.makeConstraints { make in
-            make.height.equalTo(120)
+            make.height.equalTo(WithdrawFeedbackView.detailContainerHeight)
         }
 
         detailTextView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview().inset(16)
-            make.bottom.equalTo(detailCountLabel.snp.top).offset(-8)
+            make.top.equalToSuperview().inset(WithdrawFeedbackView.detailVerticalPadding)
+            make.horizontalEdges.equalToSuperview().inset(WithdrawFeedbackView.detailHorizontalPadding)
+            make.bottom.equalTo(detailCountLabel.snp.top)
+                .offset(-WithdrawFeedbackView.detailCountSpacing)
         }
 
         detailPlaceholderLabel.snp.makeConstraints { make in
@@ -307,14 +329,16 @@ final class WithdrawFeedbackView: UIView {
         }
 
         detailCountLabel.snp.makeConstraints { make in
-            make.trailing.bottom.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(WithdrawFeedbackView.detailVerticalPadding)
+            make.trailing.equalToSuperview().inset(WithdrawFeedbackView.detailHorizontalPadding)
         }
 
+        // 기본은 안전 영역 하단에 붙어 있고, 키보드가 올라오면 그 위로 옮깁니다.
         actionButton.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(WithdrawFeedbackView.horizontalInset)
             make.height.equalTo(WithdrawFeedbackView.actionButtonHeight)
             self.actionButtonBottomConstraint = make.bottom
-                .equalTo(safeAreaLayoutGuide).offset(-16).constraint
+                .equalTo(safeAreaLayoutGuide).constraint
         }
     }
 
@@ -370,14 +394,14 @@ final class WithdrawFeedbackView: UIView {
         let safeAreaBottom = window?.safeAreaInsets.bottom ?? 0
         let overlap = max(keyboardFrame.height - safeAreaBottom, 0)
 
-        updateActionButtonBottomInset(overlap + 16)
+        updateActionButtonBottomInset(overlap + WithdrawFeedbackView.actionButtonKeyboardSpacing)
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
         }
     }
 
     @objc private func keyboardWillHide(notification: NSNotification) {
-        updateActionButtonBottomInset(16)
+        updateActionButtonBottomInset(0)
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
         }
