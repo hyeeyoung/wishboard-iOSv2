@@ -40,10 +40,11 @@ public protocol HomeToolBarDelegate: AnyObject {
 
 final public class HomeToolBar: UIView {
 
-    /// 알림 개수 뱃지의 지름. 한 자리 수일 때는 정원으로 보입니다.
-    private static let badgeHeight: CGFloat = 16
-    /// 두 자리 이상일 때 숫자가 붙지 않도록 두는 좌우 여백
-    private static let badgeHorizontalPadding: CGFloat = 5
+    /// 뱃지 글자와 배경 사이의 여백
+    private static let badgeVerticalPadding: CGFloat = 1
+    private static let badgeHorizontalPadding: CGFloat = 2
+    /// 종 아이콘의 모서리 바깥으로 걸치는 정도
+    private static let badgeOffset: CGFloat = 5
     /// 뱃지에 그대로 표시하는 최대 개수. 이보다 많으면 `99+`로 줄입니다.
     private static let maxBadgeCount: Int = 99
 
@@ -63,7 +64,6 @@ final public class HomeToolBar: UIView {
     private let alarmBadgeView = UIView().then {
         $0.backgroundColor = .pink_700
         $0.clipsToBounds = true
-        $0.layer.cornerRadius = HomeToolBar.badgeHeight / 2
         $0.isUserInteractionEnabled = false
         $0.isHidden = true
     }
@@ -71,7 +71,7 @@ final public class HomeToolBar: UIView {
     private let alarmBadgeLabel = UILabel().then {
         $0.textColor = .white_10
         $0.textAlignment = .center
-        $0.font = TypoStyle.SuitH6.font
+        $0.font = TypoStyle.SuitB3.font
     }
 
     /// 아이템 다중 선택 진입 버튼
@@ -122,20 +122,29 @@ final public class HomeToolBar: UIView {
             make.centerY.equalToSuperview()
         }
 
-        // 종 아이콘의 오른쪽 위 모서리에 걸치도록 둡니다.
+        // 종 아이콘의 위/오른쪽 모서리에서 5만큼 바깥으로 걸칩니다.
+        // 크기는 글자 + 여백으로 정해지되, 한 자리 수에서 세로로 길쭉해 보이지 않도록
+        // 너비는 높이 이상을 유지합니다. (너비 제약은 그보다 우선순위를 낮게 둡니다)
         alarmBadgeView.snp.makeConstraints { make in
-            make.height.equalTo(HomeToolBar.badgeHeight)
-            make.width.greaterThanOrEqualTo(HomeToolBar.badgeHeight)
-            make.centerX.equalTo(alarmButton.snp.trailing)
-            make.centerY.equalTo(alarmButton.snp.top)
+            make.top.trailing.equalTo(alarmButton).inset(-HomeToolBar.badgeOffset)
+            make.height.equalTo(alarmBadgeLabel.snp.height).offset(HomeToolBar.badgeVerticalPadding * 2)
+            make.width.greaterThanOrEqualTo(alarmBadgeView.snp.height)
+            make.width.equalTo(alarmBadgeLabel.snp.width)
+                .offset(HomeToolBar.badgeHorizontalPadding * 2)
+                .priority(.high)
         }
 
         alarmBadgeLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(HomeToolBar.badgeHorizontalPadding)
+            make.center.equalToSuperview()
         }
     }
     
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        // 글자 크기에 따라 높이가 달라져도 둥근 형태를 유지합니다.
+        alarmBadgeView.layer.cornerRadius = alarmBadgeView.bounds.height / 2
+    }
+
     // MARK: - Setup Actions
     private func setupActions() {
         alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
