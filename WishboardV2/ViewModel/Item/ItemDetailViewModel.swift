@@ -52,6 +52,20 @@ final class ItemDetailViewModel {
     }
     
     // 아이템의 폴더 지정하기
+    /// 아이템에 연결된 폴더를 해제합니다.
+    func removeItemFolder(folderId: Int) async throws {
+        do {
+            guard let itemId = self.itemId else { return }
+            let usecase = RemoveItemFolderUseCase()
+            let _ = try await usecase.execute(itemId: itemId, folderId: folderId)
+
+            try await self.fetchItemDetail()
+            self.fetchFolders()
+        } catch {
+            throw error
+        }
+    }
+    
     func modifyItemFolder(folderId: Int) async throws {
         do {
             guard let itemId = self.itemId else { return }

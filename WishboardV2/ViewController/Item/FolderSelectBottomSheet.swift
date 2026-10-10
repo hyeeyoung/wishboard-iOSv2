@@ -15,6 +15,10 @@ import Core
 import WBNetwork
 
 final class FolderSelectBottomSheet: UIView {
+
+    /// 기본 시트 높이 비율
+    static let defaultHeightRatio: CGFloat = 0.4
+
     
     // MARK: - UI Components
     private let titleLabel = UILabel().then {
@@ -40,7 +44,17 @@ final class FolderSelectBottomSheet: UIView {
     private var cancellables = Set<AnyCancellable>()
     
     var onClose: (() -> Void)?
+    /// 폴더를 골랐을 때. 해제가 켜진 화면에서 이미 지정된 폴더를 다시 고르면 `nil` 이 전달됩니다.
     var selectAction: ((Int?, String?) -> Void)?
+
+    /// 시트 높이 비율. `configure` 를 부르기 전에 지정합니다.
+    var heightRatio: CGFloat = FolderSelectBottomSheet.defaultHeightRatio
+    /// 이미 지정된 폴더를 다시 골랐을 때 해제할지 여부.
+    /// 아이템 상세처럼 해제가 필요한 화면에서만 켭니다.
+    var allowsDeselection: Bool = false
+
+    /// 높이 제약. `configure` 가 여러 번 불려도 한 번만 겁니다.
+    private var heightConstraint: Constraint?
     public var selectedFolderId: Int? {
         didSet {
             DispatchQueue.main.async {
@@ -116,8 +130,11 @@ final class FolderSelectBottomSheet: UIView {
     
     func configure(with folders: [FolderListResponse]) {
         
-        self.snp.makeConstraints { make in
-            make.height.equalToSuperview().multipliedBy(0.4)
+        if heightConstraint == nil {
+            self.snp.makeConstraints { make in
+                heightConstraint = make.height.equalToSuperview()
+                    .multipliedBy(heightRatio).constraint
+            }
         }
         
         self.folders = folders
@@ -154,8 +171,18 @@ extension FolderSelectBottomSheet: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         UIDevice.vibrate()
         
+        guard indexPath.item < folders.count else { return }
         let folderItem = folders[indexPath.item]
         guard let folderId = folderItem.id, let folderName = folderItem.folderName else {return}
+
+        // 해제가 켜진 화면에서는 이미 지정된 폴더를 다시 고르면 해제합니다.
+        if allowsDeselection, selectedFolderId == folderId {
+            self.selectedFolderId = nil
+            self.selectedFolder = nil
+            selectAction?(nil, nil)
+            return
+        }
+
         self.selectedFolderId = folderId
         self.selectedFolder = folderName
         selectAction?(folderId, folderName)
