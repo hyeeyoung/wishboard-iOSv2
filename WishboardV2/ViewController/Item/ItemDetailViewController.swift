@@ -186,19 +186,13 @@ final class ItemDetailViewController: UIViewController {
         self.hideBottomSheet()
     }
     
-    /// 아이템 상세의 폴더 시트는 화면 높이의 2/3을 차지합니다.
-    private static let sheetHeightRatio: CGFloat = 2.0 / 3.0
-    
-    /// 시트가 내려가 있을 때의 위치
+    /// 폴더 시트가 내려가 있을 때의 위치
     private var hiddenSheetOffset: CGFloat {
-        view.frame.height * ItemDetailViewController.sheetHeightRatio
+        view.frame.height * FolderSelectBottomSheet.heightRatio
     }
     
     private func setupBottomSheet() {
         view.addSubview(bottomSheetView)
-        // 이 화면에서는 시트를 크게 띄우고, 지정된 폴더를 다시 골라 해제할 수 있습니다.
-        bottomSheetView.heightRatio = ItemDetailViewController.sheetHeightRatio
-        bottomSheetView.allowsDeselection = true
         
         bottomSheetView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()

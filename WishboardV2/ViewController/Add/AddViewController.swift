@@ -246,7 +246,7 @@ final class AddViewController: UIViewController {
         viewModel.$selectedFolderId
             .receive(on: RunLoop.main)
             .sink { [weak self] folderId in
-                guard let folderId = folderId else { return }
+                // 폴더를 해제하면 nil 이 들어와, 선택 표시도 함께 풀립니다.
                 self?.addView.folderSection.selectFolder(with: folderId)
                 self?.folderSelectBottomSheet.selectedFolderId = folderId
             }
@@ -356,6 +356,12 @@ final class AddViewController: UIViewController {
     }
     
     /// 시트 설정
+    /// 폴더 선택 시트가 내려가 있을 때의 위치.
+    /// 이 시트만 다른 바텀시트들보다 높아서 따로 계산합니다.
+    private var hiddenFolderSheetOffset: CGFloat {
+        view.frame.height * FolderSelectBottomSheet.heightRatio
+    }
+    
     private func setupBottomSheet() {
         view.addSubview(folderSelectBottomSheet)
         view.addSubview(addFolderBottomSheet)
@@ -364,7 +370,7 @@ final class AddViewController: UIViewController {
         
         folderSelectBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+            make.bottom.equalToSuperview().offset(hiddenFolderSheetOffset)
         }
         addFolderBottomSheet.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -476,7 +482,7 @@ final class AddViewController: UIViewController {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.folderSelectBottomSheet.snp.updateConstraints { make in
-                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                    make.bottom.equalToSuperview().offset(self.hiddenFolderSheetOffset)
                 }
                 self.view.layoutIfNeeded()
             }

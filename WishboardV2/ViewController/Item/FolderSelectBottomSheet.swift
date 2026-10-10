@@ -16,8 +16,8 @@ import WBNetwork
 
 final class FolderSelectBottomSheet: UIView {
 
-    /// 기본 시트 높이 비율
-    static let defaultHeightRatio: CGFloat = 0.4
+    /// 시트 높이. 화면 높이의 2/3을 차지합니다.
+    static let heightRatio: CGFloat = 2.0 / 3.0
 
     
     // MARK: - UI Components
@@ -44,14 +44,8 @@ final class FolderSelectBottomSheet: UIView {
     private var cancellables = Set<AnyCancellable>()
     
     var onClose: (() -> Void)?
-    /// 폴더를 골랐을 때. 해제가 켜진 화면에서 이미 지정된 폴더를 다시 고르면 `nil` 이 전달됩니다.
+    /// 폴더를 골랐을 때. 이미 지정된 폴더를 다시 고르면 `nil` 이 전달되어 해제를 뜻합니다.
     var selectAction: ((Int?, String?) -> Void)?
-
-    /// 시트 높이 비율. `configure` 를 부르기 전에 지정합니다.
-    var heightRatio: CGFloat = FolderSelectBottomSheet.defaultHeightRatio
-    /// 이미 지정된 폴더를 다시 골랐을 때 해제할지 여부.
-    /// 아이템 상세처럼 해제가 필요한 화면에서만 켭니다.
-    var allowsDeselection: Bool = false
 
     /// 높이 제약. `configure` 가 여러 번 불려도 한 번만 겁니다.
     private var heightConstraint: Constraint?
@@ -133,7 +127,7 @@ final class FolderSelectBottomSheet: UIView {
         if heightConstraint == nil {
             self.snp.makeConstraints { make in
                 heightConstraint = make.height.equalToSuperview()
-                    .multipliedBy(heightRatio).constraint
+                    .multipliedBy(FolderSelectBottomSheet.heightRatio).constraint
             }
         }
         
@@ -175,8 +169,8 @@ extension FolderSelectBottomSheet: UITableViewDelegate, UITableViewDataSource {
         let folderItem = folders[indexPath.item]
         guard let folderId = folderItem.id, let folderName = folderItem.folderName else {return}
 
-        // 해제가 켜진 화면에서는 이미 지정된 폴더를 다시 고르면 해제합니다.
-        if allowsDeselection, selectedFolderId == folderId {
+        // 이미 지정된 폴더를 다시 고르면 해제합니다.
+        if selectedFolderId == folderId {
             self.selectedFolderId = nil
             self.selectedFolder = nil
             selectAction?(nil, nil)
