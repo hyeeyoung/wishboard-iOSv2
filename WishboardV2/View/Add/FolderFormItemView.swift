@@ -116,8 +116,17 @@ final class FolderFormItemView: FormItemView {
         onArrowTap?()
     }
     
-    public func selectFolder(with id: Int) {
+    /// 고른 폴더를 반영합니다. `nil` 이면 선택을 풉니다.
+    public func selectFolder(with id: Int?) {
         selectedFolderId = id
+
+        guard let id = id else {
+            folderCollectionView.indexPathsForSelectedItems?.forEach {
+                folderCollectionView.deselectItem(at: $0, animated: true)
+            }
+            return
+        }
+
         guard let index = folders.firstIndex(where: { $0.id == id }) else { return }
 
         let indexPath = IndexPath(item: index + 1, section: 0)

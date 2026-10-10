@@ -15,6 +15,10 @@ import Core
 import WBNetwork
 
 final class FolderSelectBottomSheet: UIView {
+
+    /// 시트 높이. 화면 높이의 2/3을 차지합니다.
+    static let heightRatio: CGFloat = 2.0 / 3.0
+
     
     // MARK: - UI Components
     private let titleLabel = UILabel().then {
@@ -40,7 +44,11 @@ final class FolderSelectBottomSheet: UIView {
     private var cancellables = Set<AnyCancellable>()
     
     var onClose: (() -> Void)?
+    /// 폴더를 골랐을 때. 이미 지정된 폴더를 다시 고르면 `nil` 이 전달되어 해제를 뜻합니다.
     var selectAction: ((Int?, String?) -> Void)?
+
+    /// 높이 제약. `configure` 가 여러 번 불려도 한 번만 겁니다.
+    private var heightConstraint: Constraint?
     public var selectedFolderId: Int? {
         didSet {
             DispatchQueue.main.async {
@@ -116,8 +124,11 @@ final class FolderSelectBottomSheet: UIView {
     
     func configure(with folders: [FolderListResponse]) {
         
-        self.snp.makeConstraints { make in
-            make.height.equalToSuperview().multipliedBy(0.4)
+        if heightConstraint == nil {
+            self.snp.makeConstraints { make in
+                heightConstraint = make.height.equalToSuperview()
+                    .multipliedBy(FolderSelectBottomSheet.heightRatio).constraint
+            }
         }
         
         self.folders = folders
@@ -154,8 +165,18 @@ extension FolderSelectBottomSheet: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         UIDevice.vibrate()
         
+        guard indexPath.item < folders.count else { return }
         let folderItem = folders[indexPath.item]
         guard let folderId = folderItem.id, let folderName = folderItem.folderName else {return}
+
+        // 이미 지정된 폴더를 다시 고르면 해제합니다.
+        if selectedFolderId == folderId {
+            self.selectedFolderId = nil
+            self.selectedFolder = nil
+            selectAction?(nil, nil)
+            return
+        }
+
         self.selectedFolderId = folderId
         self.selectedFolder = folderName
         selectAction?(folderId, folderName)

@@ -271,6 +271,8 @@ public enum ItemAPI {
     case getItemDetail(id: Int)
     /// 아이템의 폴더 지정
     case modifyItemFolder(itemId: Int, folderId: Int)
+    /// 아이템의 폴더 지정 해제
+    case removeItemFolder(itemId: Int, folderId: Int)
     /// 아이템 파싱
     case parseItemUrl(link: String)
     /// 아이템 추가
@@ -303,7 +305,8 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             return "/bulk/folder/\(request.folderId)"
         case .getItemDetail(let id):
             return "/\(id)"
-        case .modifyItemFolder(let itemId, let folderId):
+        case .modifyItemFolder(let itemId, let folderId),
+             .removeItemFolder(let itemId, let folderId):
             return "/\(itemId)/folder/\(folderId)"
         case .parseItemUrl:
             return "/parse"
@@ -322,7 +325,7 @@ extension ItemAPI: TargetType, AccessTokenAuthorizable {
             return .get
         case .modifyItemFolder:
             return .put
-        case .deleteItem, .deleteItemsBulk, .removeItemsFromFolderBulk:
+        case .deleteItem, .deleteItemsBulk, .removeItemsFromFolderBulk, .removeItemFolder:
             return .delete
         case .updateItemsStatusBulk:
             return .put

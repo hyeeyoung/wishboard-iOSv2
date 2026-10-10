@@ -29,8 +29,9 @@ final class FolderSelectTableViewCell: UITableViewCell {
         $0.textColor = .gray_700
     }
     
+    /// 선택 여부에 따라 이미지만 바뀌고, 아이콘 자리는 항상 보입니다.
     private let checkBtn = UIImageView().then {
-        $0.image = Image.checkGreen
+        $0.image = Image.circle24
         $0.contentMode = .scaleAspectFit
     }
     
@@ -85,6 +86,6 @@ final class FolderSelectTableViewCell: UITableViewCell {
     }
     
     func configureCheckButton(isSelected: Bool) {
-        checkBtn.isHidden = !isSelected
+        checkBtn.image = isSelected ? Image.checkGreenCircle24 : Image.circle24
     }
 }

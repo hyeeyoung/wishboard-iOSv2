@@ -186,22 +186,33 @@ final class ItemDetailViewController: UIViewController {
         self.hideBottomSheet()
     }
     
+    /// 폴더 시트가 내려가 있을 때의 위치
+    private var hiddenSheetOffset: CGFloat {
+        view.frame.height * FolderSelectBottomSheet.heightRatio
+    }
+    
     private func setupBottomSheet() {
         view.addSubview(bottomSheetView)
         
         bottomSheetView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(view.frame.height * 0.4)
+            make.bottom.equalToSuperview().offset(hiddenSheetOffset)
         }
         
-        // 폴더 수정
-        bottomSheetView.selectAction = { [weak self] folderId, folderName in
-            self?.dismissKeyboard()
-            self?.hideBottomSheet()
+        // 폴더 지정 / 해제
+        bottomSheetView.selectAction = { [weak self] folderId, _ in
+            guard let self = self else { return }
+            self.dismissKeyboard()
+            self.hideBottomSheet()
             
             if let folderId = folderId {
                 Task {
-                    try await self?.viewModel.modifyItemFolder(folderId: folderId)
+                    try await self.viewModel.modifyItemFolder(folderId: folderId)
+                }
+            } else if let currentFolderId = self.viewModel.item?.folderId {
+                // 지정되어 있던 폴더를 다시 골라 해제한 경우입니다.
+                Task {
+                    try await self.viewModel.removeItemFolder(folderId: currentFolderId)
                 }
             }
         }
@@ -238,7 +249,7 @@ final class ItemDetailViewController: UIViewController {
             UIView.animate(withDuration: 0.3) {
                 self.backgroundDimView.alpha = 0.0
                 self.bottomSheetView.snp.updateConstraints { make in
-                    make.bottom.equalToSuperview().offset(self.view.frame.height * 0.4)
+                    make.bottom.equalToSuperview().offset(self.hiddenSheetOffset)
                 }
                 self.view.layoutIfNeeded()
             }
