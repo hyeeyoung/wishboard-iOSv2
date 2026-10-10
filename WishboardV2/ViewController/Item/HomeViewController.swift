@@ -278,26 +278,29 @@ extension HomeViewController {
     }
 
     /// '더 보기' 메뉴
+    ///
+    /// 고른 아이템이 모두 위시템이면 '위시템으로 전환'은, 모두 소장템이면 '소장템으로 전환'은
+    /// 바꿀 것이 없어 메뉴에서 뺍니다.
     private func makeMoreMenu() -> UIMenu {
-        let toWish = ItemSelectionFlow.makeConvertAction(
-            to: .wish,
-            targetCount: conversionTargetCount(to: .wish)
-        ) { [weak self] in
-            self?.presentConvertAlert(to: .wish)
+        var children: [UIMenuElement] = []
+
+        if conversionTargetCount(to: .wish) > 0 {
+            children.append(ItemSelectionFlow.makeConvertAction(to: .wish) { [weak self] in
+                self?.presentConvertAlert(to: .wish)
+            })
         }
 
-        let toOwned = ItemSelectionFlow.makeConvertAction(
-            to: .owned,
-            targetCount: conversionTargetCount(to: .owned)
-        ) { [weak self] in
-            self?.presentConvertAlert(to: .owned)
+        if conversionTargetCount(to: .owned) > 0 {
+            children.append(ItemSelectionFlow.makeConvertAction(to: .owned) { [weak self] in
+                self?.presentConvertAlert(to: .owned)
+            })
         }
 
-        let delete = ItemSelectionFlow.makeDeleteAction { [weak self] in
+        children.append(ItemSelectionFlow.makeDeleteAction { [weak self] in
             self?.presentDeleteAlert()
-        }
+        })
 
-        return UIMenu(title: "", children: [toWish, toOwned, delete])
+        return UIMenu(title: "", children: children)
     }
 
     /// 현재 필터에 해당하는 전체 아이템 개수
