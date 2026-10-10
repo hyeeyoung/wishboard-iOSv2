@@ -31,10 +31,9 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
         $0.isUserInteractionEnabled = false
     }
 
-    // TODO: 폴더에 이미지가 있는 아이템이 하나도 없을 때의 화면은 기획 미지정입니다.
-    // 엠티뷰가 신규 제작되면 이 라벨을 교체해 주세요.
+    /// 대표 사진으로 고를 이미지가 하나도 없을 때 노출됩니다.
     private let emptyLabel = UILabel().then {
-        $0.text = "앗, 대표 사진으로 지정할 이미지가 없어요!"
+        $0.text = "앗, 대표 사진으로 지정할 이미지가 없어요!\n이미지가 있는 아이템을 추가하고 폴더를 꾸며 보세요."
         $0.setTypoStyleWithMultiLine(typoStyle: .SuitD2)
         $0.textColor = .gray_200
         $0.numberOfLines = 0
@@ -84,6 +83,8 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
 
     private func setupConstraints() {
         toolBar.configure(title: folderTitle, usesBackIcon: true)
+        // 진입 직후에는 바꾼 것이 없으므로 비활성에서 시작합니다.
+        toolBar.updateButtonState(enabled: false)
 
         // 리스트는 상단바 바로 아래에서부터 시작합니다.
         collectionView.snp.makeConstraints { make in
@@ -91,8 +92,10 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
             make.top.equalTo(toolBar.snp.bottom)
         }
 
+        // 상단바 아래부터 화면 아랫단까지의 정중앙에 둡니다.
         emptyLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.centerY.equalTo(collectionView)
             make.horizontalEdges.equalToSuperview().inset(16)
         }
 
@@ -108,7 +111,7 @@ final class FolderThumbnailView: UIView, LoadingPresentable {
         emptyLabel.isHidden = !isEmpty
     }
 
-    /// 고를 수 있는 이미지가 없으면 저장할 것도 없어 버튼을 비활성화합니다.
+    /// 저장할 변경사항이 있을 때만 버튼을 활성화합니다.
     func updateSaveButtonState(enabled: Bool) {
         toolBar.updateButtonState(enabled: enabled)
     }

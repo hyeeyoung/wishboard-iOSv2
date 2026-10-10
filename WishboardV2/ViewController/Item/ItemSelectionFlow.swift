@@ -24,17 +24,15 @@ enum ItemSelectionFlow {
     // MARK: - 메뉴
 
     /// 위시템/소장템 전환 메뉴 항목.
-    /// 이미 그 상태인 아이템만 골랐다면 바꿀 것이 없어 비활성으로 둡니다.
+    /// 바꿀 아이템이 없을 때는 호출하는 쪽에서 메뉴에 넣지 않습니다.
     static func makeConvertAction(to status: ItemStatusType,
-                                  targetCount: Int,
                                   handler: @escaping () -> Void) -> UIAction {
         let title = (status == .wish) ? "위시템으로 전환" : "소장템으로 전환"
         let iconName = (status == .wish) ? MenuIcon.wish : MenuIcon.owned
 
         return UIAction(
             title: title,
-            image: UIImage(systemName: iconName),
-            attributes: targetCount > 0 ? [] : [.disabled]
+            image: UIImage(systemName: iconName)
         ) { _ in
             handler()
         }

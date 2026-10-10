@@ -77,8 +77,7 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
             .sink { [weak self] images in
                 guard let self = self else { return }
                 self.thumbnailView.updateEmptyState(isEmpty: images.isEmpty)
-                // 고를 수 있는 이미지가 없으면 저장할 것도 없습니다.
-                self.thumbnailView.updateSaveButtonState(enabled: !images.isEmpty)
+                self.updateSaveButtonState()
                 self.thumbnailView.collectionView.reloadData()
             }
             .store(in: &cancellables)
@@ -89,6 +88,7 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
                 guard let self = self else { return }
                 self.reloadSelection(from: self.lastSelectedItemImageId, to: selectedId)
                 self.lastSelectedItemImageId = selectedId
+                self.updateSaveButtonState()
             }
             .store(in: &cancellables)
 
@@ -100,6 +100,12 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
                 self?.thumbnailView.setLoading(isLoading)
             }
             .store(in: &cancellables)
+    }
+
+    /// 저장할 것이 있을 때만 버튼을 활성화합니다.
+    /// 진입했을 때와 같은 상태로 되돌려 놓으면 다시 비활성이 됩니다.
+    private func updateSaveButtonState() {
+        thumbnailView.updateSaveButtonState(enabled: viewModel.hasChanges)
     }
 
     /// 선택이 바뀐 셀만 다시 그립니다. 전체를 갱신하면 이미지까지 다시 그려집니다.

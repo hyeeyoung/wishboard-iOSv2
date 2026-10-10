@@ -149,10 +149,8 @@ final class ItemFilterSheetView: UIView {
 /// 필터를 고르면 바로 닫히고, 고른 값을 `onSelect` 로 알립니다.
 final class ItemFilterBottomSheetViewController: UIViewController {
 
-    /// 시트가 화면을 덮을 수 있는 최대 비율. 필터가 늘어나도 너무 커지지 않게 합니다.
-    private static let maxHeightRatio: CGFloat = 0.7
-    /// 마지막 줄 아래 여백
-    private static let listBottomInset: CGFloat = 16
+    /// 시트 높이. 화면 전체 높이의 0.4로 고정하고, 넘치는 목록은 스크롤합니다.
+    private static let heightRatio: CGFloat = 0.4
     /// 시트가 내려가 있을 때의 위치. 화면 높이만큼 내려 두면 어떤 높이에서도 가려집니다.
     private static let hiddenOffset: CGFloat = UIScreen.main.bounds.height
 
@@ -200,8 +198,7 @@ final class ItemFilterBottomSheetViewController: UIViewController {
             make.edges.equalToSuperview()
         }
 
-        // 높이는 안전 영역이 잡히는 시점(viewDidAppear)에 다시 맞춥니다.
-        // 내려가 있는 위치는 화면 높이만큼으로 넉넉히 두어, 높이가 바뀌어도 어긋나지 않게 합니다.
+        // 내려가 있는 위치는 화면 높이만큼으로 넉넉히 두어 어떤 높이에서도 가려지게 합니다.
         view.addSubview(sheetView)
         sheetView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
@@ -220,28 +217,14 @@ final class ItemFilterBottomSheetViewController: UIViewController {
         backgroundDimView.addGestureRecognizer(tapGesture)
     }
 
-    /// 상단바 + 줄 높이로 정하되, 화면을 너무 덮지 않도록 제한합니다.
+    /// 화면 높이의 0.4. 필터가 늘어나면 목록 쪽이 스크롤됩니다.
     private var sheetHeight: CGFloat {
-        let listHeight = CGFloat(filters.count) * ItemFilterCell.height
-        let safeAreaBottom = view.safeAreaInsets.bottom
-        let contentHeight = ItemFilterSheetView.headerHeight
-            + listHeight
-            + ItemFilterBottomSheetViewController.listBottomInset
-            + safeAreaBottom
-
-        let maxHeight = UIScreen.main.bounds.height * ItemFilterBottomSheetViewController.maxHeightRatio
-        return min(contentHeight, maxHeight)
+        UIScreen.main.bounds.height * ItemFilterBottomSheetViewController.heightRatio
     }
 
     // MARK: - Animation
 
     private func showSheet() {
-        // 안전 영역이 잡힌 뒤라 여기서 높이를 한 번 더 맞춰 줍니다.
-        sheetView.snp.updateConstraints { make in
-            make.height.equalTo(sheetHeight)
-        }
-        view.layoutIfNeeded()
-
         UIView.animate(withDuration: 0.3) {
             self.backgroundDimView.alpha = 1
             self.sheetView.snp.updateConstraints { make in

@@ -19,6 +19,13 @@ final class FolderThumbnailViewModel {
     @Published private(set) var images: [FolderThumbnailImageResponse] = []
     /// 선택된 이미지의 itemImageId. 선택을 해제하면 nil이 됩니다.
     @Published private(set) var selectedItemImageId: Int?
+    /// 진입 시점에 적용되어 있던 대표 사진. 저장할 것이 있는지 판단하는 기준입니다.
+    private var initialSelectedItemImageId: Int?
+
+    /// 진입했을 때와 달라진 것이 있는지 여부
+    var hasChanges: Bool {
+        selectedItemImageId != initialSelectedItemImageId
+    }
 
     private(set) var folderId: String
 
@@ -96,6 +103,7 @@ final class FolderThumbnailViewModel {
 
         if let selected = contents.first(where: { $0.selected == true }) {
             selectedItemImageId = selected.itemImageId
+            initialSelectedItemImageId = selected.itemImageId
             hasAppliedInitialSelection = true
         }
     }
