@@ -48,6 +48,10 @@
 		2347A90C2C7AC1E8009F9480 /* DeleteFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A90B2C7AC1E8009F9480 /* DeleteFolderUseCase.swift */; };
 		2347A90E2C7AC985009F9480 /* GetFolderListUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A90D2C7AC985009F9480 /* GetFolderListUseCase.swift */; };
 		2347A9162C7AD368009F9480 /* ModifyItemFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9152C7AD368009F9480 /* ModifyItemFolderUseCase.swift */; };
+		F1610002000000000000161E /* EventStreamModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1610001000000000000161E /* EventStreamModels.swift */; };
+		F1610004000000000000161E /* SSEParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1610003000000000000161E /* SSEParser.swift */; };
+		F1610006000000000000161E /* EventStreamClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1610005000000000000161E /* EventStreamClient.swift */; };
+		F1610008000000000000161E /* EventStreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1610007000000000000161E /* EventStreamManager.swift */; };
 		E1590002000000000000159D /* RemoveItemFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1590001000000000000159D /* RemoveItemFolderUseCase.swift */; };
 		2347A9182C7AD4D0009F9480 /* GetItemDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */; };
 		2347A91A2C7ADCD7009F9480 /* DeleteItemUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */; };
@@ -148,6 +152,10 @@
 		2347A90B2C7AC1E8009F9480 /* DeleteFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFolderUseCase.swift; sourceTree = "<group>"; };
 		2347A90D2C7AC985009F9480 /* GetFolderListUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFolderListUseCase.swift; sourceTree = "<group>"; };
 		2347A9152C7AD368009F9480 /* ModifyItemFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyItemFolderUseCase.swift; sourceTree = "<group>"; };
+		F1610001000000000000161E /* EventStreamModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamModels.swift; sourceTree = "<group>"; };
+		F1610003000000000000161E /* SSEParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSEParser.swift; sourceTree = "<group>"; };
+		F1610005000000000000161E /* EventStreamClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamClient.swift; sourceTree = "<group>"; };
+		F1610007000000000000161E /* EventStreamManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStreamManager.swift; sourceTree = "<group>"; };
 		E1590001000000000000159D /* RemoveItemFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveItemFolderUseCase.swift; sourceTree = "<group>"; };
 		2347A9172C7AD4D0009F9480 /* GetItemDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetItemDetailUseCase.swift; sourceTree = "<group>"; };
 		2347A9192C7ADCD7009F9480 /* DeleteItemUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteItemUseCase.swift; sourceTree = "<group>"; };
@@ -378,6 +386,17 @@
 			path = Plugins;
 			sourceTree = "<group>";
 		};
+		F1610000000000000000161E /* EventStream */ = {
+			isa = PBXGroup;
+			children = (
+				F1610001000000000000161E /* EventStreamModels.swift */,
+				F1610003000000000000161E /* SSEParser.swift */,
+				F1610005000000000000161E /* EventStreamClient.swift */,
+				F1610007000000000000161E /* EventStreamManager.swift */,
+			);
+			path = EventStream;
+			sourceTree = "<group>";
+		};
 		232185E72C70B447008BD81B /* API */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,6 +422,7 @@
 				232185DA2C70B447008BD81B /* UseCase */,
 				232185DE2C70B447008BD81B /* Repository */,
 				232185E72C70B447008BD81B /* API */,
+				F1610000000000000000161E /* EventStream */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -589,6 +609,10 @@
 				23F0F53F2C840586001ABAA9 /* ModifyProfileUseCase.swift in Sources */,
 				232186032C70B58F008BD81B /* LoadingPlugin.swift in Sources */,
 				2347A9162C7AD368009F9480 /* ModifyItemFolderUseCase.swift in Sources */,
+				F1610002000000000000161E /* EventStreamModels.swift in Sources */,
+				F1610004000000000000161E /* SSEParser.swift in Sources */,
+				F1610006000000000000161E /* EventStreamClient.swift in Sources */,
+				F1610008000000000000161E /* EventStreamManager.swift in Sources */,
 				E1590002000000000000159D /* RemoveItemFolderUseCase.swift in Sources */,
 				232185FE2C70B582008BD81B /* TokenInterceptor.swift in Sources */,
 				23BD37772D79BEED00D39D0F /* RegisterEmailUseCase.swift in Sources */,
