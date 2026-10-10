@@ -204,6 +204,9 @@ extension MypageViewController: MFMailComposeViewControllerDelegate {
             let deviceModel = UIDevice.current.modelName
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
             let osVersion = UIDevice.current.systemVersion
+            // 메일 앱의 발신 계정이 가입 계정과 다를 수 있어, 가입 이메일을 함께 적어 둡니다.
+            // 마이페이지 진입 시 유저 정보를 조회하면서 갱신된 값입니다.
+            let accountEmail = UserManager.email ?? "unknown"
             
             let messageBody = """
                             안녕하세요. 위시보드 입니다. 🔫
@@ -217,6 +220,7 @@ extension MypageViewController: MFMailComposeViewControllerDelegate {
 
 
                             -------------
+                            Account: \(accountEmail)
                             Device: \(deviceModel)
                             App version: \(appVersion)
                             OS Version: \(osVersion)
