@@ -103,8 +103,7 @@ public final class EventStreamManager {
 
         switch name {
         case .unreadStatus:
-            // TODO: 이 개수는 v3 알림 탭 기준이라 시스템 알림(공지)이 포함됩니다.
-            // 알림 탭이 아직 v2라 개수와 목록이 어긋날 수 있습니다. (NotiAPI 의 TODO 참고)
+            // 알림 탭(GET /v3/noti)과 같은 기준의 개수입니다. 시스템 알림도 포함됩니다.
             guard let status = try? JSONDecoder().decode(UnreadStatusEvent.self, from: data) else { return }
             let count = status.unreadCount ?? 0
             let hasUnread = status.hasUnread ?? (count > 0)
