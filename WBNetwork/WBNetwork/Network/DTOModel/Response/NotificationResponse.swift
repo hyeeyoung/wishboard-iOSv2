@@ -25,6 +25,8 @@ public struct NotificationResponse: Decodable {
     public let notificationId: Int?
     /// 서버가 보내는 그대로의 값. 모르는 값이 와도 깨지지 않도록 문자열로 받습니다.
     public let category: String?
+    /// 알림 시각. 두 종류 모두 이 필드를 씁니다. (ISO8601)
+    public let notificationDate: String?
     public let readState: Bool?
 
     // MARK: ITEM
@@ -33,22 +35,17 @@ public struct NotificationResponse: Decodable {
     public let itemName: String?
     public let itemUrl: String?
     public let itemNotificationType: String?
-    public let itemNotificationDate: String?
 
     // MARK: SYSTEM
     public let title: String?
     public let body: String?
 
-    /// 시스템 알림처럼 알림 시각이 따로 없는 경우에 씁니다.
-    public let createdAt: String?
-
     public var notificationCategory: NotificationCategory {
         NotificationCategory(rawValue: category ?? "") ?? .item
     }
 
-    /// 목록에 보여 줄 시각. 아이템 알림은 알림 시각, 그 외에는 생성 시각을 씁니다.
-    /// ISO 형태(`2026-10-10T12:00:00`)로 와도 읽히도록 구분자를 맞춰 둡니다.
+    /// 목록에 보여 줄 시각
     public var displayDate: String {
-        (itemNotificationDate ?? createdAt ?? "").replacingOccurrences(of: "T", with: " ")
+        notificationDate ?? ""
     }
 }
