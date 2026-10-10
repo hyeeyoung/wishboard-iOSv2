@@ -63,6 +63,13 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         self.tabBarController?.tabBar.isHidden = selectionViewModel.isSelectionMode
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // 로그인 직후처럼 포그라운드 전환 없이 들어오는 경우를 위해 여기서도 연결합니다.
+        // 이미 연결 중이면 아무 일도 하지 않습니다.
+        EventStreamManager.shared.start()
+    }
+
     private func setupNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(refreshItems), name: .ItemUpdated, object: nil)
     }
@@ -127,6 +134,15 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 
     private func setupBindings() {
+        // 실시간으로 내려오는 안읽은 알림 개수를 상단바 뱃지에 반영합니다.
+        EventStreamManager.shared.$unreadCount
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] count in
+                self?.homeView.updateAlarmBadge(count: count)
+            }
+            .store(in: &cancellables)
+
         // 당겨서 새로고침은 자체 인디케이터가 있어, 로딩뷰를 띄우지 않는 경로로 조회합니다.
         homeView.refreshAction = { [weak self] in
             self?.viewModel.refresh()

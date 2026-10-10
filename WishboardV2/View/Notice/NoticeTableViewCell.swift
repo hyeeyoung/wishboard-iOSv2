@@ -117,20 +117,29 @@ final class NoticeTableViewCell: UITableViewCell {
     }
     
     public func configure(with item: NoticeItem) {
-        // item name
-        itemNameLabel.text = item.name
-        // noti type
-        if let alarmType = Alarm.from(apiString: item.notiType) {
-            notiTypeLabel.text = "\(alarmType.rawValue) 알림"
-        } else {
-            notiTypeLabel.text = "알림"
-        }
-        // image
-        if let imageUrl = item.imageUrl {
-            self.itemImageView.loadImage(from: imageUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
-        } else {
+        switch item.category {
+        case .item:
+            // 아이템 알림은 알림 종류와 상품명을 보여 줍니다.
+            itemNameLabel.text = item.name
+            if let alarmType = Alarm.from(apiString: item.notiType) {
+                notiTypeLabel.text = "\(alarmType.rawValue) 알림"
+            } else {
+                notiTypeLabel.text = "알림"
+            }
+
+            if let imageUrl = item.imageUrl, !imageUrl.isEmpty {
+                self.itemImageView.loadImage(from: imageUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
+            } else {
+                self.itemImageView.image = Image.logoIcon.withTintColor(.gray_100)
+            }
+
+        case .system:
+            // 시스템 알림(공지 등)은 제목과 본문을 그대로 보여 주고, 이미지가 없어 로고를 씁니다.
+            notiTypeLabel.text = item.notiType
+            itemNameLabel.text = item.name
             self.itemImageView.image = Image.logoIcon.withTintColor(.gray_100)
         }
+
         // noti date
         self.notiDateLabel.text = FormatManager.shared.createdDateToKoreanStr(item.notiDate)
         // read state
