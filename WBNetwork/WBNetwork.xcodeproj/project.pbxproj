@@ -10,6 +10,8 @@
 		230EDC392C82135900FC35F2 /* UpdatePushStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */; };
 		230EDC3B2C8215DF00FC35F2 /* LogoutUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC3A2C8215DF00FC35F2 /* LogoutUseCase.swift */; };
 		230EDC3D2C821CDF00FC35F2 /* DeleteUserUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230EDC3C2C821CDF00FC35F2 /* DeleteUserUseCase.swift */; };
+		A1650004000000000000165W /* PostWithdrawalFeedbackUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1650003000000000000165W /* PostWithdrawalFeedbackUseCase.swift */; };
+		A1650002000000000000165W /* GetWithdrawalReasonsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1650001000000000000165W /* GetWithdrawalReasonsUseCase.swift */; };
 		232185A92C70B3BB008BD81B /* WBNetwork.docc in Sources */ = {isa = PBXBuildFile; fileRef = 232185A82C70B3BB008BD81B /* WBNetwork.docc */; };
 		232185AF2C70B3BB008BD81B /* WBNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 232185A42C70B3BB008BD81B /* WBNetwork.framework */; };
 		232185B42C70B3BB008BD81B /* WBNetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232185B32C70B3BB008BD81B /* WBNetworkTests.swift */; };
@@ -60,6 +62,7 @@
 		2367FEA22E2B784F0095E309 /* ItemParseResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367FEA12E2B784F0095E309 /* ItemParseResponse.swift */; };
 		23798B752C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23798B742C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift */; };
 		238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238595172C71BFC000B85CBC /* FolderListResponse.swift */; };
+		A1650006000000000000165W /* WithdrawalReasonResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1650005000000000000165W /* WithdrawalReasonResponse.swift */; };
 		2385951C2C71C67A00B85CBC /* FolderAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385951B2C71C67A00B85CBC /* FolderAPI.swift */; };
 		2385951E2C71C6BD00B85CBC /* FolderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385951D2C71C6BD00B85CBC /* FolderRepository.swift */; };
 		238595202C71C6E400B85CBC /* FolderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2385951F2C71C6E400B85CBC /* FolderManager.swift */; };
@@ -110,6 +113,8 @@
 		230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePushStateUseCase.swift; sourceTree = "<group>"; };
 		230EDC3A2C8215DF00FC35F2 /* LogoutUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutUseCase.swift; sourceTree = "<group>"; };
 		230EDC3C2C821CDF00FC35F2 /* DeleteUserUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteUserUseCase.swift; sourceTree = "<group>"; };
+		A1650003000000000000165W /* PostWithdrawalFeedbackUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostWithdrawalFeedbackUseCase.swift; sourceTree = "<group>"; };
+		A1650001000000000000165W /* GetWithdrawalReasonsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWithdrawalReasonsUseCase.swift; sourceTree = "<group>"; };
 		232185A42C70B3BB008BD81B /* WBNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WBNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		232185A72C70B3BB008BD81B /* WBNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WBNetwork.h; sourceTree = "<group>"; };
 		232185A82C70B3BB008BD81B /* WBNetwork.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = WBNetwork.docc; sourceTree = "<group>"; };
@@ -160,6 +165,7 @@
 		2367FEA12E2B784F0095E309 /* ItemParseResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemParseResponse.swift; sourceTree = "<group>"; };
 		23798B742C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPasswordUseCase.swift; sourceTree = "<group>"; };
 		238595172C71BFC000B85CBC /* FolderListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderListResponse.swift; sourceTree = "<group>"; };
+		A1650005000000000000165W /* WithdrawalReasonResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawalReasonResponse.swift; sourceTree = "<group>"; };
 		2385951B2C71C67A00B85CBC /* FolderAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderAPI.swift; sourceTree = "<group>"; };
 		2385951D2C71C6BD00B85CBC /* FolderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderRepository.swift; sourceTree = "<group>"; };
 		2385951F2C71C6E400B85CBC /* FolderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderManager.swift; sourceTree = "<group>"; };
@@ -276,6 +282,7 @@
 				232185CE2C70B447008BD81B /* LoginResponse.swift */,
 				232185CF2C70B447008BD81B /* WishListResponse.swift */,
 				238595172C71BFC000B85CBC /* FolderListResponse.swift */,
+				A1650005000000000000165W /* WithdrawalReasonResponse.swift */,
 				B1460001000000000000146B /* FolderThumbnailResponse.swift */,
 				23CB0DD92C79FAD70053EB40 /* UserInfoResponse.swift */,
 				23AD9D5F2C8097A0007AB8D1 /* CartResponse.swift */,
@@ -455,6 +462,8 @@
 				23CB0DE22C79FBEF0053EB40 /* GetUserInfoUseCase.swift */,
 				230EDC382C82135900FC35F2 /* UpdatePushStateUseCase.swift */,
 				230EDC3C2C821CDF00FC35F2 /* DeleteUserUseCase.swift */,
+				A1650003000000000000165W /* PostWithdrawalFeedbackUseCase.swift */,
+				A1650001000000000000165W /* GetWithdrawalReasonsUseCase.swift */,
 				23F0F53E2C840586001ABAA9 /* ModifyProfileUseCase.swift */,
 				23798B742C8C2E6300F6DA90 /* ModifyPasswordUseCase.swift */,
 			);
@@ -580,7 +589,10 @@
 				232185F12C70B55F008BD81B /* CartManager.swift in Sources */,
 				232186002C70B586008BD81B /* ItemAPI.swift in Sources */,
 				230EDC3D2C821CDF00FC35F2 /* DeleteUserUseCase.swift in Sources */,
+				A1650004000000000000165W /* PostWithdrawalFeedbackUseCase.swift in Sources */,
+				A1650002000000000000165W /* GetWithdrawalReasonsUseCase.swift in Sources */,
 				238595182C71BFC000B85CBC /* FolderListResponse.swift in Sources */,
+				A1650006000000000000165W /* WithdrawalReasonResponse.swift in Sources */,
 				23A3612A2E47896F001A3393 /* LogTaskManager.swift in Sources */,
 				2395DFF12D8AEF94005489FD /* GetCalenderNoticesUseCase.swift in Sources */,
 				2347A90A2C7AC0AD009F9480 /* AddFolderUseCase.swift in Sources */,

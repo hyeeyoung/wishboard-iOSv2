@@ -132,6 +132,7 @@
 		23CB0DD12C79E26F0053EB40 /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD02C79E26F0053EB40 /* MyPageView.swift */; };
 		23CB0DD42C79E2910053EB40 /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD32C79E2910053EB40 /* ProfileHeaderView.swift */; };
 		23CB0DD62C79E2A20053EB40 /* MyPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD52C79E2A20053EB40 /* MyPageViewModel.swift */; };
+		A1650008000000000000165W /* WithdrawFeedbackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1650007000000000000165W /* WithdrawFeedbackViewModel.swift */; };
 		23CB0DD82C79E43F0053EB40 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CB0DD72C79E43F0053EB40 /* SettingTableViewCell.swift */; };
 		23CBF49A2C5514510061D22F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CBF4992C5514510061D22F /* AppDelegate.swift */; };
 		23CBF49C2C5514510061D22F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CBF49B2C5514510061D22F /* SceneDelegate.swift */; };
@@ -357,6 +358,7 @@
 		23CB0DD02C79E26F0053EB40 /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		23CB0DD32C79E2910053EB40 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
 		23CB0DD52C79E2A20053EB40 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
+		A1650007000000000000165W /* WithdrawFeedbackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawFeedbackViewModel.swift; sourceTree = "<group>"; };
 		23CB0DD72C79E43F0053EB40 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
 		23CBF4962C5514510061D22F /* WishboardV2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WishboardV2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23CBF4992C5514510061D22F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -844,6 +846,7 @@
 			isa = PBXGroup;
 			children = (
 				23CB0DD52C79E2A20053EB40 /* MyPageViewModel.swift */,
+				A1650007000000000000165W /* WithdrawFeedbackViewModel.swift */,
 				23F0F53A2C83FC5D001ABAA9 /* ModifyProfileViewModel.swift */,
 				23798B722C8C256B00F6DA90 /* ModifyPasswordViewModel.swift */,
 			);
@@ -1399,6 +1402,7 @@
 				23B3A0D52C7F526A006D0561 /* CartItemTableViewCell.swift in Sources */,
 				235ABA102C8C712900763900 /* CalendarView.swift in Sources */,
 				23CB0DD62C79E2A20053EB40 /* MyPageViewModel.swift in Sources */,
+				A1650008000000000000165W /* WithdrawFeedbackViewModel.swift in Sources */,
 				23B3A0D02C7F5237006D0561 /* CartViewModel.swift in Sources */,
 				231F51BE2C708EB400524968 /* HomeView.swift in Sources */,
 				23C610752D68CB2A003E71F4 /* AlarmToolBar.swift in Sources */,
