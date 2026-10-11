@@ -15,17 +15,31 @@ public final class FormatManager {
     // 서버에서 받은 created_at을 "YY년 MM월 dd일 HH:mm"로 변환
     // '0일 전', '0주전' 으로 변환
     public func createdDateToKoreanStr(_ date: String) -> String? {
-        let date = date.replacingOccurrences(of: "T", with: " ")
+        guard let startTime = serverDate(from: date) else {return "?"}
+
+        let useTime = Int(Date().timeIntervalSince(startTime))
+        
+        return dateToWeek(dateNum: useTime)
+    }
+
+    /// 서버가 주는 날짜 문자열을 읽습니다.
+    ///
+    /// 두 가지 형식이 섞여 있습니다.
+    /// - `2026-10-10T12:49:35.867Z` 처럼 시간대가 붙은 ISO8601 (v3 알림 등)
+    /// - `2026-10-10 12:49:35` 처럼 시간대가 없는 형식 (기존 API). 기기 시간대로 읽습니다.
+    private func serverDate(from string: String) -> Date? {
+        let isoFormatter = ISO8601DateFormatter()
+
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = isoFormatter.date(from: string) { return date }
+
+        isoFormatter.formatOptions = [.withInternetDateTime]
+        if let date = isoFormatter.date(from: string) { return date }
+
         let format = DateFormatter()
         format.dateFormat = "yyyy-MM-dd HH:mm:ss"
         format.locale = Locale(identifier: "ko_KR")
-
-        guard let startTime = format.date(from: date) else {return "?"}
-        guard let endTime = format.date(from: Date().toSecondString()) else {return "?"}
-
-        var useTime = Int(endTime.timeIntervalSince(startTime))
-        
-        return dateToWeek(dateNum: useTime)
+        return format.date(from: string.replacingOccurrences(of: "T", with: " "))
     }
     public func dateToWeek(dateNum: Int) -> String {
         if dateNum < 0 {return "방금 전"}

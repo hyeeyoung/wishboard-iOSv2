@@ -17,6 +17,15 @@ public enum NetworkMacro {
         #endif
     }
     
+    /// v3 API 경로. 알림 목록·읽음 처리처럼 v3 로 넘어간 API 에 씁니다.
+    public static var BaseURLV3: String {
+        #if DEBUG
+        return "http://43.201.137.248/v3"
+        #else
+        return "http://43.201.137.248/v3"
+        #endif
+    }
+    
     public static var DefaultHeader: [String: String] {
         #if DEBUG
         let userAgentInfo =  "wishboard-ios/dev"

@@ -105,6 +105,9 @@ extension AlarmListViewController: UITableViewDataSource {
         let item = viewModel.noticeItems[indexPath.row]
         // 알림 읽음 처리
         viewModel.updateReadState(item)
+
+        // 시스템 알림은 열어 볼 링크가 없어 읽음 처리만 합니다.
+        guard item.category != .system else { return }
         
         // Safari 화면 이동
         if let link = item.link, let url = NSURL(string: link) {
@@ -125,6 +128,10 @@ extension AlarmListViewController: UITableViewDataSource {
 extension AlarmListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 112
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        viewModel.loadNextIfNeeded(currentIndex: indexPath.row)
     }
 }
 

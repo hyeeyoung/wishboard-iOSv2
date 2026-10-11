@@ -8,6 +8,7 @@
 import UIKit
 import Core
 import EchoKit
+import WBNetwork
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -66,6 +67,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     /// 로그아웃 시 온보딩으로 이동
     @objc private func signOutEvent() {
+        EventStreamManager.shared.stop()
         DispatchQueue.main.async {
             // 기존 유저 데이터 삭제
             UserManager.removeUserData()
@@ -76,6 +78,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     /// 자동 로그인 만료 (토큰 재발급 실패) 시 온보딩으로 이동 및 토스트 노출
     @objc private func signOutAndShowToast(_ notification: Foundation.Notification) {
+        EventStreamManager.shared.stop()
         let snackBarType = notification.userInfo?["SnackBarType"] as? SnackBarType ?? .refreshTokenFailed
         DispatchQueue.main.async {
             // 기존 유저 데이터 삭제
@@ -133,11 +136,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
+        // 실시간 이벤트는 포그라운드에서만 받습니다. 로그인 상태가 아니면 연결하지 않습니다.
+        EventStreamManager.shared.start()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        // 백그라운드 알림은 기존 푸시가 맡으므로 연결을 끊습니다.
+        EventStreamManager.shared.stop()
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
