@@ -275,7 +275,7 @@ final class WithdrawFeedbackView: UIView, LoadingPresentable {
         }
 
         reasonStackView.snp.makeConstraints { make in
-            make.top.equalTo(subtitleLabel.snp.bottom).offset(24)
+            make.top.equalTo(subtitleLabel.snp.bottom).offset(32)
             make.horizontalEdges.equalTo(titleLabel)
             make.bottom.equalToSuperview().offset(-24)
         }
