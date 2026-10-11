@@ -9,6 +9,22 @@ import Foundation
 import Moya
 import Core
 
+/// 탈퇴 피드백 등록 요청
+///
+/// `detail` 은 직접 입력이 필요한 사유에서만 보냅니다.
+/// 그 외의 사유에 빈 문자열이라도 함께 보내면 400 입니다.
+public struct WithdrawalFeedbackRequest {
+    /// 탈퇴 사유 목록 조회에서 받은 code
+    public let reason: String
+    /// 직접 입력 내용. 앞뒤 공백은 서버에서 제거합니다.
+    public let detail: String?
+
+    public init(reason: String, detail: String? = nil) {
+        self.reason = reason
+        self.detail = detail
+    }
+}
+
 public enum UserAPI {
     /// 유저 정보 조회
     case getUserInfo
@@ -20,6 +36,10 @@ public enum UserAPI {
     case modifyProfile(profileImg: Data?, nickname: String?)
     /// 비밀번호 변경
     case modifyPassword(password: String)
+    /// 탈퇴 사유 목록 조회
+    case getWithdrawalReasons
+    /// 탈퇴 피드백 등록
+    case postWithdrawalFeedback(request: WithdrawalFeedbackRequest)
 }
 
 extension UserAPI: TargetType, AccessTokenAuthorizable {
@@ -40,6 +60,10 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
             return ""
         case .modifyPassword:
             return "/re-passwd"
+        case .getWithdrawalReasons:
+            return "/withdrawal-reasons"
+        case .postWithdrawalFeedback:
+            return "/withdrawal-feedback"
         }
     }
 
@@ -55,6 +79,10 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
             return .put
         case .modifyPassword:
             return .put
+        case .getWithdrawalReasons:
+            return .get
+        case .postWithdrawalFeedback:
+            return .post
         }
     }
 
@@ -69,6 +97,12 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
             return .uploadMultipart(formData)
         case .modifyPassword(let password):
             parameters = ["newPassword": password]
+        case .postWithdrawalFeedback(let request):
+            parameters = ["reason": request.reason]
+            // 직접 입력이 필요한 사유에만 담습니다. 빈 문자열이라도 함께 보내면 400 입니다.
+            if let detail = request.detail {
+                parameters["detail"] = detail
+            }
         default:
             parameters = [:]
         }

@@ -11,38 +11,6 @@ import SnapKit
 import Then
 import Core
 
-// MARK: - 탈퇴 사유
-
-/// 탈퇴 사유 선택지. 순서가 곧 화면에 노출되는 순서입니다.
-enum WithdrawReason: CaseIterable {
-    case hardToUse
-    case missingFeature
-    case notSatisfied
-    case privacyConcern
-    case otherService
-    case lowUsage
-    case tooManyIssues
-    case other
-
-    var title: String {
-        switch self {
-        case .hardToUse:        return "앱 이용 방법이 어렵거나 불편해요"
-        case .missingFeature:   return "원하는 기능이 없어요"
-        case .notSatisfied:     return "서비스 이용이 생각보다 만족스럽지 않아요"
-        case .privacyConcern:   return "개인정보 보호가 걱정돼요"
-        case .otherService:     return "다른 유사 서비스를 이용하려고 해요"
-        case .lowUsage:         return "사용 빈도가 낮아요"
-        case .tooManyIssues:    return "오류나 불편한 점이 많아요"
-        case .other:            return "기타"
-        }
-    }
-
-    /// 직접 입력을 받아야 하는 선택지인지 여부
-    var needsDetail: Bool {
-        self == .other
-    }
-}
-
 // MARK: - 탈퇴 사유 한 줄
 
 /// 라디오 버튼과 문구로 이루어진 선택지 한 줄.
@@ -126,10 +94,7 @@ final class WithdrawReasonRow: UIControl {
 
 // MARK: - 탈퇴 피드백 화면
 
-final class WithdrawFeedbackView: UIView {
-
-    /// 직접 입력란에 받을 수 있는 최대 글자 수
-    static let detailTextLimit: Int = 200
+final class WithdrawFeedbackView: UIView, LoadingPresentable {
 
     private static let horizontalInset: CGFloat = 16
     private static let actionButtonHeight: CGFloat = 50
@@ -147,6 +112,11 @@ final class WithdrawFeedbackView: UIView {
     // MARK: - Views
 
     let toolBar = ToolBar()
+
+    /// 로딩뷰가 덮을 영역. 상단바는 가리지 않습니다.
+    let loadingContainerView = UIView().then {
+        $0.isUserInteractionEnabled = false
+    }
 
     private let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
@@ -255,6 +225,7 @@ final class WithdrawFeedbackView: UIView {
         addSubview(toolBar)
         addSubview(scrollView)
         addSubview(actionButton)
+        addSubview(loadingContainerView)
 
         scrollView.addSubview(contentView)
         contentView.addSubview(titleLabel)
@@ -267,13 +238,7 @@ final class WithdrawFeedbackView: UIView {
 
         toolBar.configure(title: "")
 
-        WithdrawReason.allCases.forEach { reason in
-            let row = WithdrawReasonRow(reason: reason)
-            row.addTarget(self, action: #selector(reasonRowTapped(_:)), for: .touchUpInside)
-            reasonRows.append(row)
-            reasonStackView.addArrangedSubview(row)
-        }
-
+        // 선택지는 서버에서 받아 `updateReasons(_:)` 로 채웁니다.
         // 직접 입력란도 스택에 넣어, 숨겼을 때 자리까지 함께 접히도록 합니다.
         reasonStackView.addArrangedSubview(detailContainerView)
 
@@ -329,6 +294,11 @@ final class WithdrawFeedbackView: UIView {
             make.trailing.equalToSuperview().inset(WithdrawFeedbackView.detailHorizontalPadding)
         }
 
+        loadingContainerView.snp.makeConstraints { make in
+            make.horizontalEdges.bottom.equalToSuperview()
+            make.top.equalTo(toolBar.snp.bottom)
+        }
+
         // 기본은 안전 영역 하단에 붙어 있고, 키보드가 올라오면 그 위로 옮깁니다.
         actionButton.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(WithdrawFeedbackView.horizontalInset)
@@ -347,7 +317,7 @@ final class WithdrawFeedbackView: UIView {
     @objc private func reasonRowTapped(_ row: WithdrawReasonRow) {
         // 하나만 선택할 수 있고, 같은 항목을 다시 눌러도 선택이 풀리지 않습니다.
         selectedReason = row.reason
-        reasonRows.forEach { $0.isSelected = ($0.reason == row.reason) }
+        reasonRows.forEach { $0.isSelected = ($0.reason.code == row.reason.code) }
 
         detailContainerView.isHidden = !row.reason.needsDetail
         if !row.reason.needsDetail {
@@ -364,7 +334,25 @@ final class WithdrawFeedbackView: UIView {
 
     // MARK: - Public Methods
 
-    /// 선택한 사유에 함께 보낼 직접 입력 내용. '기타'가 아니면 nil입니다.
+    /// 서버에서 받은 사유 목록으로 선택지를 다시 그립니다.
+    func updateReasons(_ reasons: [WithdrawReason]) {
+        reasonRows.forEach { $0.removeFromSuperview() }
+        reasonRows = []
+
+        selectedReason = nil
+        detailContainerView.isHidden = true
+        updateActionButtonState()
+
+        // 직접 입력란은 항상 선택지들 아래에 오도록 다시 넣습니다.
+        reasons.forEach { reason in
+            let row = WithdrawReasonRow(reason: reason)
+            row.addTarget(self, action: #selector(reasonRowTapped(_:)), for: .touchUpInside)
+            reasonRows.append(row)
+            reasonStackView.insertArrangedSubview(row, at: reasonStackView.arrangedSubviews.count - 1)
+        }
+    }
+
+    /// 선택한 사유에 함께 보낼 직접 입력 내용. 직접 입력이 필요한 사유가 아니면 nil입니다.
     func detailText() -> String? {
         guard selectedReason?.needsDetail == true else { return nil }
         return detailTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -439,7 +427,7 @@ final class WithdrawFeedbackView: UIView {
 
     private func updateDetailCount() {
         let count = detailTextView.text.count
-        detailCountLabel.text = "(\(count)/\(WithdrawFeedbackView.detailTextLimit))자"
+        detailCountLabel.text = "(\(count)/\(WithdrawFeedbackViewModel.detailTextLimit))자"
         detailPlaceholderLabel.isHidden = !detailTextView.text.isEmpty
     }
 }
@@ -452,8 +440,8 @@ extension WithdrawFeedbackView: UITextViewDelegate {
         guard textView === detailTextView else { return }
 
         // 붙여넣기로 한 번에 넘어오는 경우가 있어 여기서 한 번 더 잘라 둡니다.
-        if textView.text.count > WithdrawFeedbackView.detailTextLimit {
-            textView.text = String(textView.text.prefix(WithdrawFeedbackView.detailTextLimit))
+        if textView.text.count > WithdrawFeedbackViewModel.detailTextLimit {
+            textView.text = String(textView.text.prefix(WithdrawFeedbackViewModel.detailTextLimit))
         }
 
         updateDetailCount()
@@ -473,6 +461,6 @@ extension WithdrawFeedbackView: UITextViewDelegate {
         guard let textRange = Range(range, in: current) else { return true }
         let updated = current.replacingCharacters(in: textRange, with: text)
 
-        return updated.count <= WithdrawFeedbackView.detailTextLimit
+        return updated.count <= WithdrawFeedbackViewModel.detailTextLimit
     }
 }
