@@ -40,9 +40,15 @@ public protocol HomeToolBarDelegate: AnyObject {
 
 final public class HomeToolBar: UIView {
 
-    /// 뱃지 글자와 배경 사이의 여백
-    private static let badgeVerticalPadding: CGFloat = 1
+    /// 뱃지 글자와 배경 사이의 좌우 여백
     private static let badgeHorizontalPadding: CGFloat = 2
+    /// 뱃지 높이.
+    ///
+    /// 디자인은 글자(14) + 상하 여백 1씩 = 16 을 의도했지만, UILabel 의 높이는
+    /// 글자 크기가 아니라 폰트의 라인 높이(SUIT 14pt 기준 17.6667)를 따릅니다.
+    /// 그대로 두면 16 이 아니라 19.6667 이 되어, 높이만 고정값으로 잡습니다.
+    /// 좌우는 가이드대로 글자 너비 + 여백 2씩으로 둡니다.
+    private static let badgeHeight: CGFloat = 16
     /// 종 아이콘의 모서리 바깥으로 걸치는 정도
     private static let badgeOffset: CGFloat = 5
     /// 한 자리 수에서도 보장하는 뱃지 최소 너비
@@ -125,11 +131,11 @@ final public class HomeToolBar: UIView {
         }
 
         // 종 아이콘의 위/오른쪽 모서리에서 5만큼 바깥으로 걸칩니다.
-        // 크기는 글자 + 여백으로 정해지되, 한 자리 수에서 너무 좁아지지 않도록
+        // 너비는 글자 + 여백으로 정해지되, 한 자리 수에서 너무 좁아지지 않도록
         // 최소 너비를 보장합니다. (너비 제약은 그보다 우선순위를 낮게 둡니다)
         alarmBadgeView.snp.makeConstraints { make in
             make.top.trailing.equalTo(alarmButton).inset(-HomeToolBar.badgeOffset)
-            make.height.equalTo(alarmBadgeLabel.snp.height).offset(HomeToolBar.badgeVerticalPadding * 2)
+            make.height.equalTo(HomeToolBar.badgeHeight)
             make.width.greaterThanOrEqualTo(HomeToolBar.badgeMinWidth)
             make.width.equalTo(alarmBadgeLabel.snp.width)
                 .offset(HomeToolBar.badgeHorizontalPadding * 2)
@@ -143,8 +149,7 @@ final public class HomeToolBar: UIView {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        // 글자 크기에 따라 높이가 달라져도 둥근 형태를 유지합니다.
-        alarmBadgeView.layer.cornerRadius = alarmBadgeView.bounds.height / 2
+        alarmBadgeView.layer.cornerRadius = HomeToolBar.badgeHeight / 2
     }
 
     // MARK: - Setup Actions
