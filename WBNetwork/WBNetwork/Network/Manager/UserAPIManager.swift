@@ -22,6 +22,14 @@ public final class UserAPIManager {
         return try await API.User.request(.deleteUser)
     }
     
+    public func getWithdrawalReasons() async throws -> [WithdrawalReasonResponse] {
+        return try await API.User.request(.getWithdrawalReasons)
+    }
+    
+    public func postWithdrawalFeedback(request: WithdrawalFeedbackRequest) async throws -> EmptyResponse {
+        return try await API.User.request(.postWithdrawalFeedback(request: request))
+    }
+    
     public func modifyProfile(profileImg: Data?, nickname: String?) async throws -> EmptyResponse {
         return try await API.User.request(.modifyProfile(profileImg: profileImg, nickname: nickname))
     }
