@@ -100,7 +100,9 @@ final class WithdrawFeedbackView: UIView, LoadingPresentable {
     private static let actionButtonHeight: CGFloat = 50
     /// 키보드가 올라왔을 때 '탈퇴하기' 버튼과 키보드 사이 간격
     private static let actionButtonKeyboardSpacing: CGFloat = 16
-    /// 선택지 줄과 줄 사이 간격
+    /// 선택지 줄과 줄 사이 간격.
+    /// 선택한 줄과 직접 입력란 사이도 같은 값입니다. (디자인 실측: 줄 간격 12, 입력란 위 간격 12)
+    /// 아이콘과 문구가 모두 줄 안에서 세로 중앙이라, 글자 기준으로는 16pt 간격이 됩니다.
     private static let reasonRowSpacing: CGFloat = 12
     /// 직접 입력란의 안쪽 여백
     private static let detailVerticalPadding: CGFloat = 12
@@ -191,6 +193,9 @@ final class WithdrawFeedbackView: UIView, LoadingPresentable {
     private var reasonRows: [WithdrawReasonRow] = []
     private var actionButtonBottomConstraint: Constraint?
 
+    /// 직접 입력란은 선택지에 딸린 입력칸이라, 적어 둔 내용을 사유별로 따로 기억합니다.
+    private var detailDrafts: [String: String] = [:]
+
     /// 선택된 사유. 아직 고르지 않았다면 nil입니다.
     private(set) var selectedReason: WithdrawReason?
 
@@ -240,6 +245,7 @@ final class WithdrawFeedbackView: UIView, LoadingPresentable {
 
         // 선택지는 서버에서 받아 `updateReasons(_:)` 로 채웁니다.
         // 직접 입력란도 스택에 넣어, 숨겼을 때 자리까지 함께 접히도록 합니다.
+        // 자리는 고정이 아니라, 고른 선택지 바로 아래로 옮겨 다닙니다.
         reasonStackView.addArrangedSubview(detailContainerView)
 
         detailTextView.delegate = self
@@ -316,16 +322,42 @@ final class WithdrawFeedbackView: UIView, LoadingPresentable {
 
     @objc private func reasonRowTapped(_ row: WithdrawReasonRow) {
         // 하나만 선택할 수 있고, 같은 항목을 다시 눌러도 선택이 풀리지 않습니다.
+        guard selectedReason?.code != row.reason.code else { return }
+
         selectedReason = row.reason
         reasonRows.forEach { $0.isSelected = ($0.reason.code == row.reason.code) }
 
-        detailContainerView.isHidden = !row.reason.needsDetail
-        if !row.reason.needsDetail {
+        // 직접 입력란은 몇 번째 줄이냐가 아니라 `detailRequired` 값만 보고 열고 닫습니다.
+        if row.reason.needsDetail {
+            moveDetailContainer(below: row)
+            detailTextView.text = detailDrafts[row.reason.code] ?? ""
+            detailContainerView.isHidden = false
+            updateDetailCount()
+        } else {
+            detailContainerView.isHidden = true
             endEditing(true)
         }
 
         updateActionButtonState()
         onSelectionChanged?()
+    }
+
+    /// 직접 입력란을 고른 줄 바로 아래로 옮깁니다. 이미 그 자리면 그대로 둡니다.
+    private func moveDetailContainer(below row: WithdrawReasonRow) {
+        let arranged = reasonStackView.arrangedSubviews
+        guard let rowIndex = arranged.firstIndex(of: row) else { return }
+
+        // 이미 제자리인데 다시 끼워 넣으면 입력 중이던 키보드가 내려갑니다.
+        if arranged.indices.contains(rowIndex + 1), arranged[rowIndex + 1] === detailContainerView {
+            return
+        }
+
+        // 뺀 다음에 줄 위치를 다시 찾아야 앞에 있던 경우에도 순서가 어긋나지 않습니다.
+        reasonStackView.removeArrangedSubview(detailContainerView)
+        detailContainerView.removeFromSuperview()
+
+        let insertIndex = (reasonStackView.arrangedSubviews.firstIndex(of: row) ?? rowIndex) + 1
+        reasonStackView.insertArrangedSubview(detailContainerView, at: insertIndex)
     }
 
     @objc private func withdrawButtonTapped() {
@@ -340,10 +372,17 @@ final class WithdrawFeedbackView: UIView, LoadingPresentable {
         reasonRows = []
 
         selectedReason = nil
+        detailDrafts = [:]
+        detailTextView.text = ""
         detailContainerView.isHidden = true
+        updateDetailCount()
         updateActionButtonState()
 
-        // 직접 입력란은 항상 선택지들 아래에 오도록 다시 넣습니다.
+        // 아직 고른 줄이 없으니 입력란은 맨 끝에 숨겨 두고, 줄들을 그 앞에 쌓습니다.
+        reasonStackView.removeArrangedSubview(detailContainerView)
+        detailContainerView.removeFromSuperview()
+        reasonStackView.addArrangedSubview(detailContainerView)
+
         reasons.forEach { reason in
             let row = WithdrawReasonRow(reason: reason)
             row.addTarget(self, action: #selector(reasonRowTapped(_:)), for: .touchUpInside)
@@ -442,6 +481,11 @@ extension WithdrawFeedbackView: UITextViewDelegate {
         // 붙여넣기로 한 번에 넘어오는 경우가 있어 여기서 한 번 더 잘라 둡니다.
         if textView.text.count > WithdrawFeedbackViewModel.detailTextLimit {
             textView.text = String(textView.text.prefix(WithdrawFeedbackViewModel.detailTextLimit))
+        }
+
+        // 적은 내용은 고른 사유에 딸려 다닙니다.
+        if let reason = selectedReason, reason.needsDetail {
+            detailDrafts[reason.code] = textView.text
         }
 
         updateDetailCount()
