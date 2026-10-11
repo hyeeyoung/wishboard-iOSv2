@@ -44,9 +44,9 @@ final public class HomeToolBar: UIView {
     private static let badgeHorizontalPadding: CGFloat = 2
     /// 뱃지 높이.
     ///
-    /// 디자인은 글자(14) + 상하 여백 1씩 = 16 을 의도했지만, UILabel 의 높이는
-    /// 글자 크기가 아니라 폰트의 라인 높이(SUIT 14pt 기준 17.6667)를 따릅니다.
-    /// 그대로 두면 16 이 아니라 19.6667 이 되어, 높이만 고정값으로 잡습니다.
+    /// 디자인은 글자 + 상하 여백 1씩 = 16 을 의도했지만, UILabel 의 높이는
+    /// 글자 크기가 아니라 폰트의 라인 높이(SuitB4 기준 15.14)를 따라
+    /// 딱 16 이 되지 않습니다. 높이만 고정값으로 잡고,
     /// 좌우는 가이드대로 글자 너비 + 여백 2씩으로 둡니다.
     private static let badgeHeight: CGFloat = 16
     /// 종 아이콘의 모서리 바깥으로 걸치는 정도
@@ -79,7 +79,7 @@ final public class HomeToolBar: UIView {
     private let alarmBadgeLabel = UILabel().then {
         $0.textColor = .white_10
         $0.textAlignment = .center
-        $0.font = TypoStyle.SuitB3.font
+        $0.font = TypoStyle.SuitB4.font
     }
 
     /// 아이템 다중 선택 진입 버튼
