@@ -49,9 +49,11 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         $0.clipsToBounds = true
         $0.isHidden = true
     }
-    /// 다중 선택 모드에서 선택된 아이템의 체크 아이콘
+    /// 다중 선택 모드에서 선택된 아이템의 체크 아이콘.
+    /// 대표 사진 변경 화면과 같은 검정 체크를 씁니다. (그린 아님)
     private let selectionCheckImageView = UIImageView().then {
-        $0.image = Image.checkGreenCircle24
+        $0.image = Image.checkCircle
+        $0.contentMode = .scaleAspectFit
         $0.isHidden = true
     }
 
