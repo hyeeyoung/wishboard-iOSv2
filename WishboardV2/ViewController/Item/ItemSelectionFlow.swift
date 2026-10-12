@@ -13,6 +13,18 @@ import WBNetwork
 /// 홈화면 / 폴더 상세 화면의 아이템 다중 선택 플로우에서 공통으로 사용하는 화면 표시 헬퍼
 enum ItemSelectionFlow {
 
+    // TODO: '더 보기' 메뉴 아이콘을 디자인 에셋으로 교체해야 합니다. (홈화면 / 폴더 상세 화면 공통)
+    //
+    // UIMenu 는 뜨는 위치와 아이콘·텍스트의 좌우 배치를 바꿀 수 없어서 아이콘도 안 되는 줄 알고
+    // 시스템 아이콘으로 두었는데, UIAction 의 image 는 그냥 UIImage? 라 에셋을 넣을 수 있습니다.
+    // 교체할 때 걸리는 것들:
+    //  1) 메뉴가 이미지를 템플릿으로 취급해 tintColor 로 덮습니다.
+    //     원본 색을 쓰려면 .withRenderingMode(.alwaysOriginal) 이 필요합니다.
+    //  2) 삭제 항목은 attributes 에 .destructive 가 있어 글자와 아이콘이 빨강으로 강제됩니다.
+    //     디자인이 빨강이 아니라면 .destructive 를 빼야 합니다.
+    //  3) 아이콘 크기를 지정하는 API 가 없어, 에셋을 알맞은 크기로 만들어 두어야 합니다.
+    //     (시스템 아이콘의 SymbolConfiguration 같은 수단이 없습니다)
+
     /// '더 보기' 메뉴에 쓰는 시스템 아이콘
     private enum MenuIcon {
         static let wish = "heart"
