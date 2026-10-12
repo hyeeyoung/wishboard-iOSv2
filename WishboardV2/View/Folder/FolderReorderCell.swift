@@ -61,13 +61,18 @@ final class FolderReorderCell: UITableViewCell {
     required init?(coder: NSCoder) { fatalError() }
     
     override func prepareForReuse() {
-        iconImageView.image = nil
+        super.prepareForReuse()
+        // image = nil 만으로는 받아 오던 작업이 취소되지 않습니다.
+        iconImageView.cancelImageLoad()
     }
     
     func configure(with folder: FolderListResponse) {
         titleLabel.text = folder.folderName
         if let thumbnail = folder.folderThumbnail {
             iconImageView.loadImage(from: thumbnail)
+        } else {
+            // 썸네일이 없는 폴더입니다. 앞 폴더의 이미지가 남지 않도록 정리합니다.
+            iconImageView.cancelImageLoad()
         }
     }
 }

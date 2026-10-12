@@ -142,6 +142,12 @@ final class CartItemTableViewCell: UITableViewCell {
         removeItem?()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // 받아 오던 이미지를 취소하지 않으면 재사용된 셀에 뒤늦게 그려집니다.
+        itemImageView.cancelImageLoad()
+    }
+
     public func configure(with item: CartItem) {
         itemNameLabel.text = item.name
         quantityLabel.text = "\(item.quantity)"

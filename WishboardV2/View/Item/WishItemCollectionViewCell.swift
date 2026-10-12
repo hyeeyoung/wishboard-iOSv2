@@ -207,7 +207,9 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
         if let itemImages = item.itemImages, !itemImages.isEmpty, let imgUrl = itemImages[0].itemImageUrl {
             self.imageView.loadImage(from: imgUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            self.imageView.image = Image.logoIcon.withTintColor(.gray_100)
+            // 이미지가 없는 아이템입니다. 앞 아이템의 이미지가 뒤늦게 도착해
+            // 이 셀에 그려지지 않도록, 받아 오던 것이 있으면 취소합니다.
+            self.imageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
         }
         // item name
         if let itemName = item.itemName {
@@ -232,6 +234,8 @@ final class WishItemCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         configureSelection(isSelectionMode: false, isSelected: false)
+        // 다시 쓰이기 전에 앞 아이템의 이미지와 받아 오던 작업을 치웁니다.
+        imageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
     }
 
     // MARK: - Private Methods
