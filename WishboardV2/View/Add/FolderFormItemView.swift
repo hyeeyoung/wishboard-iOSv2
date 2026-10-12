@@ -47,7 +47,8 @@ final class FolderFormItemView: FormItemView {
     private var selectedFolderId: Int?
     
     // 콜백
-    var onFolderSelected: ((Int) -> Void)?
+    /// 고른 폴더. 이미 고른 폴더를 다시 누르면 `nil` 이 전달됩니다.
+    var onFolderSelected: ((Int?) -> Void)?
     var onNewFolderTap: (() -> Void)?
     var onArrowTap: (() -> Void)?
     
@@ -159,10 +160,29 @@ extension FolderFormItemView: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
 
+    /// 이미 고른 폴더를 다시 누르면 선택을 풉니다.
+    ///
+    /// 컬렉션뷰는 이미 선택된 셀을 다시 눌러도 `didSelectItemAt` 을 부르지 않아,
+    /// 해제는 여기서 가로채 처리합니다.
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        // 첫 칸은 '새 폴더' 버튼이라 선택 대상이 아닙니다.
+        // (선택되면 단일 선택 규칙 때문에 고른 폴더의 표시가 풀립니다)
+        guard indexPath.item > 0 else { return false }
+
+        guard collectionView.indexPathsForSelectedItems?.contains(indexPath) == true else { return true }
+
+        collectionView.deselectItem(at: indexPath, animated: true)
+        selectedFolderId = nil
+        onFolderSelected?(nil)
+        return false
+    }
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.item <= 1 { return }
+        // 첫 칸은 '새 폴더' 버튼입니다. 목록의 첫 폴더는 item 1 이라 함께 걸러내면 안 됩니다.
+        guard indexPath.item > 0 else { return }
         guard let selectedId = folders[indexPath.item - 1].id else { return }
-        print("✅ 선택된 폴더: \(selectedId)")
+
+        selectedFolderId = selectedId
         onFolderSelected?(selectedId)
     }
     
