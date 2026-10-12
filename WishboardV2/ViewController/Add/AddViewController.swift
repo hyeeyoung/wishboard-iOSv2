@@ -237,7 +237,8 @@ final class AddViewController: UIViewController {
             .sink { [weak self] folders in
                 guard let self = self else { return }
                 self.addView.folderSection.folders = folders
-                guard let selectedFolderId = self.viewModel.selectedFolderId else { return }
+                // 고른 폴더가 없을 때도 그대로 반영해야 선택 표시가 남지 않습니다.
+                let selectedFolderId = self.viewModel.selectedFolderId
                 self.addView.folderSection.selectFolder(with: selectedFolderId)
                 self.folderSelectBottomSheet.selectedFolderId = selectedFolderId
             }
