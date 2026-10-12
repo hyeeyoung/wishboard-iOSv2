@@ -83,6 +83,8 @@
 		23AD9D772C80A8FF007AB8D1 /* NoticeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D762C80A8FF007AB8D1 /* NoticeResponse.swift */; };
 		23AD9D792C80A94F007AB8D1 /* NoticeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D782C80A94F007AB8D1 /* NoticeManager.swift */; };
 		23AD9D7C2C80A9E2007AB8D1 /* GetNotificationsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D7B2C80A9E2007AB8D1 /* GetNotificationsUseCase.swift */; };
+		A1710004000000000000171R /* UpdateStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1710003000000000000171R /* UpdateStateUseCase.swift */; };
+		A1710002000000000000171R /* GetNoticesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1710001000000000000171R /* GetNoticesUseCase.swift */; };
 		23AD9D7E2C80AA0A007AB8D1 /* UpdateReadStateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AD9D7D2C80AA0A007AB8D1 /* UpdateReadStateUseCase.swift */; };
 		23BD37732D79B68E00D39D0F /* EmailLoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BD37722D79B68E00D39D0F /* EmailLoginResponse.swift */; };
 		6A45263BE9494E7787372279 /* WebViewTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB894DFEC5F14A9A8894FF03 /* WebViewTokenResponse.swift */; };
@@ -191,6 +193,8 @@
 		23AD9D762C80A8FF007AB8D1 /* NoticeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeResponse.swift; sourceTree = "<group>"; };
 		23AD9D782C80A94F007AB8D1 /* NoticeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeManager.swift; sourceTree = "<group>"; };
 		23AD9D7B2C80A9E2007AB8D1 /* GetNotificationsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetNotificationsUseCase.swift; sourceTree = "<group>"; };
+		A1710003000000000000171R /* UpdateStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateStateUseCase.swift; sourceTree = "<group>"; };
+		A1710001000000000000171R /* GetNoticesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetNoticesUseCase.swift; sourceTree = "<group>"; };
 		23AD9D7D2C80AA0A007AB8D1 /* UpdateReadStateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateReadStateUseCase.swift; sourceTree = "<group>"; };
 		23BD37722D79B68E00D39D0F /* EmailLoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailLoginResponse.swift; sourceTree = "<group>"; };
 		BB894DFEC5F14A9A8894FF03 /* WebViewTokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewTokenResponse.swift; sourceTree = "<group>"; };
@@ -473,6 +477,8 @@
 			isa = PBXGroup;
 			children = (
 				23AD9D7B2C80A9E2007AB8D1 /* GetNotificationsUseCase.swift */,
+				A1710003000000000000171R /* UpdateStateUseCase.swift */,
+				A1710001000000000000171R /* GetNoticesUseCase.swift */,
 				23AD9D7D2C80AA0A007AB8D1 /* UpdateReadStateUseCase.swift */,
 				2395DFF02D8AEF94005489FD /* GetCalenderNoticesUseCase.swift */,
 			);
@@ -668,6 +674,8 @@
 				23CB0DDE2C79FB570053EB40 /* UserAPIManager.swift in Sources */,
 				230EDC392C82135900FC35F2 /* UpdatePushStateUseCase.swift in Sources */,
 				23AD9D7C2C80A9E2007AB8D1 /* GetNotificationsUseCase.swift in Sources */,
+				A1710004000000000000171R /* UpdateStateUseCase.swift in Sources */,
+				A1710002000000000000171R /* GetNoticesUseCase.swift in Sources */,
 				23AD9D772C80A8FF007AB8D1 /* NoticeResponse.swift in Sources */,
 				2357E55F2C7B09E600CC9509 /* ParseItemUrlUseCase.swift in Sources */,
 				2347A90C2C7AC1E8009F9480 /* DeleteFolderUseCase.swift in Sources */,
