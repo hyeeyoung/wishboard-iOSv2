@@ -10,6 +10,18 @@ import Foundation
 public final class NoticeManager {
     public static let shared = NoticeManager()
     
+    // MARK: v2 (현재 알림 탭이 쓰는 쪽)
+
+    public func getNotices() async throws -> [NoticeResponse] {
+        return try await API.Notice.request(.getNotices)
+    }
+
+    public func updateState(itemId: String) async throws -> EmptyResponse {
+        return try await API.Notice.request(.updateState(itemId: itemId))
+    }
+
+    // MARK: v3 (다시 전환할 때를 위해 남겨 둔 쪽. 지금은 호출되지 않습니다)
+
     public func getNotifications(page: Int = 0, size: Int = 10) async throws -> CommonPaginationResponse<[NotificationResponse]> {
         return try await API.Notice.requestRaw(.getNotifications(page: page, size: size))
     }
