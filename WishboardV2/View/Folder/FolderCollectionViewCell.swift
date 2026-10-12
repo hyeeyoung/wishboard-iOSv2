@@ -60,6 +60,8 @@ final class FolderCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         folderNameLabel.text = nil
         itemCountLabel.text = nil
+        // 받아 오던 이미지를 취소하지 않으면 재사용된 셀에 뒤늦게 그려집니다.
+        folderThumbnailImg.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
     }
     
     private func setupViews() {
@@ -105,7 +107,7 @@ final class FolderCollectionViewCell: UICollectionViewCell {
         if let url = url {
             folderThumbnailImg.loadImage(from: url, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            folderThumbnailImg.image = Image.logoIcon.withTintColor(.gray_100)
+            folderThumbnailImg.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
         }
     }
     

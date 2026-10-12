@@ -49,7 +49,8 @@ final class FolderSelectTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        folderImg.image = nil
+        // image = nil 만으로는 받아 오던 작업이 취소되지 않습니다.
+        folderImg.cancelImageLoad()
         titleLabel.text = nil
     }
     

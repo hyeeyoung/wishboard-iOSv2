@@ -224,14 +224,15 @@ private final class ImageDetailCell: UICollectionViewCell {
         if let urlString = url {
             imageView.loadImage(from: urlString, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            imageView.image = Image.logoIcon.withTintColor(.gray_100)
+            imageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
         }
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         scrollView.setZoomScale(1.0, animated: false)
-        imageView.image = nil
+        // image = nil 만으로는 받아 오던 작업이 취소되지 않습니다.
+        imageView.cancelImageLoad()
     }
 }
 

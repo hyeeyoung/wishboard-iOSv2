@@ -74,7 +74,7 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
         if let imageUrl = image.itemImageUrl {
             self.imageView.loadImage(from: imageUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            self.imageView.image = Image.logoIcon.withTintColor(.gray_100)
+            self.imageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
         }
 
         setSelected(isSelected)
@@ -87,7 +87,8 @@ final class FolderThumbnailImageCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageView.image = nil
+        // image = nil 만으로는 받아 오던 작업이 취소되지 않습니다.
+        imageView.cancelImageLoad()
         setSelected(false)
     }
 }

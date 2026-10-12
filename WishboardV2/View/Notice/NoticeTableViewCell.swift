@@ -67,7 +67,8 @@ final class NoticeTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        itemImageView.image = nil
+        // image = nil 만으로는 받아 오던 작업이 취소되지 않습니다.
+        itemImageView.cancelImageLoad()
         
         itemNameLabel.text = nil
         notiTypeLabel.text = nil
@@ -130,14 +131,14 @@ final class NoticeTableViewCell: UITableViewCell {
             if let imageUrl = item.imageUrl, !imageUrl.isEmpty {
                 self.itemImageView.loadImage(from: imageUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
             } else {
-                self.itemImageView.image = Image.logoIcon.withTintColor(.gray_100)
+                self.itemImageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
             }
 
         case .system:
             // 시스템 알림(공지 등)은 제목과 본문을 그대로 보여 주고, 이미지가 없어 로고를 씁니다.
             notiTypeLabel.text = item.notiType
             itemNameLabel.text = item.name
-            self.itemImageView.image = Image.logoIcon.withTintColor(.gray_100)
+            self.itemImageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
         }
 
         // noti date
@@ -160,7 +161,7 @@ final class NoticeTableViewCell: UITableViewCell {
         if let imageUrl = item.imageUrl {
             self.itemImageView.loadImage(from: imageUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            self.itemImageView.image = Image.logoIcon.withTintColor(.gray_100)
+            self.itemImageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
         }
         // noti date
         self.notiDateLabel.text = createdDateToKoreanStr(item.notiDate)

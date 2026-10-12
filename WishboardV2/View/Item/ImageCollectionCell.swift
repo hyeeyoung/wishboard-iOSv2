@@ -30,11 +30,17 @@ final class ImageCollectionCell: UICollectionViewCell {
         super.layoutSubviews()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // 받아 오던 이미지를 취소하지 않으면 재사용된 셀에 뒤늦게 그려집니다.
+        imageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
+    }
+
     func configure(_ url: String?) {
         if let imgUrl = url {
             imageView.loadImage(from: imgUrl, placeholder: Image.logoIcon.withTintColor(.gray_100))
         } else {
-            imageView.image = Image.logoIcon.withTintColor(.gray_100)
+            imageView.cancelImageLoad(placeholder: Image.logoIcon.withTintColor(.gray_100))
         }
     }
 }
