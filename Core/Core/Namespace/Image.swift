@@ -39,6 +39,12 @@ public enum Image{
     public static let circle18 = UIImage(named: "ic_circle18")!
     public static let circle24 = UIImage(named: "ic_circle24")!
     
+    // 더 보기 메뉴
+    /// '소장템으로 전환'
+    public static let menuShoppingBag = UIImage(named: "akar-icons_shopping-bag")!
+    /// '폴더에서 제거'
+    public static let menuFolder = UIImage(named: "akar-icons_folder")!
+
     // Alarm
     public static let notice = UIImage(named: "notice")!
     
