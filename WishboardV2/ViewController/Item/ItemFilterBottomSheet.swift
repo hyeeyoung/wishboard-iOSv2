@@ -23,6 +23,7 @@ final class ItemFilterCell: UITableViewCell {
 
     private let titleLabel = UILabel().then {
         $0.font = TypoStyle.SuitB3.font
+        // 색은 선택 여부에 따라 configure 에서 정합니다.
         $0.textColor = .gray_700
     }
 
@@ -78,6 +79,8 @@ final class ItemFilterCell: UITableViewCell {
 
     func configure(with filter: HomeItemFilter, isSelected: Bool, showsSeparator: Bool) {
         titleLabel.text = filter.listTitle
+        // 고르지 않은 선택지는 흐리게 보여 줍니다.
+        titleLabel.textColor = isSelected ? .gray_700 : .gray_300
         checkImageView.isHidden = !isSelected
         emptyCircleView.isHidden = isSelected
         separator.isHidden = !showsSeparator
