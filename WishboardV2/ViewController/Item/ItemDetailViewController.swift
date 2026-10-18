@@ -22,6 +22,8 @@ final class ItemDetailViewController: UIViewController {
     private let detailView = ItemDetailView()
     private let viewModel = ItemDetailViewModel()
     private var cancellables = Set<AnyCancellable>()
+    /// 사파리로 띄운 링크. 첫 로딩에 실패했을 때 어떤 주소였는지 남기려고 들고 있습니다.
+    private var openedLinkURLString: String?
     
     private let bottomSheetView = FolderSelectBottomSheet()
     private let backgroundDimView = UIView()
@@ -118,10 +120,18 @@ final class ItemDetailViewController: UIViewController {
         detailView.linkButtonAction = { [weak self] urlStr in
             guard let url = URL(string: urlStr), ["http", "https"].contains(url.scheme?.lowercased()) else {
 //                SnackBar.shared.show(type: .errorMessage)
+                // 어떤 주소가 URL 로 만들어지지 않는지 남깁니다.
+                AnalyticsManager.shared.log(
+                    .itemLinkOpenFailed(url: urlStr, source: .itemDetailInvalidURL)
+                )
                 return
             }
 
+            // 첫 로딩 실패를 남기려면 띄울 때의 주소를 들고 있어야 합니다.
+            self?.openedLinkURLString = urlStr
+
             let linkView = SFSafariViewController(url: url)
+            linkView.delegate = self
             self?.present(linkView, animated: true)
         }
         
@@ -340,5 +350,26 @@ extension ItemDetailViewController {
             }
             self.view.layoutIfNeeded()
         }
+    }
+}
+
+// MARK: - 링크 열기 실패 기록
+
+extension ItemDetailViewController: SFSafariViewControllerDelegate {
+
+    /// 사파리가 첫 페이지를 못 불러온 경우입니다.
+    ///
+    /// 첫 로딩만 알려 주므로, 로딩은 됐는데 이후 이동에서 멈추는 경우는 여기 잡히지 않습니다.
+    func safariViewController(_ controller: SFSafariViewController,
+                              didCompleteInitialLoad didLoadSuccessfully: Bool) {
+        guard !didLoadSuccessfully, let urlString = openedLinkURLString else { return }
+
+        AnalyticsManager.shared.log(
+            .itemLinkOpenFailed(url: urlString, source: .itemDetailLoadFailed)
+        )
+    }
+
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        openedLinkURLString = nil
     }
 }

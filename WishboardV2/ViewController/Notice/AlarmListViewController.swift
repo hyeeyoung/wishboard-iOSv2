@@ -20,6 +20,8 @@ final class AlarmListViewController: UIViewController, ItemDetailDelegate {
     private var viewModel = AlarmListViewModel()
     private var noticeView = AlarmListView()
     private var cancellables = Set<AnyCancellable>()
+    /// 사파리로 띄운 링크. 첫 로딩에 실패했을 때 어떤 주소였는지 남기려고 들고 있습니다.
+    private var openedLinkURLString: String?
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -110,12 +112,24 @@ extension AlarmListViewController: UITableViewDataSource {
         if let link = item.link, let url = NSURL(string: link) {
             if !(["http", "https"].contains(url.scheme?.lowercased())) {
                 SnackBar.shared.show(type: .shoppingLinkNotExist)
+                AnalyticsManager.shared.log(
+                    .itemLinkOpenFailed(url: link, source: .notificationInvalidURL)
+                )
                 return
             }
+
+            // 첫 로딩 실패를 남기려면 띄울 때의 주소를 들고 있어야 합니다.
+            self.openedLinkURLString = link
+
             let linkView: SFSafariViewController = SFSafariViewController(url: url as URL)
+            linkView.delegate = self
             self.present(linkView, animated: true, completion: nil)
         } else {
             SnackBar.shared.show(type: .shoppingLinkNotExist)
+            // 주소가 비어 있을 수도 있어 빈 문자열이라도 그대로 남깁니다.
+            AnalyticsManager.shared.log(
+                .itemLinkOpenFailed(url: item.link ?? "", source: .notificationInvalidURL)
+            )
         }
         
     }
@@ -141,4 +155,25 @@ extension AlarmListViewController: AlarmToolBarDelegate {
         self.present(nextVC, animated: true, completion: nil)
     }
     
+}
+
+// MARK: - 링크 열기 실패 기록
+
+extension AlarmListViewController: SFSafariViewControllerDelegate {
+
+    /// 사파리가 첫 페이지를 못 불러온 경우입니다.
+    ///
+    /// 첫 로딩만 알려 주므로, 로딩은 됐는데 이후 이동에서 멈추는 경우는 여기 잡히지 않습니다.
+    func safariViewController(_ controller: SFSafariViewController,
+                              didCompleteInitialLoad didLoadSuccessfully: Bool) {
+        guard !didLoadSuccessfully, let urlString = openedLinkURLString else { return }
+
+        AnalyticsManager.shared.log(
+            .itemLinkOpenFailed(url: urlString, source: .notificationLoadFailed)
+        )
+    }
+
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        openedLinkURLString = nil
+    }
 }
