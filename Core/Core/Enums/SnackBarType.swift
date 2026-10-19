@@ -52,7 +52,7 @@ public enum SnackBarType {
         case .deleteCartItem: return "장바구니에서 아이템을 삭제했어요! 🗑"
         case .addItem: return "아이템을 위시리스트에 추가했어요!👜"
         case .modifyItem: return "아이템을 수정했어요!✍️️"
-        case .deleteItem: return "아이템을 위시리스트에서 삭제했어요!🗑"
+        case .deleteItem: return "아이템을 위시리스트에서 삭제했어요!"
         case .collectItem: return "소장템으로 바꿨어요! 👜"
         case .removeCollectItem: return "소장템에서 제거했어요!"
         case .convertToWishItem: return "위시템으로 전환했어요! ✨"
