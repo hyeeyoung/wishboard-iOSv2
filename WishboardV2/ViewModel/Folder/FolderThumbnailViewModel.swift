@@ -106,9 +106,15 @@ final class FolderThumbnailViewModel {
         }
     }
 
+    /// 다음 페이지를 미리 불러올 거리. 끝에서 이만큼 남으면 요청합니다.
+    ///
+    /// 한 페이지 분량을 미리 받아 두면, 사용자가 바닥에 닿기 전에 다음 페이지가 도착해
+    /// 기다리는 구간이 생기지 않습니다. 안드로이드 Paging 의 기본값과 같은 기준입니다.
+    private var prefetchDistance: Int { pageSize }
+
     /// 다음 페이지 로드
-    func loadNextIfNeeded(currentIndex: Int, threshold: Int = 2) {
-        guard currentIndex >= images.count - threshold else { return }
+    func loadNextIfNeeded(currentIndex: Int) {
+        guard currentIndex >= images.count - prefetchDistance else { return }
         fetchImages()
     }
 
