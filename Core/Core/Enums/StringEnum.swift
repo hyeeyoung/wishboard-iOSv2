@@ -175,8 +175,6 @@ public enum RegularExpression {
 public enum InputLimit {
     /// 상품명
     public static let itemName = 512
-    /// 아이템 메모
-    public static let itemMemo = 512
 }
 
 public enum Item {

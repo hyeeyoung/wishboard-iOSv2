@@ -371,28 +371,6 @@ extension FormItemView: UITextViewDelegate {
         // Combine에는 실제 입력값만 발행
         textSubject.send(textView.text ?? "")
     }
-
-    /// 메모 글자 수 제한. 화면에 따로 알리지 않고 넘치는 입력만 막습니다.
-    func textView(_ textView: UITextView,
-                  shouldChangeTextIn range: NSRange,
-                  replacementText text: String) -> Bool {
-        // 지우는 동작은 항상 허용합니다.
-        guard !text.isEmpty else { return true }
-
-        let currentText = textView.text ?? ""
-        guard let textRange = Range(range, in: currentText) else { return true }
-
-        let updatedText = currentText.replacingCharacters(in: textRange, with: text)
-        guard updatedText.count > InputLimit.itemMemo else { return true }
-
-        // 붙여넣기로 한 번에 넘어오면 들어갈 수 있는 만큼만 남깁니다.
-        let allowed = String(updatedText.prefix(InputLimit.itemMemo))
-        if allowed != currentText {
-            textView.text = allowed
-            textViewDidChange(textView)
-        }
-        return false
-    }
 }
 
 // MARK: - UITextField Delegate
