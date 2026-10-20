@@ -169,6 +169,16 @@ public enum RegularExpression {
     public static let password = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,50}"
 }
 
+/// 입력값 글자 수 제한.
+///
+/// 화면에 글자 수를 보여 주지 않고, 넘치는 입력만 막습니다.
+public enum InputLimit {
+    /// 상품명
+    public static let itemName = 512
+    /// 아이템 메모
+    public static let itemMemo = 512
+}
+
 public enum Item {
     public static let total = "전체"
     public static let zero = "0"
