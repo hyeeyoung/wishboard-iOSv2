@@ -168,12 +168,16 @@ final class AddViewController: UIViewController {
         setupBackgroundDimView()
         setupBottomSheet()
         
+        // 기존 값 주입은 폴더 조회와 무관합니다.
+        // 묶어 두면 폴더 조회가 실패했을 때 수정 화면이 빈 채로 열립니다.
+        if type == .modify {
+            setModifyItemData()
+        }
+
         // data - fetch FolderList
+        // 폴더 목록이 늦게 도착해도 선택 상태는 $folders 구독에서 다시 맞춥니다.
         _Concurrency.Task {
-            try await self.viewModel.fetchFolders()
-            if type == .modify {
-                setModifyItemData()
-            }
+            try? await self.viewModel.fetchFolders()
         }
     }
 

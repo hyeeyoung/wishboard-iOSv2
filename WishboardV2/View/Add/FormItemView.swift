@@ -27,6 +27,9 @@ class FormItemView: UIView {
     
     private let textSubject = CurrentValueSubject<String, Never>("")
 
+    /// 숫자 키패드를 쓰는 칸인지 여부. 숫자 상한 검사를 가격 칸에만 걸기 위해 들고 있습니다.
+    private var usesNumberPad = false
+
     /// 현재 텍스트를 외부에서 set/get 할 수 있게
     public var text: String {
         get {
@@ -213,9 +216,10 @@ class FormItemView: UIView {
 
         self.textField = tf
 
-        if showsNumberPad {
-            self.textField?.delegate = self
-        }
+        // 숫자 상한은 가격처럼 숫자 키패드를 쓰는 칸에만 걸립니다.
+        self.usesNumberPad = showsNumberPad
+        // 글자 수 제한은 모든 칸에 필요하므로 델리게이트는 항상 붙입니다.
+        self.textField?.delegate = self
 
         let textFieldContainer = UIStackView(
             arrangedSubviews: [tf]
@@ -427,6 +431,11 @@ extension FormItemView: UITextFieldDelegate {
                 }
                 return false
             }
+
+            // 아래 숫자 상한은 가격 칸을 위한 것입니다.
+            // 상품명처럼 일반 입력 칸에 걸면, 모델번호·연도의 숫자가 이어 붙어
+            // 10억을 넘는 순간 입력이 막혀 버립니다.
+            guard usesNumberPad else { return true }
 
             // 숫자만 추출
             let filtered = updatedText.filter { $0.isNumber }
