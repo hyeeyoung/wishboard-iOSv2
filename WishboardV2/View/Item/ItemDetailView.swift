@@ -690,6 +690,29 @@ extension ItemDetailView: UITextViewDelegate {
         updateMemoPlaceholderVisibility()
     }
 
+    /// 메모 글자 수 제한. 등록/수정 화면과 같은 기준입니다.
+    func textView(_ textView: UITextView,
+                  shouldChangeTextIn range: NSRange,
+                  replacementText text: String) -> Bool {
+        guard textView === memoTextView else { return true }
+        // 지우는 동작은 항상 허용합니다.
+        guard !text.isEmpty else { return true }
+
+        let currentText = textView.text ?? ""
+        guard let textRange = Range(range, in: currentText) else { return true }
+
+        let updatedText = currentText.replacingCharacters(in: textRange, with: text)
+        guard updatedText.count > InputLimit.itemMemo else { return true }
+
+        // 붙여넣기로 한 번에 넘어오면 들어갈 수 있는 만큼만 남깁니다.
+        let allowed = String(updatedText.prefix(InputLimit.itemMemo))
+        if allowed != currentText {
+            textView.text = allowed
+            textViewDidChange(textView)
+        }
+        return false
+    }
+
     func setupMemoKeyboardObservers() {
         NotificationCenter.default.addObserver(
             self,
