@@ -174,7 +174,7 @@ class FormItemView: UIView {
             setUpTextViewUI()
 
         case .folder:
-            // TODO: 상속 받아서 구현 or delegate 활용해 외부 구성
+            // 폴더 섹션은 FolderFormItemView 가 상속받아 직접 구성합니다.
             break
         }
     }
