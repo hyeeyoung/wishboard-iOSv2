@@ -13,20 +13,13 @@ import WBNetwork
 /// 홈화면 / 폴더 상세 화면의 아이템 다중 선택 플로우에서 공통으로 사용하는 화면 표시 헬퍼
 enum ItemSelectionFlow {
 
-    // TODO: '위시템으로 전환'과 '삭제'는 아직 디자인 에셋이 없어 시스템 아이콘을 씁니다.
-    // 에셋을 받으면 아래 owned / removeFromFolder 처럼 바꾸면 됩니다. 그때 걸리는 것들:
-    //  1) 삭제 항목은 attributes 에 .destructive 가 있어 글자와 아이콘이 빨강으로 강제됩니다.
-    //     디자인이 빨강이 아니라면 .destructive 를 빼야 합니다.
-    //  2) 아이콘 크기를 지정하는 API 가 없어, 에셋을 알맞은 크기로 만들어 두어야 합니다.
-    //     (시스템 아이콘의 SymbolConfiguration 같은 수단이 없습니다)
-
     /// '더 보기' 메뉴 아이콘
     private enum MenuIcon {
         /// 디자인 에셋 (20x20 SVG)
         static let owned = Image.menuShoppingBag
         static let removeFromFolder = Image.menuFolder
 
-        /// 아직 에셋이 없어 시스템 아이콘을 쓰는 항목
+        /// 시스템 아이콘을 그대로 쓰기로 디자인 확인된 항목
         static let wish = UIImage(systemName: "heart")
         static let delete = UIImage(systemName: "trash")
     }
