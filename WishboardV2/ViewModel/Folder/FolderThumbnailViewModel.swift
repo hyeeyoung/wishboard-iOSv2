@@ -17,7 +17,9 @@ final class FolderThumbnailViewModel {
 
     /// 대표 사진 후보 이미지들
     @Published private(set) var images: [FolderThumbnailImageResponse] = []
-    /// 선택된 이미지의 itemImageId. 선택을 해제하면 nil이 됩니다.
+    /// 선택된 이미지의 itemImageId. 아직 아무것도 고르지 않았다면 nil입니다.
+    ///
+    /// 한 장을 반드시 골라야 하므로, 한 번 고른 뒤에는 다시 nil이 되지 않습니다.
     @Published private(set) var selectedItemImageId: Int?
     /// 진입 시점에 적용되어 있던 대표 사진. 저장할 것이 있는지 판단하는 기준입니다.
     ///
@@ -38,12 +40,17 @@ final class FolderThumbnailViewModel {
         hasFoundInitialSelection || !hasMore
     }
 
-    /// 진입했을 때와 달라진 것이 있는지 여부
-    var hasChanges: Bool {
+    /// 저장할 수 있는 상태인지 여부.
+    ///
+    /// 한 장을 고른 상태여야 하고, 그것이 진입했을 때와 달라야 합니다.
+    var canSave: Bool {
+        // 고른 것이 없으면 저장할 수 없습니다.
+        guard let selectedItemImageId = selectedItemImageId else { return false }
+
         guard isInitialSelectionResolved else {
-            // 아직 기준을 모르는 동안에는, 손을 댔다면 저장할 수 있게 열어 둡니다.
-            // 기준이 담긴 페이지를 불러오는 순간 정확한 값으로 다시 판단합니다.
-            return hasUserInteracted
+            // 기준이 담긴 페이지는 사용자가 그 이미지를 고를 수 있게 된 시점에 이미
+            // 도착해 있습니다. 그래서 기준을 아직 모른다면 고른 것은 기준이 아닙니다.
+            return true
         }
         return selectedItemImageId != initialSelectedItemImageId
     }
@@ -138,24 +145,27 @@ final class FolderThumbnailViewModel {
 
     // MARK: - 선택
 
-    /// 이미지 선택. 이미 선택된 이미지를 다시 고르면 선택이 해제됩니다.
-    func toggleSelection(itemImageId: Int) {
+    /// 이미지 선택.
+    ///
+    /// 한 장을 반드시 골라야 하므로, 이미 고른 이미지를 다시 눌러도 해제되지 않습니다.
+    func select(itemImageId: Int) {
         // 서버가 내려준 선택 상태는 더 이상 덮어쓰지 않습니다.
         hasUserInteracted = true
-        selectedItemImageId = (selectedItemImageId == itemImageId) ? nil : itemImageId
+
+        guard selectedItemImageId != itemImageId else { return }
+        selectedItemImageId = itemImageId
     }
 
     // MARK: - 저장
 
     /// 선택한 이미지를 대표 사진으로 지정합니다.
-    /// 선택이 해제된 상태라면 기본 대표 사진으로 되돌립니다.
+    ///
+    /// 고른 것이 없으면 저장 버튼이 활성화되지 않으므로 여기까지 오지 않습니다.
+    /// 대표 사진 해제는 보류된 기능이라, 해제 요청은 보내지 않습니다.
     func saveThumbnail() async throws {
-        if let itemImageId = selectedItemImageId {
-            let usecase = SetFolderThumbnailUseCase()
-            _ = try await usecase.execute(folderId: folderId, itemImageId: itemImageId)
-        } else {
-            let usecase = DeleteFolderThumbnailUseCase()
-            _ = try await usecase.execute(folderId: folderId)
-        }
+        guard let itemImageId = selectedItemImageId else { return }
+
+        let usecase = SetFolderThumbnailUseCase()
+        _ = try await usecase.execute(folderId: folderId, itemImageId: itemImageId)
     }
 }

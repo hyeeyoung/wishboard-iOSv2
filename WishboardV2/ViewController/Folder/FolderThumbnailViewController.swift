@@ -102,10 +102,9 @@ final class FolderThumbnailViewController: UIViewController, AddToolBarDelegate 
             .store(in: &cancellables)
     }
 
-    /// 저장할 것이 있을 때만 버튼을 활성화합니다.
-    /// 진입했을 때와 같은 상태로 되돌려 놓으면 다시 비활성이 됩니다.
+    /// 한 장을 고르고, 그것이 진입했을 때와 다를 때만 버튼을 활성화합니다.
     private func updateSaveButtonState() {
-        thumbnailView.updateSaveButtonState(enabled: viewModel.hasChanges)
+        thumbnailView.updateSaveButtonState(enabled: viewModel.canSave)
     }
 
     /// 선택이 바뀐 셀만 다시 그립니다. 전체를 갱신하면 이미지까지 다시 그려집니다.
@@ -183,8 +182,8 @@ extension FolderThumbnailViewController: UICollectionViewDelegate, UICollectionV
               let itemImageId = viewModel.images[indexPath.item].itemImageId else { return }
 
         UIDevice.vibrate()
-        // 같은 이미지를 다시 고르면 선택이 해제됩니다.
-        viewModel.toggleSelection(itemImageId: itemImageId)
+        // 한 장은 반드시 골라야 하므로, 같은 이미지를 다시 눌러도 해제되지 않습니다.
+        viewModel.select(itemImageId: itemImageId)
     }
 
     func collectionView(_ collectionView: UICollectionView,
