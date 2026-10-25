@@ -103,9 +103,7 @@ public final class EventStreamManager {
 
         switch name {
         case .unreadStatus:
-            // 이 개수는 v3 기준이라 시스템 알림(공지)까지 포함합니다. 알림 탭은 v2 지만,
-            // 시스템 알림을 다루지 않는 동안에는 모집단이 같아 목록과 어긋나지 않습니다.
-            // TODO: 시스템 알림을 도입하면 알림 탭도 v3 로 전환해야 합니다. (NotiAPI 의 TODO 참고)
+            // 알림 탭(GET /v3/noti)과 같은 기준의 개수입니다. 시스템 알림도 포함됩니다.
             guard let status = try? JSONDecoder().decode(UnreadStatusEvent.self, from: data) else { return }
             let count = status.unreadCount ?? 0
             let hasUnread = status.hasUnread ?? (count > 0)
