@@ -9,33 +9,30 @@ import Foundation
 import Moya
 import Core
 
-// 알림 탭은 v2(GET /v2/noti)를 씁니다.
+// 알림 탭은 v3(GET /v3/noti)를 씁니다.
 //
-// 이번 배포에서는 시스템 알림(공지)을 다루지 않기로 하고, iOS·Android 를 모두 v2 로
-// 맞추기로 결정했습니다. v3 쪽 코드(아래 getNotifications / updateReadState,
-// NotificationResponse, GetNotificationsUseCase, UpdateReadStateUseCase,
-// NetworkMacro.BaseURLV3)는 다시 켤 수 있도록 남겨 두었습니다.
+// v3 를 쓰는 이유는 두 가지입니다.
+//  1) SSE 가 내려주는 안읽음 개수(unread-status)가 v3 기준이라, 탭도 v3 여야
+//     뱃지 개수와 목록 개수의 모집단이 같습니다.
+//  2) v3 읽음 처리는 notificationId 단위라 시스템 알림(공지)도 읽을 수 있습니다.
+//     v2 는 itemId 단위여서 시스템 알림을 읽지 못해 뱃지가 내려가지 않습니다.
 //
-// TODO: 시스템 알림을 도입하게 되면 알림 탭을 v3 로 전환해야 합니다.
-// 시스템 알림이 내려오기 시작하면 v2 로는 아래 두 가지가 성립하지 않습니다.
-//  1) SSE 가 내려주는 안읽음 개수(unread-status)는 v3 기준이라 시스템 알림이
-//     포함되는데, 탭은 v2 라 모집단이 달라 뱃지 개수와 목록 개수가 어긋납니다.
-//  2) v2 읽음 처리는 itemId 단위라 시스템 알림을 읽을 수 없어, 뱃지가 내려가지 않습니다.
-// 둘 다 시스템 알림이 있을 때만 생기는 문제라, 시스템 알림을 다루지 않는 동안에는
-// v2 와 v3 의 모집단이 같아 해당되지 않습니다.
+// 3.4.0 에서 시스템 알림을 다루지 않기로 하며 잠시 v2 로 되돌렸던 적이 있습니다.
+// v2 쪽 코드(아래 getNotices / updateState, GetNoticesUseCase, UpdateStateUseCase)는
+// 그때처럼 다시 돌아갈 수 있도록 남겨 둡니다. 지금은 캘린더만 v2 를 씁니다.
 public enum NotiAPI {
-    /// 알림 리스트 조회 (v2). 현재 알림 탭이 쓰는 쪽입니다.
-    case getNotices
-    /// 알림 읽음 처리 (v2). itemId 단위라 시스템 알림은 처리할 수 없습니다.
-    case updateState(itemId: String)
-
     /// 알림 리스트 조회 (v3, 아이템 알림 + 시스템 알림, 페이징)
     ///
-    /// SSE 가 내려주는 안읽음 개수와 같은 기준입니다. 지금은 쓰지 않습니다.
+    /// SSE 가 내려주는 안읽음 개수와 같은 기준이라 알림 탭은 이쪽을 씁니다.
     case getNotifications(page: Int, size: Int)
     /// 알림 읽음 처리 (v3). 아이템 알림·시스템 알림 모두 notificationId 로 처리합니다.
-    /// 지금은 쓰지 않습니다.
     case updateReadState(notificationId: Int)
+
+    /// 알림 리스트 조회 (v2). 지금은 쓰지 않습니다.
+    case getNotices
+    /// 알림 읽음 처리 (v2). itemId 단위라 시스템 알림은 처리할 수 없습니다.
+    /// 지금은 쓰지 않습니다.
+    case updateState(itemId: String)
 
     /// 캘린더 알람 조회
     case getCalendar
@@ -45,7 +42,7 @@ extension NotiAPI: TargetType, AccessTokenAuthorizable {
     public var baseURL: URL {
         switch self {
         case .getNotifications, .updateReadState:
-            // v3 전용 경로. 현재 알림 탭은 이 두 케이스를 호출하지 않습니다.
+            // 알림 목록·읽음 처리는 v3 입니다.
             return URL(string: "\(NetworkMacro.BaseURLV3)/noti")!
         case .getNotices, .updateState, .getCalendar:
             return URL(string: "\(NetworkMacro.BaseURL)/noti")!

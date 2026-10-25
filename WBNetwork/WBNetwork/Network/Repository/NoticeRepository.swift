@@ -8,10 +8,10 @@
 import Foundation
 
 public protocol NoticeRepositoryInterface {
-    // v2 (현재 알림 탭이 쓰는 쪽)
+    // v2 (지금은 쓰지 않습니다)
     func getNotices() async throws -> [NoticeResponse]
     func updateState(itemId: String) async throws -> EmptyResponse
-    // v3 (다시 전환할 때를 위해 남겨 둔 쪽)
+    // v3 (현재 알림 탭이 쓰는 쪽)
     func getNotifications(page: Int, size: Int) async throws -> CommonPaginationResponse<[NotificationResponse]>
     func updateReadState(notificationId: Int) async throws -> EmptyResponse
     func getCalendarNotices() async throws -> [NoticeResponse]
