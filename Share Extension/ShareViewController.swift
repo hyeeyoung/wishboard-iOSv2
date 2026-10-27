@@ -72,7 +72,15 @@ class ShareViewController: UIViewController {
                     // 아이템 정보 파싱
                     self?.link = url
                     guard let self = self else { return }
-                    try await self.viewModel.fetchItem(link: url)
+                    let parsed = try await self.viewModel.fetchItem(link: url)
+
+                    // 서버도 링크 미리보기도 아무것도 못 가져온 경우에만 스낵바 노출
+                    guard !parsed.isEmpty else {
+                        if UserManager.accessToken == nil || UserManager.refreshToken == nil { return }
+                        SnackBar(in: self).show(type: .failShoppingLink)
+                        return
+                    }
+
                     AnalyticsManager.shared.log(.itemParsed(source: .shareExtension))
                 } catch {
                     // 파싱 실패 시 스낵바 노출

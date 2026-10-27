@@ -61,9 +61,20 @@ final class AddViewModel {
     }
     
     /// 쇼핑몰 링크로 아이템 정보 파싱
-    func parseItem(link: String) async throws -> ItemParseResponse {
+    ///
+    /// 서버가 상품 정보를 못 가져오면(204) 애플 LinkPresentation 으로 제목/이미지만이라도 채워 봅니다.
+    /// - Returns: 보완까지 했는데도 못 가져온 경우 `isEmpty` 가 true 인 값
+    func parseItem(link: String) async throws -> ParsedItemInfo {
         let usecase = ParseItemUrlUseCase()
-        return try await usecase.execute(link: link)
+        let response = try await usecase.execute(link: link)
+
+        var parsed = ParsedItemInfo(name: response?.itemName,
+                                    price: response?.itemPrice,
+                                    imageUrl: response?.itemImageUrl)
+        guard parsed.isEmpty else { return parsed }
+
+        parsed.fill(with: await LinkMetadataLoader.load(from: link))
+        return parsed
     }
 
     // API 호출

@@ -46,8 +46,9 @@ public final class ItemManager {
         return try await API.Item.request(.modifyItemFolder(itemId: itemId, folderId: folderId))
     }
     
-    public func parseItemUrl(link: String) async throws -> ItemParseResponse {
-        return try await API.Item.request(.parseItemUrl(link: link))
+    /// - Returns: 서버가 상품 정보를 못 가져온 경우(204) nil
+    public func parseItemUrl(link: String) async throws -> ItemParseResponse? {
+        return try await API.Item.requestAllowingNoContent(.parseItemUrl(link: link))
     }
     
     public func addItem(type: AddItemType, item: RequestItemDTO) async throws -> WishListResponse {
