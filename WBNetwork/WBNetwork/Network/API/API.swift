@@ -111,6 +111,32 @@ public class WBProvider<Target: TargetType>: Echoable {
         }
     }
     
+    /// request 메서드 - 204(No Content) 를 에러가 아니라 '내용 없음' 으로 받아야 할 때
+    ///
+    /// 아이템 파싱처럼 서버가 가져올 게 없으면 204 를 내려 주는 API 에 사용합니다.
+    /// - Returns: 본문이 없으면 nil
+    public func requestAllowingNoContent<T: Decodable>(_ target: Target) async throws -> T? {
+        logTask(target)
+
+        do {
+            let response = try await provider.requestResponse(target).get()
+            dto_print(data: response.data)
+
+            guard response.statusCode != 204, !response.data.isEmpty else { return nil }
+
+            let data = try JSONDecoder().decode(CommonResponse<T>.self, from: response.data)
+            return data.data
+        } catch {
+            // 실패 응답 출력
+            if let moyaError = error as? MoyaError, let response = moyaError.response {
+                dto_print(data: response.data, error: error)
+            } else {
+                dto_print(data: nil, error: error)
+            }
+            throw error
+        }
+    }
+
     /// request 메서드 - 페이징이 있는 응답값일 때
     public func requestPaging<T: Decodable>(_ target: Target) async throws -> T {
         logTask(target)
@@ -205,6 +231,15 @@ public class WBProvider<Target: TargetType>: Echoable {
 }
 
 extension MoyaProvider {
+    /// 상태 코드까지 봐야 하는 요청에서 사용합니다.
+    func requestResponse(_ target: Target) async -> Result<Response, MoyaError> {
+        await withCheckedContinuation { continuation in
+            self.request(target) { result in
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
     func request(_ target: Target) async -> Result<Data, MoyaError> {
         await withCheckedContinuation { continuation in
             self.request(target) { result in

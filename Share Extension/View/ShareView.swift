@@ -314,9 +314,9 @@ final class ShareView: UIView, LoadingPresentable {
         viewModel.$item
             .receive(on: RunLoop.main)
             .sink { [weak self] item in
-                self?.configureItemImg(item?.itemImageUrl)
-                self?.configureItemName(item?.itemName)
-                self?.configureItemPrice(item?.itemPrice)
+                self?.configureItemImg(url: item?.imageUrl, image: item?.image)
+                self?.configureItemName(item?.name)
+                self?.configureItemPrice(item?.price)
                 
                 self?.updateCompleteButtonState()
             }
@@ -326,7 +326,15 @@ final class ShareView: UIView, LoadingPresentable {
     private var cancellables = Set<AnyCancellable>()
     
     // UI Methods
-    private func configureItemImg(_ url: String?) {
+    /// 서버가 준 이미지 주소, 또는 링크 미리보기로 이미 받아 둔 이미지를 보여 줍니다.
+    private func configureItemImg(url: String?, image: UIImage?) {
+        if let image = image {
+            // 내려받을 주소가 없으므로 진행 중인 로드를 끊고 이미지를 바로 꽂아 줍니다.
+            self.itemImage.cancelImageLoad()
+            self.itemImage.image = image
+            return
+        }
+
         if let url = url {
             self.itemImage.loadImage(from: url, placeholder: Image.logoIcon.withTintColor(.white_10))
         }

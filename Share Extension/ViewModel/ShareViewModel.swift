@@ -15,7 +15,7 @@ import MobileCoreServices
 
 final class ShareViewModel {
     @Published var isLogined: Bool = true
-    @Published var item: ItemParseResponse?
+    @Published var item: ParsedItemInfo?
     @Published var folders: [FolderListResponse] = []
     @Published var selectedAlarmType: String? = nil
     @Published var selectedAlarmDate: String? = nil
@@ -23,14 +23,27 @@ final class ShareViewModel {
     private var cancellables = Set<AnyCancellable>()
     
     /// 웹url로 아이템 파싱하기
-    func fetchItem(link: String) async throws {
+    ///
+    /// 서버가 상품 정보를 못 가져오면(204) 애플 LinkPresentation 으로 제목/이미지만이라도 채워 봅니다.
+    /// - Returns: 보완까지 했는데도 못 가져온 경우 `isEmpty` 가 true 인 값
+    @discardableResult
+    func fetchItem(link: String) async throws -> ParsedItemInfo {
         do {
             let usecase = ParseItemUrlUseCase()
             let data = try await usecase.execute(link: link)
-            
-            DispatchQueue.main.async {
-                self.item = data
+
+            var parsed = ParsedItemInfo(name: data?.itemName,
+                                        price: data?.itemPrice,
+                                        imageUrl: data?.itemImageUrl)
+            if parsed.isEmpty {
+                parsed.fill(with: await LinkMetadataLoader.load(from: link))
             }
+
+            let result = parsed
+            DispatchQueue.main.async {
+                self.item = result
+            }
+            return result
         } catch {
             self.item = nil
             throw error

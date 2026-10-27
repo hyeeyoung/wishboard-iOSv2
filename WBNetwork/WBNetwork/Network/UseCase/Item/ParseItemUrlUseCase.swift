@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol ParseItemUrlUseCaseInterface {
-    func execute(link: String) async throws -> ItemParseResponse
+    func execute(link: String) async throws -> ItemParseResponse?
 }
 
 public class ParseItemUrlUseCase: ParseItemUrlUseCaseInterface {
@@ -18,7 +18,8 @@ public class ParseItemUrlUseCase: ParseItemUrlUseCaseInterface {
         self.repository = repository
     }
     
-    public func execute(link: String) async throws -> ItemParseResponse {
+    /// - Returns: 서버가 상품 정보를 못 가져온 경우(204) nil
+    public func execute(link: String) async throws -> ItemParseResponse? {
         return try await self.repository.parseItemUrl(link: link)
     }
 }
