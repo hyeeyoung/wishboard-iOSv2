@@ -543,10 +543,19 @@ final class AddViewController: UIViewController {
 
             do {
                 let parsedItem = try await self.viewModel.parseItem(link: link)
-                AnalyticsManager.shared.log(.itemParsed(source: .app))
 
                 // 응답을 기다리는 동안 시트를 닫았다면 반영하지 않습니다.
                 guard !_Concurrency.Task.isCancelled else { return }
+
+                // 서버도 링크 미리보기도 아무것도 못 가져온 경우에만 토스트를 띄웁니다.
+                guard !parsedItem.isEmpty else {
+                    self.viewModel.selectedLink = link
+                    self.hideLinkBottomSheet()
+                    SnackBar.shared.show(type: .failShoppingLink)
+                    return
+                }
+
+                AnalyticsManager.shared.log(.itemParsed(source: .app))
 
                 // 덮어쓸 입력값이 없다면 확인 없이 바로 채웁니다.
                 guard self.hasItemInputToOverwrite else {
@@ -580,7 +589,7 @@ final class AddViewController: UIViewController {
 
     /// 불러온 정보로 기존 입력값을 덮어쓸지 확인받습니다.
     /// '취소'를 누르면 링크만 등록된 상태로 둡니다.
-    private func presentOverwriteAlert(for parsedItem: ItemParseResponse, link: String) {
+    private func presentOverwriteAlert(for parsedItem: ParsedItemInfo, link: String) {
         let alert = AlertViewController(
             alertType: .custom(
                 title: Title.overwriteItemInfo,
@@ -606,29 +615,39 @@ final class AddViewController: UIViewController {
 
     /// 파싱 결과를 아이템 등록/수정 화면에 반영합니다.
     /// 불러온 정보로 화면을 채우는 동작이므로, 이미지를 포함해 기존 입력값은 모두 응답값으로 대체합니다.
-    private func applyParsedItem(_ parsedItem: ItemParseResponse, link: String) {
+    private func applyParsedItem(_ parsedItem: ParsedItemInfo, link: String) {
         // 파싱에 사용한 링크도 함께 등록해, 저장 시 같이 전송되도록 합니다.
         viewModel.selectedLink = link
 
-        if let itemName = parsedItem.itemName, !itemName.isEmpty {
+        if let itemName = parsedItem.name, !itemName.isEmpty {
             addView.itemNameSection.text = itemName
             viewModel.itemName = itemName
         }
 
-        if let itemPrice = parsedItem.itemPrice, !itemPrice.isEmpty {
+        if let itemPrice = parsedItem.price, !itemPrice.isEmpty {
             let formattedPrice = FormatManager.shared.strToPrice(numStr: itemPrice) ?? ""
             addView.itemPriceSection.text = "₩ \(formattedPrice)"
             viewModel.itemPrice = itemPrice
         }
 
-        guard let itemImageUrl = parsedItem.itemImageUrl, !itemImageUrl.isEmpty else { return }
+        // 링크 미리보기로 보완한 경우에는 이미지를 이미 받아 둔 상태입니다.
+        if let image = parsedItem.image {
+            applyParsedImage(image)
+            return
+        }
+
+        guard let itemImageUrl = parsedItem.imageUrl, !itemImageUrl.isEmpty else { return }
         fetchImage(from: itemImageUrl) { [weak self] image in
             guard let self = self, let image = image else { return }
-            // 기존에 고른 이미지는 모두 비우고 응답 이미지로 대체합니다.
-            // 배열의 첫 번째가 되므로 '대표 사진'도 이 이미지에 붙습니다.
-            self.viewModel.selectedImages = [image]
-            self.viewModel.imageChanged = true
+            self.applyParsedImage(image)
         }
+    }
+
+    /// 기존에 고른 이미지는 모두 비우고 불러온 이미지로 대체합니다.
+    /// 배열의 첫 번째가 되므로 '대표 사진'도 이 이미지에 붙습니다.
+    private func applyParsedImage(_ image: UIImage) {
+        viewModel.selectedImages = [image]
+        viewModel.imageChanged = true
     }
 
     /// 쇼핑몰 링크 입력 시트 노출
