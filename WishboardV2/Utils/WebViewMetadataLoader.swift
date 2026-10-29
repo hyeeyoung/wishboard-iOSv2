@@ -12,7 +12,8 @@ import WebKit
 ///
 /// 서버 파싱도 LinkPresentation 도 막히는 사이트(쿠팡·자라·네이버 스마트스토어 등)를 위한
 /// 마지막 수단입니다. 진짜 브라우저 엔진이라 봇 차단을 통과할 가능성이 가장 높은 대신,
-/// 가장 무겁습니다. 메모리 한도가 낮은 공유 익스텐션에서는 쓰지 않습니다.
+/// 가장 무겁습니다. 공유 익스텐션은 메모리 한도가 낮으므로 `shareExtensionTimeout` 처럼
+/// 더 짧은 시간을 줘서 빨리 정리되게 합니다.
 ///
 /// User-Agent 는 WKWebView 기본값을 그대로 씁니다. 차단을 피하려고 다른 브라우저인 척
 /// 꾸미지는 않습니다.
@@ -20,6 +21,9 @@ public final class WebViewMetadataLoader: NSObject {
 
     /// 페이지 로딩 + 값 추출까지 기다릴 최대 시간
     public static let defaultTimeout: TimeInterval = 15
+
+    /// 공유 익스텐션용. 메모리 한도가 낮아 더 빨리 포기합니다.
+    public static let shareExtensionTimeout: TimeInterval = 10
 
     /// 값이 비어 있을 때 다시 읽어 보는 횟수. JS 로 늦게 그려지는 페이지가 있습니다.
     private static let maxRetryCount = 3
@@ -32,8 +36,12 @@ public final class WebViewMetadataLoader: NSObject {
     /// 완료될 때까지 자기 자신을 살려 둡니다. (navigationDelegate 는 weak 입니다)
     private var selfRetain: WebViewMetadataLoader?
 
+    /// - Parameter hostView: 웹뷰를 끼워 넣을 뷰. 화면에 붙어 있어야 WebKit 이 페이지를 제대로 그립니다.
+    ///   공유 익스텐션에서는 `UIApplication.shared` 를 쓸 수 없어 호출하는 쪽에서 넘겨 줍니다.
     /// - Returns: 실패하더라도 에러를 던지지 않고 빈 값을 돌려줍니다.
-    public static func load(from urlString: String, timeout: TimeInterval = defaultTimeout) async -> ParsedItemInfo {
+    public static func load(from urlString: String,
+                            in hostView: UIView?,
+                            timeout: TimeInterval = defaultTimeout) async -> ParsedItemInfo {
         guard let url = URL(string: urlString),
               let scheme = url.scheme?.lowercased(),
               scheme == "http" || scheme == "https" else {
@@ -43,28 +51,30 @@ public final class WebViewMetadataLoader: NSObject {
         let loader = WebViewMetadataLoader()
         return await withCheckedContinuation { continuation in
             DispatchQueue.main.async {
-                loader.start(url: url, timeout: timeout, continuation: continuation)
+                loader.start(url: url, hostView: hostView, timeout: timeout, continuation: continuation)
             }
         }
     }
 
     // MARK: - 로딩
 
-    private func start(url: URL, timeout: TimeInterval, continuation: CheckedContinuation<ParsedItemInfo, Never>) {
+    private func start(url: URL,
+                       hostView: UIView?,
+                       timeout: TimeInterval,
+                       continuation: CheckedContinuation<ParsedItemInfo, Never>) {
         self.continuation = continuation
         self.selfRetain = self
 
-        let window = keyWindow
         // 반응형 페이지가 모바일 레이아웃으로 그려지도록 화면 크기를 그대로 씁니다.
-        let frame = window?.bounds ?? CGRect(x: 0, y: 0, width: 390, height: 844)
+        let frame = hostView?.bounds ?? CGRect(x: 0, y: 0, width: 390, height: 844)
 
         let webView = WKWebView(frame: frame)
         webView.navigationDelegate = self
         webView.isUserInteractionEnabled = false
         // 완전히 투명하거나 숨김 상태면 렌더링을 건너뛰는 경우가 있어 아주 옅게만 둡니다.
         webView.alpha = 0.01
-        // 루트 뷰 뒤에 깔아 둬서 화면에는 보이지 않습니다.
-        window?.insertSubview(webView, at: 0)
+        // 맨 뒤에 깔아 둬서 화면에는 보이지 않습니다.
+        hostView?.insertSubview(webView, at: 0)
         self.webView = webView
 
         let timeoutWorkItem = DispatchWorkItem { [weak self] in
@@ -75,13 +85,6 @@ public final class WebViewMetadataLoader: NSObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: timeoutWorkItem)
 
         webView.load(URLRequest(url: url))
-    }
-
-    private var keyWindow: UIWindow? {
-        UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
     }
 
     private func finish(with result: ParsedItemInfo) {
