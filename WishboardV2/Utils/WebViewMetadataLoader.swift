@@ -26,7 +26,7 @@ public final class WebViewMetadataLoader: NSObject {
     public static let shareExtensionTimeout: TimeInterval = 10
 
     /// 값이 비어 있을 때 다시 읽어 보는 횟수. JS 로 늦게 그려지는 페이지가 있습니다.
-    private static let maxRetryCount = 3
+    private static let maxRetryCount = 4
     private static let retryInterval: TimeInterval = 1.0
 
     private var webView: WKWebView?
@@ -40,9 +40,12 @@ public final class WebViewMetadataLoader: NSObject {
     /// - Parameter hostView: 웹뷰를 끼워 넣을 뷰. 화면에 붙어 있어야 WebKit 이 페이지를 제대로 그립니다.
     ///   공유 익스텐션에서는 `UIApplication.shared` 를 쓸 수 없어 호출하는 쪽에서 넘겨 줍니다.
     /// - Returns: 실패하더라도 에러를 던지지 않고 빈 값을 돌려줍니다.
+    /// - Parameter blocksHeavyResources: 이미지·동영상·폰트를 안 받아 메모리를 아낄지 여부.
+    ///   메모리는 줄지만 그것들을 기다렸다 동작하는 페이지에서는 값을 못 읽을 수 있어 기본은 끔입니다.
     public static func load(from urlString: String,
                             in hostView: UIView?,
-                            timeout: TimeInterval = defaultTimeout) async -> ParsedItemInfo {
+                            timeout: TimeInterval = defaultTimeout,
+                            blocksHeavyResources: Bool = false) async -> ParsedItemInfo {
         guard let url = URL(string: urlString),
               let scheme = url.scheme?.lowercased(),
               scheme == "http" || scheme == "https" else {
@@ -52,7 +55,11 @@ public final class WebViewMetadataLoader: NSObject {
         let loader = WebViewMetadataLoader()
         return await withCheckedContinuation { continuation in
             DispatchQueue.main.async {
-                loader.start(url: url, hostView: hostView, timeout: timeout, continuation: continuation)
+                loader.start(url: url,
+                             hostView: hostView,
+                             timeout: timeout,
+                             blocksHeavyResources: blocksHeavyResources,
+                             continuation: continuation)
             }
         }
     }
@@ -62,6 +69,7 @@ public final class WebViewMetadataLoader: NSObject {
     private func start(url: URL,
                        hostView: UIView?,
                        timeout: TimeInterval,
+                       blocksHeavyResources: Bool,
                        continuation: CheckedContinuation<ParsedItemInfo, Never>) {
         self.continuation = continuation
         self.selfRetain = self
@@ -76,7 +84,7 @@ public final class WebViewMetadataLoader: NSObject {
 
         observeMemoryPressure()
 
-        Self.makeConfiguration { [weak self] configuration in
+        Self.makeConfiguration(blocksHeavyResources: blocksHeavyResources) { [weak self] configuration in
             self?.attachWebView(url: url, hostView: hostView, configuration: configuration)
         }
     }
@@ -100,18 +108,19 @@ public final class WebViewMetadataLoader: NSObject {
         webView.load(URLRequest(url: url))
     }
 
-    /// 이미지·동영상·폰트를 안 받도록 막은 설정을 만듭니다.
+    /// 웹뷰 설정을 만듭니다.
     ///
-    /// og 태그는 HTML 에 적힌 **주소**만 있으면 되고 이미지를 실제로 그릴 필요가 없습니다.
-    /// 쇼핑몰 페이지는 이미지가 메모리의 대부분을 차지하므로, 이것만 막아도 훨씬 가벼워집니다.
-    /// 메모리 한도가 낮은 공유 익스텐션에서 특히 중요합니다.
-    private static func makeConfiguration(completion: @escaping (WKWebViewConfiguration) -> Void) {
+    /// `blocksHeavyResources` 를 켜면 이미지·동영상·폰트를 아예 안 받아 메모리를 크게 아낍니다.
+    /// 다만 그걸 기다렸다 내용을 채우는 페이지에서는 값을 못 읽게 되는 부작용이 있어
+    /// (쿠팡에서 실제로 그랬습니다) 기본은 꺼 둡니다.
+    private static func makeConfiguration(blocksHeavyResources: Bool,
+                                          completion: @escaping (WKWebViewConfiguration) -> Void) {
         let configuration = WKWebViewConfiguration()
-        // 동영상이 저절로 재생되며 메모리를 먹는 것도 막습니다.
+        // 동영상이 저절로 재생되며 메모리를 먹는 것은 항상 막습니다.
         configuration.allowsInlineMediaPlayback = false
         configuration.mediaTypesRequiringUserActionForPlayback = .all
 
-        guard let store = WKContentRuleListStore.default() else {
+        guard blocksHeavyResources, let store = WKContentRuleListStore.default() else {
             completion(configuration)
             return
         }
@@ -143,7 +152,9 @@ public final class WebViewMetadataLoader: NSObject {
     /// 공유 시트가 통째로 사라져 사용자가 한 작업을 잃습니다. 그쪽이 훨씬 나쁩니다.
     /// 공유 익스텐션에서도 쓸 수 있도록 UIApplication 이 아니라 DispatchSource 로 감시합니다.
     private func observeMemoryPressure() {
-        let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
+        // .warning 은 시스템 전체가 조금만 빠듯해도 올라와서, 멀쩡한 파싱까지 중단시킵니다.
+        // 정말 위험한 .critical 에서만 포기합니다.
+        let source = DispatchSource.makeMemoryPressureSource(eventMask: .critical, queue: .main)
         source.setEventHandler { [weak self] in
             print("❌ 메모리가 부족해 웹뷰 파싱을 중단합니다.")
             self?.finish(with: ParsedItemInfo())
@@ -185,14 +196,24 @@ public final class WebViewMetadataLoader: NSObject {
                 print("❌ 웹뷰 스크립트 실행 실패: \(error.localizedDescription)")
             }
 
-            let parsed = Self.parse(result)
-            if !parsed.isEmpty || self.retryCount >= Self.maxRetryCount {
-                print("✅ 웹뷰 파싱 결과 - 이름: \(parsed.name ?? "없음") / 가격: \(parsed.price ?? "없음") / 이미지: \(parsed.imageUrl ?? "없음")")
-                self.finish(with: parsed)
+            let (parsed, fallbackTitle) = Self.parse(result)
+            let isLastAttempt = self.retryCount >= Self.maxRetryCount
+
+            // og 태그를 하나도 못 찾았으면 아직 안 그려진 것일 수 있어 다시 읽습니다.
+            // 페이지 제목(fallbackTitle)은 늘 값이 있으므로 여기서 세면 안 됩니다.
+            // 그걸로 성공 판정을 하면 재시도가 한 번도 안 돌고 '쿠팡!' 같은 값이 들어갑니다.
+            guard parsed.isEmpty, !isLastAttempt else {
+                var result = parsed
+                if result.name?.isEmpty ?? true {
+                    // 끝까지 og:title 이 없을 때만 페이지 제목을 씁니다. 사이트 이름일 수 있습니다.
+                    result.name = fallbackTitle
+                }
+                print("✅ 웹뷰 파싱 완료 (\(self.retryCount + 1)번째) - 이름: \(result.name ?? "없음") / 가격: \(result.price ?? "없음") / 이미지: \(result.imageUrl ?? "없음")")
+                self.finish(with: result)
                 return
             }
 
-            // 아직 안 그려졌을 수 있어 조금 기다렸다 다시 읽습니다.
+            print("⏳ og 태그를 아직 못 찾았습니다. 다시 읽습니다. (\(self.retryCount + 1)/\(Self.maxRetryCount))")
             self.retryCount += 1
             DispatchQueue.main.asyncAfter(deadline: .now() + Self.retryInterval) { [weak self] in
                 self?.extractMetadata()
@@ -200,11 +221,12 @@ public final class WebViewMetadataLoader: NSObject {
         }
     }
 
-    private static func parse(_ result: Any?) -> ParsedItemInfo {
+    /// - Returns: og 태그/JSON-LD 로 찾은 값과, 최후의 수단인 페이지 제목을 따로 돌려줍니다.
+    private static func parse(_ result: Any?) -> (ParsedItemInfo, String?) {
         guard let json = result as? String,
               let data = json.data(using: .utf8),
               let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-            return ParsedItemInfo()
+            return (ParsedItemInfo(), nil)
         }
 
         func text(_ key: String) -> String? {
@@ -216,9 +238,10 @@ public final class WebViewMetadataLoader: NSObject {
         // 가격은 "29,900원" 처럼 올 수 있어 숫자만 남깁니다.
         let price = text("price").map { String($0.filter { $0.isNumber }) }
 
-        return ParsedItemInfo(name: text("title"),
-                              price: (price?.isEmpty ?? true) ? nil : price,
-                              imageUrl: text("image"))
+        let parsed = ParsedItemInfo(name: text("title"),
+                                    price: (price?.isEmpty ?? true) ? nil : price,
+                                    imageUrl: text("image"))
+        return (parsed, text("fallbackTitle"))
     }
 
     /// og 태그를 먼저 보고, 없으면 JSON-LD 의 Product 정보를 읽습니다.
@@ -266,17 +289,21 @@ public final class WebViewMetadataLoader: NSObject {
         }
       }
 
-      // og 태그가 하나도 없을 때의 마지막 수단. 사이트 이름이 들어올 수 있습니다.
-      if (!title && document.title && document.title.trim()) {
-        title = document.title.trim();
-      }
-
       // 상대 주소로 온 이미지는 절대 주소로 바꿉니다.
       if (image) {
         try { image = new URL(image, location.href).href; } catch (e) {}
       }
 
-      return JSON.stringify({ title: title, image: image, price: price });
+      // 페이지 제목은 늘 값이 있어서 og 결과와 섞으면 안 됩니다.
+      // 끝까지 og:title 을 못 찾았을 때만 쓰도록 따로 담아 보냅니다.
+      var fallbackTitle = (document.title && document.title.trim()) ? document.title.trim() : null;
+
+      return JSON.stringify({
+        title: title,
+        image: image,
+        price: price,
+        fallbackTitle: fallbackTitle
+      });
     })()
     """
 }
