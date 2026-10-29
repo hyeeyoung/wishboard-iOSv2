@@ -65,10 +65,27 @@ public final class WebViewMetadataLoader: NSObject {
         self.continuation = continuation
         self.selfRetain = self
 
+        // 차단 규칙 만드는 데 시간이 걸릴 수 있어 타임아웃부터 걸어 둡니다.
+        let timeoutWorkItem = DispatchWorkItem { [weak self] in
+            print("❌ 웹뷰 파싱 시간 초과: \(url.absoluteString)")
+            self?.finish(with: ParsedItemInfo())
+        }
+        self.timeoutWorkItem = timeoutWorkItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: timeoutWorkItem)
+
+        Self.makeConfiguration { [weak self] configuration in
+            self?.attachWebView(url: url, hostView: hostView, configuration: configuration)
+        }
+    }
+
+    private func attachWebView(url: URL, hostView: UIView?, configuration: WKWebViewConfiguration) {
+        // 규칙을 만드는 사이 타임아웃이 끝났다면 더 진행하지 않습니다.
+        guard continuation != nil else { return }
+
         // 반응형 페이지가 모바일 레이아웃으로 그려지도록 화면 크기를 그대로 씁니다.
         let frame = hostView?.bounds ?? CGRect(x: 0, y: 0, width: 390, height: 844)
 
-        let webView = WKWebView(frame: frame)
+        let webView = WKWebView(frame: frame, configuration: configuration)
         webView.navigationDelegate = self
         webView.isUserInteractionEnabled = false
         // 완전히 투명하거나 숨김 상태면 렌더링을 건너뛰는 경우가 있어 아주 옅게만 둡니다.
@@ -77,15 +94,45 @@ public final class WebViewMetadataLoader: NSObject {
         hostView?.insertSubview(webView, at: 0)
         self.webView = webView
 
-        let timeoutWorkItem = DispatchWorkItem { [weak self] in
-            print("❌ 웹뷰 파싱 시간 초과: \(url.absoluteString)")
-            self?.finish(with: ParsedItemInfo())
-        }
-        self.timeoutWorkItem = timeoutWorkItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: timeoutWorkItem)
-
         webView.load(URLRequest(url: url))
     }
+
+    /// 이미지·동영상·폰트를 안 받도록 막은 설정을 만듭니다.
+    ///
+    /// og 태그는 HTML 에 적힌 **주소**만 있으면 되고 이미지를 실제로 그릴 필요가 없습니다.
+    /// 쇼핑몰 페이지는 이미지가 메모리의 대부분을 차지하므로, 이것만 막아도 훨씬 가벼워집니다.
+    /// 메모리 한도가 낮은 공유 익스텐션에서 특히 중요합니다.
+    private static func makeConfiguration(completion: @escaping (WKWebViewConfiguration) -> Void) {
+        let configuration = WKWebViewConfiguration()
+        // 동영상이 저절로 재생되며 메모리를 먹는 것도 막습니다.
+        configuration.allowsInlineMediaPlayback = false
+        configuration.mediaTypesRequiringUserActionForPlayback = .all
+
+        guard let store = WKContentRuleListStore.default() else {
+            completion(configuration)
+            return
+        }
+
+        store.compileContentRuleList(forIdentifier: "WishboardMetadataBlocking",
+                                     encodedContentRuleList: resourceBlockingRules) { list, error in
+            DispatchQueue.main.async {
+                if let list = list {
+                    configuration.userContentController.add(list)
+                } else if let error = error {
+                    // 규칙을 못 만들어도 파싱 자체는 되므로 그냥 진행합니다.
+                    print("⚠️ 리소스 차단 규칙 생성 실패: \(error.localizedDescription)")
+                }
+                completion(configuration)
+            }
+        }
+    }
+
+    private static let resourceBlockingRules = """
+    [{
+      "trigger": { "url-filter": ".*", "resource-type": ["image", "media", "font"] },
+      "action": { "type": "block" }
+    }]
+    """
 
     private func finish(with result: ParsedItemInfo) {
         timeoutWorkItem?.cancel()
@@ -238,6 +285,13 @@ extension WebViewMetadataLoader: WKNavigationDelegate {
         print("❌ 웹뷰 로딩 실패: \(error.localizedDescription)")
         // 일부만 그려졌어도 og 태그는 읽을 수 있어 한 번은 시도해 봅니다.
         extractMetadata()
+    }
+
+    /// 웹 프로세스가 메모리 부족 등으로 죽은 경우.
+    /// 이대로 두면 타임아웃까지 멍하니 기다리게 되므로 바로 정리합니다.
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        print("❌ 웹뷰 프로세스가 종료되었습니다. (메모리 부족 가능성)")
+        finish(with: ParsedItemInfo())
     }
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
