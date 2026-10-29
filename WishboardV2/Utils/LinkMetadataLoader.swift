@@ -102,6 +102,20 @@ public struct ParsedItemInfo {
             && image == nil
     }
 
+    /// 비어 있는 값만 다른 파싱 결과로 채웁니다.
+    public mutating func merge(_ other: ParsedItemInfo) {
+        if name?.isEmpty ?? true {
+            name = other.name
+        }
+        if price?.isEmpty ?? true {
+            price = other.price
+        }
+        if (imageUrl?.isEmpty ?? true), image == nil {
+            imageUrl = other.imageUrl
+            image = other.image
+        }
+    }
+
     /// 비어 있는 값만 링크 미리보기 값으로 채웁니다.
     /// 가격은 LinkPresentation 이 주지 않아 그대로 둡니다.
     public mutating func fill(with metadata: LinkMetadata) {
