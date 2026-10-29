@@ -34,6 +34,8 @@ public final class WebViewMetadataLoader: NSObject {
     private var timeoutWorkItem: DispatchWorkItem?
     private var memoryPressureSource: DispatchSourceMemoryPressure?
     private var retryCount = 0
+    /// 중간 페이지를 건너뛰려고 우리가 직접 취소한 이동인지
+    private var isSkippingBridgePage = false
     /// 완료될 때까지 자기 자신을 살려 둡니다. (navigationDelegate 는 weak 입니다)
     private var selfRetain: WebViewMetadataLoader?
 
@@ -318,15 +320,44 @@ extension WebViewMetadataLoader: WKNavigationDelegate {
                         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         // navershopping:// 처럼 앱을 띄우려는 이동은 막고 현재 페이지를 그대로 둡니다.
         // 이걸 허용하면 페이지가 날아가서 og 태그를 못 읽습니다.
-        guard let scheme = navigationAction.request.url?.scheme?.lowercased(),
+        guard let url = navigationAction.request.url,
+              let scheme = url.scheme?.lowercased(),
               scheme == "http" || scheme == "https" else {
             decisionHandler(.cancel)
             return
         }
+
+        // 상품 정보가 없는 중간 안내 페이지라면 실제 상품 주소로 바로 건너뜁니다.
+        if let productURL = Self.productURL(skipping: url) {
+            print("↪️ 중간 페이지를 건너뜁니다: \(productURL.absoluteString)")
+            isSkippingBridgePage = true
+            decisionHandler(.cancel)
+            webView.load(URLRequest(url: productURL))
+            return
+        }
+
         decisionHandler(.allow)
     }
 
+    /// 네이버 단축 링크(naver.me)는 모바일에서 app-bridge 라는 중간 페이지로 보냅니다.
+    /// 그 페이지에는 상품 정보가 없고(og:title 이 "네이버+ 스토어") 앱을 띄우는 커스텀 스킴만
+    /// 들어 있습니다. 실제 상품 주소는 url 파라미터에 담겨 있어 그쪽으로 바로 갑니다.
+    /// - Returns: 중간 페이지가 아니면 nil
+    private static func productURL(skipping url: URL) -> URL? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              components.host?.lowercased() == "app.shopping.naver.com",
+              components.path.contains("app-bridge"),
+              let target = components.queryItems?.first(where: { $0.name == "url" })?.value,
+              let productURL = URL(string: target),
+              let scheme = productURL.scheme?.lowercased(),
+              scheme == "http" || scheme == "https" else {
+            return nil
+        }
+        return productURL
+    }
+
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        print("🌐 웹뷰가 도착한 주소: \(webView.url?.absoluteString ?? "없음")")
         extractMetadata()
     }
 
@@ -344,6 +375,12 @@ extension WebViewMetadataLoader: WKNavigationDelegate {
     }
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        // 중간 페이지를 건너뛰려고 우리가 취소한 것이면, 새 주소가 곧 로딩되므로 기다립니다.
+        if isSkippingBridgePage {
+            isSkippingBridgePage = false
+            return
+        }
+
         let nsError = error as NSError
         // 위에서 막은 커스텀 스킴 이동이면 현재 페이지가 그대로 남아 있으니 그걸 읽습니다.
         // 102 는 WebKitErrorFrameLoadInterruptedByPolicyChange 입니다.
