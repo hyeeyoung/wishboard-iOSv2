@@ -20,10 +20,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
         
-        #if DEBUG
-        Console.start()
-        #endif
-        
         // Notification 수신 등록
         NotificationCenter.default.addObserver(self, selector: #selector(signOutEvent), name: .SignOut, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(NetworkErrorEvent), name: .ReceivedNetworkError, object: nil)
@@ -38,6 +34,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let splashVC = SplashViewController()
         window?.rootViewController = splashVC
         window?.makeKeyAndVisible()
+        
+        // 디버그 콘솔은 앱 윈도우가 키 윈도우가 된 뒤에 띄웁니다.
+        // 윈도우가 생기기 전에 start() 하면 EchoKit 이 붙을 윈도우를 못 찾습니다.
+        #if DEBUG
+        Console.start()
+        #endif
         
         // MARK: Light mode
         //iOS 13 부터 다크모드가 적용되므로 다음과 같은 조건문 성립.
