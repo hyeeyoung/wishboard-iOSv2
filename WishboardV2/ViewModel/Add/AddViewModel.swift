@@ -74,7 +74,12 @@ final class AddViewModel {
         var parsed = ParsedItemInfo(name: response?.itemName,
                                     price: response?.itemPrice,
                                     imageUrl: response?.itemImageUrl)
-        guard parsed.isEmpty else { return parsed }
+        guard parsed.isEmpty else {
+            print("✅ 서버 파싱 성공 - 이름: \(parsed.name ?? "없음") / 가격: \(parsed.price ?? "없음") / 이미지: \(parsed.imageUrl ?? "없음")")
+            return parsed
+        }
+
+        print("⚠️ 서버가 상품 정보를 못 줬습니다(204). LinkPresentation 으로 시도합니다.")
 
         parsed.fill(with: await LinkMetadataLoader.load(from: link))
         guard parsed.isEmpty else {
