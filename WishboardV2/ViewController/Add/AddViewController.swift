@@ -530,7 +530,7 @@ final class AddViewController: UIViewController {
     /// '아이템 정보 불러오기' - 쇼핑몰 링크를 파싱해 상품 정보를 채웁니다.
     /// - Parameter fromBottomSheet: 쇼핑몰 링크 시트에서 시작했는지 여부.
     ///   클립보드 토스트에서 시작한 경우에는 시트가 떠 있지 않아 화면 자체에 로딩을 띄웁니다.
-    private func parseItem(with link: String, fromBottomSheet: Bool) {
+    private func parseItem(with rawLink: String, fromBottomSheet: Bool) {
         parsingTask?.cancel()
         isParsingFromBottomSheet = fromBottomSheet
         parsingTask = _Concurrency.Task { [weak self] in
@@ -540,6 +540,10 @@ final class AddViewController: UIViewController {
             let loadingHost: any LoadingPresentable = fromBottomSheet ? self.shoppingLinkBottomSheet : self.addView
             loadingHost.showLoading()
             defer { loadingHost.hideLoading() }
+
+            // 단축 링크는 실제 상품 주소로 펼쳐서 씁니다.
+            // 서버에 보낼 주소와 아이템에 저장될 주소가 모두 이걸 따릅니다.
+            let link = await ShoppingLinkResolver.resolve(rawLink)
 
             do {
                 let parsedItem = try await self.viewModel.parseItem(link: link, hostView: self.view)

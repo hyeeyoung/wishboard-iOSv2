@@ -328,7 +328,7 @@ extension WebViewMetadataLoader: WKNavigationDelegate {
         }
 
         // 상품 정보가 없는 중간 안내 페이지라면 실제 상품 주소로 바로 건너뜁니다.
-        if let productURL = Self.productURL(skipping: url) {
+        if let productURL = ShoppingLinkResolver.productURL(skipping: url) {
             print("↪️ 중간 페이지를 건너뜁니다: \(productURL.absoluteString)")
             isSkippingBridgePage = true
             decisionHandler(.cancel)
@@ -337,23 +337,6 @@ extension WebViewMetadataLoader: WKNavigationDelegate {
         }
 
         decisionHandler(.allow)
-    }
-
-    /// 네이버 단축 링크(naver.me)는 모바일에서 app-bridge 라는 중간 페이지로 보냅니다.
-    /// 그 페이지에는 상품 정보가 없고(og:title 이 "네이버+ 스토어") 앱을 띄우는 커스텀 스킴만
-    /// 들어 있습니다. 실제 상품 주소는 url 파라미터에 담겨 있어 그쪽으로 바로 갑니다.
-    /// - Returns: 중간 페이지가 아니면 nil
-    private static func productURL(skipping url: URL) -> URL? {
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-              components.host?.lowercased() == "app.shopping.naver.com",
-              components.path.contains("app-bridge"),
-              let target = components.queryItems?.first(where: { $0.name == "url" })?.value,
-              let productURL = URL(string: target),
-              let scheme = productURL.scheme?.lowercased(),
-              scheme == "http" || scheme == "https" else {
-            return nil
-        }
-        return productURL
     }
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

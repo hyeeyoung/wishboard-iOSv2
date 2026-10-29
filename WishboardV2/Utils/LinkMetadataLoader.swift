@@ -127,3 +127,69 @@ public struct ParsedItemInfo {
         }
     }
 }
+
+/// 단축 링크나 중간 안내 페이지 주소를 실제 상품 주소로 펼칩니다.
+///
+/// 서버에 보낼 주소, 웹뷰가 열 주소, 아이템에 저장될 주소가 모두 이걸 거칩니다.
+/// 저장되는 주소까지 바뀌어야 나중에 상세 화면에서 링크를 열 때도 중간 페이지로
+/// 새지 않습니다.
+public enum ShoppingLinkResolver {
+
+    /// 펼쳐야 하는 단축 주소 호스트
+    private static let shortenerHosts: Set<String> = ["naver.me", "link.coupang.com"]
+
+    private static let timeout: TimeInterval = 5
+
+    /// - Returns: 펼치지 못하면 받은 주소를 그대로 돌려줍니다.
+    public static func resolve(_ urlString: String) async -> String {
+        let expanded = await expandIfShortened(urlString)
+
+        guard let url = URL(string: expanded), let product = productURL(skipping: url) else {
+            return expanded
+        }
+        print("↪️ 중간 안내 페이지를 건너뜁니다: \(product.absoluteString)")
+        return product.absoluteString
+    }
+
+    private static func expandIfShortened(_ urlString: String) async -> String {
+        guard let url = URL(string: urlString),
+              let host = url.host?.lowercased(),
+              shortenerHosts.contains(host) else {
+            return urlString
+        }
+
+        var request = URLRequest(url: url)
+        // 본문은 필요 없고 최종 주소만 알면 됩니다.
+        request.httpMethod = "HEAD"
+        request.timeoutInterval = timeout
+
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            guard let resolved = response.url?.absoluteString, !resolved.isEmpty else {
+                return urlString
+            }
+            print("↪️ 단축 링크를 펼쳤습니다: \(resolved)")
+            return resolved
+        } catch {
+            print("⚠️ 단축 링크 펼치기 실패: \(error.localizedDescription)")
+            return urlString
+        }
+    }
+
+    /// 네이버 단축 링크는 모바일에서 app-bridge 라는 중간 페이지로 갑니다.
+    /// 그 페이지에는 상품 정보가 없고(og:title 이 "네이버+ 스토어") 앱을 띄우는 커스텀 스킴만
+    /// 들어 있습니다. 실제 상품 주소는 url 파라미터에 담겨 있습니다.
+    /// - Returns: 중간 페이지가 아니면 nil
+    public static func productURL(skipping url: URL) -> URL? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              components.host?.lowercased() == "app.shopping.naver.com",
+              components.path.contains("app-bridge"),
+              let target = components.queryItems?.first(where: { $0.name == "url" })?.value,
+              let productURL = URL(string: target),
+              let scheme = productURL.scheme?.lowercased(),
+              scheme == "http" || scheme == "https" else {
+            return nil
+        }
+        return productURL
+    }
+}

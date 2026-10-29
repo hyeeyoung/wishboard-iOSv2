@@ -69,10 +69,14 @@ class ShareViewController: UIViewController {
                 }
 
                 do {
-                    // 아이템 정보 파싱
-                    self?.link = url
                     guard let self = self else { return }
-                    let parsed = try await self.viewModel.fetchItem(link: url, hostView: self.view)
+
+                    // 단축 링크는 실제 상품 주소로 펼쳐서 씁니다.
+                    // 서버에 보낼 주소와 아이템에 저장될 주소가 모두 이걸 따릅니다.
+                    let link = await ShoppingLinkResolver.resolve(url)
+                    self.link = link
+
+                    let parsed = try await self.viewModel.fetchItem(link: link, hostView: self.view)
 
                     // 서버도 링크 미리보기도 아무것도 못 가져온 경우에만 스낵바 노출
                     guard !parsed.isEmpty else {
