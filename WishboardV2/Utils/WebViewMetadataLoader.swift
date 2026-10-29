@@ -32,6 +32,7 @@ public final class WebViewMetadataLoader: NSObject {
     private var webView: WKWebView?
     private var continuation: CheckedContinuation<ParsedItemInfo, Never>?
     private var timeoutWorkItem: DispatchWorkItem?
+    private var memoryPressureSource: DispatchSourceMemoryPressure?
     private var retryCount = 0
     /// 완료될 때까지 자기 자신을 살려 둡니다. (navigationDelegate 는 weak 입니다)
     private var selfRetain: WebViewMetadataLoader?
@@ -72,6 +73,8 @@ public final class WebViewMetadataLoader: NSObject {
         }
         self.timeoutWorkItem = timeoutWorkItem
         DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: timeoutWorkItem)
+
+        observeMemoryPressure()
 
         Self.makeConfiguration { [weak self] configuration in
             self?.attachWebView(url: url, hostView: hostView, configuration: configuration)
@@ -134,9 +137,27 @@ public final class WebViewMetadataLoader: NSObject {
     }]
     """
 
+    /// 메모리가 모자라면 익스텐션이 통째로 죽기 전에 우리가 먼저 포기합니다.
+    ///
+    /// 포기해도 결과는 '못 가져옴'이라 토스트가 뜰 뿐이지만, 익스텐션이 죽으면
+    /// 공유 시트가 통째로 사라져 사용자가 한 작업을 잃습니다. 그쪽이 훨씬 나쁩니다.
+    /// 공유 익스텐션에서도 쓸 수 있도록 UIApplication 이 아니라 DispatchSource 로 감시합니다.
+    private func observeMemoryPressure() {
+        let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
+        source.setEventHandler { [weak self] in
+            print("❌ 메모리가 부족해 웹뷰 파싱을 중단합니다.")
+            self?.finish(with: ParsedItemInfo())
+        }
+        source.resume()
+        memoryPressureSource = source
+    }
+
     private func finish(with result: ParsedItemInfo) {
         timeoutWorkItem?.cancel()
         timeoutWorkItem = nil
+
+        memoryPressureSource?.cancel()
+        memoryPressureSource = nil
 
         webView?.stopLoading()
         webView?.navigationDelegate = nil
