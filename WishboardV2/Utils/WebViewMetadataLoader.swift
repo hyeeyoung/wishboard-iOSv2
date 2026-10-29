@@ -116,6 +116,7 @@ public final class WebViewMetadataLoader: NSObject {
     private static func makeConfiguration(blocksHeavyResources: Bool,
                                           completion: @escaping (WKWebViewConfiguration) -> Void) {
         let configuration = WKWebViewConfiguration()
+        configuration.websiteDataStore = .nonPersistent()
         // 동영상이 저절로 재생되며 메모리를 먹는 것은 항상 막습니다.
         configuration.allowsInlineMediaPlayback = false
         configuration.mediaTypesRequiringUserActionForPlayback = .all
