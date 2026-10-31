@@ -30,6 +30,8 @@ final class FolderDetailViewModel {
     @Published var hasMore: Bool = true
     private var page: Int = 0          // 서버의 data.number (0-based)
     private let pageSize: Int = 10     // 서버의 data.size와 일치
+    /// 지금까지 실제로 불러온 페이지 수. 목록을 갱신할 때 길이를 유지하는 데 씁니다.
+    private var loadedPageCount: Int = 0
     
     init(folderId: String) {
         self.folderId = folderId
@@ -62,6 +64,7 @@ final class FolderDetailViewModel {
         if reset {
             page = 0
             hasMore = true
+            loadedPageCount = 0
         }
 
         let itemStatus: ItemStatusType? = isExcludingOwned ? .wish : nil
@@ -78,6 +81,8 @@ final class FolderDetailViewModel {
                 if let itemDatas = response.data?.content {
                     items.append(contentsOf: itemDatas)
                 }
+
+                loadedPageCount += 1
 
                 // 다음 페이지 여부 및 page 증가
                 hasMore = !(response.data?.last ?? true)
@@ -103,6 +108,61 @@ final class FolderDetailViewModel {
                         self.totalCount = 0
                     }
                 }
+            }
+        }
+    }
+
+    /// 아이템 상세 등에 다녀온 뒤 목록을 갱신합니다.
+    ///
+    /// 1페이지만 다시 불러오면 목록이 짧아져 스크롤이 맨 위로 튑니다.
+    /// 지금까지 불러온 페이지 수만큼 다시 불러와 길이를 유지합니다.
+    func reloadLoadedPages() {
+        guard !isLoading else { return }
+        guard loadedPageCount > 0 else {
+            fetchItems(reset: true)
+            return
+        }
+
+        isLoading = true
+        // 이미 목록이 그려져 있으므로 로딩뷰는 띄우지 않습니다.
+        isInitialLoading = false
+
+        let pageCount = loadedPageCount
+        let itemStatus: ItemStatusType? = isExcludingOwned ? .wish : nil
+
+        _Concurrency.Task {
+            do {
+                let usecase = GetFolderItemListUseCase()
+                var reloaded: [WishListResponse] = []
+                var fetchedPages = 0
+                var isLast = true
+                var total = 0
+
+                for pageIndex in 0..<pageCount {
+                    let response = try await usecase.execute(folderId: folderId,
+                                                             page: pageIndex,
+                                                             size: pageSize,
+                                                             itemStatus: itemStatus)
+                    total = response.data?.totalElements ?? 0
+                    reloaded.append(contentsOf: response.data?.content ?? [])
+                    fetchedPages += 1
+                    isLast = response.data?.last ?? true
+                    if isLast { break }
+                }
+
+                // 한 번에 바꿔 넣어야 목록이 짧아졌다 늘어나며 스크롤이 튀지 않습니다.
+                items = reloaded
+                totalCount = total
+                loadedPageCount = fetchedPages
+                hasMore = !isLast
+                page = isLast ? max(fetchedPages - 1, 0) : fetchedPages
+
+                isLoading = false
+                isInitialLoading = false
+            } catch {
+                // 갱신에 실패하면 보고 있던 목록을 그대로 둡니다.
+                isLoading = false
+                isInitialLoading = false
             }
         }
     }

@@ -79,7 +79,9 @@ final class FolderDetailViewController: UIViewController, ToolBarDelegate {
             hasAppearedOnce = true
             return
         }
-        self.refreshItems()
+        // 보던 위치를 지키기 위해, 처음부터 다시 불러오지 않고
+        // 지금까지 불러온 페이지 수만큼 갱신합니다.
+        viewModel.reloadLoadedPages()
     }
 
     func leftNaviItemTap() {

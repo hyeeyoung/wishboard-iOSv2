@@ -175,7 +175,7 @@ final class FolderDetailView: UIView, LoadingPresentable {
                 self.emptyLabel.isHidden = !(items.isEmpty)
                 // 전체 선택 상태라면 페이징으로 새로 불러온 아이템도 선택 상태로 유지합니다.
                 selectionViewModel.applySelectAllIfNeeded(itemIds: items.compactMap { $0.id })
-                self.collectionView.reloadData()
+                self.reloadKeepingScrollPosition()
             }
             .store(in: &cancellables)
 
@@ -195,6 +195,24 @@ final class FolderDetailView: UIView, LoadingPresentable {
             .store(in: &cancellables)
 
         collectionView.dataSource = self
+    }
+
+    /// 목록을 다시 그리면서 보고 있던 위치를 지킵니다.
+    ///
+    /// 아이템이 삭제돼 목록이 짧아졌다면 남은 길이에 맞춰 내립니다.
+    private func reloadKeepingScrollPosition() {
+        let offsetY = collectionView.contentOffset.y
+        collectionView.reloadData()
+
+        guard offsetY > 0 else { return }
+
+        collectionView.layoutIfNeeded()
+        let visibleHeight = collectionView.bounds.height
+            - collectionView.adjustedContentInset.top
+            - collectionView.adjustedContentInset.bottom
+        let maxOffsetY = max(-collectionView.adjustedContentInset.top,
+                             collectionView.contentSize.height - visibleHeight)
+        collectionView.setContentOffset(CGPoint(x: 0, y: min(offsetY, maxOffsetY)), animated: false)
     }
 
     /// 다중 선택 모드 진입/종료에 따라 상단바와 헤더를 전환합니다.
