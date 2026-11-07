@@ -493,6 +493,9 @@ extension HomeViewController: UICollectionViewDelegate {
             return
         }
 
+        // 연타로 상세 화면이 중복으로 쌓이지 않게 막습니다.
+        guard canPushDetail else { return }
+
         UIDevice.vibrate()
         showItemDetail(for: item)
     }

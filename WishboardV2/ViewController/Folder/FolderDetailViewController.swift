@@ -313,7 +313,7 @@ extension FolderDetailViewController: UICollectionViewDelegate {
             return
         }
 
-        if let itemIdx = item.id {
+        if let itemIdx = item.id, canPushDetail {
             UIDevice.vibrate()
             let detailViewController = ItemDetailViewController(id: itemIdx)
             navigationController?.pushViewController(detailViewController, animated: true)
