@@ -72,7 +72,7 @@ class ShareViewController: UIViewController {
                     // 아이템 정보 파싱
                     self?.link = url
                     guard let self = self else { return }
-                    let parsed = try await self.viewModel.fetchItem(link: url)
+                    let parsed = try await self.viewModel.fetchItem(link: url, hostView: self.view)
 
                     // 서버도 링크 미리보기도 아무것도 못 가져온 경우에만 스낵바 노출
                     guard !parsed.isEmpty else {

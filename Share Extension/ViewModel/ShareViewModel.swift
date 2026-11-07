@@ -24,10 +24,14 @@ final class ShareViewModel {
     
     /// 웹url로 아이템 파싱하기
     ///
-    /// 서버가 상품 정보를 못 가져오면(204) 애플 LinkPresentation 으로 제목/이미지만이라도 채워 봅니다.
+    /// 서버가 상품 정보를 못 가져오면(204) 두 단계로 보완합니다.
+    /// 1. 애플 LinkPresentation — 가볍지만 봇 차단에 막히는 사이트가 있습니다. 가격은 못 가져옵니다.
+    /// 2. 숨긴 웹뷰 — 무겁지만 통과율이 가장 높고 가격도 읽습니다. 익스텐션은 메모리 한도가
+    ///    낮아 앱보다 짧은 시간만 기다립니다.
+    /// - Parameter hostView: 숨긴 웹뷰를 끼워 넣을 뷰
     /// - Returns: 보완까지 했는데도 못 가져온 경우 `isEmpty` 가 true 인 값
     @discardableResult
-    func fetchItem(link: String) async throws -> ParsedItemInfo {
+    func fetchItem(link: String, hostView: UIView?) async throws -> ParsedItemInfo {
         do {
             let usecase = ParseItemUrlUseCase()
             let data = try await usecase.execute(link: link)
@@ -37,6 +41,14 @@ final class ShareViewModel {
                                         imageUrl: data?.itemImageUrl)
             if parsed.isEmpty {
                 parsed.fill(with: await LinkMetadataLoader.load(from: link))
+            }
+            if parsed.isEmpty {
+                print("⚠️ LinkPresentation 실패. 숨긴 웹뷰로 다시 시도합니다.")
+                parsed.merge(await WebViewMetadataLoader.load(
+                    from: link,
+                    in: hostView,
+                    timeout: WebViewMetadataLoader.shareExtensionTimeout
+                ))
             }
 
             let result = parsed

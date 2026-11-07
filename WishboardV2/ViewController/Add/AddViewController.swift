@@ -542,7 +542,7 @@ final class AddViewController: UIViewController {
             defer { loadingHost.hideLoading() }
 
             do {
-                let parsedItem = try await self.viewModel.parseItem(link: link)
+                let parsedItem = try await self.viewModel.parseItem(link: link, hostView: self.view)
 
                 // 응답을 기다리는 동안 시트를 닫았다면 반영하지 않습니다.
                 guard !_Concurrency.Task.isCancelled else { return }

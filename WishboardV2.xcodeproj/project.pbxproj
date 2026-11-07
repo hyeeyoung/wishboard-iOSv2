@@ -13,7 +13,9 @@
 		230C8D022E4F0A0B0053F68D /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */; };
 		230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
 		23AB1F000000000000000002 /* LinkMetadataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AB1F000000000000000001 /* LinkMetadataLoader.swift */; };
+		23AB1F000000000000000012 /* WebViewMetadataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AB1F000000000000000011 /* WebViewMetadataLoader.swift */; };
 		23AB1F000000000000000003 /* LinkMetadataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AB1F000000000000000001 /* LinkMetadataLoader.swift */; };
+		23AB1F000000000000000013 /* WebViewMetadataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AB1F000000000000000011 /* WebViewMetadataLoader.swift */; };
 		230DE29E2D6B08BB00B7BCE7 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */; };
 		23167A012E22805E00F7D9AB /* FolderFormItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23167A002E22805E00F7D9AB /* FolderFormItemView.swift */; };
 		23167A032E22807A00F7D9AB /* FolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23167A022E22807A00F7D9AB /* FolderCell.swift */; };
@@ -261,6 +263,7 @@
 		230C8D012E4F0A0B0053F68D /* ImageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
 		230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		23AB1F000000000000000001 /* LinkMetadataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkMetadataLoader.swift; sourceTree = "<group>"; };
+		23AB1F000000000000000011 /* WebViewMetadataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewMetadataLoader.swift; sourceTree = "<group>"; };
 		23167A002E22805E00F7D9AB /* FolderFormItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderFormItemView.swift; sourceTree = "<group>"; };
 		23167A022E22807A00F7D9AB /* FolderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCell.swift; sourceTree = "<group>"; };
 		231F51BD2C708EB400524968 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -479,6 +482,7 @@
 			children = (
 				230DE2982D6B06AA00B7BCE7 /* UIImageViewExtension.swift */,
 				23AB1F000000000000000001 /* LinkMetadataLoader.swift */,
+				23AB1F000000000000000011 /* WebViewMetadataLoader.swift */,
 				231F85CD2D6B3A010060F827 /* SetNotificationDate.swift */,
 			);
 			path = Utils;
@@ -1316,6 +1320,7 @@
 				2357E5622C7B0A1A00CC9509 /* ShareViewModel.swift in Sources */,
 				230DE29E2D6B08BB00B7BCE7 /* UIImageViewExtension.swift in Sources */,
 				23AB1F000000000000000003 /* LinkMetadataLoader.swift in Sources */,
+				23AB1F000000000000000013 /* WebViewMetadataLoader.swift in Sources */,
 				23611C922D81AA67003606DE /* SnackBar.swift in Sources */,
 				23C4D21A2C7A4D6D00BB0B08 /* ShareViewController.swift in Sources */,
 				23BDE0CA2D985530005D2C96 /* PaddingLabel.swift in Sources */,
@@ -1420,6 +1425,7 @@
 				232466752C6F92A400979940 /* TabBarViewController.swift in Sources */,
 				230DE2992D6B06AA00B7BCE7 /* UIImageViewExtension.swift in Sources */,
 				23AB1F000000000000000002 /* LinkMetadataLoader.swift in Sources */,
+				23AB1F000000000000000012 /* WebViewMetadataLoader.swift in Sources */,
 				235FFE2F2F653061007A77D2 /* FolderReorderView.swift in Sources */,
 				23F3FFC32C7901F0003C7DA9 /* AnimationButton.swift in Sources */,
 				23AA00052D99000500A0EB42 /* LoadingView.swift in Sources */,
