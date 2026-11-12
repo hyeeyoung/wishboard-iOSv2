@@ -45,9 +45,9 @@ public enum HTMLMetadataLoader {
                 return ParsedItemInfo()
             }
 
-            let head = headPortion(of: data, response: response)
+            let document = decode(data.prefix(headSearchLimit), response: response)
             let baseURL = response.url ?? url
-            return parse(head, baseURL: baseURL)
+            return parse(head: headPortion(of: document), document: document, baseURL: baseURL)
         } catch {
             print("⚠️ HTML 읽기 실패: \(error.localizedDescription)")
             return ParsedItemInfo()
@@ -56,11 +56,8 @@ public enum HTMLMetadataLoader {
 
     // MARK: - 디코딩
 
-    /// `</head>` 까지만 잘라 냅니다. 뒤쪽 본문은 볼 필요가 없습니다.
-    private static func headPortion(of data: Data, response: URLResponse) -> String {
-        let limited = data.prefix(headSearchLimit)
-        let html = decode(limited, response: response)
-
+    /// `</head>` 까지만 잘라 냅니다. meta 태그는 전부 여기 있습니다.
+    private static func headPortion(of html: String) -> String {
         guard let headEnd = html.range(of: "</head>", options: .caseInsensitive) else {
             return html
         }
@@ -89,21 +86,119 @@ public enum HTMLMetadataLoader {
 
     // MARK: - 파싱
 
-    private static func parse(_ html: String, baseURL: URL) -> ParsedItemInfo {
-        let name = metaContent(in: html, keys: ["og:title", "twitter:title"])
+    private static func parse(head: String, document: String, baseURL: URL) -> ParsedItemInfo {
+        var info = ParsedItemInfo(
+            name: metaContent(in: head, keys: ["og:title", "twitter:title"]),
+            price: digitsOnly(metaContent(in: head,
+                                          keys: ["og:price:amount", "product:price:amount", "price"])),
+            imageUrl: metaContent(in: head, keys: ["og:image", "og:image:url", "twitter:image"])
+        )
 
-        let rawImage = metaContent(in: html, keys: ["og:image", "og:image:url", "twitter:image"])
+        // 가격을 og 태그에 안 쓰고 JSON-LD 에만 넣는 쇼핑몰이 많습니다.
+        // meta 로 못 채운 값만 거기서 가져옵니다.
+        if info.name == nil || info.price == nil || info.imageUrl == nil {
+            info.merge(productFromJSONLD(in: document))
+        }
+
         // 상대 주소로 적힌 이미지는 절대 주소로 바꿉니다.
-        let imageUrl = rawImage.flatMap { URL(string: $0, relativeTo: baseURL)?.absoluteString ?? $0 }
+        if let image = info.imageUrl {
+            info.imageUrl = URL(string: image, relativeTo: baseURL)?.absoluteString ?? image
+        }
+        return info
+    }
 
-        let rawPrice = metaContent(in: html,
-                                   keys: ["og:price:amount", "product:price:amount", "price"])
-        // "29,900원" 처럼 올 수 있어 숫자만 남깁니다.
-        let price = rawPrice.map { String($0.filter { $0.isNumber }) }
+    /// "29,900원" 처럼 올 수 있어 숫자만 남깁니다.
+    private static func digitsOnly(_ value: String?) -> String? {
+        guard let digits = value.map({ String($0.filter { $0.isNumber }) }), !digits.isEmpty else {
+            return nil
+        }
+        return digits
+    }
 
-        return ParsedItemInfo(name: name,
-                              price: (price?.isEmpty ?? true) ? nil : price,
-                              imageUrl: imageUrl)
+    // MARK: - JSON-LD
+
+    /// `<script type="application/ld+json">` 안의 Product 정보를 읽습니다.
+    private static func productFromJSONLD(in html: String) -> ParsedItemInfo {
+        let pattern = "<script[^>]*application/ld\\+json[^>]*>([\\s\\S]*?)</script>"
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
+            return ParsedItemInfo()
+        }
+
+        let range = NSRange(html.startIndex..<html.endIndex, in: html)
+        for match in regex.matches(in: html, range: range) {
+            guard match.numberOfRanges > 1,
+                  let bodyRange = Range(match.range(at: 1), in: html),
+                  let data = String(html[bodyRange]).data(using: .utf8),
+                  let root = try? JSONSerialization.jsonObject(with: data) else { continue }
+
+            for product in productNodes(in: root) {
+                let info = ParsedItemInfo(name: product["name"] as? String,
+                                          price: digitsOnly(priceText(in: product["offers"])),
+                                          imageUrl: imageText(in: product["image"]))
+                if !info.isEmpty { return info }
+            }
+        }
+        return ParsedItemInfo()
+    }
+
+    /// 최상위가 배열이거나 `@graph` 로 감싸인 경우까지 펼쳐서 Product 만 추립니다.
+    private static func productNodes(in root: Any) -> [[String: Any]] {
+        var queue: [Any] = [root]
+        var products: [[String: Any]] = []
+
+        while let current = queue.popLast() {
+            if let array = current as? [Any] {
+                queue.append(contentsOf: array)
+                continue
+            }
+            guard let node = current as? [String: Any] else { continue }
+
+            if let graph = node["@graph"] {
+                queue.append(graph)
+            }
+            if isProduct(node["@type"]) {
+                products.append(node)
+            }
+        }
+        return products
+    }
+
+    private static func isProduct(_ type: Any?) -> Bool {
+        if let single = type as? String {
+            return single.caseInsensitiveCompare("Product") == .orderedSame
+        }
+        if let many = type as? [String] {
+            return many.contains { $0.caseInsensitiveCompare("Product") == .orderedSame }
+        }
+        return false
+    }
+
+    /// 이미지는 문자열, 배열, `{ "url": ... }` 중 아무 형태로나 올 수 있습니다.
+    private static func imageText(in value: Any?) -> String? {
+        if let text = value as? String { return text }
+        if let list = value as? [Any] {
+            return list.compactMap { imageText(in: $0) }.first
+        }
+        if let node = value as? [String: Any] { return node["url"] as? String }
+        return nil
+    }
+
+    /// offers 도 하나일 수도, 배열일 수도 있습니다.
+    private static func priceText(in offers: Any?) -> String? {
+        let candidates: [Any]
+        if let list = offers as? [Any] { candidates = list }
+        else if let offers = offers { candidates = [offers] }
+        else { return nil }
+
+        for candidate in candidates {
+            guard let offer = candidate as? [String: Any] else { continue }
+            // 범위로 적는 곳이 있어 lowPrice 도 봅니다.
+            for key in ["price", "lowPrice"] {
+                if let text = offer[key] as? String, !text.isEmpty { return text }
+                if let number = offer[key] as? NSNumber { return number.stringValue }
+            }
+        }
+        return nil
     }
 
     private static func metaContent(in html: String, keys: [String]) -> String? {
