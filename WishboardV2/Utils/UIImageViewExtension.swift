@@ -12,17 +12,36 @@ import Kingfisher
 extension UIImageView {
     
     public func loadImage(from url: URL, placeholder: UIImage? = nil) {
-        
-        let processor = TintImageProcessor(tint: .black_05)
-        
+
+        // 보여 줄 크기로 줄여서 디코딩합니다.
+        //
+        // 상품 사진은 3000x4000 처럼 큰 것들이 섞여 있습니다. 파일은 0.5MB 여도 화면에
+        // 그리려면 픽셀로 펼쳐야 해서 한 장에 40MB 를 넘깁니다. 그대로 두면 목록에서
+        // 여러 장이 동시에 올라올 때 메모리를 크게 먹고, 한도가 낮은 공유 익스텐션에서는
+        // 이미지 한 장만으로 프로세스가 종료됩니다.
+        let processor = DownsamplingImageProcessor(size: downsamplingTargetSize)
+            |> TintImageProcessor(tint: .black_05)
+
         self.kf.setImage(
             with: url,
             placeholder: placeholder,
             options: [
                 .transition(.fade(0.2)),  // 페이드 인 애니메이션 적용
-                .processor(processor),    // dimmedView 추가
+                .processor(processor),    // 축소 후 dimmedView 추가
+                .scaleFactor(UIScreen.main.scale),
             ]
         )
+    }
+
+    /// 줄여서 디코딩할 기준 크기.
+    /// 레이아웃 전이라 크기가 잡히지 않았으면 화면 너비를 상한으로 씁니다.
+    private var downsamplingTargetSize: CGSize {
+        let size = bounds.size
+        guard size.width > 1, size.height > 1 else {
+            let fallback = UIScreen.main.bounds.width
+            return CGSize(width: fallback, height: fallback)
+        }
+        return size
     }
     
     public func loadImage(from urlString: String, placeholder: UIImage? = nil) {
