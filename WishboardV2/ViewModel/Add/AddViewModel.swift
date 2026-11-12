@@ -62,9 +62,10 @@ final class AddViewModel {
     
     /// 쇼핑몰 링크로 아이템 정보 파싱
     ///
-    /// 서버가 상품 정보를 못 가져오면(204) 두 단계로 보완합니다.
-    /// 1. 애플 LinkPresentation — 가볍지만 봇 차단에 막히는 사이트가 있습니다. 가격은 못 가져옵니다.
-    /// 2. 숨긴 웹뷰 — 무겁지만 진짜 브라우저 엔진이라 통과율이 가장 높고, 가격도 읽을 수 있습니다.
+    /// 서버가 상품 정보를 못 가져오면(204) 가벼운 것부터 차례로 보완합니다.
+    /// 1. 애플 LinkPresentation — 가장 가볍지만 봇 차단에 막히는 곳이 있고 가격은 못 가져옵니다.
+    /// 2. HTML 의 head 만 읽기 — og 태그는 문서 맨 앞에 있어 페이지를 그릴 필요가 없습니다.
+    /// 3. 숨긴 웹뷰 — 가장 무겁습니다. 봇 차단으로 HTML 자체를 못 받는 곳에만 씁니다.
     /// - Parameter hostView: 숨긴 웹뷰를 끼워 넣을 뷰
     /// - Returns: 보완까지 했는데도 못 가져온 경우 `isEmpty` 가 true 인 값
     func parseItem(link: String, hostView: UIView?) async throws -> ParsedItemInfo {
@@ -82,7 +83,14 @@ final class AddViewModel {
             return parsed
         }
 
-        print("⚠️ LinkPresentation 실패. 숨긴 웹뷰로 다시 시도합니다.")
+        print("⚠️ LinkPresentation 실패. 페이지 head 를 직접 읽어 봅니다.")
+        parsed.merge(await HTMLMetadataLoader.load(from: link))
+        guard parsed.isEmpty else {
+            print("✅ HTML 에서 보완했습니다.")
+            return parsed
+        }
+
+        print("⚠️ HTML 읽기도 실패. 숨긴 웹뷰로 다시 시도합니다.")
         parsed.merge(await WebViewMetadataLoader.load(from: link, in: hostView))
         return parsed
     }
