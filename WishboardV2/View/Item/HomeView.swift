@@ -230,15 +230,26 @@ final class HomeView: UIView, LoadingPresentable {
         }
     }
 
+    /// 배너를 다시 띄웁니다. 서버에서 새 배너를 받았을 때 씁니다.
+    func showEventBanner() {
+        guard !isBannerVisible else { return }
+        setEventBannerVisible(true)
+    }
+
     func hideEventBanner() {
-        isBannerVisible = false
+        guard isBannerVisible || eventBannerView.superview != nil else { return }
         eventBannerView.removeFromSuperview()
+        setEventBannerVisible(false)
+    }
+
+    private func setEventBannerVisible(_ isVisible: Bool) {
+        isBannerVisible = isVisible
         updateLoadingContainerTopInset()
 
         collectionView.setCollectionViewLayout(
             HomeView.makeLayout(
                 columnType: currentColumnType,
-                isBannerVisible: false,
+                isBannerVisible: isVisible,
                 isSelectionMode: isSelectionMode
             ),
             animated: false

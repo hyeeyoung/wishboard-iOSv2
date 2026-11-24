@@ -69,6 +69,13 @@ class TabBarViewController: UITabBarController {
 }
 
 extension TabBarViewController: UITabBarControllerDelegate {
+    // 홈 탭으로 들어올 때마다 배너를 다음 것으로 넘깁니다. (자동 롤링 없음)
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        guard let nav = viewController as? UINavigationController,
+              let homeVC = nav.viewControllers.first as? HomeViewController else { return }
+        homeVC.showNextBannerIfNeeded()
+    }
+
     // 탭바 아이템 선택 감지
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         guard let viewControllers = self.viewControllers else { return true }

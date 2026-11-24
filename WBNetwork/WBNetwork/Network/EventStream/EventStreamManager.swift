@@ -20,6 +20,8 @@ public final class EventStreamManager {
     @Published public private(set) var unreadCount: Int = 0
     /// 안읽은 알림이 있는지 여부
     @Published public private(set) var hasUnread: Bool = false
+    /// 홈 상단에 띄울 배너 목록. 받은 목록으로 통째로 바뀌며, 받기 전에는 빈 배열입니다.
+    @Published public private(set) var banners: [BannerEvent] = []
 
     /// 재연결 지연의 하한·상한
     private static let minRetryDelay: TimeInterval = 1
@@ -61,6 +63,11 @@ public final class EventStreamManager {
             self.isActive = false
             self.cancelPendingRetry()
             self.closeCurrentConnection()
+
+            // 끊긴 뒤 옛 배너가 남아 있지 않게 비웁니다.
+            DispatchQueue.main.async { [weak self] in
+                self?.banners = []
+            }
         }
     }
 
@@ -114,8 +121,12 @@ public final class EventStreamManager {
             }
 
         case .banners:
-            // 배너는 아직 연동하지 않습니다. (기획·디자인 합의 전)
-            break
+            // 변경분이 아니라 전체 목록입니다. 받은 것으로 통째로 바꿉니다.
+            guard let banners = try? JSONDecoder().decode([BannerEvent].self, from: data) else { return }
+
+            DispatchQueue.main.async { [weak self] in
+                self?.banners = banners
+            }
 
         case .reconnect:
             let event = try? JSONDecoder().decode(ReconnectEvent.self, from: data)
