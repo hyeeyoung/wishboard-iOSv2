@@ -10,6 +10,7 @@ import UIKit
 import SnapKit
 import Then
 import Core
+import WBNetwork
 
 final class HomeEventBannerView: UIView {
 
@@ -19,14 +20,35 @@ final class HomeEventBannerView: UIView {
     // MARK: - Views
 
     private let eventLabel = UILabel().then {
-        $0.text = "기존 위시리스트를 위시보드로 옮겨보세요 📦"
         $0.font = TypoStyle.SuitD2.font
-        $0.textColor = .white_10
         $0.textAlignment = .left
     }
 
     private let closeButton = UIButton().then {
-        $0.setImage(Image.whiteQuit.withRenderingMode(.alwaysOriginal).withTintColor(.gray_200), for: .normal)
+        $0.setImage(Image.whiteQuit.withRenderingMode(.alwaysTemplate), for: .normal)
+    }
+
+    /// 닫기 버튼이 없을 때 자리를 없애, 문구가 더 길게 들어가도록 합니다.
+    private var closeButtonWidth: Constraint?
+
+    // MARK: - Configure
+
+    /// 서버가 내려준 배너 한 건을 반영합니다.
+    func configure(with banner: BannerEvent) {
+        eventLabel.text = banner.text
+
+        // 색상 문자열이 깨져 있어도 배너가 사라지지 않도록 기존 색으로 넘어갑니다.
+        let textColor = UIColor(argbHexString: banner.textColor) ?? .white_10
+        eventLabel.textColor = textColor
+        // 닫기 아이콘은 문구 색을 따라가되 조금 옅게 둡니다.
+        closeButton.tintColor = textColor.withAlphaComponent(0.6)
+        backgroundColor = UIColor(argbHexString: banner.backgroundColor) ?? .black
+
+        closeButton.isHidden = !banner.isDismissible
+        closeButtonWidth?.update(offset: banner.isDismissible ? 16 : 0)
+
+        // 반응이 없는 배너는 눌리지 않게 둡니다.
+        isUserInteractionEnabled = banner.action != .none
     }
 
     // MARK: - Initializer
@@ -52,7 +74,8 @@ final class HomeEventBannerView: UIView {
         closeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-13)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(16)
+            make.height.equalTo(16)
+            self.closeButtonWidth = make.width.equalTo(16).constraint
         }
 
         eventLabel.snp.makeConstraints { make in

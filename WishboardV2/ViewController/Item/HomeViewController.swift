@@ -21,7 +21,10 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     private let selectionViewModel = ItemSelectionViewModel()
 
     /// 이벤트 영역 > x버튼
-    private static let eventBannerDismissedAtKey = "eventBannerDismissedAt"
+    /// 서버에서 받은 배너 중 실제로 보여 줄 것들. 받은 순서를 그대로 지킵니다.
+    private var visibleBanners: [BannerEvent] = []
+    /// 지금 보여 주는 배너의 위치. 탭 전환·새로고침마다 다음으로 넘어갑니다.
+    private var bannerIndex = 0
 
     private let backgroundDimView = UIView()
     /// 다중 선택 모드에서 탭바 대신 노출되는 하단바
@@ -86,44 +89,72 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 
     private func setupEventBanner() {
-        if shouldHideEventBanner {
-            homeView.hideEventBanner()
-            return
-        }
+        // 서버에서 받기 전에는 배너 자리를 비워 둡니다.
+        homeView.hideEventBanner()
 
         homeView.eventBannerView.onClose = { [weak self] in
-            guard let self else { return }
+            guard let self, let banner = self.currentBanner else { return }
 
-            UserDefaults.standard.set(
-                Date(),
-                forKey: Self.eventBannerDismissedAtKey
-            )
+            // 닫기는 앱이 로컬에서만 처리합니다. 서버로 보내지 않습니다.
+            BannerDismissStore.markDismissed(banner.id)
+            self.applyBanners(EventStreamManager.shared.banners)
 
-            self.homeView.hideEventBanner()
-
-            // show toast
             SnackBar.shared.show(type: .hideEventBanner)
         }
 
         homeView.eventBannerView.onTap = { [weak self] in
-            guard let self else { return }
-            self.presentWishboardWebView()
+            guard let self, let banner = self.currentBanner else { return }
+            self.handleBannerTap(banner)
         }
     }
 
-    private func presentWishboardWebView() {
-        let webVC = WishboardWebViewController()
-        webVC.modalPresentationStyle = .fullScreen
-        present(webVC, animated: true)
+    private var currentBanner: BannerEvent? {
+        guard !visibleBanners.isEmpty else { return nil }
+        return visibleBanners[bannerIndex % visibleBanners.count]
     }
 
-    private var shouldHideEventBanner: Bool {
-        guard let _ = UserDefaults.standard.object(
-            forKey: Self.eventBannerDismissedAtKey
-        ) else {
-            return false
+    /// 받은 목록으로 통째로 바꿉니다. 서버가 이미 걸러 보내므로 앱은 닫기 기록만 뺍니다.
+    private func applyBanners(_ banners: [BannerEvent]) {
+        let dismissed = BannerDismissStore.dismissedIds()
+        visibleBanners = banners
+            .filter { $0.isHomeTop }
+            .filter { !dismissed.contains($0.id) }
+
+        guard let banner = currentBanner else {
+            homeView.hideEventBanner()
+            return
         }
-        return true
+
+        homeView.eventBannerView.configure(with: banner)
+        homeView.showEventBanner()
+        AnalyticsManager.shared.log(.bannerShown(bannerId: banner.id))
+    }
+
+    /// 탭을 전환하거나 새로고침할 때 다음 배너로 넘깁니다. 자동 롤링은 없습니다.
+    func showNextBannerIfNeeded() {
+        guard visibleBanners.count > 1 else { return }
+        bannerIndex += 1
+        applyBanners(EventStreamManager.shared.banners)
+    }
+
+    private func handleBannerTap(_ banner: BannerEvent) {
+        AnalyticsManager.shared.log(.bannerTapped(bannerId: banner.id))
+
+        switch banner.action {
+        case .web:
+            // 외부 브라우저로 엽니다.
+            guard let value = banner.value, let url = URL(string: value),
+                  UIApplication.shared.canOpenURL(url) else { return }
+            UIApplication.shared.open(url)
+
+        case .deeplink:
+            // value 가 URL 이 아닐 수 있어, 딥링크 규약이 정해지면 여기에 연결합니다.
+            // 처리할 수 없는 값은 아무 동작도 하지 않습니다. (크래시·빈 화면 금지)
+            print("⚠️ 아직 처리하지 않는 배너 딥링크입니다: \(banner.value ?? "없음")")
+
+        case .none:
+            break
+        }
     }
 
     private func setupDelegates() {
@@ -134,6 +165,16 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
     }
 
     private func setupBindings() {
+        // 배너도 같은 연결로 내려옵니다. 받을 때마다 통째로 교체합니다.
+        EventStreamManager.shared.$banners
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] banners in
+                self?.bannerIndex = 0
+                self?.applyBanners(banners)
+            }
+            .store(in: &cancellables)
+
         // 실시간으로 내려오는 안읽은 알림 개수를 상단바 뱃지에 반영합니다.
         EventStreamManager.shared.$unreadCount
             .removeDuplicates()
@@ -146,6 +187,8 @@ final class HomeViewController: UIViewController, ItemDetailDelegate {
         // 당겨서 새로고침은 자체 인디케이터가 있어, 로딩뷰를 띄우지 않는 경로로 조회합니다.
         homeView.refreshAction = { [weak self] in
             self?.viewModel.refresh()
+            // 새로고침할 때도 배너를 다음 것으로 넘깁니다.
+            self?.showNextBannerIfNeeded()
         }
 
         // '전체 선택' 상태는 선택 개수가 그대로여도 바뀔 수 있어 함께 관찰합니다.

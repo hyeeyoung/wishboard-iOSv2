@@ -40,6 +40,10 @@ public enum AnalyticsEvent {
     // Share Extension
     case shareExtensionOpened  // 공유시트에서 위시보드 선택되어 확장뷰가 뜬 순간
 
+    // Banner
+    case bannerShown(bannerId: Int)    // 홈 상단 배너가 화면에 뜬 순간
+    case bannerTapped(bannerId: Int)   // 홈 상단 배너를 탭한 순간
+
     var name: String {
         switch self {
         case .screenView:           return AnalyticsEventScreenView
@@ -47,6 +51,8 @@ public enum AnalyticsEvent {
         case .signupSucceeded:      return "signup_succeeded"
         case .withdraw:             return "withdraw"
         case .shareExtensionOpened: return "share_extension_opened"
+        case .bannerShown:          return "banner_shown"
+        case .bannerTapped:         return "banner_tapped"
         case .itemAdded:            return "item_added"
         case .itemDeleted:          return "item_deleted"
         case .itemsBulkDeleted:     return "items_bulk_deleted"
@@ -68,6 +74,9 @@ public enum AnalyticsEvent {
             return ["provider": p.rawValue]
         case .itemAdded(let source):
             return ["source": source.rawValue]
+        case .bannerShown(let bannerId), .bannerTapped(let bannerId):
+            // 어드민에서 배너별로 집계할 수 있게 id 를 담습니다.
+            return ["banner_id": bannerId]
         case .itemParsed(let source):
             return ["source": source.rawValue]
         case .itemsBulkDeleted(let source, let scope, let itemCount):
