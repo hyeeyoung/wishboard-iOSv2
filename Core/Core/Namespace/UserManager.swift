@@ -59,9 +59,6 @@ public class UserManager {
     @UserDefault(key: UserDefaultKey.email, defaultValue: nil, storage: sharedDefaults)
     public static var email: String?
     
-    @UserDefault(key: UserDefaultKey.password, defaultValue: nil, storage: sharedDefaults)
-    public static var password: String?
-    
     @UserDefault(key: UserDefaultKey.isFirstLogin, defaultValue: nil, storage: sharedDefaults)
     public static var isFirstLogin: Bool?
     
@@ -71,14 +68,26 @@ public class UserManager {
     @UserDefault(key: UserDefaultKey.gridColumnType, defaultValue: 2, storage: sharedDefaults)
     public static var gridColumnType: Int
     
+    /// 예전 버전이 평문으로 저장해 두던 비밀번호 키. 지우기 위해서만 남겨 둡니다.
+    private static let legacyPasswordKey = "password"
+
     /// 사용자 데이터 삭제 (로그아웃, 탈퇴)
     public static func removeUserData() {
-        let defaults = UserDefaults(suiteName: "group.gomin.Wishboard.Share")!
-        defaults.removeObject(forKey: UserDefaultKey.accessToken)
-        defaults.removeObject(forKey: UserDefaultKey.refreshToken)
-        defaults.removeObject(forKey: UserDefaultKey.email)
-        defaults.removeObject(forKey: UserDefaultKey.password)
-        defaults.set(false, forKey: UserDefaultKey.isFirstLogin)
+        sharedDefaults.removeObject(forKey: UserDefaultKey.accessToken)
+        sharedDefaults.removeObject(forKey: UserDefaultKey.refreshToken)
+        sharedDefaults.removeObject(forKey: UserDefaultKey.email)
+        // 계정을 바꿔 로그인했을 때 이전 사용자의 닉네임이 보이지 않도록 함께 지웁니다.
+        sharedDefaults.removeObject(forKey: UserDefaultKey.tempNickname)
+        sharedDefaults.removeObject(forKey: legacyPasswordKey)
+        sharedDefaults.set(false, forKey: UserDefaultKey.isFirstLogin)
+    }
+
+    /// 앱 시작 시 1회 호출합니다.
+    ///
+    /// 예전 버전이 기기에 남겨 둔 평문 비밀번호를 지웁니다.
+    /// 로그아웃을 하지 않은 기존 사용자의 기기에는 아직 남아 있을 수 있어, 로그인 여부와 무관하게 지웁니다.
+    public static func purgeLegacyCredentials() {
+        sharedDefaults.removeObject(forKey: legacyPasswordKey)
     }
 }
 
@@ -96,7 +105,6 @@ public struct UserDefaultKey {
     public static let deviceToken = "deviceToken"
     
     public static let email = "email"
-    public static let password = "password"
     public static let isFirstLogin = "isFirstLogin"
     public static let tempNickname = "tempNickname"
     public static let gridColumnType = "gridColumnType"

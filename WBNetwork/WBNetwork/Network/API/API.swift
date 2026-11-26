@@ -21,10 +21,30 @@ public final class API {
     }
     
     public static let authPlugin = AccessTokenPlugin(tokenClosure: tokenClosure)
-//    public static let networkLoggerPlugin = NetworkLoggerPlugin()
-    public static let networkLoggerPlugin = NetworkLoggerPlugin(configuration: .init(
-        logOptions: [.formatRequestAscURL, .requestHeaders, .requestBody, /*.successResponseBody, .errorResponseBody*/]
-    ))
+
+    /// 요청 로거.
+    ///
+    /// 헤더에는 `Authorization: Bearer <accessToken>` 이, 바디에는 로그인/회원가입 비밀번호가 담깁니다.
+    /// 기기 콘솔 로그로 그대로 새어 나가므로 릴리즈 빌드에서는 아예 끼우지 않습니다.
+    #if DEBUG
+    public static let loggerPlugins: [PluginType] = [
+        NetworkLoggerPlugin(configuration: .init(
+            logOptions: [.formatRequestAscURL, .requestHeaders, .requestBody]
+        ))
+    ]
+    #else
+    public static let loggerPlugins: [PluginType] = []
+    #endif
+
+    /// 공통 플러그인 구성. 로거는 디버그 빌드에서만 들어갑니다.
+    private static func plugins(auth: Bool, loading: Bool) -> [PluginType] {
+        var result: [PluginType] = [errorPlugin]
+        result += loggerPlugins
+        if auth { result.append(authPlugin) }
+        if loading { result.append(loadingPlugin) }
+        return result
+    }
+
     public static let interceptor = TokenInterceptor.shared
     public static let errorPlugin = ErrorPlugin()
     public static let loadingPlugin = LoadingPlugin()
@@ -38,37 +58,37 @@ public final class API {
     
     public static let Auth = WBProvider<AuthAPI>(
         session: Session(configuration: configuration, interceptor: interceptor),
-        plugins: [errorPlugin, networkLoggerPlugin, authPlugin]
+        plugins: plugins(auth: true, loading: false)
     )
     
     public static let User = WBProvider<UserAPI>(
         session: Session(configuration: configuration, interceptor: interceptor),
-        plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
+        plugins: plugins(auth: true, loading: true)
     )
     
     public static let Item = WBProvider<ItemAPI>(
         session: Session(configuration: configuration, interceptor: interceptor),
-        plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
+        plugins: plugins(auth: true, loading: true)
     )
     
     public static let Cart = WBProvider<CartAPI>(
         session: Session(configuration: configuration, interceptor: interceptor),
-        plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
+        plugins: plugins(auth: true, loading: true)
     )
     
     public static let Folder = WBProvider<FolderAPI>(
         session: Session(configuration: configuration, interceptor: interceptor),
-        plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
+        plugins: plugins(auth: true, loading: true)
     )
     
     public static let Notice = WBProvider<NotiAPI>(
         session: Session(configuration: configuration, interceptor: interceptor),
-        plugins: [errorPlugin, networkLoggerPlugin, authPlugin, loadingPlugin]
+        plugins: plugins(auth: true, loading: true)
     )
     
     public static let Version = WBProvider<VersionAPI>(
         session: Session(configuration: configuration),
-        plugins: [errorPlugin, networkLoggerPlugin, loadingPlugin]
+        plugins: plugins(auth: false, loading: true)
     )
 }
 
