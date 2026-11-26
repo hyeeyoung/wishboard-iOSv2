@@ -17,6 +17,12 @@ final class WishboardWebViewController: UIViewController, Echoable {
     private static let webViewURL = "https://wishboard-app-web.vercel.app/"
     private static let bridgeName = "wishboard"
 
+    /// 토큰이 주입되는 웹뷰라, 이 호스트 밖으로는 이동시키지 않습니다.
+    private static let allowedHosts: Set<String> = {
+        guard let host = URL(string: webViewURL)?.host?.lowercased() else { return [] }
+        return [host]
+    }()
+
     // MARK: - Views
 
     private let navigationBar = UIView().then {
@@ -59,10 +65,12 @@ final class WishboardWebViewController: UIViewController, Echoable {
 
         // 초기 토큰/디바이스 정보 주입 스크립트 (atDocumentStart)
         if let script = await makeInitialInjectionScript() {
+            // 하위 프레임(iframe)에는 주입하지 않습니다.
+            // false 로 두면 페이지가 끼운 서드파티 iframe 에도 토큰이 그대로 들어갑니다.
             let userScript = WKUserScript(
                 source: script,
                 injectionTime: .atDocumentStart,
-                forMainFrameOnly: false
+                forMainFrameOnly: true
             )
             userContentController.addUserScript(userScript)
         }
@@ -70,6 +78,8 @@ final class WishboardWebViewController: UIViewController, Echoable {
         config.userContentController = userContentController
         
         // MARK: WebView LOG
+        // 주입 스크립트 본문에 토큰 원문이 들어 있어 디버그 빌드에서만 출력합니다.
+        #if DEBUG
         let scripts = config.userContentController.userScripts
         let userScriptsLog = scripts.enumerated().map { index, script in
             """
@@ -88,6 +98,7 @@ final class WishboardWebViewController: UIViewController, Echoable {
 
         ================================================
         """)
+        #endif
 
         webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = self
@@ -184,6 +195,7 @@ final class WishboardWebViewController: UIViewController, Echoable {
         });
         """
         
+        #if DEBUG
         print("""
 
             ===== 🌐 iOS → Web Bridge =====
@@ -201,6 +213,7 @@ final class WishboardWebViewController: UIViewController, Echoable {
             ==========================================
 
             """)
+        #endif
         
         DispatchQueue.main.async { [weak self] in
             self?.webView.evaluateJavaScript(js, completionHandler: nil)
@@ -214,6 +227,7 @@ final class WishboardWebViewController: UIViewController, Echoable {
         });
         """
         
+        #if DEBUG
         print("""
 
             ===== 🌐 iOS → Web Bridge =====
@@ -229,6 +243,7 @@ final class WishboardWebViewController: UIViewController, Echoable {
             ==========================================
 
             """)
+        #endif
         
         DispatchQueue.main.async { [weak self] in
             self?.webView.evaluateJavaScript(js, completionHandler: nil)
@@ -241,6 +256,7 @@ final class WishboardWebViewController: UIViewController, Echoable {
 extension WishboardWebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         
+        #if DEBUG
         print("""
         ======= 🌐 WebView → iOS Bridge =====
         name: \(message.name)
@@ -248,6 +264,7 @@ extension WishboardWebViewController: WKScriptMessageHandler {
         \(message.body)
         =========================================
         """)
+        #endif
         
         guard message.name == Self.bridgeName,
               let body = message.body as? [String: Any],
@@ -276,4 +293,42 @@ extension WishboardWebViewController: WKScriptMessageHandler {
 
 // MARK: - WKNavigationDelegate
 
-extension WishboardWebViewController: WKNavigationDelegate { }
+extension WishboardWebViewController: WKNavigationDelegate {
+
+    /// 허용한 호스트 밖으로는 이 웹뷰가 이동하지 않게 막습니다.
+    ///
+    /// 이 웹뷰에는 토큰을 주입하는 유저 스크립트가 걸려 있고, 그 스크립트는 한 번만 도는 것이 아니라
+    /// **이 웹뷰에서 새로 뜨는 모든 문서**에 적용됩니다. 막아 두지 않으면 바깥 페이지로 한 번 이동하는 것만으로
+    /// 그 페이지가 토큰을 읽을 수 있습니다. 외부 링크는 토큰이 없는 사파리로 넘깁니다.
+    func webView(_ webView: WKWebView,
+                 decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        guard let url = navigationAction.request.url,
+              let scheme = url.scheme?.lowercased() else {
+            decisionHandler(.cancel)
+            return
+        }
+
+        // about:blank 등 웹뷰가 내부적으로 쓰는 전환은 그대로 둡니다.
+        guard scheme != "about" else {
+            decisionHandler(.allow)
+            return
+        }
+
+        // tel:, mailto: 같은 것은 시스템에 넘깁니다.
+        guard scheme == "http" || scheme == "https" else {
+            decisionHandler(.cancel)
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
+            return
+        }
+
+        if let host = url.host?.lowercased(), Self.allowedHosts.contains(host) {
+            decisionHandler(.allow)
+        } else {
+            decisionHandler(.cancel)
+            UIApplication.shared.open(url)
+        }
+    }
+}

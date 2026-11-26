@@ -16,6 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        // 예전 버전이 남긴 평문 비밀번호 제거
+        UserManager.purgeLegacyCredentials()
+
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
@@ -76,7 +79,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 // MARK: - FCM Messaging
 extension AppDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        #if DEBUG
         print("파이어베이스 토큰: \(fcmToken)")
+        #endif
         
         if let fcmToken = fcmToken {
             UserDefaults.standard.set(fcmToken, forKey: "fcmToken")
