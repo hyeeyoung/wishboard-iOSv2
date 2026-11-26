@@ -38,24 +38,6 @@ public class UserManager {
     @UserDefault(key: UserDefaultKey.deviceInfo, defaultValue: nil, storage: sharedDefaults)
     public static var deviceInfo: String?
     
-    @UserDefault(key: UserDefaultKey.url, defaultValue: nil, storage: sharedDefaults)
-    public static var url: String?
-    
-    @UserDefault(key: UserDefaultKey.deviceModel, defaultValue: nil, storage: sharedDefaults)
-    public static var deviceModel: String?
-    
-    @UserDefault(key: UserDefaultKey.OSVersion, defaultValue: nil, storage: sharedDefaults)
-    public static var OSVersion: String?
-    
-    @UserDefault(key: UserDefaultKey.appVersion, defaultValue: nil, storage: sharedDefaults)
-    public static var appVersion: String?
-    
-    @UserDefault(key: UserDefaultKey.appBuildVersion, defaultValue: nil, storage: sharedDefaults)
-    public static var appBuildVersion: String?
-    
-    @UserDefault(key: UserDefaultKey.deviceToken, defaultValue: nil, storage: sharedDefaults)
-    public static var deviceToken: String?
-    
     @UserDefault(key: UserDefaultKey.email, defaultValue: nil, storage: sharedDefaults)
     public static var email: String?
     
@@ -95,14 +77,6 @@ public struct UserDefaultKey {
     public static let accessToken = "accessToken"
     public static let refreshToken = "refreshToken"
     public static let deviceInfo = "deviceInfo"
-    
-    public static let url = "url"
-    
-    public static let deviceModel = "deviceModel"
-    public static let OSVersion = "OSVersion"
-    public static let appVersion = "appVersion"
-    public static let appBuildVersion = "appBuildVersion"
-    public static let deviceToken = "deviceToken"
     
     public static let email = "email"
     public static let isFirstLogin = "isFirstLogin"
